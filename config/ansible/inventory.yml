@@ -1,0 +1,30 @@
+---
+
+all:
+  children:
+    build:
+      hosts:
+        localhost:
+          ansible_connection: local
+
+    latest_hiv:
+      hosts:
+        latest:
+          ansible_connection: local
+
+    demo_hiv:
+      hosts:
+        demo:
+          ansible_connection: local
+
+    live_hiv:
+      hosts:
+        live:
+          ansible_connection: local
+
+    pseserver:
+      children:
+        latest_hiv:
+        demo_hiv:
+        live_hiv:
+

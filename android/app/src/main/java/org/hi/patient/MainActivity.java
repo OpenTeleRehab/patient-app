@@ -1,4 +1,4 @@
-package com.patientapp;
+package org.hi.patient;
 
 import com.facebook.react.ReactActivity;
 
