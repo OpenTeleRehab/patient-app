@@ -1,0 +1,22 @@
+---
+
+project_name:             'hiv'
+
+git_repos:                'git@git.web-essentials.asia:hiv-tra-20/patient-app.git'
+
+latest_api_url:           ''
+demo_api_url:             ''
+live_api_url:             ''
+has_toggle_api_stage:     'true'
+is_debug_mode:            'false'
+
+major_release_version:    '1'
+minor_release_version:    '3'
+
+android_build_path:       'android'
+android_apk_file:         '{{ android_build_path }}/app/build/outputs/apk/release/app-release.apk'
+andriod_sdk_path:         '{{ jenkin_home }}/Android/Sdk'
+
+android_release_key_src:  '/opt/Android/{{ project_name }}/hiv-release-key.keystore'
+android_release_path:     '/storage/satis/web/apk/{{ project_name }}'
+android_apk_release_file: '{{ stage }}-{{ build_id }}-{{ ansible_date_time.date }}-app-release.apk'

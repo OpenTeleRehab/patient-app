@@ -129,11 +129,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.patientapp"
+        applicationId "org.hi.patient"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode generateVersionCode()
+        versionName generateVersionName()
     }
     splits {
         abi {
@@ -217,3 +217,17 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+// @see https://medium.com/@maxirosson/versioning-android-apps-d6ec171cfd82
+private Integer generateVersionCode() {
+    return rootProject.ext.minSdkVersion * 10000000 + rootProject.ext.majorApkVersion * 10000 + rootProject.ext.minorApkVersion * 100 + rootProject.ext.patchApkVersion
+}
+
+private String generateVersionName() {
+    String versionName = "${rootProject.ext.majorApkVersion}.${rootProject.ext.minorApkVersion}.${rootProject.ext.patchApkVersion}"
+
+    if (rootProject.ext.classifierApkVersion != "live") {
+        versionName += "-" + rootProject.ext.classifierApkVersion
+    }
+    return versionName;
+}
