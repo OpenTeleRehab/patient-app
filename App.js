@@ -1,17 +1,30 @@
+/*
+ * Copyright (c) 2020 Web Essentials Co., Ltd
+ */
 import React from 'react';
-import {Header, ThemeProvider} from 'react-native-elements';
+import {ThemeProvider} from 'react-native-elements';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/lib/integration/react';
 
-const theme = {};
+import SplashScreen from './src/components/SplashScreen';
+import configureStore from './src/redux/store';
+const {store, persistor} = configureStore();
+
+import colors from './theme/variables';
+
+const theme = {
+  colors,
+};
 
 const App: () => React$Node = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <Header
-        leftComponent={{icon: 'menu', color: '#fff'}}
-        centerComponent={{text: 'MY TITLE', style: {color: '#fff'}}}
-        rightComponent={{icon: 'home', color: '#fff'}}
-      />
-    </ThemeProvider>
+    <Provider store={store}>
+      <PersistGate loading={<SplashScreen />} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <SplashScreen />
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   );
 };
 
