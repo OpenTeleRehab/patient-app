@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import {ACTION_TYPE} from '../../utils/constants';
+import {ACTIONS} from '../../variables/constants';
 
 /* --------------------------
  * BEGIN: Indicator actions
  * ------------------------ */
 export const indicatorUpdateSuccess = (payload) => {
   return {
-    type: ACTION_TYPE.INDICATOR_UPDATE_SUCCEED,
+    type: ACTIONS.INDICATOR_UPDATE_SUCCEED,
     payload,
   };
 };
@@ -19,20 +19,20 @@ export const indicatorUpdateSuccess = (payload) => {
  * ------------------------ */
 export const patientLoginSuccess = (payload) => {
   return {
-    type: ACTION_TYPE.PATIENT_LOGIN_SUCCEED,
+    type: ACTIONS.PATIENT_LOGIN_SUCCEED,
     payload,
   };
 };
 
 export const patientLogoutSuccess = () => {
   return {
-    type: ACTION_TYPE.PATIENT_LOGOUT_SUCCEED,
+    type: ACTIONS.PATIENT_LOGOUT_SUCCEED,
   };
 };
 
 export const patientLoginFailure = () => {
   return {
-    type: ACTION_TYPE.PATIENT_LOGIN_FAILED,
+    type: ACTIONS.PATIENT_LOGIN_FAILED,
   };
 };
 // END: Patient actions
@@ -42,14 +42,48 @@ export const patientLoginFailure = () => {
  * ------------------------ */
 export const activityFetchSuccess = (payload) => {
   return {
-    type: ACTION_TYPE.ACTIVITY_FETCH_SUCCEED,
+    type: ACTIONS.ACTIVITY_FETCH_SUCCEED,
     payload,
   };
 };
 
-export const activityLoginFailure = () => {
+export const activityFetchFailure = () => {
   return {
-    type: ACTION_TYPE.ACTIVITY_FETCH_FAILED,
+    type: ACTIONS.ACTIVITY_FETCH_FAILED,
   };
 };
 // END: Activity actions
+
+/* --------------------------
+ * BEGIN: Goal actions
+ * ------------------------ */
+export const goalFetchSuccess = (payload) => {
+  return {
+    type: ACTIONS.GOAL_FETCH_SUCCEED,
+    payload,
+  };
+};
+
+export const goalFetchFailure = () => {
+  return {
+    type: ACTIONS.GOAL_FETCH_FAILED,
+  };
+};
+// END: Goal actions
+
+/* --------------------------
+ * BEGIN: Appointment actions
+ * ------------------------ */
+export const appointmentFetchSuccess = (payload) => {
+  return {
+    type: ACTIONS.APPOINTMENT_FETCH_SUCCEED,
+    payload,
+  };
+};
+
+export const appointmentFetchFailure = () => {
+  return {
+    type: ACTIONS.APPOINTMENT_FETCH_FAILED,
+  };
+};
+// END: Appointment actions

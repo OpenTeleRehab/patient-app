@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import {REHYDRATE} from 'redux-persist';
-import {ACTION_TYPE} from '../../utils/constants';
+import {ACTIONS} from '../../variables/constants';
 
 const initialState = {
   id: '',
@@ -16,11 +16,11 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
       return action.payload?.patient || state;
-    case ACTION_TYPE.PATIENT_LOGIN_SUCCEED:
+    case ACTIONS.PATIENT_LOGIN_SUCCEED:
       return action.payload;
-    case ACTION_TYPE.PATIENT_LOGOUT_SUCCEED:
+    case ACTIONS.PATIENT_LOGOUT_SUCCEED:
       return initialState;
-    case ACTION_TYPE.PATIENT_LOGIN_FAILED:
+    case ACTIONS.PATIENT_LOGIN_FAILED:
     default:
       return state;
   }
