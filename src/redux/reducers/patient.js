@@ -10,6 +10,7 @@ const initialState = {
   lastName: '',
   mobile: '',
   accessToken: '',
+  isFirstTimeLogin: true,
 };
 
 export default (state = initialState, action) => {

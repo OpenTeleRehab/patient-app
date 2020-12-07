@@ -2,6 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 export const ROUTES = {
+  LOGIN: 'Login',
   HOME: 'Home',
   ACTIVITY: 'Activity',
   GOAL: 'Goal',

@@ -3,19 +3,36 @@
  */
 import {ROUTES} from './constants';
 
-// Drawer Navigation
+// Auth Group
+import LoginScreen from '../screen/Login';
+
+// Home group
+import HomeScreen from '../screen/Home';
 import UserProfileScreen from '../screen/UserProfile';
 import PrivacyScreen from '../screen/Privacy';
 import AboutScreen from '../screen/About';
 
-// Footer Navigation
-import HomeScreen from '../screen/Home';
+// Activity group
 import ActivityScreen from '../screen/Activity';
-import GoalScreen from '../screen/Goal';
-import AppointmentScreen from '../screen/Appointment';
-import MessageScreen from '../screen/Message';
 
-export const drawerRoutes = [
+// Goal group
+import GoalScreen from '../screen/Goal';
+
+// Appointment group
+import AppointmentScreen from '../screen/Appointment';
+
+export const auths = [
+  {
+    name: ROUTES.LOGIN,
+    screen: LoginScreen,
+  },
+];
+
+export const homes = [
+  {
+    name: ROUTES.HOME,
+    screen: HomeScreen,
+  },
   {
     name: ROUTES.USER_PROFILE,
     screen: UserProfileScreen,
@@ -36,35 +53,23 @@ export const drawerRoutes = [
   },
 ];
 
-export const footerRoutes = [
-  {
-    name: ROUTES.HOME,
-    screen: HomeScreen,
-    label: 'Home',
-    icon: 'home',
-  },
+export const activities = [
   {
     name: ROUTES.ACTIVITY,
     screen: ActivityScreen,
-    label: 'Activities',
-    icon: 'handball',
   },
+];
+
+export const goals = [
   {
     name: ROUTES.GOAL,
     screen: GoalScreen,
-    label: 'Goals',
-    icon: 'bullseye-arrow',
   },
+];
+
+export const appointments = [
   {
     name: ROUTES.APPOINTMENT,
     screen: AppointmentScreen,
-    label: 'Appointments',
-    icon: 'calendar-clock',
-  },
-  {
-    name: ROUTES.MESSAGE,
-    screen: MessageScreen,
-    label: 'Messages',
-    icon: 'message-text-outline',
   },
 ];
