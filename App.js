@@ -2,16 +2,17 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
+import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'react-native-elements';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 
-import SplashScreen from './src/components/SplashScreen';
 import configureStore from './src/redux/store';
-const {store, persistor} = configureStore();
-
+import SplashScreen from './src/components/SplashScreen';
+import AppNavigation from './src/components/AppNavigation';
 import colors from './theme/variables';
 
+const {store, persistor} = configureStore();
 const theme = {
   colors,
 };
@@ -21,7 +22,8 @@ const App: () => React$Node = () => {
     <Provider store={store}>
       <PersistGate loading={<SplashScreen />} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <SplashScreen />
+          <StatusBar barStyle="light-content" />
+          <AppNavigation />
         </ThemeProvider>
       </PersistGate>
     </Provider>

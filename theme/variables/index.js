@@ -3,10 +3,34 @@
  * @see https://reactnativeelements.com/docs/customization/#the-theme-object
  */
 export default {
+  black: '#333333',
+  blueDark: '#06038D',
+  grey: '#777777',
+  grey1: '#575757',
+  grey2: '#858585',
+  grey3: '#A1A1A1',
+  grey4: '#ADADAD',
+  grey5: '#EBEBEB',
+  greyOutline: '#D6D6D6',
   primary: '#0077C8',
   success: '#00933B',
   warning: '#E35205',
   error: '#CF2A2A',
-  blueDark: '#06038D',
-  grey: '#777777',
+  disabled: '#EBEBEB',
+  platform: {
+    android: {
+      primary: '#0077C8',
+      success: '#00933B',
+      warning: '#E35205',
+      error: '#CF2A2A',
+      grey: '#777777',
+    },
+    ios: {
+      primary: '#0077C8',
+      success: '#00933B',
+      warning: '#E35205',
+      error: '#CF2A2A',
+      grey: '#777777',
+    },
+  },
 };
