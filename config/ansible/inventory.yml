@@ -7,11 +7,6 @@ all:
         localhost:
           ansible_connection: local
 
-    latest_hiv:
-      hosts:
-        latest:
-          ansible_connection: local
-
     demo_hiv:
       hosts:
         demo:
@@ -24,7 +19,6 @@ all:
 
     pseserver:
       children:
-        latest_hiv:
         demo_hiv:
         live_hiv:
 
