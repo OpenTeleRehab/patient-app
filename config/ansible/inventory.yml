@@ -17,7 +17,7 @@ all:
         live:
           ansible_connection: local
 
-    pseserver:
+    hivserver:
       children:
         demo_hiv:
         live_hiv:
