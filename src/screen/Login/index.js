@@ -3,14 +3,15 @@
  */
 import React from 'react';
 import {View, Image} from 'react-native';
-import {Button} from 'react-native-elements';
+import {Picker} from '@react-native-picker/picker';
+import {Button, Card, Input, Text} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import {patientLoginSuccess} from '../../redux/actions';
 import styles from '../../assets/styles';
 
-import logoBlue from '../../assets/images/logo-blue.png';
+import logoWhite from '../../assets/images/logo-white.png';
 
 class Login extends React.Component {
   handleLogin = () => {
@@ -27,16 +28,35 @@ class Login extends React.Component {
 
   render() {
     return (
-      <View style={styles.mainContainerLight}>
-        <Image source={logoBlue} style={styles.authLogoBlue} />
-        <Button onPress={this.handleLogin} title="Login" />
-      </View>
+      <>
+        <View style={styles.authBanner}>
+          <Image source={logoWhite} style={styles.authLogoWhite} />
+        </View>
+        <Card>
+          <Input
+            label="Enter your mobile number"
+            labelStyle={styles.formLabel}
+            inputStyle={styles.formControl}
+            inputContainerStyle={styles.noneBorderBottom}
+          />
+          <View>
+            <Text>Language</Text>
+            <Picker prompt="Language">
+              <Picker.Item label="English" value="en" />
+              <Picker.Item label="Vietnam" value="vn" />
+            </Picker>
+          </View>
+          <Button onPress={() => this.handleLogin()} title="Login" />
+        </Card>
+      </>
     );
   }
 }
 
-const mapStateToProps = () => {
-  return {};
+const mapStateToProps = (state) => {
+  return {
+    patient: state.patient,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

@@ -127,7 +127,7 @@ It is manually build on `Mac`, in which you can find the ipa file(s) for each st
 * Check style for specific file
 
     ```bash
-    yarn eslint /path/to/file/index.js
+    yarn eslint /path/to/file/HomeTab.js
     ```
 
 # Useful commands

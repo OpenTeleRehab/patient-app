@@ -3,15 +3,15 @@
  */
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {goals} from '../../../variables/routes';
+import {appointments} from '../../../variables/routes';
 import {ROUTES} from '../../../variables/constants';
 
 const Stack = createStackNavigator();
 
-const GoalGroup = () => {
+const AppointmentTab = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName={ROUTES.GOAL}>
-      {goals.map((route, index) => {
+    <Stack.Navigator headerMode="none" initialRouteName={ROUTES.APPOINTMENT}>
+      {appointments.map((route, index) => {
         return (
           <Stack.Screen
             key={index}
@@ -24,4 +24,4 @@ const GoalGroup = () => {
   );
 };
 
-export default GoalGroup;
+export default AppointmentTab;

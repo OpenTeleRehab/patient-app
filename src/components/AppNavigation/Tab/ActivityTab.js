@@ -8,7 +8,7 @@ import {ROUTES} from '../../../variables/constants';
 
 const Stack = createStackNavigator();
 
-const ActivityGroup = () => {
+const ActivityTab = () => {
   return (
     <Stack.Navigator headerMode="none" initialRouteName={ROUTES.ACTIVITY}>
       {activities.map((route, index) => {
@@ -24,4 +24,4 @@ const ActivityGroup = () => {
   );
 };
 
-export default ActivityGroup;
+export default ActivityTab;
