@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import colors from '../../../../theme/variables';
+import colors from './colors';
 
 export default {
   ...colors,
@@ -24,5 +24,9 @@ export default {
   },
   get spacingLg() {
     return this.spacingBase + 20;
+  },
+  borderRadiusBase: 5,
+  get inputBorderColor() {
+    return this.grey1;
   },
 };

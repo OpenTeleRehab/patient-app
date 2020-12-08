@@ -6,11 +6,12 @@ import variables from '../variables';
 export default {
   textDefault: {
     color: variables.black,
-    fontWeight: 'normal',
+  },
+  textPrimary: {
+    color: variables.primary,
   },
   textLight: {
     color: 'white',
-    fontWeight: 'normal',
   },
   textDefaultBold: {
     color: variables.black,

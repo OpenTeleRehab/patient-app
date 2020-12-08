@@ -9,6 +9,8 @@ import Utilities from './partials/_Utilities';
 import Navigation from './partials/_Navigation';
 import Auth from './partials/_Auth';
 import HeaderBar from './partials/_HeaderBar';
+import Button from './partials/_Button';
+import Form from './partials/_Form';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -17,6 +19,8 @@ const styles = StyleSheet.create({
   ...Navigation,
   ...Auth,
   ...HeaderBar,
+  ...Button,
+  ...Form,
 });
 
 export default styles;

@@ -12,10 +12,13 @@ export default {
     marginBottom: variables.spacingLg,
   },
   authLogoWhite: {
-    width: 152,
-    height: 65,
+    width: 163,
+    height: 70,
     alignSelf: 'center',
     marginTop: variables.spacingMd,
     marginBottom: variables.spacingLg,
+  },
+  authBanner: {
+    backgroundColor: variables.primary,
   },
 };

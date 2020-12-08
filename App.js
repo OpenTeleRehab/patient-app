@@ -10,11 +10,14 @@ import {PersistGate} from 'redux-persist/lib/integration/react';
 import configureStore from './src/redux/store';
 import SplashScreen from './src/components/SplashScreen';
 import AppNavigation from './src/components/AppNavigation';
-import colors from './theme/variables';
+import colors from './src/assets/styles/variables/colors';
 
 const {store, persistor} = configureStore();
 const theme = {
   colors,
+  Button: {
+    raised: true,
+  },
 };
 
 const App: () => React$Node = () => {

@@ -9,13 +9,13 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AuthGroupScreen from './Group/AuthGroup';
-import HomeGroupScreen from './Group/HomeGroup';
-import ActivityGroupScreen from './Group/ActivityGroup';
-import GoalGroupScreen from './Group/GoalGroup';
-import AppointmentGroupScreen from './Group/AppointmentGroup';
-import MessageGroupScreen from '../../screen/Message';
+import HomeTab from './Tab/HomeTab';
+import ActivityTab from './Tab/ActivityTab';
+import GoalTab from './Tab/GoalTab';
+import AppointmentTab from './Tab/AppointmentTab';
+import MessageTab from '../../screen/Message';
 import {ROUTES} from '../../variables/constants';
+import {auths} from '../../variables/routes';
 import styles from '../../assets/styles';
 import {patientLogoutSuccess} from '../../redux/actions';
 
@@ -25,58 +25,67 @@ const AppTab = createBottomTabNavigator();
 const tabs = [
   {
     name: ROUTES.HOME,
-    screen: HomeGroupScreen,
+    screen: HomeTab,
     label: 'Home',
     icon: 'home',
     badge: 'noBadge',
   },
   {
     name: ROUTES.ACTIVITY,
-    screen: ActivityGroupScreen,
+    screen: ActivityTab,
     label: 'Activities',
     icon: 'handball',
     badge: 'hasActivity',
   },
   {
     name: ROUTES.GOAL,
-    screen: GoalGroupScreen,
+    screen: GoalTab,
     label: 'Goals',
     icon: 'bullseye-arrow',
     badge: 'hasGoal',
   },
   {
     name: ROUTES.APPOINTMENT,
-    screen: AppointmentGroupScreen,
+    screen: AppointmentTab,
     label: 'Appointments',
     icon: 'calendar-clock',
     badge: 'hasAppointment',
   },
   {
     name: ROUTES.MESSAGE,
-    screen: MessageGroupScreen,
+    screen: MessageTab,
     label: 'Messages',
     icon: 'message-text-outline',
     badge: 'hasMessage',
   },
 ];
 
-const hasBadge = (indicator, checkBadge) => {
-  if (checkBadge === 'noBadge') {
-    return null;
-  }
-  return indicator[checkBadge] ? 1 : null;
-};
-
 const AuthStackNavigator = () => {
   return (
     <AuthStack.Navigator headerMode="none" initialRouteName={ROUTES.LOGIN}>
-      <AuthStack.Screen name="Auth" component={AuthGroupScreen} />
+      {auths.map((route, index) => {
+        return (
+          <AuthStack.Screen
+            key={index}
+            name={route.name}
+            component={route.screen}
+          />
+        );
+      })}
     </AuthStack.Navigator>
   );
 };
 
 const AppTabNavigator = (props) => {
   const {theme, indicator} = props;
+
+  const hasBadge = (checkBadge) => {
+    if (checkBadge === 'noBadge') {
+      return null;
+    }
+    return indicator[checkBadge] ? 1 : null;
+  };
+
   return (
     <AppTab.Navigator
       initialRouteName={ROUTES.HOME}
@@ -104,7 +113,7 @@ const AppTabNavigator = (props) => {
                 <MCIcon name={route.icon} color={color} size={size} />
               ),
               tabBarLabel: route.label,
-              tabBarBadge: hasBadge(indicator, route.badge),
+              tabBarBadge: hasBadge(route.badge),
               tabBarBadgeStyle: styles.navTabBadge,
             }}
           />
