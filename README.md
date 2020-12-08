@@ -5,7 +5,7 @@ This mobile app project was bootstrapped with [React Native App](https://reactna
 # Requirements
 
 * [Git](https://git-scm.com/) version >= 2.0.0
-* [NodeJS](https://nodejs.org/en/download/package-manager/) version >= 12.0.0 && < 15.0.0
+* [NodeJS](https://nodejs.org/en/download/package-manager/) version >= 10.0.0 && < 15.0.0
 * [Yarn](https://yarnpkg.com/lang/en/docs/install/#debian-stable) version >= 1.20.0
 * JDK [OpenJDK](http://openjdk.java.net/install/) or [Standard Edition](https://docs.oracle.com/en/java/javase/index.html) version >= 8 (10 is recommended)
 * Configure Android environment variables
@@ -128,4 +128,20 @@ It is manually build on `Mac`, in which you can find the ipa file(s) for each st
 
     ```bash
     yarn eslint /path/to/file/index.js
+    ```
+
+# Useful commands
+
+## Android
+
+* Check connected authorized or unauthorized device(s)
+
+    ```bash
+    adb devices
+    ```
+
+* Uninstall Android debug app from device(s)
+
+    ```bash
+    adb uninstall org.hi.patient
     ```
