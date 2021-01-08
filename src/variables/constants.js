@@ -11,6 +11,9 @@ export const ROUTES = {
   USER_PROFILE: 'UserProfile',
   PRIVACY: 'Privacy',
   ABOUT: 'About',
+  TERM_OF_SERVICE: 'TermOfService',
+  TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
+  SETUP_PIN: 'SetupPin',
 };
 
 export const ACTIONS = {

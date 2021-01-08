@@ -21,6 +21,10 @@ import GoalScreen from '../screen/Goal';
 // Appointment group
 import AppointmentScreen from '../screen/Appointment';
 
+// Term of Service group
+import TermOfServiceScreen from '../screen/TermOfService';
+import TermOfServiceDetailScreen from '../screen/TermOfService/detail';
+
 export const auths = [
   {
     name: ROUTES.LOGIN,
@@ -71,5 +75,16 @@ export const appointments = [
   {
     name: ROUTES.APPOINTMENT,
     screen: AppointmentScreen,
+  },
+];
+
+export const termOfServices = [
+  {
+    name: ROUTES.TERM_OF_SERVICE,
+    screen: TermOfServiceScreen,
+  },
+  {
+    name: ROUTES.TERM_OF_SERVICE_DETAIL,
+    screen: TermOfServiceDetailScreen,
   },
 ];
