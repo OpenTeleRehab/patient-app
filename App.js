@@ -18,6 +18,15 @@ const theme = {
   Button: {
     raised: true,
   },
+  CheckBox: {
+    containerStyle: {
+      borderWidth: 0,
+      padding: 0,
+      marginLeft: 0,
+      marginRight: 0,
+      backgroundColor: 'none',
+    },
+  },
 };
 
 const App: () => React$Node = () => {

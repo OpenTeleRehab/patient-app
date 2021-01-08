@@ -9,4 +9,8 @@ export default {
     fontSize: variables.fontSizeMd,
     fontWeight: 'bold',
   },
+  hyperlink: {
+    color: variables.primary,
+    textDecorationLine: 'underline',
+  },
 };
