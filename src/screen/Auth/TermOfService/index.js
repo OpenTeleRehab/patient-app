@@ -19,8 +19,19 @@ const TermOfService = ({theme, navigation}) => {
   return (
     <>
       <Header
+        leftComponent={
+          <Button
+            icon={{
+              name: 'chevron-left',
+              size: 25,
+              color: theme.colors.white,
+            }}
+            title="Back"
+            onPress={() => navigation.goBack()}
+          />
+        }
         centerComponent={{
-          text: 'Terms of Services',
+          text: 'Terms of Services Detail',
           style: {color: theme.colors.white},
         }}
       />

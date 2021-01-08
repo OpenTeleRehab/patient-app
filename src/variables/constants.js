@@ -3,6 +3,7 @@
  */
 export const ROUTES = {
   LOGIN: 'Login',
+  VERIFY_PHONE: 'VerifyPhone',
   HOME: 'Home',
   ACTIVITY: 'Activity',
   GOAL: 'Goal',

@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) 2021 Web Essentials Co., Ltd
+ */
+import React, {useState} from 'react';
+import {Button, Header, Text, withTheme} from 'react-native-elements';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
+import styles from '../../../assets/styles';
+import {ROUTES} from '../../../variables/constants';
+
+const VerifyPhone = ({theme, navigation}) => {
+  const [code, setCode] = useState('');
+
+  return (
+    <>
+      <Header
+        leftComponent={
+          <Button
+            icon={{
+              name: 'chevron-left',
+              size: 25,
+              color: theme.colors.white,
+            }}
+            title="Back"
+            onPress={() => navigation.goBack()}
+          />
+        }
+        centerComponent={{
+          text: 'Verify Phone',
+          style: {color: theme.colors.white},
+        }}
+      />
+      <ScrollView style={styles.mainContainerLight}>
+        <View style={styles.flexCenter}>
+          <Text>
+            We sent you a code to verify your phone number. Please input it
+            below.
+          </Text>
+          <Text style={styles.marginTop}>Sent to (012) 222-333</Text>
+          <SmoothPinCodeInput
+            codeLength={6}
+            value={code}
+            onTextChange={(pinCode) => setCode(pinCode)}
+            animated={false}
+            containerStyle={styles.marginTop}
+            textStyle={styles.smoothPinTextStyle}
+            cellStyleFocused={styles.smoothPinCellStyle}
+            cellSize={60}
+          />
+          <View style={[styles.flexRow, styles.marginTop]}>
+            <Text>I didn't receive a code!&nbsp;</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ROUTES.TERM_OF_SERVICE)}>
+              <Text style={styles.hyperlink}>Resend Code</Text>
+            </TouchableOpacity>
+          </View>
+          <Button
+            containerStyle={[styles.marginTop, styles.alignSelfStretch]}
+            disabled={code.length !== 6}
+            onPress={() => navigation.navigate(ROUTES.TERM_OF_SERVICE)}
+            title="CONFIRM"
+          />
+        </View>
+      </ScrollView>
+    </>
+  );
+};
+
+export default withTheme(VerifyPhone);

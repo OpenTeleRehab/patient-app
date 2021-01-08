@@ -1,40 +1,73 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Image} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Button, Card, Input, Text} from 'react-native-elements';
+import PhoneInput from 'react-native-phone-input';
 
 import styles from '../../../assets/styles';
 
 import logoWhite from '../../../assets/images/logo-white.png';
 import {ROUTES} from '../../../variables/constants';
 
+const customFlagStyle = {
+  width: 50,
+  height: 30,
+  marginBottom: 20,
+};
+
 const Register = ({navigation}) => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const onRegister = () => {
+    navigation.navigate(ROUTES.VERIFY_PHONE);
+  };
+
   return (
     <>
       <View style={styles.authBanner}>
         <Image source={logoWhite} style={styles.authLogoWhite} />
       </View>
       <Card>
-        <Input
-          label="Enter your mobile number"
-          labelStyle={styles.formLabel}
-          inputStyle={styles.formControl}
-          inputContainerStyle={styles.noneBorderBottom}
+        <PhoneInput
+          value={phoneNumber}
+          onChangePhoneNumber={(number) => setPhoneNumber(number)}
+          initialCountry={'vn'}
+          textProps={{
+            placeholder: 'Enter phone number',
+            inputContainerStyle: styles.noneBorderBottom,
+          }}
+          textComponent={Input}
+          textStyle={styles.formControl}
+          flagStyle={customFlagStyle}
+          offset={20}
+          countriesList={[
+            {
+              name: 'Cambodia (កម្ពុជា)',
+              iso2: 'kh',
+              dialCode: '855',
+              priority: 1,
+              areaCodes: null,
+            },
+            {
+              name: 'Vietnam (Việt Nam)',
+              iso2: 'vn',
+              dialCode: '84',
+              priority: 0,
+              areaCodes: null,
+            },
+          ]}
         />
         <View>
           <Text>Language</Text>
-          <Picker prompt="Language">
+          <Picker prompt="Language" style={styles.formControl}>
             <Picker.Item label="English" value="en" />
             <Picker.Item label="Vietnam" value="vn" />
           </Picker>
         </View>
-        <Button
-          onPress={() => navigation.navigate(ROUTES.TERM_OF_SERVICE)}
-          title="Register"
-        />
+        <Button onPress={onRegister} title="Register" />
       </Card>
     </>
   );

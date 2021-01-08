@@ -18,4 +18,10 @@ export default {
     flex: 1,
     alignItems: 'center',
   },
+  flexRow: {
+    flexDirection: 'row',
+  },
+  alignSelfStretch: {
+    alignSelf: 'stretch',
+  },
 };
