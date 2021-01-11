@@ -9,6 +9,7 @@ import RegisterScreen from '../screen/Auth/Register';
 import TermOfServiceScreen from '../screen/Auth/TermOfService';
 import TermOfServiceDetailScreen from '../screen/Auth/TermOfService/detail';
 import VerifyPhoneScreen from '../screen/Auth/VerifyPhone';
+import SetupPinScreen from '../screen/Auth/Pin';
 
 // Home group
 import HomeScreen from '../screen/Home';
@@ -45,6 +46,10 @@ export const auths = [
   {
     name: ROUTES.VERIFY_PHONE,
     screen: VerifyPhoneScreen,
+  },
+  {
+    name: ROUTES.SETUP_PIN,
+    screen: SetupPinScreen,
   },
 ];
 
