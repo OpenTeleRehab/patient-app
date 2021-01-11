@@ -2,6 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
+import {useDispatch} from 'react-redux';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -10,14 +11,18 @@ import {
 import {Button, withTheme} from 'react-native-elements';
 import {View} from 'react-native';
 import FIcon from 'react-native-vector-icons/Feather';
-
 import {homes} from '../../../variables/routes';
 import styles from '../../../assets/styles';
+import {userLogoutRequest} from '../../../store/user/actions';
 
 const Drawer = createDrawerNavigator();
 
 const HomeTab = (props) => {
-  const handleLogout = () => props.patientLogoutSuccess();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(userLogoutRequest());
+  };
 
   const renderDrawerContent = (navProps) => {
     const {state, navigation} = navProps;

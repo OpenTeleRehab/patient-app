@@ -5,14 +5,11 @@ import React from 'react';
 import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'react-native-elements';
 import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/lib/integration/react';
-
-import configureStore from './src/redux/store';
-import SplashScreen from './src/components/SplashScreen';
+import ConfigurationProvider from './ConfigurationProvider';
+import store from './src/store';
 import AppNavigation from './src/components/AppNavigation';
 import colors from './src/assets/styles/variables/colors';
 
-const {store, persistor} = configureStore();
 const theme = {
   colors,
   Button: {
@@ -32,12 +29,12 @@ const theme = {
 const App: () => React$Node = () => {
   return (
     <Provider store={store}>
-      <PersistGate loading={<SplashScreen />} persistor={persistor}>
+      <ConfigurationProvider>
         <ThemeProvider theme={theme}>
           <StatusBar barStyle="light-content" />
           <AppNavigation />
         </ThemeProvider>
-      </PersistGate>
+      </ConfigurationProvider>
     </Provider>
   );
 };

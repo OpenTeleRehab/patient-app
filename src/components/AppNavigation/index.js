@@ -2,8 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import {useSelector} from 'react-redux';
 import {withTheme} from 'react-native-elements';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -17,7 +16,6 @@ import MessageTab from '../../screen/Message';
 import {ROUTES} from '../../variables/constants';
 import {auths} from '../../variables/routes';
 import styles from '../../assets/styles';
-import {patientLogoutSuccess} from '../../redux/actions';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -103,11 +101,7 @@ const AppTabNavigator = (props) => {
           <AppTab.Screen
             key={index}
             name={route.name}
-            component={
-              route.name === ROUTES.HOME
-                ? connect(mapStateToProps, mapDispatchToProps)(route.screen)
-                : route.screen
-            }
+            component={route.screen}
             options={{
               tabBarIcon: ({focused, color, size}) => (
                 <MCIcon name={route.icon} color={color} size={size} />
@@ -123,34 +117,19 @@ const AppTabNavigator = (props) => {
   );
 };
 
-class AppNavigation extends React.Component {
-  render() {
-    return (
-      <NavigationContainer>
-        {this.props.patient.accessToken ? (
-          <AppTabNavigator {...this.props} />
-        ) : (
-          <AuthStackNavigator />
-        )}
-      </NavigationContainer>
-    );
-  }
-}
+const AppNavigation = (props) => {
+  const user = useSelector((state) => state.user);
+  const indicator = useSelector((state) => state.indicator);
 
-const mapStateToProps = (state) => {
-  return {
-    patient: state.patient,
-    indicator: state.indicator,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    {
-      patientLogoutSuccess,
-    },
-    dispatch,
+  return (
+    <NavigationContainer>
+      {user.accessToken ? (
+        <AppTabNavigator indicator={indicator} {...props} />
+      ) : (
+        <AuthStackNavigator />
+      )}
+    </NavigationContainer>
   );
 };
 
-export default connect(mapStateToProps)(withTheme(AppNavigation));
+export default withTheme(AppNavigation);
