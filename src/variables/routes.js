@@ -4,7 +4,10 @@
 import {ROUTES} from './constants';
 
 // Auth Group
-import LoginScreen from '../screen/Login';
+import LoginScreen from '../screen/Auth/Login';
+import RegisterScreen from '../screen/Auth/Register';
+import TermOfServiceScreen from '../screen/Auth/TermOfService';
+import TermOfServiceDetailScreen from '../screen/Auth/TermOfService/detail';
 
 // Home group
 import HomeScreen from '../screen/Home';
@@ -21,11 +24,11 @@ import GoalScreen from '../screen/Goal';
 // Appointment group
 import AppointmentScreen from '../screen/Appointment';
 
-// Term of Service group
-import TermOfServiceScreen from '../screen/TermOfService';
-import TermOfServiceDetailScreen from '../screen/TermOfService/detail';
-
 export const auths = [
+  {
+    name: ROUTES.REGISTER,
+    screen: RegisterScreen,
+  },
   {
     name: ROUTES.TERM_OF_SERVICE,
     screen: TermOfServiceScreen,

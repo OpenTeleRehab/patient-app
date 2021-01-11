@@ -8,10 +8,10 @@ import {Button, Card, Input, Text} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import {patientLoginSuccess} from '../../redux/actions';
-import styles from '../../assets/styles';
+import {patientLoginSuccess} from '../../../redux/actions';
+import styles from '../../../assets/styles';
 
-import logoWhite from '../../assets/images/logo-white.png';
+import logoWhite from '../../../assets/images/logo-white.png';
 
 class Login extends React.Component {
   handleLogin = () => {

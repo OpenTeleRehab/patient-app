@@ -4,8 +4,8 @@
 import React, {useState} from 'react';
 import {Header, Button, CheckBox, withTheme, Text} from 'react-native-elements';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
-import styles from '../../assets/styles';
-import {ROUTES} from '../../variables/constants';
+import styles from '../../../assets/styles';
+import {ROUTES} from '../../../variables/constants';
 
 const customStyles = {
   termDetailLink: {
