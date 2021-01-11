@@ -11,6 +11,7 @@ export const ROUTES = {
   USER_PROFILE: 'UserProfile',
   PRIVACY: 'Privacy',
   ABOUT: 'About',
+  REGISTER: 'Register',
   TERM_OF_SERVICE: 'TermOfService',
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
   SETUP_PIN: 'SetupPin',

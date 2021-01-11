@@ -4,7 +4,7 @@
 import React from 'react';
 import {Text, Header, withTheme, Button} from 'react-native-elements';
 import {ScrollView, View} from 'react-native';
-import styles from '../../assets/styles';
+import styles from '../../../assets/styles';
 
 // todo: get content from BE api
 const termContent =
