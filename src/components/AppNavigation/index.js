@@ -62,7 +62,9 @@ const tabs = [
 
 const AuthStackNavigator = () => {
   return (
-    <AuthStack.Navigator headerMode="none" initialRouteName={ROUTES.LOGIN}>
+    <AuthStack.Navigator
+      headerMode="none"
+      initialRouteName={ROUTES.TERM_OF_SERVICE}>
       {auths.map((route, index) => {
         return (
           <AuthStack.Screen

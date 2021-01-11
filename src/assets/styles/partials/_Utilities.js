@@ -11,14 +11,14 @@ export default {
     color: variables.primary,
   },
   textLight: {
-    color: 'white',
+    color: variables.white,
   },
   textDefaultBold: {
     color: variables.black,
     fontWeight: 'bold',
   },
   textLightBold: {
-    color: 'white',
+    color: variables.white,
     fontWeight: 'bold',
   },
   noneFlex: {
@@ -26,5 +26,11 @@ export default {
   },
   noneBorderBottom: {
     borderBottomWidth: 0,
+  },
+  paddingMd: {
+    padding: variables.spacingMd,
+  },
+  marginTop: {
+    marginTop: variables.spacingBase,
   },
 };
