@@ -12,6 +12,7 @@ import HeaderBar from './partials/_HeaderBar';
 import Button from './partials/_Button';
 import Form from './partials/_Form';
 import SmoothPinInput from './partials/_SmoothPinInput';
+import UserProfile from './partials/_UserProfile';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
   ...Button,
   ...Form,
   ...SmoothPinInput,
+  ...UserProfile,
 });
 
 export default styles;

@@ -7,6 +7,7 @@ import {Text, Header, Button} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
 import styles from '../../../assets/styles/index';
+import {ROUTES} from '../../../variables/constants';
 
 const Pin = ({navigation}) => {
   const [code, setCode] = useState('');
@@ -14,17 +15,12 @@ const Pin = ({navigation}) => {
 
   const handlerSave = () => {
     if (code && confirmCode) {
-      if (code !== confirmCode) {
-        Alert.alert(
-          '',
-          'PIN does not match.',
-          [{text: 'OK', onPress: () => handlerRest()}],
-          {cancelable: false},
-        );
+      if (code === confirmCode) {
+        navigation.navigate(ROUTES.LOGIN);
       } else {
         Alert.alert(
           '',
-          'Your PIN number is set up successfully.',
+          'PIN does not match.',
           [{text: 'OK', onPress: () => handlerRest()}],
           {cancelable: false},
         );
