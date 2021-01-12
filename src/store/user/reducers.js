@@ -15,7 +15,7 @@ export const user = (state = initialState, action) => {
     }
     case 'USER_VERIFY_PHONE_NUMBER_SUCCEED': {
       return Object.assign({}, state, {
-        otpCode: action.data.code,
+        optCode: action.data.code,
       });
     }
     case 'USER_LOGIN_SUCCEED':

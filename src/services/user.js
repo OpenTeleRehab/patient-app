@@ -25,6 +25,18 @@ const verifyPhoneNumber = async (to, code) => {
   return await callApi(options, 'post');
 };
 
+const setupPinNumber = async (pin, opt_code) => {
+  const option = {
+    uri: '/auth/add-new-pin',
+    body: {
+      pin,
+      opt_code,
+    },
+  };
+
+  return await callApi(option, 'post');
+};
+
 const login = async () => {
   return {
     id: 1,
@@ -43,6 +55,7 @@ const logout = () => {
 export const User = {
   register,
   verifyPhoneNumber,
+  setupPinNumber,
   login,
   logout,
 };

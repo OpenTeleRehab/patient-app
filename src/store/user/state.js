@@ -6,7 +6,7 @@ export const initialState = {
   firstName: '',
   lastName: '',
   phone: '',
-  otpCode: '',
+  optCode: '',
   accessToken: '',
   isFirstTimeLogin: true,
 };

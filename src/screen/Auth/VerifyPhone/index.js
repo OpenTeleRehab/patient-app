@@ -44,12 +44,14 @@ const VerifyPhone = ({theme, navigation}) => {
   return (
     <>
       <Header
+        backgroundColor="white"
         leftComponent={
           <Button
+            type="clear"
             icon={{
               name: 'chevron-left',
-              size: 25,
-              color: theme.colors.white,
+              size: 50,
+              color: theme.colors.primary,
             }}
             title="Back"
             onPress={() => navigation.goBack()}
@@ -57,7 +59,6 @@ const VerifyPhone = ({theme, navigation}) => {
         }
         centerComponent={{
           text: 'Verify Phone',
-          style: {color: theme.colors.white},
         }}
       />
       <ScrollView style={styles.mainContainerLight}>
@@ -83,6 +84,8 @@ const VerifyPhone = ({theme, navigation}) => {
               <Text style={styles.hyperlink}>Resend Code</Text>
             </TouchableOpacity>
           </View>
+        </View>
+        <View style={[styles.paddingMd]}>
           <Button
             containerStyle={[styles.marginTop, styles.alignSelfStretch]}
             disabled={code.length !== 6}

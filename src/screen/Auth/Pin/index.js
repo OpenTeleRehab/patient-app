@@ -3,67 +3,120 @@
  */
 import React, {useState} from 'react';
 import {ScrollView, View, Alert} from 'react-native';
-import {Text, Header, Button} from 'react-native-elements';
+import {Text, Header, Button, withTheme} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 
 import styles from '../../../assets/styles/index';
 import {ROUTES} from '../../../variables/constants';
+import {setupPinNumberRequest} from '../../../store/user/actions';
+import {useSelector, useDispatch} from 'react-redux';
 
-const Pin = ({navigation}) => {
+const Pin = ({theme, navigation}) => {
+  const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const [confirmCode, setConfirmCode] = useState('');
+  const optCode = useSelector((state) => state.user.phone);
 
   const handlerSave = () => {
     if (code && confirmCode) {
       if (code === confirmCode) {
-        navigation.navigate(ROUTES.LOGIN);
+        dispatch(setupPinNumberRequest(code, optCode)).then((result) => {
+          if (result) {
+            Alert.alert(
+              'Setup PIN number',
+              'Your PIN number is set up successfully.',
+              [{text: 'OK', onPress: () => onSucceed()}],
+              {cancelable: false},
+            );
+          } else {
+            Alert.alert(
+              'Setup PIN number',
+              'Error while processing.',
+              [{text: 'OK', onPress: () => handlerReset()}],
+              {cancelable: false},
+            );
+          }
+        });
       } else {
         Alert.alert(
-          '',
+          'Setup PIN number',
           'PIN does not match.',
-          [{text: 'OK', onPress: () => handlerRest()}],
+          [{text: 'OK', onPress: () => handlerReset()}],
           {cancelable: false},
         );
       }
     }
   };
 
-  const handlerRest = () => {
+  const handlerReset = () => {
     setCode('');
     setConfirmCode('');
+  };
+
+  const onSucceed = () => {
+    navigation.navigate(ROUTES.LOGIN);
+  };
+
+  const disabledConfirm = () => {
+    return code.length !== 4 || confirmCode.length !== 4;
   };
 
   return (
     <>
       <Header
         backgroundColor="white"
-        rightComponent={{text: 'Cancel', onPress: () => navigation.goBack()}}
+        leftComponent={
+          <Button
+            type="clear"
+            icon={{
+              name: 'chevron-left',
+              size: 50,
+              color: theme.colors.primary,
+            }}
+            title="Back"
+            onPress={() => navigation.goBack()}
+          />
+        }
         centerComponent={{text: 'Setup PIN number'}}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={[styles.flexCenter]}>
-          <Text p>New PIN Number</Text>
-          <SmoothPinCodeInput
-            password
-            mask="﹡"
-            value={code}
-            onTextChange={(value) => setCode(value)}
-          />
+          <View>
+            <Text>New PIN Number</Text>
+            <SmoothPinCodeInput
+              password
+              value={code}
+              onTextChange={(value) => setCode(value)}
+              textStyle={styles.smoothPinTextStyle}
+              cellStyleFocused={styles.smoothPinCellStyle}
+              containerStyle={styles.marginTop}
+              cellSize={60}
+              animated={false}
+              mask={<View style={styles.customMask} />}
+            />
+          </View>
         </View>
         <View style={[styles.flexCenter, styles.paddingMd]}>
-          <Text p>Confirm new PIN Number</Text>
-          <SmoothPinCodeInput
-            password
-            mask="﹡"
-            value={confirmCode}
-            onTextChange={(value) => setConfirmCode(value)}
-          />
+          <View>
+            <Text>Confirm new PIN Number</Text>
+            <SmoothPinCodeInput
+              password
+              value={confirmCode}
+              onTextChange={(value) => setConfirmCode(value)}
+              textStyle={styles.smoothPinTextStyle}
+              cellStyleFocused={styles.smoothPinCellStyle}
+              containerStyle={styles.marginTop}
+              cellSize={60}
+              animated={false}
+              mask={<View style={styles.customMask} />}
+            />
+          </View>
         </View>
         <View style={[styles.paddingMd]}>
           <Button
             title="Confirm"
             onPress={() => handlerSave()}
-            disabled={!code && !confirmCode}
+            disabled={disabledConfirm()}
           />
         </View>
       </ScrollView>
@@ -71,4 +124,4 @@ const Pin = ({navigation}) => {
   );
 };
 
-export default Pin;
+export default withTheme(Pin);
