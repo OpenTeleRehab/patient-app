@@ -28,6 +28,19 @@ const userVerifyPhoneNumberFailure = () => {
   };
 };
 
+const userSetupPinNumberSuccess = (data) => {
+  return {
+    type: 'USER_SETUP_PIN_NUMBER_SUCCEED',
+    data,
+  };
+};
+
+const userSetupPinNumberFailure = () => {
+  return {
+    type: 'USER_SETUP_PIN_NUMBER_FAILED',
+  };
+};
+
 const userLoginSuccess = (data) => {
   return {
     type: 'USER_LOGIN_SUCCEED',
@@ -58,6 +71,8 @@ export const mutation = {
   userRegisterFailure,
   userVerifyPhoneNumberSuccess,
   userVerifyPhoneNumberFailure,
+  userSetupPinNumberSuccess,
+  userSetupPinNumberFailure,
   userLoginSuccess,
   userLoginFailure,
   userLogoutSuccess,

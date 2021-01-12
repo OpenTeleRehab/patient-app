@@ -26,6 +26,17 @@ export const verifyPhoneNumberRequest = (to, code) => async (dispatch) => {
   }
 };
 
+export const setupPinNumberRequest = (pin, opt_code) => async (dispatch) => {
+  const data = await User.setupPinNumber(pin, opt_code);
+  if (data.success) {
+    dispatch(mutation.userSetupPinNumberSuccess());
+    return true;
+  } else {
+    dispatch(mutation.userSetupPinNumberFailure());
+    return false;
+  }
+};
+
 export const loginRequest = () => async (dispatch) => {
   const data = await User.login();
   if (data) {

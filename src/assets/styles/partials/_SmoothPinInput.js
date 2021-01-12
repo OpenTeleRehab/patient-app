@@ -13,4 +13,10 @@ export default {
     color: variables.primary,
     fontSize: variables.fontSizeBase,
   },
+  customMask: {
+    width: 10,
+    height: 10,
+    borderRadius: 25,
+    backgroundColor: variables.primary,
+  },
 };
