@@ -4,6 +4,7 @@
 import {combineReducers, createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {persistStore, persistReducer} from 'redux-persist';
+import {initialize, localizeReducer} from 'react-localize-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {user} from './user/reducers';
 import {indicator} from './indicator/reducers';
@@ -13,6 +14,7 @@ import {appointment} from './appointment/reducers';
 import settings from '../../config/settings';
 
 const rootReducers = {
+  localize: localizeReducer,
   user,
   indicator,
   activity,
@@ -47,8 +49,22 @@ const persistedReducer = persistReducer(
   combineReducers(rootReducers),
 );
 
+const languages = [{name: 'English', code: 'en'}];
+const defaultLanguage = 'en';
+const onMissingTranslation = ({translationId}) => translationId;
+
 export default () => {
   const store = createStore(persistedReducer, applyMiddleware(...middlewares));
+  store.dispatch(
+    initialize({
+      languages,
+      options: {
+        defaultLanguage,
+        renderToStaticMarkup: false,
+        onMissingTranslation,
+      },
+    }),
+  );
   const persistor = persistStore(store);
   return {store, persistor};
 };
