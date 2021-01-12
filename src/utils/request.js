@@ -3,6 +3,7 @@
  */
 
 import settings from '../../config/settings';
+import {URL} from 'react-native/Libraries/Blob/URL';
 
 const initialOptions = {
   uri: '',
@@ -23,7 +24,7 @@ export const callApi = async (
 ) => {
   const websocket = settings.apiStages[settings.defaultAPIStage];
   const {uri, accessToken, body} = options;
-  const url = websocket + uri;
+  let url = websocket + uri;
 
   const headers = {
     Accept: 'application/json',
@@ -40,7 +41,10 @@ export const callApi = async (
     headers,
   };
 
-  if (method !== 'get') {
+  if (method === 'get') {
+    url = new URL(url);
+    Object.keys(body).forEach((key) => url.searchParams.append(key, body[key]));
+  } else {
     configs.body = isFormData ? body : JSON.stringify(body);
   }
 
