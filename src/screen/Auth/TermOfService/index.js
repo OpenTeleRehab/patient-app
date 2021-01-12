@@ -52,7 +52,7 @@ const TermOfService = ({theme, navigation}) => {
           <Button
             title="Next"
             disabled={!acceptAgreement}
-            onPress={() => navigation.navigate(ROUTES.LOGIN)}
+            onPress={() => navigation.navigate(ROUTES.SETUP_PIN)}
             containerStyle={styles.marginTop}
           />
           <Button
