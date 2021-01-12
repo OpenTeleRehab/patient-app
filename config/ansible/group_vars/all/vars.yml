@@ -20,3 +20,6 @@ andriod_sdk_path:         '{{ jenkin_home }}/Android/Sdk'
 android_release_key_src:  '/opt/Android/{{ project_name }}/hiv-release-key.keystore'
 android_release_path:     '/storage/satis/web/apk/{{ project_name }}'
 android_apk_release_file: '{{ stage }}-{{ build_id }}-{{ ansible_date_time.date }}-app-release.apk'
+
+store_pass:         '{{ store_pass_vault }}'
+key_pass:           '{{ key_pass_vault }}'
