@@ -3,6 +3,8 @@
  */
 import {combineReducers, createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
+import {persistStore, persistReducer} from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {user} from './user/reducers';
 import {indicator} from './indicator/reducers';
 import {activity} from './activity/reducers';
@@ -16,6 +18,11 @@ const rootReducers = {
   activity,
   goal,
   appointment,
+};
+
+const persistConfig = {
+  key: 'OrgHiPatientApp',
+  storage: AsyncStorage,
 };
 
 const middlewares = [thunk];
@@ -35,9 +42,13 @@ if (settings.isDebugMode) {
   middlewares.push(logger);
 }
 
-const store = createStore(
+const persistedReducer = persistReducer(
+  persistConfig,
   combineReducers(rootReducers),
-  applyMiddleware(...middlewares),
 );
 
-export default store;
+export default () => {
+  const store = createStore(persistedReducer, applyMiddleware(...middlewares));
+  const persistor = persistStore(store);
+  return {store, persistor};
+};

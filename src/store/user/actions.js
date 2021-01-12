@@ -4,7 +4,7 @@
 import {User} from '../../services/user';
 import {mutation} from './mutations';
 
-export const userLoginRequest = () => async (dispatch) => {
+export const loginRequest = () => async (dispatch) => {
   const data = await User.login();
   if (data) {
     dispatch(mutation.userLoginSuccess(data));
@@ -13,7 +13,7 @@ export const userLoginRequest = () => async (dispatch) => {
   }
 };
 
-export const userLogoutRequest = () => async (dispatch) => {
+export const logoutRequest = () => async (dispatch) => {
   const data = await User.logout();
   if (data) {
     dispatch(mutation.userLogoutSuccess());

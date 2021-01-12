@@ -3,27 +3,24 @@
  */
 import React from 'react';
 import {ScrollView, View} from 'react-native';
-import {Text, Header} from 'react-native-elements';
-
+import {Text} from 'react-native-elements';
 import styles from '../../assets/styles';
+import HeaderBar from '../../components/Common/HeaderBar';
 
-class Message extends React.Component {
-  render() {
-    return (
-      <>
-        <Header
-          backgroundColor="white"
-          leftComponent={{text: 'Back'}}
-          centerComponent={{text: 'Dr. Magaret Huge'}}
-        />
-        <ScrollView style={styles.mainContainerLight}>
-          <View style={styles.flexCenter}>
-            <Text h4>Message Screen</Text>
-          </View>
-        </ScrollView>
-      </>
-    );
-  }
-}
+const Message = ({navigation}) => {
+  return (
+    <>
+      <HeaderBar
+        onGoBack={() => navigation.goBack()}
+        title="Dr. Magaret Huge"
+      />
+      <ScrollView style={styles.mainContainerLight}>
+        <View style={styles.flexCenter}>
+          <Text h4>Message Screen</Text>
+        </View>
+      </ScrollView>
+    </>
+  );
+};
 
 export default Message;

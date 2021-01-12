@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux';
 import {View, Image} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Button, Card, Input, Text} from 'react-native-elements';
-import {userLoginRequest} from '../../../store/user/actions';
+import {loginRequest} from '../../../store/user/actions';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 
@@ -14,7 +14,7 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogin = () => {
-    dispatch(userLoginRequest());
+    dispatch(loginRequest());
   };
 
   return (

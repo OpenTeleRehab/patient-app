@@ -7,35 +7,29 @@ import {Text} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 
-class Home extends React.Component {
-  handleOpenDrawer = () => {
-    this.props.navigation.toggleDrawer();
-  };
-
-  render() {
-    return (
-      <>
-        <HeaderBar
-          rightContent={{
-            icon: 'setting',
-            iconType: 'antdesign',
-            iconSize: 28,
-            label: '',
-            onPress: () => this.handleOpenDrawer(),
-          }}
-          navigation={this.props.navigation}
-        />
-        <ScrollView style={styles.mainContainerPrimary}>
-          <View style={styles.flexCenter}>
-            <Text style={styles.textLightBold}>Hi, Luke!</Text>
-            <Text h4 style={styles.textLight}>
-              No activity for today.
-            </Text>
-          </View>
-        </ScrollView>
-      </>
-    );
-  }
-}
+const Home = ({navigation}) => {
+  return (
+    <>
+      <HeaderBar
+        leftContent={{hasLogo: true}}
+        rightContent={{
+          icon: 'setting',
+          iconType: 'antdesign',
+          iconSize: 28,
+          label: '',
+          onPress: () => navigation.toggleDrawer(),
+        }}
+      />
+      <ScrollView style={styles.mainContainerPrimary}>
+        <View style={styles.flexCenter}>
+          <Text style={styles.textLightBold}>Hi, Luke!</Text>
+          <Text h4 style={styles.textLight}>
+            No activity for today.
+          </Text>
+        </View>
+      </ScrollView>
+    </>
+  );
+};
 
 export default Home;
