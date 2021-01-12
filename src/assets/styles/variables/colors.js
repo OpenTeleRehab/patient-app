@@ -12,6 +12,7 @@ export default {
   grey3: '#A1A1A1',
   grey4: '#ADADAD',
   grey5: '#EBEBEB',
+  grey6: '#e9eaf2',
   greyOutline: '#D6D6D6',
   primary: '#0077C8',
   success: '#00933B',

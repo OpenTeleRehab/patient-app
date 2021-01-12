@@ -33,4 +33,7 @@ export default {
   marginTop: {
     marginTop: variables.spacingBase,
   },
+  marginTopMd: {
+    marginTop: variables.spacingMd,
+  },
 };
