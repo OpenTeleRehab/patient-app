@@ -3,23 +3,23 @@
  */
 import variables from '../variables';
 
-const headerButtonStyles = (hasLabel) => ({
-  borderRadius: 50,
-  padding: hasLabel ? variables.spacingSm : 0,
-});
-
 export default {
   headerLogo: {
     width: 94,
     height: 40,
   },
+  headerBackButton: {
+    paddingLeft: 0,
+    marginLeft: -5,
+  },
   headerButton: (hasLabel) => ({
-    ...headerButtonStyles(hasLabel),
+    padding: hasLabel ? variables.spacingSm : 0,
+    borderRadius: 50,
     backgroundColor: variables.primary,
-    borderColor: 'white',
+    borderColor: variables.white,
   }),
-  headerButtonLight: (hasLabel) => ({
-    ...headerButtonStyles(hasLabel),
-    borderColor: variables.black,
-  }),
+  headerTitle: {
+    color: variables.white,
+    fontSize: 17,
+  },
 };

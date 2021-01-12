@@ -4,22 +4,48 @@
 import React from 'react';
 import {Image} from 'react-native';
 import {Header, Text, Button, withTheme} from 'react-native-elements';
-
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 
 const HeaderBar = (props) => {
-  const {theme, title, light, rightContent} = props;
+  const {theme, title, onGoBack, leftContent, rightContent} = props;
 
   const renderLeftComponent = () => {
-    if (title) {
+    if (onGoBack) {
       return (
-        <Text h4 style={!light ? styles.textLight : null}>
-          {title}
-        </Text>
+        <Button
+          title="Back"
+          icon={{
+            name: 'chevron-left',
+            type: 'font-awesome-5',
+            color: theme.colors.white,
+          }}
+          onPress={() => onGoBack()}
+          type="clear"
+          titleStyle={styles.headerTitle}
+          buttonStyle={styles.headerBackButton}
+        />
       );
     }
-    return <Image source={logoWhite} style={styles.headerLogo} />;
+    if (leftContent) {
+      const {hasLogo, label} = leftContent;
+      if (hasLogo) {
+        return <Image source={logoWhite} style={styles.headerLogo} />;
+      }
+      if (label) {
+        return (
+          <Text h4 style={styles.textLight}>
+            {label}
+          </Text>
+        );
+      }
+    }
+  };
+
+  const renderCenterComponent = () => {
+    if (title) {
+      return <Text style={styles.headerTitle}>{title}</Text>;
+    }
   };
 
   const renderRightComponent = () => {
@@ -33,16 +59,14 @@ const HeaderBar = (props) => {
               ? {
                   name: icon,
                   type: iconType,
-                  color: light ? theme.colors.black : 'white',
+                  color: theme.colors.white,
                   size: iconSize || 20,
                 }
               : null
           }
           type={label ? 'outline' : 'clear'}
-          titleStyle={light ? styles.textDefault : styles.textLight}
-          buttonStyle={
-            light ? styles.headerButtonLight(label) : styles.headerButton(label)
-          }
+          titleStyle={styles.textLight}
+          buttonStyle={styles.headerButton(label)}
           onPress={onPress}
         />
       );
@@ -52,11 +76,12 @@ const HeaderBar = (props) => {
   return (
     <Header
       leftComponent={renderLeftComponent()}
+      centerComponent={renderCenterComponent()}
       rightComponent={renderRightComponent()}
       leftContainerStyle={styles.noneFlex}
+      centerContainerStyle={styles.textLight}
       rightContainerStyle={styles.noneFlex}
       containerStyle={styles.noneBorderBottom}
-      backgroundColor={light ? 'white' : theme.colors.primary}
     />
   );
 };

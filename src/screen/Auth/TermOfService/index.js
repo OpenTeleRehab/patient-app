@@ -2,10 +2,11 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {Header, Button, CheckBox, withTheme, Text} from 'react-native-elements';
+import {Button, CheckBox, withTheme, Text} from 'react-native-elements';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
+import HeaderBar from '../../../components/Common/HeaderBar';
 
 const customStyles = {
   termDetailLink: {
@@ -18,23 +19,7 @@ const TermOfService = ({theme, navigation}) => {
 
   return (
     <>
-      <Header
-        leftComponent={
-          <Button
-            icon={{
-              name: 'chevron-left',
-              size: 25,
-              color: theme.colors.white,
-            }}
-            title="Back"
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{
-          text: 'Terms of Services Detail',
-          style: {color: theme.colors.white},
-        }}
-      />
+      <HeaderBar title="Terms of Services" />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <CheckBox
@@ -50,7 +35,7 @@ const TermOfService = ({theme, navigation}) => {
             </Text>
           </TouchableOpacity>
           <Button
-            title="Next"
+            title="NEXT"
             disabled={!acceptAgreement}
             onPress={() => navigation.navigate(ROUTES.SETUP_PIN)}
             containerStyle={styles.marginTop}
@@ -58,10 +43,11 @@ const TermOfService = ({theme, navigation}) => {
           <Button
             icon={{
               name: 'chevron-left',
-              size: 25,
+              type: 'font-awesome-5',
               color: theme.colors.primary,
+              size: 28,
             }}
-            title="Back"
+            title="BACK"
             type="clear"
             onPress={() => navigation.goBack()}
             containerStyle={styles.marginTop}

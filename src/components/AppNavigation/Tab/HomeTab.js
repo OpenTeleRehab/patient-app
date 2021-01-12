@@ -13,7 +13,7 @@ import {View} from 'react-native';
 import FIcon from 'react-native-vector-icons/Feather';
 import {homes} from '../../../variables/routes';
 import styles from '../../../assets/styles';
-import {userLogoutRequest} from '../../../store/user/actions';
+import {logoutRequest} from '../../../store/user/actions';
 
 const Drawer = createDrawerNavigator();
 
@@ -21,7 +21,7 @@ const HomeTab = (props) => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(userLogoutRequest());
+    dispatch(logoutRequest());
   };
 
   const renderDrawerContent = (navProps) => {

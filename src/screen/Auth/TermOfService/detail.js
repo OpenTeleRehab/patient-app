@@ -2,9 +2,10 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {Text, Header, withTheme, Button} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import {ScrollView, View} from 'react-native';
 import styles from '../../../assets/styles';
+import HeaderBar from '../../../components/Common/HeaderBar';
 
 // todo: get content from BE api
 const termContent =
@@ -16,25 +17,12 @@ const termContent =
   '\n' +
   'Integer pulvinar fringilla enim, a vehicula mauris semper sit amet. Nam eros lacus, euismod in libero in, rutrum convallis eros. Vivamus vel facilisis enim. Morbi quis elementum risus, ac vestibulum turpis. Proin lacus lorem, vestibulum at nunc at, tempus efficitur lorem. Vestibulum non urna placerat, vestibulum orci ac, tempor urna. Suspendisse potenti. Duis sem dolor, finibus nec nibh vel, commodo posuere orci. Curabitur pretium magna sapien, non aliquet libero congue eget. In sagittis rhoncus mi, lobortis suscipit nibh finibus at.';
 
-const TermOfServiceDetail = ({theme, navigation}) => {
+const TermOfServiceDetail = ({navigation}) => {
   return (
     <>
-      <Header
-        leftComponent={
-          <Button
-            icon={{
-              name: 'chevron-left',
-              size: 25,
-              color: theme.colors.white,
-            }}
-            title="Back"
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{
-          text: 'Terms of Services Detail',
-          style: {color: theme.colors.white},
-        }}
+      <HeaderBar
+        onGoBack={() => navigation.goBack()}
+        title="Terms of Services Detail"
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.flexCenter}>
@@ -45,4 +33,4 @@ const TermOfServiceDetail = ({theme, navigation}) => {
   );
 };
 
-export default withTheme(TermOfServiceDetail);
+export default TermOfServiceDetail;
