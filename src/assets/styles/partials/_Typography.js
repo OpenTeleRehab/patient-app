@@ -13,4 +13,7 @@ export default {
     color: variables.primary,
     textDecorationLine: 'underline',
   },
+  textDanger: {
+    color: variables.error,
+  },
 };

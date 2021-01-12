@@ -1,6 +1,33 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
+
+const userRegisterSuccess = (data) => {
+  return {
+    type: 'USER_REGISTER_SUCCEED',
+    data,
+  };
+};
+
+const userRegisterFailure = () => {
+  return {
+    type: 'USER_REGISTER_FAILED',
+  };
+};
+
+const userVerifyPhoneNumberSuccess = (data) => {
+  return {
+    type: 'USER_VERIFY_PHONE_NUMBER_SUCCEED',
+    data,
+  };
+};
+
+const userVerifyPhoneNumberFailure = () => {
+  return {
+    type: 'USER_VERIFY_PHONE_NUMBER_FAILED',
+  };
+};
+
 const userLoginSuccess = (data) => {
   return {
     type: 'USER_LOGIN_SUCCEED',
@@ -27,6 +54,10 @@ const userLogoutFailure = () => {
 };
 
 export const mutation = {
+  userRegisterSuccess,
+  userRegisterFailure,
+  userVerifyPhoneNumberSuccess,
+  userVerifyPhoneNumberFailure,
   userLoginSuccess,
   userLoginFailure,
   userLogoutSuccess,

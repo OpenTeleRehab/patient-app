@@ -3,13 +3,43 @@
  */
 import React, {useState} from 'react';
 import {Button, Header, Text, withTheme} from 'react-native-elements';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View, Alert} from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
+import {
+  registerRequest,
+  verifyPhoneNumberRequest,
+} from '../../../store/user/actions';
+import {useDispatch, useSelector} from 'react-redux';
 
 const VerifyPhone = ({theme, navigation}) => {
+  const dispatch = useDispatch();
   const [code, setCode] = useState('');
+  const formattedNumber = useSelector((state) => state.user.phone);
+
+  const onConfirm = () => {
+    dispatch(verifyPhoneNumberRequest(formattedNumber, code)).then((result) => {
+      if (result) {
+        navigation.navigate(ROUTES.TERM_OF_SERVICE);
+      } else {
+        Alert.alert(
+          'Verify Phone',
+          'PIN is incorrect.',
+          [{text: 'OK', onPress: () => reset()}],
+          {cancelable: false},
+        );
+      }
+    });
+  };
+
+  const onResent = () => {
+    dispatch(registerRequest(formattedNumber));
+  };
+
+  const reset = () => {
+    setCode('');
+  };
 
   return (
     <>
@@ -36,7 +66,7 @@ const VerifyPhone = ({theme, navigation}) => {
             We sent you a code to verify your phone number. Please input it
             below.
           </Text>
-          <Text style={styles.marginTop}>Sent to (012) 222-333</Text>
+          <Text style={styles.marginTop}>Sent to {formattedNumber}</Text>
           <SmoothPinCodeInput
             codeLength={6}
             value={code}
@@ -49,15 +79,14 @@ const VerifyPhone = ({theme, navigation}) => {
           />
           <View style={[styles.flexRow, styles.marginTop]}>
             <Text>I didn't receive a code!&nbsp;</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(ROUTES.TERM_OF_SERVICE)}>
+            <TouchableOpacity onPress={onResent}>
               <Text style={styles.hyperlink}>Resend Code</Text>
             </TouchableOpacity>
           </View>
           <Button
             containerStyle={[styles.marginTop, styles.alignSelfStretch]}
             disabled={code.length !== 6}
-            onPress={() => navigation.navigate(ROUTES.TERM_OF_SERVICE)}
+            onPress={onConfirm}
             title="CONFIRM"
           />
         </View>

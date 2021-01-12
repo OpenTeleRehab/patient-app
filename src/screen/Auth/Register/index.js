@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
+import {useDispatch} from 'react-redux';
 import {View, Image} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Button, Card, Input, Text} from 'react-native-elements';
@@ -12,6 +13,8 @@ import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import {ROUTES} from '../../../variables/constants';
 
+import {registerRequest} from '../../../store/user/actions';
+
 const customFlagStyle = {
   width: 50,
   height: 30,
@@ -19,10 +22,21 @@ const customFlagStyle = {
 };
 
 const Register = ({navigation}) => {
+  const dispatch = useDispatch();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
+  let phoneRef = useRef();
 
   const onRegister = () => {
-    navigation.navigate(ROUTES.VERIFY_PHONE);
+    setErrorPhoneNumber(false);
+    const formattedNumber = phoneRef.getCountryCode() + phoneNumber;
+    dispatch(registerRequest(formattedNumber)).then((result) => {
+      if (result) {
+        navigation.navigate(ROUTES.VERIFY_PHONE);
+      } else {
+        setErrorPhoneNumber(true);
+      }
+    });
   };
 
   return (
@@ -32,6 +46,7 @@ const Register = ({navigation}) => {
       </View>
       <Card>
         <PhoneInput
+          ref={(ref) => (phoneRef = ref)}
           value={phoneNumber}
           onChangePhoneNumber={(number) => setPhoneNumber(number)}
           initialCountry={'vn'}
@@ -61,6 +76,12 @@ const Register = ({navigation}) => {
           ]}
         />
         <View>
+          {errorPhoneNumber && (
+            <Text style={styles.textDanger}>
+              This number is not created account. Please contact your therapist
+              to create an account for you.
+            </Text>
+          )}
           <Text>Language</Text>
           <Picker prompt="Language" style={styles.formControl}>
             <Picker.Item label="English" value="en" />

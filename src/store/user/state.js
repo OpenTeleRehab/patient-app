@@ -5,7 +5,8 @@ export const initialState = {
   id: '',
   firstName: '',
   lastName: '',
-  mobile: '',
+  phone: '',
+  otpCode: '',
   accessToken: '',
   isFirstTimeLogin: true,
 };
