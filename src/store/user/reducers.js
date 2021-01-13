@@ -1,13 +1,10 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {REHYDRATE} from 'redux-persist';
 import {initialState} from './state';
 
 export const user = (state = initialState, action) => {
   switch (action.type) {
-    case REHYDRATE:
-      return action.data?.user || state;
     case 'USER_REGISTER_SUCCEED': {
       return Object.assign({}, state, {
         phone: action.data.to,
