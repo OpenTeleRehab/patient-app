@@ -3,6 +3,9 @@
  */
 import {User} from '../../services/user';
 import {mutation} from './mutations';
+import settings from '../../../config/settings';
+import moment from 'moment';
+import {storeLocalData} from '../../utils/local_storage';
 
 export const registerRequest = (to) => async (dispatch) => {
   const data = await User.register(to);
@@ -26,9 +29,23 @@ export const verifyPhoneNumberRequest = (to, code) => async (dispatch) => {
   }
 };
 
-export const setupPinNumberRequest = (pin, opt_code) => async (dispatch) => {
-  const data = await User.setupPinNumber(pin, opt_code);
+export const setupPinNumberRequest = (pin, phone, otp_code) => async (
+  dispatch,
+) => {
+  const data = await User.setupPinNumber(pin, phone, otp_code);
   if (data.success) {
+    const timespan = moment()
+      .add(1, 'M')
+      .format(settings.format.date)
+      .toString();
+    await storeLocalData(
+      'OrgHiPatientApp',
+      {
+        phone,
+        timespan,
+      },
+      true,
+    );
     dispatch(mutation.userSetupPinNumberSuccess());
     return true;
   } else {
@@ -37,12 +54,14 @@ export const setupPinNumberRequest = (pin, opt_code) => async (dispatch) => {
   }
 };
 
-export const loginRequest = () => async (dispatch) => {
-  const data = await User.login();
-  if (data) {
-    dispatch(mutation.userLoginSuccess(data));
+export const loginRequest = (phone, pin) => async (dispatch) => {
+  const data = await User.login(phone, pin);
+  if (data.success) {
+    dispatch(mutation.userLoginSuccess(data.data));
+    return true;
   } else {
     dispatch(mutation.userLoginFailure());
+    return false;
   }
 };
 
@@ -53,4 +72,8 @@ export const logoutRequest = () => async (dispatch) => {
   } else {
     dispatch(mutation.userLogoutFailure());
   }
+};
+
+export const setInitialRouteName = (routeName) => async (dispatch) => {
+  dispatch(mutation.userSetInitialRouteNameSuccess(routeName));
 };

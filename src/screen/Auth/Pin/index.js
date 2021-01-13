@@ -15,12 +15,13 @@ const Pin = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const [confirmCode, setConfirmCode] = useState('');
-  const optCode = useSelector((state) => state.user.phone);
+  const phone = useSelector((state) => state.user.phone);
+  const otpCode = useSelector((state) => state.user.otpCode);
 
   const handlerSave = () => {
     if (code && confirmCode) {
       if (code === confirmCode) {
-        dispatch(setupPinNumberRequest(code, optCode)).then((result) => {
+        dispatch(setupPinNumberRequest(code, phone, otpCode)).then((result) => {
           if (result) {
             Alert.alert(
               'Setup PIN number',

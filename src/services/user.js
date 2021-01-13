@@ -24,27 +24,29 @@ const verifyPhoneNumber = async (to, code) => {
   return await callApi(options, 'post');
 };
 
-const setupPinNumber = async (pin, opt_code) => {
+const setupPinNumber = async (pin, phone, otp_code) => {
   const option = {
     uri: '/auth/add-new-pin',
     body: {
       pin,
-      opt_code,
+      phone,
+      otp_code,
     },
   };
 
   return await callApi(option, 'post');
 };
 
-const login = async () => {
-  return {
-    id: 1,
-    firstName: 'Luke',
-    lastName: 'Cameron',
-    phone: '012222333',
-    accessToken: 'CIkc4AwU5c5mC7h8vcpdRqV99w6nS5nm',
-    isFirstTimeLogin: false,
+const login = async (phone, pin) => {
+  const option = {
+    uri: '/auth/login',
+    body: {
+      phone,
+      pin,
+    },
   };
+
+  return await callApi(option, 'post');
 };
 
 const logout = () => {

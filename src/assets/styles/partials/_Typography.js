@@ -16,4 +16,7 @@ export default {
   textDanger: {
     color: variables.error,
   },
+  textDark: {
+    color: variables.black,
+  },
 };

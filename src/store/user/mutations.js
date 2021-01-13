@@ -66,6 +66,13 @@ const userLogoutFailure = () => {
   };
 };
 
+const userSetInitialRouteNameSuccess = (data) => {
+  return {
+    type: 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   userRegisterSuccess,
   userRegisterFailure,
@@ -77,4 +84,5 @@ export const mutation = {
   userLoginFailure,
   userLogoutSuccess,
   userLogoutFailure,
+  userSetInitialRouteNameSuccess,
 };

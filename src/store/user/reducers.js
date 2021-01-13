@@ -12,13 +12,28 @@ export const user = (state = initialState, action) => {
     }
     case 'USER_VERIFY_PHONE_NUMBER_SUCCEED': {
       return Object.assign({}, state, {
-        optCode: action.data.code,
+        otpCode: action.data.code,
       });
     }
-    case 'USER_LOGIN_SUCCEED':
-      return action.data;
+    case 'USER_SETUP_PIN_NUMBER_SUCCEED': {
+      return Object.assign({}, state, {
+        timespan: action.data,
+      });
+    }
+    case 'USER_LOGIN_SUCCEED': {
+      return Object.assign({}, state, {
+        profile: action.data.profile,
+        accessToken: action.data.token,
+        isFirstTimeLogin: false,
+      });
+    }
     case 'USER_LOGOUT_SUCCEED':
       return initialState;
+    case 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED': {
+      return Object.assign({}, state, {
+        initialRouteName: action.data,
+      });
+    }
     default:
       return state;
   }

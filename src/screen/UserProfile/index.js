@@ -7,9 +7,10 @@ import {ScrollView, View} from 'react-native';
 import styles from '../../assets/styles';
 import moment from 'moment';
 import {useSelector} from 'react-redux';
+import settings from '../../../config/settings';
 
 const UserProfile = () => {
-  const profile = useSelector((state) => state.user);
+  const profile = useSelector((state) => state.user.profile);
 
   const calculateAge = (dob) => {
     const currentDate = moment();
@@ -19,7 +20,7 @@ const UserProfile = () => {
   const userInfo = [
     {
       label: 'NAME',
-      value: profile.lastName + ' ' + profile.firstName,
+      value: profile.last_name + ' ' + profile.first_name,
     },
     {
       label: 'GENDER',
@@ -27,13 +28,16 @@ const UserProfile = () => {
     },
     {
       label: 'DATE OF BIRTH',
-      value: profile.dateOfBirth ? profile.dateOfBirth : '',
+      value: profile.date_of_birth
+        ? moment(profile.date_of_birth).format(settings.format.date)
+        : '',
       rightContentValue:
-        'Age: ' + (profile.dateOfBirth ? calculateAge(profile.dateOfBirth) : 0),
+        'Age: ' +
+        (profile.date_of_birth ? calculateAge(profile.date_of_birth) : 0),
     },
     {
       label: 'MOBILE NUMBER',
-      value: profile.mobile,
+      value: profile.phone,
     },
     {
       label: 'LANGUAGE',
