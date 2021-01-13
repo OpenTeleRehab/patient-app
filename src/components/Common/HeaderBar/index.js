@@ -40,6 +40,7 @@ const HeaderBar = (props) => {
         );
       }
     }
+    return <Text style={styles.textPrimary}>Empty</Text>;
   };
 
   const renderCenterComponent = () => {
@@ -71,6 +72,7 @@ const HeaderBar = (props) => {
         />
       );
     }
+    return <Text style={styles.textPrimary}>Empty</Text>;
   };
 
   return (

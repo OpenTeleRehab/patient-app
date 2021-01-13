@@ -21,6 +21,9 @@ export default {
     color: variables.white,
     fontWeight: 'bold',
   },
+  textUpperCase: {
+    textTransform: 'uppercase',
+  },
   noneFlex: {
     flex: 0,
   },

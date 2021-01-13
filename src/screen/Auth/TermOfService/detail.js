@@ -6,6 +6,8 @@ import {Text} from 'react-native-elements';
 import {ScrollView, View} from 'react-native';
 import styles from '../../../assets/styles';
 import HeaderBar from '../../../components/Common/HeaderBar';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 
 // todo: get content from BE api
 const termContent =
@@ -18,11 +20,14 @@ const termContent =
   'Integer pulvinar fringilla enim, a vehicula mauris semper sit amet. Nam eros lacus, euismod in libero in, rutrum convallis eros. Vivamus vel facilisis enim. Morbi quis elementum risus, ac vestibulum turpis. Proin lacus lorem, vestibulum at nunc at, tempus efficitur lorem. Vestibulum non urna placerat, vestibulum orci ac, tempor urna. Suspendisse potenti. Duis sem dolor, finibus nec nibh vel, commodo posuere orci. Curabitur pretium magna sapien, non aliquet libero congue eget. In sagittis rhoncus mi, lobortis suscipit nibh finibus at.';
 
 const TermOfServiceDetail = ({navigation}) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+
   return (
     <>
       <HeaderBar
         onGoBack={() => navigation.goBack()}
-        title="Terms of Services Detail"
+        title={translate('term.of.service.detail')}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.flexCenter}>

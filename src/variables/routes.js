@@ -9,13 +9,14 @@ import RegisterScreen from '../screen/Auth/Register';
 import TermOfServiceScreen from '../screen/Auth/TermOfService';
 import TermOfServiceDetailScreen from '../screen/Auth/TermOfService/detail';
 import VerifyPhoneScreen from '../screen/Auth/VerifyPhone';
-import SetupPinScreen from '../screen/Auth/Pin';
+import SetupPinScreen from '../screen/Auth/SetupPin';
 
 // Home group
 import HomeScreen from '../screen/Home';
-import UserProfileScreen from '../screen/UserProfile';
 import PrivacyScreen from '../screen/Privacy';
 import AboutScreen from '../screen/About';
+import UserProfileScreen from '../screen/UserProfile';
+import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
 
 // Activity group
 import ActivityScreen from '../screen/Activity';
@@ -75,6 +76,14 @@ export const homes = [
     screen: AboutScreen,
     label: 'About the App',
     icon: 'info',
+  },
+  {
+    name: ROUTES.CONFIRM_PIN,
+    screen: ConfirmPinScreen,
+  },
+  {
+    name: ROUTES.SETUP_PIN,
+    screen: SetupPinScreen,
   },
 ];
 

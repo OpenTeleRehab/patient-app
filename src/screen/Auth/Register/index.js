@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState, useRef} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {View, Image} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Button, Card, Input, Text} from 'react-native-elements';
@@ -14,6 +14,7 @@ import logoWhite from '../../../assets/images/logo-white.png';
 import {ROUTES} from '../../../variables/constants';
 
 import {registerRequest} from '../../../store/user/actions';
+import {getTranslate} from 'react-localize-redux';
 
 const customFlagStyle = {
   width: 50,
@@ -25,6 +26,8 @@ const Register = ({navigation}) => {
   const dispatch = useDispatch();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   let phoneRef = useRef();
 
   const onRegister = () => {
@@ -78,17 +81,22 @@ const Register = ({navigation}) => {
         <View>
           {errorPhoneNumber && (
             <Text style={styles.textDanger}>
-              This number is not created account. Please contact your therapist
-              to create an account for you.
+              {translate('error.message.phone.created')}
             </Text>
           )}
-          <Text>Language</Text>
-          <Picker prompt="Language" style={styles.formControl}>
+          <Text style={styles.formLabel}>{translate('common.language')}</Text>
+          <Picker
+            prompt={translate('common.language')}
+            style={styles.formControl}>
             <Picker.Item label="English" value="en" />
             <Picker.Item label="Vietnam" value="vn" />
           </Picker>
         </View>
-        <Button onPress={onRegister} title="Register" />
+        <Button
+          onPress={onRegister}
+          title={translate('common.register')}
+          titleStyle={styles.textUpperCase}
+        />
       </Card>
     </>
   );
