@@ -60,8 +60,10 @@ const tabs = [
 ];
 
 const AuthStackNavigator = () => {
+  const initialRouteName = useSelector((state) => state.user.initialRouteName);
+
   return (
-    <AuthStack.Navigator headerMode="none" initialRouteName={ROUTES.REGISTER}>
+    <AuthStack.Navigator headerMode="none" initialRouteName={initialRouteName}>
       {auths.map((route, index) => {
         return (
           <AuthStack.Screen
