@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-
 import {callApi} from '../utils/request';
 
 const register = async (to) => {

@@ -3,17 +3,16 @@
  */
 import React from 'react';
 import {View, Image, StyleSheet, ActivityIndicator} from 'react-native';
-import {withTheme} from 'react-native-elements';
 
 import logoWhite from '../../assets/images/logo-white.png';
 
 const styles = StyleSheet.create({
-  container: (theme) => ({
+  container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors.primary,
-  }),
+    backgroundColor: '#0077C8',
+  },
   logo: {
     width: 250,
     height: 107,
@@ -23,18 +22,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const SplashScreen = (props) => {
-  const {theme} = props;
+const SplashScreen = () => {
   return (
-    <View style={styles.container(theme)}>
+    <View style={styles.container}>
       <Image source={logoWhite} style={styles.logo} />
-      <ActivityIndicator
-        size={60}
-        color={theme.colors.blueDark}
-        style={styles.loading}
-      />
+      <ActivityIndicator size={60} color="#06038D" style={styles.loading} />
     </View>
   );
 };
 
-export default withTheme(SplashScreen);
+export default SplashScreen;

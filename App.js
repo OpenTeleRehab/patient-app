@@ -4,8 +4,10 @@
 import React from 'react';
 import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'react-native-elements';
+import {LocalizeProvider} from 'react-localize-redux';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
+import AppProvider from './AppProvider';
 import AppNavigation from './src/components/AppNavigation';
 import SplashScreen from './src/components/SplashScreen';
 import colors from './src/assets/styles/variables/colors';
@@ -33,10 +35,14 @@ const App: () => React$Node = () => {
   return (
     <Provider store={store}>
       <PersistGate FlashScreen={<SplashScreen />} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <StatusBar barStyle="light-content" />
-          <AppNavigation />
-        </ThemeProvider>
+        <AppProvider>
+          <LocalizeProvider store={store}>
+            <ThemeProvider theme={theme}>
+              <StatusBar barStyle="light-content" />
+              <AppNavigation />
+            </ThemeProvider>
+          </LocalizeProvider>
+        </AppProvider>
       </PersistGate>
     </Provider>
   );

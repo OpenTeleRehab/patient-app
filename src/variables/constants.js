@@ -15,5 +15,5 @@ export const ROUTES = {
   REGISTER: 'Register',
   TERM_OF_SERVICE: 'TermOfService',
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
-  SETUP_PIN: 'SetupPin',
+  SETUP_PIN: 'SetupPIN',
 };

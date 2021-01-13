@@ -4,6 +4,7 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {withTheme} from 'react-native-elements';
+import {getTranslate} from 'react-localize-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -24,35 +25,35 @@ const tabs = [
   {
     name: ROUTES.HOME,
     screen: HomeTab,
-    label: 'Home',
+    label: 'tab.home',
     icon: 'home',
     badge: 'noBadge',
   },
   {
     name: ROUTES.ACTIVITY,
     screen: ActivityTab,
-    label: 'Activities',
+    label: 'tab.activities',
     icon: 'handball',
     badge: 'hasActivity',
   },
   {
     name: ROUTES.GOAL,
     screen: GoalTab,
-    label: 'Goals',
+    label: 'tab.goals',
     icon: 'bullseye-arrow',
     badge: 'hasGoal',
   },
   {
     name: ROUTES.APPOINTMENT,
     screen: AppointmentTab,
-    label: 'Appointments',
+    label: 'tab.appointments',
     icon: 'calendar-clock',
     badge: 'hasAppointment',
   },
   {
     name: ROUTES.MESSAGE,
     screen: MessageTab,
-    label: 'Messages',
+    label: 'tab.messages',
     icon: 'message-text-outline',
     badge: 'hasMessage',
   },
@@ -75,7 +76,10 @@ const AuthStackNavigator = () => {
 };
 
 const AppTabNavigator = (props) => {
-  const {theme, indicator} = props;
+  const {theme} = props;
+  const indicator = useSelector((state) => state.indicator);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const hasBadge = (checkBadge) => {
     if (checkBadge === 'noBadge') {
@@ -106,7 +110,7 @@ const AppTabNavigator = (props) => {
               tabBarIcon: ({focused, color, size}) => (
                 <MCIcon name={route.icon} color={color} size={size} />
               ),
-              tabBarLabel: route.label,
+              tabBarLabel: translate(route.label),
               tabBarBadge: hasBadge(route.badge),
               tabBarBadgeStyle: styles.navTabBadge,
             }}
@@ -119,12 +123,11 @@ const AppTabNavigator = (props) => {
 
 const AppNavigation = (props) => {
   const user = useSelector((state) => state.user);
-  const indicator = useSelector((state) => state.indicator);
 
   return (
     <NavigationContainer>
       {user.accessToken ? (
-        <AppTabNavigator indicator={indicator} {...props} />
+        <AppTabNavigator {...props} />
       ) : (
         <AuthStackNavigator />
       )}

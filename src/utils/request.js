@@ -43,8 +43,12 @@ export const callApi = async (
   };
 
   if (method === 'get') {
-    url = new URL(url);
-    Object.keys(body).forEach((key) => url.searchParams.append(key, body[key]));
+    url = new URL(url, '');
+    if (body) {
+      Object.keys(body).forEach((key) =>
+        url.searchParams.append(key, body[key]),
+      );
+    }
   } else {
     configs.body = isFormData ? body : JSON.stringify(body);
   }
