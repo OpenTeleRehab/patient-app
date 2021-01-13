@@ -16,4 +16,5 @@ export const ROUTES = {
   TERM_OF_SERVICE: 'TermOfService',
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
   SETUP_PIN: 'SetupPIN',
+  CONFIRM_PIN: 'ConfirmPin',
 };

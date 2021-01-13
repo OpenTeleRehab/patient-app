@@ -4,10 +4,12 @@
 import variables from '../variables';
 
 export default {
-  userProfileListBackground: {
+  listBackground: {
     backgroundColor: variables.grey6,
   },
-  userProfileTextFontSize: {
+  listStyle: {
     fontSize: variables.fontSizeMd,
+    fontWeight: '500',
+    color: variables.black,
   },
 };

@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {Button, Header, Text, withTheme} from 'react-native-elements';
+import {Button, Text} from 'react-native-elements';
 import {ScrollView, TouchableOpacity, View, Alert} from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles';
@@ -12,11 +12,15 @@ import {
   verifyPhoneNumberRequest,
 } from '../../../store/user/actions';
 import {useDispatch, useSelector} from 'react-redux';
+import HeaderBar from '../../../components/Common/HeaderBar';
+import {getTranslate} from 'react-localize-redux';
 
-const VerifyPhone = ({theme, navigation}) => {
+const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const formattedNumber = useSelector((state) => state.user.phone);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const onConfirm = () => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, code)).then((result) => {
@@ -43,54 +47,44 @@ const VerifyPhone = ({theme, navigation}) => {
 
   return (
     <>
-      <Header
-        backgroundColor="white"
-        leftComponent={
-          <Button
-            type="clear"
-            icon={{
-              name: 'chevron-left',
-              size: 50,
-              color: theme.colors.primary,
-            }}
-            title="Back"
-            onPress={() => navigation.goBack()}
-          />
-        }
-        centerComponent={{
-          text: 'Verify Phone',
-        }}
+      <HeaderBar
+        title={translate('phone.verify')}
+        onGoBack={() => navigation.goBack()}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.flexCenter}>
-          <Text>
-            We sent you a code to verify your phone number. Please input it
-            below.
+          <Text>{translate('phone.verify.description')}</Text>
+          <Text style={styles.marginTop}>
+            {translate('phone.send.to')} {formattedNumber}
           </Text>
-          <Text style={styles.marginTop}>Sent to {formattedNumber}</Text>
           <SmoothPinCodeInput
             codeLength={6}
             value={code}
             onTextChange={(pinCode) => setCode(pinCode)}
             animated={false}
-            containerStyle={styles.marginTop}
-            textStyle={styles.smoothPinTextStyle}
-            cellStyleFocused={styles.smoothPinCellStyle}
-            cellSize={60}
+            cellSpacing={10}
+            textStyle={styles.formPinText}
+            containerStyle={styles.formPinContainer}
+            cellStyle={styles.formPinCell}
+            cellStyleFocused={styles.formPinCellFocused}
+            cellStyleFilled={styles.formPinCellFilled}
           />
           <View style={[styles.flexRow, styles.marginTop]}>
-            <Text>I didn't receive a code!&nbsp;</Text>
+            <Text>{translate('phone.dont.receive.code')} &nbsp;</Text>
             <TouchableOpacity onPress={onResent}>
-              <Text style={styles.hyperlink}>Resend Code</Text>
+              <Text style={styles.hyperlink}>
+                {translate('phone.resend.code')}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={[styles.paddingMd]}>
           <Button
             containerStyle={[styles.marginTop, styles.alignSelfStretch]}
+            titleStyle={styles.textUpperCase}
             disabled={code.length !== 6}
             onPress={onConfirm}
-            title="CONFIRM"
+            title={translate('common.confirm')}
           />
         </View>
       </ScrollView>
@@ -98,4 +92,4 @@ const VerifyPhone = ({theme, navigation}) => {
   );
 };
 
-export default withTheme(VerifyPhone);
+export default VerifyPhone;

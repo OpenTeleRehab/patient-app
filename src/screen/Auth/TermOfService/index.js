@@ -7,6 +7,8 @@ import {ScrollView, TouchableOpacity, View} from 'react-native';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
 import HeaderBar from '../../../components/Common/HeaderBar';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 
 const customStyles = {
   termDetailLink: {
@@ -16,14 +18,16 @@ const customStyles = {
 };
 const TermOfService = ({theme, navigation}) => {
   const [acceptAgreement, setAcceptAgreement] = useState(false);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   return (
     <>
-      <HeaderBar title="Terms of Services" />
+      <HeaderBar title={translate('term.of.service')} />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <CheckBox
-            title="I agree to Terms of Service."
+            title={translate('term.of.service.agree')}
             checked={acceptAgreement}
             onPress={() => setAcceptAgreement(!acceptAgreement)}
           />
@@ -31,14 +35,15 @@ const TermOfService = ({theme, navigation}) => {
             onPress={() => navigation.navigate(ROUTES.TERM_OF_SERVICE_DETAIL)}
             style={customStyles.termDetailLink}>
             <Text style={styles.hyperlink}>
-              View Hi humanity & inclusion Terms of Services
+              {translate('term.of.service.detail.link')}
             </Text>
           </TouchableOpacity>
           <Button
-            title="NEXT"
+            title={translate('common.next')}
             disabled={!acceptAgreement}
             onPress={() => navigation.navigate(ROUTES.SETUP_PIN)}
             containerStyle={styles.marginTop}
+            titleStyle={styles.textUpperCase}
           />
           <Button
             icon={{
@@ -47,10 +52,11 @@ const TermOfService = ({theme, navigation}) => {
               color: theme.colors.primary,
               size: 28,
             }}
-            title="BACK"
+            title={translate('common.back')}
             type="clear"
             onPress={() => navigation.goBack()}
             containerStyle={styles.marginTop}
+            titleStyle={styles.textUpperCase}
           />
         </View>
       </ScrollView>

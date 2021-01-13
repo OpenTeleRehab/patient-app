@@ -3,20 +3,24 @@
  */
 import React, {useState} from 'react';
 import {ScrollView, View, Alert} from 'react-native';
-import {Text, Header, Button, withTheme} from 'react-native-elements';
+import {Text, Button} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
-
 import styles from '../../../assets/styles/index';
 import {ROUTES} from '../../../variables/constants';
 import {setupPinNumberRequest} from '../../../store/user/actions';
 import {useSelector, useDispatch} from 'react-redux';
+import HeaderBar from '../../../components/Common/HeaderBar';
+import {getTranslate} from 'react-localize-redux';
 
-const Pin = ({theme, navigation}) => {
+const SetupPin = ({navigation, route}) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const [confirmCode, setConfirmCode] = useState('');
   const phone = useSelector((state) => state.user.phone);
   const otpCode = useSelector((state) => state.user.otpCode);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+  const isPINChanged = route.params?.isPINChanged || false;
 
   const handlerSave = () => {
     if (code && confirmCode) {
@@ -62,54 +66,62 @@ const Pin = ({theme, navigation}) => {
     return code.length !== 4 || confirmCode.length !== 4;
   };
 
+  const onCancel = () => {
+    setCode('');
+    setConfirmCode('');
+    navigation.navigate(ROUTES.USER_PROFILE);
+  };
+
   return (
     <>
-      <Header
-        backgroundColor="white"
-        leftComponent={
-          <Button
-            type="clear"
-            icon={{
-              name: 'chevron-left',
-              size: 50,
-              color: theme.colors.primary,
-            }}
-            title="Back"
-            onPress={() => navigation.goBack()}
-          />
+      <HeaderBar
+        onGoBack={isPINChanged ? null : () => navigation.goBack()}
+        title={translate('pin.setup.number')}
+        rightContent={
+          isPINChanged
+            ? {
+                label: translate('common.cancel'),
+                onPress: () => onCancel(),
+              }
+            : null
         }
-        centerComponent={{text: 'Setup PIN number'}}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={[styles.flexCenter]}>
           <View>
-            <Text>New PIN Number</Text>
+            <Text style={styles.formLabel}>{translate('pin.new.number')}</Text>
             <SmoothPinCodeInput
               password
               value={code}
               onTextChange={(value) => setCode(value)}
-              textStyle={styles.smoothPinTextStyle}
-              cellStyleFocused={styles.smoothPinCellStyle}
-              containerStyle={styles.marginTop}
-              cellSize={60}
               animated={false}
-              mask={<View style={styles.customMask} />}
+              textStyle={styles.formPinText}
+              cellSpacing={10}
+              containerStyle={styles.formPinContainer}
+              cellStyle={styles.formPinCell}
+              cellStyleFocused={styles.formPinCellFocused}
+              cellStyleFilled={styles.formPinCellFilled}
+              mask={<View style={styles.formPinCustomMask} />}
             />
           </View>
         </View>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
-            <Text>Confirm new PIN Number</Text>
+            <Text style={styles.formLabel}>
+              {translate('pin.confirm.number')}
+            </Text>
             <SmoothPinCodeInput
               password
               value={confirmCode}
               onTextChange={(value) => setConfirmCode(value)}
-              textStyle={styles.smoothPinTextStyle}
-              cellStyleFocused={styles.smoothPinCellStyle}
-              containerStyle={styles.marginTop}
-              cellSize={60}
+              textStyle={styles.formPinText}
               animated={false}
-              mask={<View style={styles.customMask} />}
+              cellSpacing={10}
+              containerStyle={styles.formPinContainer}
+              cellStyle={styles.formPinCell}
+              cellStyleFocused={styles.formPinCellFocused}
+              cellStyleFilled={styles.formPinCellFilled}
+              mask={<View style={styles.formPinCustomMask} />}
             />
           </View>
         </View>
@@ -125,4 +137,4 @@ const Pin = ({theme, navigation}) => {
   );
 };
 
-export default withTheme(Pin);
+export default SetupPin;

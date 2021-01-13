@@ -11,7 +11,6 @@ import Auth from './partials/_Auth';
 import HeaderBar from './partials/_HeaderBar';
 import Button from './partials/_Button';
 import Form from './partials/_Form';
-import SmoothPinInput from './partials/_SmoothPinInput';
 import UserProfile from './partials/_UserProfile';
 
 const styles = StyleSheet.create({
@@ -23,7 +22,6 @@ const styles = StyleSheet.create({
   ...HeaderBar,
   ...Button,
   ...Form,
-  ...SmoothPinInput,
   ...UserProfile,
 });
 
