@@ -6,14 +6,10 @@ import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'react-native-elements';
 import {LocalizeProvider} from 'react-localize-redux';
 import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/lib/integration/react';
 import AppProvider from './AppProvider';
 import AppNavigation from './src/components/AppNavigation';
-import SplashScreen from './src/components/SplashScreen';
 import colors from './src/assets/styles/variables/colors';
-import configureStore from './src/store';
-
-const {store, persistor} = configureStore();
+import store from './src/store';
 
 const theme = {
   colors,
@@ -34,16 +30,14 @@ const theme = {
 const App: () => React$Node = () => {
   return (
     <Provider store={store}>
-      <PersistGate FlashScreen={<SplashScreen />} persistor={persistor}>
-        <AppProvider>
-          <LocalizeProvider store={store}>
-            <ThemeProvider theme={theme}>
-              <StatusBar barStyle="light-content" />
-              <AppNavigation />
-            </ThemeProvider>
-          </LocalizeProvider>
-        </AppProvider>
-      </PersistGate>
+      <AppProvider>
+        <LocalizeProvider store={store}>
+          <ThemeProvider theme={theme}>
+            <StatusBar barStyle="light-content" />
+            <AppNavigation />
+          </ThemeProvider>
+        </LocalizeProvider>
+      </AppProvider>
     </Provider>
   );
 };
