@@ -7,6 +7,4 @@ export const initialState = {
   hasGoal: false,
   hasAppointment: false,
   hasMessage: true,
-  apiStage: '',
-  apiURL: '',
 };

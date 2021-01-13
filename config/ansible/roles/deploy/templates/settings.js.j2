@@ -1,11 +1,6 @@
 const settings = {
-  defaultAPIStage: '{{ stage }}',
-  apiStages: {
-    live: '{{ live_api_url }}',
-    demo: '{{ demo_api_url }}',
-    latest: '{{ latest_api_url }}',
-  },
-  hasToggleAPIStage: {{ has_toggle_api_stage }},
+  apiBaseURL: '{{ patient_api_base_url }}',
+  adminApiBaseURL: '{{ admin_api_base_url }}',
   isDebugMode: {{ is_debug_mode }},
   format: {
     date: 'DD MMM YYYY',

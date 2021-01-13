@@ -63,10 +63,9 @@ __Note:__ If you previously installed a global `react-native-cli`, please remove
     ```
 
     Edit file and replace/add value for:
-    * defaultAPIStage = `local`
-    * hasToggleAPIStage = `true` // or `false` if you want to disable API server switching
     * isDebugMode = `true` // or `false` if you want to disable redux log print out
-    * append new object item for `apiStages`: `local: 'http://your-computer-ip'`
+    * Set patient api URL `apiBaseURL`: `'http://your-computer-ip:8084/api'`
+    * Set admin api URL `adminApiBaseURL`: `'http://your-computer-ip:8082/api'`
     * appVersion = `'1.0.0-local'`
 
 5. Start JS server with Metro Bundler
