@@ -4,10 +4,8 @@ project_name:             'hiv'
 
 git_repos:                'git@git.web-essentials.asia:hiv-tra-20/patient-app.git'
 
-latest_api_url:           ''
-demo_api_url:             ''
-live_api_url:             ''
-has_toggle_api_stage:     'true'
+patient_api_base_url:     'https://demo-api-patient-rehabilitation.wehost.asia/api'
+admin_api_base_url:       'https://demo-api-admin-rehabilitation.wehost.asia/api'
 is_debug_mode:            'false'
 
 major_release_version:    '1'

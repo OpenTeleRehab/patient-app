@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-
 import settings from '../../config/settings';
 import {URL} from 'react-native/Libraries/Blob/URL';
 
@@ -15,14 +14,16 @@ const initialOptions = {
  * @param options
  * @param method
  * @param isFormData
+ * @param isAdminApi
  * @returns {Promise<any>}
  */
 export const callApi = async (
   options = initialOptions,
   method = 'get',
   isFormData = false,
+  isAdminApi = false,
 ) => {
-  const websocket = settings.apiStages[settings.defaultAPIStage];
+  const websocket = isAdminApi ? settings.adminApiBaseURL : settings.apiBaseURL;
   const {uri, accessToken, body} = options;
   let url = websocket + uri;
 

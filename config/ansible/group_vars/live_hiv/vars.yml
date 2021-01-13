@@ -1,3 +1,4 @@
 ---
 
-has_toggle_api_stage:         'false'
+patient_api_base_url:     ''
+admin_api_base_url:       ''
