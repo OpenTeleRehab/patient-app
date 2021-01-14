@@ -46,7 +46,7 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
       },
       true,
     );
-    dispatch(mutation.userSetupPinNumberSuccess());
+    dispatch(mutation.userSetupPinNumberSuccess(data.data));
     return true;
   } else {
     dispatch(mutation.userSetupPinNumberFailure());

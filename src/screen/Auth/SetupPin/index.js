@@ -30,7 +30,7 @@ const SetupPin = ({navigation, route}) => {
             Alert.alert(
               'Setup PIN number',
               'Your PIN number is set up successfully.',
-              [{text: 'OK', onPress: () => onSucceed()}],
+              [{text: 'OK'}],
               {cancelable: false},
             );
           } else {
@@ -56,10 +56,6 @@ const SetupPin = ({navigation, route}) => {
   const handlerReset = () => {
     setCode('');
     setConfirmCode('');
-  };
-
-  const onSucceed = () => {
-    navigation.navigate(ROUTES.LOGIN);
   };
 
   const disabledConfirm = () => {

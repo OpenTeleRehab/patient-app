@@ -15,16 +15,11 @@ export const user = (state = initialState, action) => {
         otpCode: action.data.code,
       });
     }
-    case 'USER_SETUP_PIN_NUMBER_SUCCEED': {
-      return Object.assign({}, state, {
-        timespan: action.data,
-      });
-    }
+    case 'USER_SETUP_PIN_NUMBER_SUCCEED':
     case 'USER_LOGIN_SUCCEED': {
       return Object.assign({}, state, {
         profile: action.data.profile,
         accessToken: action.data.token,
-        isFirstTimeLogin: false,
       });
     }
     case 'USER_LOGOUT_SUCCEED':
