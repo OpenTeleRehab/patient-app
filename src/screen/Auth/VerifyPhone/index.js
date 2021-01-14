@@ -28,8 +28,8 @@ const VerifyPhone = ({navigation}) => {
         navigation.navigate(ROUTES.TERM_OF_SERVICE);
       } else {
         Alert.alert(
-          'Verify Phone',
-          'PIN is incorrect.',
+          'Incorrect code',
+          'Please enter the correct code or resend a new code.',
           [{text: 'OK', onPress: () => reset()}],
           {cancelable: false},
         );
@@ -53,7 +53,9 @@ const VerifyPhone = ({navigation}) => {
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.flexCenter}>
-          <Text>{translate('phone.verify.description')}</Text>
+          <Text style={styles.marginTop}>
+            {translate('phone.verify.description')}
+          </Text>
           <Text style={styles.marginTop}>
             {translate('phone.send.to')} {formattedNumber}
           </Text>
