@@ -40,6 +40,10 @@ export const user = (state = initialState, action) => {
         accessToken: action.data.token,
       });
     }
+    case 'UPDATE_PROFILE_SUCCEED':
+      return Object.assign({}, state, {
+        profile: action.data,
+      });
     default:
       return state;
   }

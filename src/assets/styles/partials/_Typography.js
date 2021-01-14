@@ -26,4 +26,10 @@ export default {
   fontWeightBold: {
     fontWeight: 'bold',
   },
+  textFormDisabled: {
+    paddingVertical: variables.spacingBase,
+    paddingLeft: variables.spacingBase,
+    fontSize: variables.fontSizeBase,
+    color: variables.black,
+  },
 };

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {ListItem, Text, Button} from 'react-native-elements';
+import {ListItem, Text} from 'react-native-elements';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import styles from '../../assets/styles';
 import moment from 'moment';
@@ -12,6 +12,7 @@ import {ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
 import {logoutRequest} from '../../store/user/actions';
+import {formatDate, isValidDateFormat} from '../../utils/helper';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -19,37 +20,44 @@ const UserProfile = ({navigation}) => {
   const accessToken = useSelector((state) => state.user.accessToken);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-
   const calculateAge = (dob) => {
     const currentDate = moment();
-    return currentDate.diff(moment(dob, 'DD-MM-YYYY'), 'year');
+    const dateOfBirth = isValidDateFormat(dob)
+      ? moment(dob, settings.format.date).toDate()
+      : moment(dob);
+    return currentDate.diff(dateOfBirth, 'year');
   };
 
   const userInfo = [
     {
-      label: 'NAME',
+      label: 'common.name',
       value: profile.last_name + ' ' + profile.first_name,
     },
     {
-      label: 'GENDER',
+      label: 'common.gender',
       value: profile.gender ? profile.gender : '',
+      rightLabel: 'common.edit',
     },
     {
-      label: 'DATE OF BIRTH',
-      value: profile.date_of_birth
-        ? moment(profile.date_of_birth).format(settings.format.date)
-        : '',
+      label: 'date.of.birth',
+      value: isValidDateFormat(profile.date_of_birth)
+        ? profile.date_of_birth
+        : formatDate(profile.date_of_birth),
       rightContentValue:
         'Age: ' +
         (profile.date_of_birth ? calculateAge(profile.date_of_birth) : 0),
+      rightLabel: 'common.edit',
     },
     {
-      label: 'MOBILE NUMBER',
+      label: 'phone.number',
       value: profile.phone,
     },
     {
-      label: 'LANGUAGE',
-      value: profile.language ? profile.language : 'English',
+      label: 'common.language',
+      value: profile.language
+        ? profile.language
+        : translate('common.language.en'),
+      rightLabel: 'common.edit',
     },
   ];
 
@@ -76,8 +84,15 @@ const UserProfile = ({navigation}) => {
                 bottomDivider
                 containerStyle={styles.listBackground}>
                 <ListItem.Content>
-                  <ListItem.Title>{user.label}</ListItem.Title>
+                  <ListItem.Title>
+                    {translate(user.label).toLocaleUpperCase()}
+                  </ListItem.Title>
                 </ListItem.Content>
+                <Text
+                  style={styles.textPrimary}
+                  onPress={() => navigation.navigate(ROUTES.USER_PROFILE_EDIT)}>
+                  {user.rightLabel ? translate(user.rightLabel) : ''}
+                </Text>
               </ListItem>
               <ListItem bottomDivider key={`value-${i}`}>
                 <ListItem.Content>
@@ -87,7 +102,6 @@ const UserProfile = ({navigation}) => {
               </ListItem>
             </>
           ))}
-
           <ListItem bottomDivider containerStyle={styles.listBackground}>
             <ListItem.Content>
               <ListItem.Title>
@@ -100,7 +114,6 @@ const UserProfile = ({navigation}) => {
               </ListItem.Title>
             </ListItem.Content>
           </ListItem>
-          <Button title="Edit" containerStyle={styles.marginTopMd} />
         </View>
       </ScrollView>
     </>

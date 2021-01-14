@@ -24,6 +24,9 @@ export default {
   textUpperCase: {
     textTransform: 'uppercase',
   },
+  textSmall: {
+    fontSize: variables.fontSizeSm,
+  },
   noneFlex: {
     flex: 0,
   },

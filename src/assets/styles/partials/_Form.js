@@ -4,6 +4,9 @@
 import variables from '../variables';
 
 export default {
+  formGroup: {
+    marginBottom: variables.spacingBase,
+  },
   formLabel: {
     color: variables.black,
     fontSize: variables.fontSizeBase,
@@ -41,5 +44,14 @@ export default {
     height: 14,
     borderRadius: 25,
     backgroundColor: variables.primary,
+  },
+  formControlDate: {
+    paddingLeft: 0,
+    height: 80,
+  },
+  formControlDateInput: {
+    color: variables.black,
+    opacity: 1,
+    fontSize: variables.fontSizeBase,
   },
 };

@@ -12,4 +12,7 @@ export default {
     fontWeight: '500',
     color: variables.black,
   },
+  listHeight: {
+    height: 50,
+  },
 };

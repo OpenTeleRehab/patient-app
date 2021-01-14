@@ -10,6 +10,7 @@ export const ROUTES = {
   APPOINTMENT: 'Appointment',
   MESSAGE: 'Message',
   USER_PROFILE: 'UserProfile',
+  USER_PROFILE_EDIT: 'UserProfileEdit',
   PRIVACY: 'Privacy',
   ABOUT: 'About',
   REGISTER: 'Register',
