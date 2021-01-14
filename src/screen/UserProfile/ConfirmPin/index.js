@@ -2,14 +2,15 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import {Alert, ScrollView, Text, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Button} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {ROUTES} from '../../../variables/constants';
 import styles from '../../../assets/styles';
+import {comparePinNumberRequest} from '../../../store/user/actions';
 
 const customStyles = {
   paddingTopXXL: {
@@ -21,7 +22,9 @@ const customStyles = {
 };
 
 const ConfirmPin = ({navigation}) => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const translate = getTranslate(localize);
   const [pin, setPin] = useState('');
 
@@ -30,8 +33,33 @@ const ConfirmPin = ({navigation}) => {
   };
 
   const handleConfirm = () => {
+    dispatch(comparePinNumberRequest(pin, accessToken)).then((result) => {
+      if (!result) {
+        Alert.alert(
+          translate('pin.change').toString(),
+          translate('error.message.pin.confirmed').toString(),
+          [
+            {
+              text: translate('common.ok').toString(),
+              onPress: () => resetPin(),
+            },
+          ],
+          {cancelable: false},
+        );
+      } else {
+        resetPin();
+        navigation.navigate(ROUTES.SETUP_PIN, {isPINChanged: true});
+      }
+    });
+  };
+
+  const resetPin = () => {
     setPin('');
-    navigation.navigate(ROUTES.SETUP_PIN, {isPINChanged: true});
+  };
+
+  const onCancel = () => {
+    resetPin();
+    navigation.navigate(ROUTES.USER_PROFILE);
   };
 
   return (
@@ -40,14 +68,16 @@ const ConfirmPin = ({navigation}) => {
         title={translate('pin.confirmation')}
         rightContent={{
           label: translate('common.cancel'),
-          onPress: () => navigation.navigate(ROUTES.USER_PROFILE),
+          onPress: () => onCancel(),
         }}
       />
       <ScrollView
         style={[styles.mainContainerLight, customStyles.paddingTopXXL]}>
         <View style={styles.flexCenter}>
           <>
-            <Text style={styles.formLabel}>Enter PIN number</Text>
+            <Text style={styles.formLabel}>
+              {translate('pin.enter.number')}
+            </Text>
             <SmoothPinCodeInput
               password
               value={pin}

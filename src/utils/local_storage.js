@@ -8,11 +8,11 @@ export const storeLocalData = async (key, data, isJson = false) => {
   if (isJson) {
     value = JSON.stringify(data);
   }
-  await AsyncStorage.setItem(`@HIApp:${key}`, value);
+  await AsyncStorage.setItem(`@OrgHiPatientApp:${key}`, value);
 };
 
 export const getLocalData = async (key, isJson = false) => {
-  const value = await AsyncStorage.getItem(`@HIApp:${key}`);
+  const value = await AsyncStorage.getItem(`@OrgHiPatientApp:${key}`);
 
   if (isJson) {
     return value != null ? JSON.parse(value) : null;

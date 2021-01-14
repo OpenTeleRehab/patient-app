@@ -7,7 +7,10 @@ import {Text, Button} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles/index';
 import {ROUTES} from '../../../variables/constants';
-import {setupPinNumberRequest} from '../../../store/user/actions';
+import {
+  changePinNumberRequest,
+  setupPinNumberRequest,
+} from '../../../store/user/actions';
 import {useSelector, useDispatch} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
@@ -17,36 +20,59 @@ const SetupPin = ({navigation, route}) => {
   const [code, setCode] = useState('');
   const [confirmCode, setConfirmCode] = useState('');
   const phone = useSelector((state) => state.user.phone);
+  const accessToken = useSelector((state) => state.user?.accessToken);
   const otpCode = useSelector((state) => state.user.otpCode);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isPINChanged = route.params?.isPINChanged || false;
 
-  const handlerSave = () => {
+  const handlerSave = async () => {
     if (code && confirmCode) {
       if (code === confirmCode) {
-        dispatch(setupPinNumberRequest(code, phone, otpCode)).then((result) => {
-          if (result) {
-            Alert.alert(
-              'Setup PIN number',
-              'Your PIN number is set up successfully.',
-              [{text: 'OK'}],
-              {cancelable: false},
-            );
-          } else {
-            Alert.alert(
-              'Setup PIN number',
-              'Error while processing.',
-              [{text: 'OK', onPress: () => handlerReset()}],
-              {cancelable: false},
-            );
-          }
-        });
+        let result;
+        if (isPINChanged) {
+          result = await dispatch(
+            changePinNumberRequest(code, phone, accessToken),
+          );
+        } else {
+          result = await dispatch(setupPinNumberRequest(code, phone, otpCode));
+        }
+
+        if (result) {
+          Alert.alert(
+            translate('pin.setup.number').toString(),
+            translate('success.message.pin.setup').toString(),
+            [
+              {
+                text: translate('common.ok').toString(),
+                onPress: () => (isPINChanged ? onCancelOrOnSucceed : null),
+              },
+            ],
+            {cancelable: false},
+          );
+        } else {
+          Alert.alert(
+            translate('pin.setup.number').toString(),
+            translate('error.message.internal.server').toString(),
+            [
+              {
+                text: translate('common.ok').toString(),
+                onPress: () => handlerReset(),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
       } else {
         Alert.alert(
-          'Setup PIN number',
-          'PIN does not match.',
-          [{text: 'OK', onPress: () => handlerReset()}],
+          translate('pin.setup.number').toString(),
+          translate('error.message.pin.setup.not.match').toString(),
+          [
+            {
+              text: translate('common.ok').toString(),
+              onPress: () => handlerReset(),
+            },
+          ],
           {cancelable: false},
         );
       }
@@ -62,9 +88,8 @@ const SetupPin = ({navigation, route}) => {
     return code.length !== 4 || confirmCode.length !== 4;
   };
 
-  const onCancel = () => {
-    setCode('');
-    setConfirmCode('');
+  const onCancelOrOnSucceed = () => {
+    handlerReset();
     navigation.navigate(ROUTES.USER_PROFILE);
   };
 
@@ -77,7 +102,7 @@ const SetupPin = ({navigation, route}) => {
           isPINChanged
             ? {
                 label: translate('common.cancel'),
-                onPress: () => onCancel(),
+                onPress: () => onCancelOrOnSucceed(),
               }
             : null
         }
@@ -123,7 +148,8 @@ const SetupPin = ({navigation, route}) => {
         </View>
         <View style={[styles.paddingMd]}>
           <Button
-            title="Confirm"
+            title={translate('common.confirm')}
+            titleStyle={styles.textUpperCase}
             onPress={() => handlerSave()}
             disabled={disabledConfirm()}
           />

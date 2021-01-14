@@ -66,6 +66,31 @@ const userLogoutFailure = () => {
   };
 };
 
+const userComparePinNumberSuccess = () => {
+  return {
+    type: 'USER_COMPARE_PIN_NUMBER_SUCCEED',
+  };
+};
+
+const userComparePinNumberFailure = () => {
+  return {
+    type: 'USER_COMPARE_PIN_NUMBER_FAILED',
+  };
+};
+
+const userChangePinNumberSuccess = (data) => {
+  return {
+    type: 'USER_CHANGE_PIN_NUMBER_SUCCEED',
+    data,
+  };
+};
+
+const userChangePinNumberFailure = () => {
+  return {
+    type: 'USER_CHANGE_PIN_NUMBER_FAILED',
+  };
+};
+
 const userSetInitialRouteNameSuccess = (data) => {
   return {
     type: 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED',
@@ -84,5 +109,9 @@ export const mutation = {
   userLoginFailure,
   userLogoutSuccess,
   userLogoutFailure,
+  userComparePinNumberSuccess,
+  userComparePinNumberFailure,
+  userChangePinNumberSuccess,
+  userChangePinNumberFailure,
   userSetInitialRouteNameSuccess,
 };

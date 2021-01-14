@@ -7,7 +7,7 @@ import {useDispatch} from 'react-redux';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
 import {setInitialRouteName} from './src/store/user/actions';
-import {ROUTES} from './src/variables/constants';
+import {ROUTES, STORAGE_KEY} from './src/variables/constants';
 import {getLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
@@ -18,7 +18,7 @@ const AppProvider = ({children}) => {
   const [timespan, setTimespan] = useState('');
 
   const fetchLocalData = useCallback(async () => {
-    const data = await getLocalData('OrgHiPatientApp', true);
+    const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
     if (data) {
       setTimespan(data.timespan);
     }

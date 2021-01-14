@@ -62,19 +62,19 @@ export const homes = [
   {
     name: ROUTES.USER_PROFILE,
     screen: UserProfileScreen,
-    label: 'User Profile',
+    label: 'menu.user.profile',
     icon: 'user',
   },
   {
     name: ROUTES.PRIVACY,
     screen: PrivacyScreen,
-    label: 'Privacy Policy',
+    label: 'menu.privacy',
     icon: 'settings',
   },
   {
     name: ROUTES.ABOUT,
     screen: AboutScreen,
-    label: 'About the App',
+    label: 'menu.about.app',
     icon: 'info',
   },
   {

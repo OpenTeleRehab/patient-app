@@ -49,8 +49,37 @@ const login = async (phone, pin) => {
   return await callApi(option, 'post');
 };
 
-const logout = () => {
-  return {};
+const logout = async (accessToken) => {
+  const options = {
+    uri: '/auth/logout',
+    accessToken,
+  };
+
+  return await callApi(options);
+};
+
+const comparePinNumber = async (pin, accessToken) => {
+  const options = {
+    uri: '/auth/compare-pin',
+    accessToken,
+    body: {
+      pin,
+    },
+  };
+
+  return await callApi(options);
+};
+
+const changePinNumber = async (pin, accessToken) => {
+  const options = {
+    uri: '/auth/change-pin',
+    accessToken,
+    body: {
+      pin,
+    },
+  };
+
+  return await callApi(options, 'post');
 };
 
 export const User = {
@@ -59,4 +88,6 @@ export const User = {
   setupPinNumber,
   login,
   logout,
+  comparePinNumber,
+  changePinNumber,
 };

@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -14,14 +14,18 @@ import FIcon from 'react-native-vector-icons/Feather';
 import {homes} from '../../../variables/routes';
 import styles from '../../../assets/styles';
 import {logoutRequest} from '../../../store/user/actions';
+import {getTranslate} from 'react-localize-redux';
 
 const Drawer = createDrawerNavigator();
 
 const HomeTab = (props) => {
   const dispatch = useDispatch();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+  const accessToken = useSelector((state) => state.user.accessToken);
 
   const handleLogout = () => {
-    dispatch(logoutRequest());
+    dispatch(logoutRequest(accessToken));
   };
 
   const renderDrawerContent = (navProps) => {
@@ -35,7 +39,7 @@ const HomeTab = (props) => {
                 <DrawerItem
                   key={index}
                   focused={state.routeNames[state.index] === route.name}
-                  label={route.label}
+                  label={translate(route.label)}
                   onPress={() => navigation.navigate(route.name)}
                   icon={({focused, size, color}) => (
                     <FIcon name={route.icon} color={color} size={size} />
@@ -47,7 +51,11 @@ const HomeTab = (props) => {
           })}
         </DrawerContentScrollView>
         <View style={styles.navDrawerBottom}>
-          <Button title="Logout" onPress={() => handleLogout()} />
+          <Button
+            title={translate('common.logout')}
+            titleStyle={styles.textUpperCase}
+            onPress={() => handleLogout()}
+          />
         </View>
       </View>
     );

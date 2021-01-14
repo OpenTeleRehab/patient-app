@@ -16,6 +16,7 @@ import {logoutRequest} from '../../store/user/actions';
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.user.profile);
+  const accessToken = useSelector((state) => state.user.accessToken);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -53,7 +54,7 @@ const UserProfile = ({navigation}) => {
   ];
 
   const handleLogout = () => {
-    dispatch(logoutRequest());
+    dispatch(logoutRequest(accessToken));
   };
 
   return (
