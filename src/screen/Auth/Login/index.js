@@ -67,12 +67,14 @@ const Login = ({navigation}) => {
               password
               value={code}
               onTextChange={(value) => setCode(value)}
-              textStyle={styles.smoothPinTextStyle}
-              cellStyleFocused={styles.smoothPinCellStyle}
-              containerStyle={styles.marginTop}
-              cellSize={60}
+              textStyle={styles.formPinText}
+              cellStyleFocused={styles.formPinCellFocused}
+              containerStyle={styles.formPinContainer}
+              cellStyleFilled={styles.formPinCellFilled}
+              cellStyle={styles.formPinCell}
+              cellSpacing={10}
               animated={false}
-              mask={<View style={styles.customMask} />}
+              mask={<View style={styles.formPinCustomMask} />}
             />
             <TouchableOpacity
               style={styles.marginTop}
