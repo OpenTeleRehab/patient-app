@@ -14,7 +14,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
-import RNOtpVerify from 'react-native-otp-verify';
+import RNOtpVerify from '@webessentials/react-native-otp-verify';
 
 const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
@@ -31,9 +31,9 @@ const VerifyPhone = ({navigation}) => {
         navigation.navigate(ROUTES.TERM_OF_SERVICE);
       } else {
         Alert.alert(
-          translate('error.message.incorrect.code'),
-          translate('prompt.enter.code'),
-          [{text: translate('common.ok'), onPress: () => reset()}],
+          translate('error.message.incorrect.code').toString(),
+          translate('prompt.enter.code').toString(),
+          [{text: translate('common.ok').toString(), onPress: () => reset()}],
           {cancelable: false},
         );
       }
