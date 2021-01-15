@@ -55,7 +55,7 @@ const Register = ({navigation}) => {
             onChangePhoneNumber={(number) => setPhoneNumber(number)}
             initialCountry={'vn'}
             textProps={{
-              placeholder: 'Enter phone number',
+              placeholder: translate('placeholder.phone'),
               inputContainerStyle: styles.noneBorderBottom,
             }}
             textComponent={Input}

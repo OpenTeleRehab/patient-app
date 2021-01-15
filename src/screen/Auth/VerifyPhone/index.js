@@ -30,9 +30,9 @@ const VerifyPhone = ({navigation}) => {
         navigation.navigate(ROUTES.TERM_OF_SERVICE);
       } else {
         Alert.alert(
-          'Incorrect code',
-          'Please enter the correct code or resend a new code.',
-          [{text: 'OK', onPress: () => reset()}],
+          translate('error.message.incorrect.code'),
+          translate('prompt.enter.code'),
+          [{text: translate('common.ok'), onPress: () => reset()}],
           {cancelable: false},
         );
       }

@@ -31,9 +31,9 @@ const Login = ({navigation}) => {
     dispatch(loginRequest(phone, code)).then((result) => {
       if (!result) {
         Alert.alert(
-          'Login',
-          'PIN is incorrect.',
-          [{text: 'OK', onPress: () => reset()}],
+          translate('common.login.fail'),
+          translate('wrong.pin'),
+          [{text: translate('common.ok'), onPress: () => reset()}],
           {cancelable: false},
         );
       }
