@@ -123,3 +123,17 @@ export const setInitialRouteName = (routeName) => async (dispatch) => {
 export const setProfileInfo = (data) => async (dispatch) => {
   dispatch(mutation.userSetProfileSuccess(data));
 };
+
+export const updateProfileRequest = (id, payload, phone) => async (
+  dispatch,
+) => {
+  let data = await User.updateProfile(id, payload);
+  if (data.success) {
+    payload.phone = phone;
+    dispatch(mutation.updateProfileSuccess(payload));
+    return true;
+  } else {
+    dispatch(mutation.updateProfileFailure());
+    return false;
+  }
+};

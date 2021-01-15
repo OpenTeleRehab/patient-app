@@ -82,6 +82,17 @@ const changePinNumber = async (pin, accessToken) => {
   return await callApi(options, 'post');
 };
 
+const updateProfile = async (id, payload) => {
+  const options = {
+    uri: `/patient/${id}`,
+    body: {
+      ...payload,
+    },
+  };
+
+  return await callApi(options, 'put');
+};
+
 export const User = {
   register,
   verifyPhoneNumber,
@@ -90,4 +101,5 @@ export const User = {
   logout,
   comparePinNumber,
   changePinNumber,
+  updateProfile,
 };

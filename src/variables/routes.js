@@ -13,6 +13,7 @@ import SetupPinScreen from '../screen/Auth/SetupPin';
 
 // Home group
 import HomeScreen from '../screen/Home';
+import UserProfileEditScreen from '../screen/UserProfile/edit';
 import PrivacyScreen from '../screen/Privacy';
 import AboutScreen from '../screen/About';
 import UserProfileScreen from '../screen/UserProfile';
@@ -84,6 +85,10 @@ export const homes = [
   {
     name: ROUTES.SETUP_PIN,
     screen: SetupPinScreen,
+  },
+  {
+    name: ROUTES.USER_PROFILE_EDIT,
+    screen: UserProfileEditScreen,
   },
 ];
 

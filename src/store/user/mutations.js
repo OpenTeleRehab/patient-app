@@ -100,7 +100,19 @@ const userSetInitialRouteNameSuccess = (data) => {
 const userSetProfileSuccess = (data) => {
   return {
     type: 'USER_SET_PROFILE_SUCCEED',
+  };
+};
+
+const updateProfileSuccess = (data) => {
+  return {
+    type: 'UPDATE_PROFILE_SUCCEED',
     data,
+  };
+};
+
+const updateProfileFailure = () => {
+  return {
+    type: 'UPDATE_PROFILE_FAILED',
   };
 };
 
@@ -121,4 +133,6 @@ export const mutation = {
   userChangePinNumberFailure,
   userSetInitialRouteNameSuccess,
   userSetProfileSuccess,
+  updateProfileSuccess,
+  updateProfileFailure,
 };
