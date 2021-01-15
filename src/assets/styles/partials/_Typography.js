@@ -19,4 +19,11 @@ export default {
   textDark: {
     color: variables.black,
   },
+  progressTextStyle: {
+    color: variables.white,
+    fontSize: 72,
+  },
+  fontWeightBold: {
+    fontWeight: 'bold',
+  },
 };

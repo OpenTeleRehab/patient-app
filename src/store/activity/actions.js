@@ -12,3 +12,12 @@ export const getActivityListRequest = () => async (dispatch) => {
     dispatch(mutation.activityFetchFailure());
   }
 };
+
+export const getTodayActivitySummaryRequest = () => async (dispatch) => {
+  const data = await Activity.getTodayActivitySummary();
+  if (data.success) {
+    dispatch(mutation.todayActivitySummarySuccess(data.data));
+  } else {
+    dispatch(mutation.todayActivitySummaryFailure());
+  }
+};

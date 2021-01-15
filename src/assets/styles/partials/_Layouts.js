@@ -21,7 +21,13 @@ export default {
   flexRow: {
     flexDirection: 'row',
   },
+  flexColumn: {
+    flexDirection: 'column',
+  },
   alignSelfStretch: {
     alignSelf: 'stretch',
+  },
+  justifyContentCenter: {
+    justifyContent: 'center',
   },
 };

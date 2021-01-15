@@ -14,7 +14,22 @@ const activityFetchFailure = () => {
   };
 };
 
+const todayActivitySummarySuccess = (data) => {
+  return {
+    type: 'TODAY_ACTIVITY_SUMMARY_REQUEST_SUCCEED',
+    data,
+  };
+};
+
+const todayActivitySummaryFailure = () => {
+  return {
+    type: 'TODAY_ACTIVITY_SUMMARY_REQUEST_FAILED',
+  };
+};
+
 export const mutation = {
   activityFetchSuccess,
   activityFetchFailure,
+  todayActivitySummarySuccess,
+  todayActivitySummaryFailure,
 };
