@@ -116,7 +116,7 @@ const SetupPin = ({navigation, route}) => {
         }
       />
       <ScrollView style={styles.mainContainerLight}>
-        <View style={[styles.flexCenter]}>
+        <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
             <Text style={styles.formLabel}>{translate('pin.new.number')}</Text>
             <SmoothPinCodeInput

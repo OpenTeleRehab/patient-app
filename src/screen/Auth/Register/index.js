@@ -3,9 +3,9 @@
  */
 import React, {useState, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image} from 'react-native';
+import {View, Image, ScrollView} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import {Button, Card, Input, Text} from 'react-native-elements';
+import {Button, Input, Text} from 'react-native-elements';
 import PhoneInput from 'react-native-phone-input';
 
 import styles from '../../../assets/styles';
@@ -47,57 +47,63 @@ const Register = ({navigation}) => {
       <View style={styles.authBanner}>
         <Image source={logoWhite} style={styles.authLogoWhite} />
       </View>
-      <Card>
-        <PhoneInput
-          ref={(ref) => (phoneRef = ref)}
-          value={phoneNumber}
-          onChangePhoneNumber={(number) => setPhoneNumber(number)}
-          initialCountry={'vn'}
-          textProps={{
-            placeholder: 'Enter phone number',
-            inputContainerStyle: styles.noneBorderBottom,
-          }}
-          textComponent={Input}
-          textStyle={styles.formControl}
-          flagStyle={customFlagStyle}
-          offset={20}
-          countriesList={[
-            {
-              name: 'Cambodia (កម្ពុជា)',
-              iso2: 'kh',
-              dialCode: '855',
-              priority: 1,
-              areaCodes: null,
-            },
-            {
-              name: 'Vietnam (Việt Nam)',
-              iso2: 'vn',
-              dialCode: '84',
-              priority: 0,
-              areaCodes: null,
-            },
-          ]}
-        />
-        <View>
+      <ScrollView style={styles.mainContainerLight}>
+        <View style={styles.paddingMd}>
+          <PhoneInput
+            ref={(ref) => (phoneRef = ref)}
+            value={phoneNumber}
+            onChangePhoneNumber={(number) => setPhoneNumber(number)}
+            initialCountry={'vn'}
+            textProps={{
+              placeholder: 'Enter phone number',
+              inputContainerStyle: styles.noneBorderBottom,
+            }}
+            textComponent={Input}
+            textStyle={styles.formControl}
+            flagStyle={customFlagStyle}
+            countriesList={[
+              {
+                name: 'Cambodia (កម្ពុជា)',
+                iso2: 'kh',
+                dialCode: '855',
+                priority: 1,
+                areaCodes: null,
+              },
+              {
+                name: 'Vietnam (Việt Nam)',
+                iso2: 'vn',
+                dialCode: '84',
+                priority: 0,
+                areaCodes: null,
+              },
+            ]}
+          />
+
           {errorPhoneNumber && (
-            <Text style={styles.textDanger}>
-              {translate('error.message.phone.created')}
-            </Text>
+            <View style={styles.marginBottom}>
+              <Text style={styles.textDanger}>
+                {translate('error.message.phone.created')}
+              </Text>
+            </View>
           )}
-          <Text style={styles.formLabel}>{translate('common.language')}</Text>
-          <Picker
-            prompt={translate('common.language')}
-            style={styles.formControl}>
-            <Picker.Item label="English" value="en" />
-            <Picker.Item label="Vietnam" value="vn" />
-          </Picker>
+
+          <View>
+            <Text style={styles.formLabel}>{translate('common.language')}</Text>
+            <View style={styles.formControl}>
+              <Picker prompt={translate('common.language')}>
+                <Picker.Item label="English" value="en" />
+                <Picker.Item label="Vietnam" value="vn" />
+              </Picker>
+            </View>
+          </View>
+          <Button
+            onPress={onRegister}
+            title={translate('common.register')}
+            containerStyle={styles.marginTopLg}
+            titleStyle={styles.textUpperCase}
+          />
         </View>
-        <Button
-          onPress={onRegister}
-          title={translate('common.register')}
-          titleStyle={styles.textUpperCase}
-        />
-      </Card>
+      </ScrollView>
     </>
   );
 };

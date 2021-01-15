@@ -74,10 +74,8 @@ const VerifyPhone = ({navigation}) => {
         onGoBack={() => navigation.goBack()}
       />
       <ScrollView style={styles.mainContainerLight}>
-        <View style={styles.flexCenter}>
-          <Text style={styles.marginTop}>
-            {translate('phone.verify.description')}
-          </Text>
+        <View style={[styles.flexCenter, styles.paddingMd]}>
+          <Text>{translate('phone.verify.description')}</Text>
           <Text style={styles.marginY}>
             {translate('phone.send.to')}
             <Text style={styles.textDefaultBold}>&nbsp; {formattedNumber}</Text>
@@ -102,10 +100,8 @@ const VerifyPhone = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={[styles.paddingMd]}>
           <Button
-            containerStyle={[styles.marginTop, styles.alignSelfStretch]}
+            containerStyle={[styles.marginTopMd, styles.alignSelfStretch]}
             titleStyle={styles.textUpperCase}
             disabled={code.length !== 6}
             onPress={onConfirm}
