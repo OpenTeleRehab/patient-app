@@ -1417,6 +1417,10 @@
     semver "^7.3.2"
     tsutils "^3.17.1"
 
+"@webessentials/react-native-otp-verify@https://github.com/webessentials/react-native-otp-verify.git#2.0.0":
+  version "2.0.0"
+  resolved "https://github.com/webessentials/react-native-otp-verify.git#4ac9c354e080f08d4034144f61b7839c194a0808"
+
 abab@^2.0.0:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -5966,11 +5970,6 @@ react-native-iphone-x-helper@^1.3.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
   integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
-
-react-native-otp-verify@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/react-native-otp-verify/-/react-native-otp-verify-1.0.3.tgz#a205521bf19f1e448e563ddfa462559469fa8662"
-  integrity sha512-BIKP89H5a6ItAcRXJBxQkc2uzA4jazaEHTRWZxqnUUb6njHKHOevKrtzfhUOoAXQGq3evCRldEot5EaNWTDq9g==
 
 react-native-phone-input@^0.2.4:
   version "0.2.4"
