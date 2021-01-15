@@ -28,10 +28,9 @@ const userVerifyPhoneNumberFailure = () => {
   };
 };
 
-const userSetupPinNumberSuccess = (data) => {
+const userSetupPinNumberSuccess = () => {
   return {
     type: 'USER_SETUP_PIN_NUMBER_SUCCEED',
-    data,
   };
 };
 
@@ -98,6 +97,13 @@ const userSetInitialRouteNameSuccess = (data) => {
   };
 };
 
+const userSetProfileSuccess = (data) => {
+  return {
+    type: 'USER_SET_PROFILE_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   userRegisterSuccess,
   userRegisterFailure,
@@ -114,4 +120,5 @@ export const mutation = {
   userChangePinNumberSuccess,
   userChangePinNumberFailure,
   userSetInitialRouteNameSuccess,
+  userSetProfileSuccess,
 };

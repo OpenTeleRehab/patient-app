@@ -47,11 +47,11 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
       },
       true,
     );
-    dispatch(mutation.userSetupPinNumberSuccess(data.data));
-    return true;
+    dispatch(mutation.userSetupPinNumberSuccess());
+    return {success: true, data: data.data};
   } else {
     dispatch(mutation.userSetupPinNumberFailure());
-    return false;
+    return {success: false};
   }
 };
 
@@ -109,13 +109,17 @@ export const changePinNumberRequest = (pin, phone, accessToken) => async (
       true,
     );
     dispatch(mutation.userChangePinNumberSuccess(data.data));
-    return true;
+    return {success: true, data: data.data};
   } else {
     dispatch(mutation.userChangePinNumberFailure());
-    return false;
+    return {success: false};
   }
 };
 
 export const setInitialRouteName = (routeName) => async (dispatch) => {
   dispatch(mutation.userSetInitialRouteNameSuccess(routeName));
+};
+
+export const setProfileInfo = (data) => async (dispatch) => {
+  dispatch(mutation.userSetProfileSuccess(data));
 };

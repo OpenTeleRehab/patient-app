@@ -10,6 +10,7 @@ import {ROUTES} from '../../../variables/constants';
 import {
   changePinNumberRequest,
   setupPinNumberRequest,
+  setProfileInfo,
 } from '../../../store/user/actions';
 import {useSelector, useDispatch} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
@@ -38,14 +39,17 @@ const SetupPin = ({navigation, route}) => {
           result = await dispatch(setupPinNumberRequest(code, phone, otpCode));
         }
 
-        if (result) {
+        if (result.success) {
           Alert.alert(
             translate('pin.setup.number').toString(),
             translate('success.message.pin.setup').toString(),
             [
               {
                 text: translate('common.ok').toString(),
-                onPress: () => (isPINChanged ? onCancelOrOnSucceed : null),
+                onPress: () =>
+                  isPINChanged
+                    ? onCancelOrOnSucceed()
+                    : onSetProfileInfo(result.data),
               },
             ],
             {cancelable: false},
@@ -91,6 +95,10 @@ const SetupPin = ({navigation, route}) => {
   const onCancelOrOnSucceed = () => {
     handlerReset();
     navigation.navigate(ROUTES.USER_PROFILE);
+  };
+
+  const onSetProfileInfo = (data) => {
+    dispatch(setProfileInfo(data));
   };
 
   return (
