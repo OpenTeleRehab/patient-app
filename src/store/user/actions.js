@@ -143,3 +143,28 @@ export const updateProfileRequest = (id, payload, phone) => async (
     return false;
   }
 };
+
+export const fetchTermOfServiceRequest = () => async (dispatch) => {
+  let res = await User.getTermOfService();
+  if (res && res.data) {
+    dispatch(mutation.fetchTermOfServiceSuccess(res.data));
+    return true;
+  } else {
+    dispatch(mutation.fetchTermOfServiceFailure());
+    return false;
+  }
+};
+
+export const acceptTermOfServiceRequest = (id, accessToken) => async (
+  dispatch,
+) => {
+  dispatch(mutation.acceptTermOfServiceRequest());
+  let data = await User.acceptTermOfService(id, accessToken);
+  if (data.success) {
+    dispatch(mutation.acceptTermOfServiceSuccess(data.data));
+    return true;
+  } else {
+    dispatch(mutation.acceptTermOfServiceFailure());
+    return false;
+  }
+};
