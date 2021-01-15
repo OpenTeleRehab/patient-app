@@ -6,16 +6,21 @@ import {ScrollView, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
+import {getTranslate} from 'react-localize-redux';
+import {useSelector} from 'react-redux';
 
 const Activity = () => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+
   return (
     <>
       <HeaderBar
-        leftContent={{label: 'Activities'}}
+        leftContent={{label: translate('tab.activities')}}
         rightContent={{
           icon: 'arrow-collapse-down',
           iconType: 'material-community',
-          label: 'Download',
+          label: translate('common.download'),
           onPress: () => null,
         }}
       />

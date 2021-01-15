@@ -6,13 +6,17 @@ import {ScrollView, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
+import {getTranslate} from 'react-localize-redux';
+import {useSelector} from 'react-redux';
 
 const Goal = () => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   return (
     <>
       <HeaderBar
-        leftContent={{label: 'Goals'}}
-        rightContent={{label: 'Close', onPress: () => null}}
+        leftContent={{label: translate('tab.goals')}}
+        rightContent={{label: translate('common.close'), onPress: () => null}}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.flexCenter}>
