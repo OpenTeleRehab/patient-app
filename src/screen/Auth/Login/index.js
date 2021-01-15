@@ -19,6 +19,7 @@ const Login = ({navigation}) => {
   const [code, setCode] = useState('');
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const isLoading = useSelector((state) => state.user.isLoading);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
@@ -93,6 +94,7 @@ const Login = ({navigation}) => {
             onPress={() => handleLogin()}
             title={translate('common.login')}
             titleStyle={styles.textUpperCase}
+            disabled={isLoading}
           />
         </View>
       </ScrollView>

@@ -6,14 +6,26 @@ import {ROUTES} from '../../variables/constants';
 
 export const user = (state = initialState, action) => {
   switch (action.type) {
+    case 'USER_REGISTER_REQUESTED':
+    case 'USER_VERIFY_PHONE_NUMBER_REQUESTED':
+    case 'USER_SETUP_PIN_NUMBER_REQUESTED':
+    case 'USER_LOGIN_REQUESTED':
+    case 'USER_COMPARE_PIN_NUMBER_REQUESTED':
+    case 'USER_CHANGE_PIN_NUMBER_REQUESTED': {
+      return Object.assign({}, state, {
+        isLoading: true,
+      });
+    }
     case 'USER_REGISTER_SUCCEED': {
       return Object.assign({}, state, {
         phone: action.data.to,
+        isLoading: false,
       });
     }
     case 'USER_VERIFY_PHONE_NUMBER_SUCCEED': {
       return Object.assign({}, state, {
         otpCode: action.data.code,
+        isLoading: false,
       });
     }
     case 'USER_CHANGE_PIN_NUMBER_SUCCEED':
@@ -22,6 +34,7 @@ export const user = (state = initialState, action) => {
         profile: action.data.profile,
         accessToken: action.data.token,
         initialRouteName: ROUTES.LOGIN,
+        isLoading: false,
       });
     }
     case 'USER_LOGOUT_SUCCEED': {
@@ -44,6 +57,18 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         profile: action.data,
       });
+    case 'USER_SETUP_PIN_NUMBER_SUCCEED':
+    case 'USER_COMPARE_PIN_NUMBER_SUCCEED':
+    case 'USER_REGISTER_FAILED':
+    case 'USER_VERIFY_PHONE_NUMBER_FAILED':
+    case 'USER_SETUP_PIN_NUMBER_FAILED':
+    case 'USER_LOGIN_FAILED':
+    case 'USER_COMPARE_PIN_NUMBER_FAILED':
+    case 'USER_CHANGE_PIN_NUMBER_FAILED': {
+      return Object.assign({}, state, {
+        isLoading: false,
+      });
+    }
     default:
       return state;
   }

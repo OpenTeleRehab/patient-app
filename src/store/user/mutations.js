@@ -2,6 +2,12 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 
+const userRegisterRequest = () => {
+  return {
+    type: 'USER_REGISTER_REQUESTED',
+  };
+};
+
 const userRegisterSuccess = (data) => {
   return {
     type: 'USER_REGISTER_SUCCEED',
@@ -12,6 +18,12 @@ const userRegisterSuccess = (data) => {
 const userRegisterFailure = () => {
   return {
     type: 'USER_REGISTER_FAILED',
+  };
+};
+
+const userVerifyPhoneNumberRequest = () => {
+  return {
+    type: 'USER_VERIFY_PHONE_NUMBER_REQUESTED',
   };
 };
 
@@ -28,6 +40,12 @@ const userVerifyPhoneNumberFailure = () => {
   };
 };
 
+const userSetupPinNumberRequest = () => {
+  return {
+    type: 'USER_SETUP_PIN_NUMBER_REQUESTED',
+  };
+};
+
 const userSetupPinNumberSuccess = () => {
   return {
     type: 'USER_SETUP_PIN_NUMBER_SUCCEED',
@@ -37,6 +55,12 @@ const userSetupPinNumberSuccess = () => {
 const userSetupPinNumberFailure = () => {
   return {
     type: 'USER_SETUP_PIN_NUMBER_FAILED',
+  };
+};
+
+const userLoginRequest = () => {
+  return {
+    type: 'USER_LOGIN_REQUESTED',
   };
 };
 
@@ -65,6 +89,12 @@ const userLogoutFailure = () => {
   };
 };
 
+const userComparePinNumberRequest = () => {
+  return {
+    type: 'USER_COMPARE_PIN_NUMBER_REQUESTED',
+  };
+};
+
 const userComparePinNumberSuccess = () => {
   return {
     type: 'USER_COMPARE_PIN_NUMBER_SUCCEED',
@@ -74,6 +104,12 @@ const userComparePinNumberSuccess = () => {
 const userComparePinNumberFailure = () => {
   return {
     type: 'USER_COMPARE_PIN_NUMBER_FAILED',
+  };
+};
+
+const userChangePinNumberRequest = () => {
+  return {
+    type: 'USER_CHANGE_PIN_NUMBER_REQUESTED',
   };
 };
 
@@ -100,6 +136,7 @@ const userSetInitialRouteNameSuccess = (data) => {
 const userSetProfileSuccess = (data) => {
   return {
     type: 'USER_SET_PROFILE_SUCCEED',
+    data,
   };
 };
 
@@ -117,18 +154,24 @@ const updateProfileFailure = () => {
 };
 
 export const mutation = {
+  userRegisterRequest,
   userRegisterSuccess,
   userRegisterFailure,
+  userVerifyPhoneNumberRequest,
   userVerifyPhoneNumberSuccess,
   userVerifyPhoneNumberFailure,
+  userSetupPinNumberRequest,
   userSetupPinNumberSuccess,
   userSetupPinNumberFailure,
+  userLoginRequest,
   userLoginSuccess,
   userLoginFailure,
   userLogoutSuccess,
   userLogoutFailure,
+  userComparePinNumberRequest,
   userComparePinNumberSuccess,
   userComparePinNumberFailure,
+  userChangePinNumberRequest,
   userChangePinNumberSuccess,
   userChangePinNumberFailure,
   userSetInitialRouteNameSuccess,

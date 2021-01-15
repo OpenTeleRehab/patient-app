@@ -26,6 +26,7 @@ const SetupPin = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isPINChanged = route.params?.isPINChanged || false;
+  const isLoading = useSelector((state) => state.user.isLoading);
 
   const handlerSave = async () => {
     if (code && confirmCode) {
@@ -89,7 +90,7 @@ const SetupPin = ({navigation, route}) => {
   };
 
   const disabledConfirm = () => {
-    return code.length !== 4 || confirmCode.length !== 4;
+    return code.length !== 4 || confirmCode.length !== 4 || isLoading;
   };
 
   const onCancelOrOnSucceed = () => {
