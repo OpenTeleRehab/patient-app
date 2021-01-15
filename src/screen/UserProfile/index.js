@@ -35,7 +35,7 @@ const UserProfile = ({navigation}) => {
     },
     {
       label: 'common.gender',
-      value: profile.gender ? profile.gender : '',
+      value: profile.gender ? translate(`gender.${profile.gender}`) : '',
       rightLabel: 'common.edit',
     },
     {
