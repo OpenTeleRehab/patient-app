@@ -32,4 +32,8 @@ export default {
     fontSize: variables.fontSizeBase,
     color: variables.black,
   },
+  inputContainer: {
+    height: 80,
+    paddingLeft: 1,
+  },
 };

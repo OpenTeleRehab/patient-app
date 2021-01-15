@@ -54,8 +54,10 @@ const UserProfile = ({navigation}) => {
     },
     {
       label: 'common.language',
-      value: profile.language
-        ? profile.language
+      value: profile.language_id
+        ? profile.language_id == 1
+          ? translate('common.language.en')
+          : translate('common.language.vn')
         : translate('common.language.en'),
       rightLabel: 'common.edit',
     },

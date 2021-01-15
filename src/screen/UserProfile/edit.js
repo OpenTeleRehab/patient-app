@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Divider, Text} from 'react-native-elements';
+import {Button, Divider, Input, Text} from 'react-native-elements';
 import {Alert, ScrollView, View, Platform} from 'react-native';
 import styles from '../../assets/styles';
 import moment from 'moment';
@@ -39,7 +39,9 @@ const UserProfileEdit = ({navigation}) => {
         first_name: profile.first_name,
         last_name: profile.last_name,
         gender: profile.gender,
-        date_of_birth: profile.date_of_birth,
+        date_of_birth: isValidDateFormat(profile.date_of_birth)
+          ? profile.date_of_birth
+          : moment(profile.date_of_birth).format(settings.format.date),
         language_id: profile.language_id,
       });
       if (profile.date_of_birth) {
@@ -115,12 +117,33 @@ const UserProfileEdit = ({navigation}) => {
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.formGroup}>
-          <Text style={[styles.formLabel, styles.textSmall]}>
-            {translate('common.name')}
-          </Text>
-          <Text style={styles.textFormDisabled}>
-            {userInfo.last_name + ' ' + userInfo.first_name}
-          </Text>
+          <Input
+            label={translate('first.name')}
+            labelStyle={[styles.formLabel, styles.textSmall, styles.marginTop]}
+            inputContainerStyle={styles.noneBorderBottom}
+            containerStyle={styles.inputContainer}
+            value={userInfo.first_name}
+            onChangeText={(value) =>
+              setUserInfo({
+                ...userInfo,
+                ['first_name']: value,
+              })
+            }
+          />
+          <Divider style={styles.marginTop} />
+          <Input
+            label={translate('last.name')}
+            labelStyle={[styles.formLabel, styles.textSmall, styles.marginTop]}
+            inputContainerStyle={styles.noneBorderBottom}
+            containerStyle={styles.inputContainer}
+            value={userInfo.last_name}
+            onChangeText={(value) =>
+              setUserInfo({
+                ...userInfo,
+                ['last_name']: value,
+              })
+            }
+          />
           <Divider style={styles.marginTop} />
         </View>
         <View style={styles.formGroup}>
