@@ -25,11 +25,12 @@ const ConfirmPin = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const accessToken = useSelector((state) => state.user.accessToken);
+  const isLoading = useSelector((state) => state.user.isLoading);
   const translate = getTranslate(localize);
   const [pin, setPin] = useState('');
 
   const disabledConfirm = () => {
-    return pin.length !== 4;
+    return pin.length !== 4 || isLoading;
   };
 
   const handleConfirm = () => {

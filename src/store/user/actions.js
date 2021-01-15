@@ -9,6 +9,7 @@ import {storeLocalData} from '../../utils/local_storage';
 import {ROUTES, STORAGE_KEY} from '../../variables/constants';
 
 export const registerRequest = (to) => async (dispatch) => {
+  dispatch(mutation.userRegisterRequest());
   const data = await User.register(to);
   if (data.success) {
     dispatch(mutation.userRegisterSuccess({to}));
@@ -20,6 +21,7 @@ export const registerRequest = (to) => async (dispatch) => {
 };
 
 export const verifyPhoneNumberRequest = (to, code) => async (dispatch) => {
+  dispatch(mutation.userVerifyPhoneNumberRequest());
   const data = await User.verifyPhoneNumber(to, code);
   if (data.success) {
     dispatch(mutation.userVerifyPhoneNumberSuccess({code}));
@@ -33,6 +35,7 @@ export const verifyPhoneNumberRequest = (to, code) => async (dispatch) => {
 export const setupPinNumberRequest = (pin, phone, otp_code) => async (
   dispatch,
 ) => {
+  dispatch(mutation.userSetupPinNumberRequest());
   const data = await User.setupPinNumber(pin, phone, otp_code);
   if (data.success) {
     const timespan = moment()
@@ -56,6 +59,7 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
 };
 
 export const loginRequest = (phone, pin) => async (dispatch) => {
+  dispatch(mutation.userLoginRequest());
   const data = await User.login(phone, pin);
   if (data.success) {
     dispatch(mutation.userLoginSuccess(data.data));
@@ -81,6 +85,7 @@ export const logoutRequest = (accessToken) => async (dispatch) => {
 export const comparePinNumberRequest = (pin, accessToken) => async (
   dispatch,
 ) => {
+  dispatch(mutation.userComparePinNumberRequest());
   const data = await User.comparePinNumber(pin, accessToken);
   if (data.success) {
     dispatch(mutation.userComparePinNumberSuccess());
@@ -94,6 +99,7 @@ export const comparePinNumberRequest = (pin, accessToken) => async (
 export const changePinNumberRequest = (pin, phone, accessToken) => async (
   dispatch,
 ) => {
+  dispatch(mutation.userChangePinNumberRequest());
   const data = await User.changePinNumber(pin, accessToken);
   if (data.success) {
     const timespan = moment()

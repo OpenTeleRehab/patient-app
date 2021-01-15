@@ -5,4 +5,5 @@ export const initialState = {
   profile: [],
   accessToken: '',
   initialRouteName: '',
+  isLoading: false,
 };

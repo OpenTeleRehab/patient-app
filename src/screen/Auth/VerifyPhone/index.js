@@ -22,6 +22,7 @@ const VerifyPhone = ({navigation}) => {
   const formattedNumber = useSelector((state) => state.user.phone);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const isLoading = useSelector((state) => state.user.isLoading);
 
   const onConfirm = () => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, code)).then((result) => {
@@ -61,6 +62,10 @@ const VerifyPhone = ({navigation}) => {
     }
   };
 
+  const disabledConfirm = () => {
+    return code.length !== 6 || isLoading;
+  };
+
   useEffect(() => {
     RNOtpVerify.getOtp()
       .then((p) => RNOtpVerify.addListener(otpHandler))
@@ -94,7 +99,7 @@ const VerifyPhone = ({navigation}) => {
           />
           <View style={[styles.flexRow, styles.marginTop]}>
             <Text>{translate('phone.dont.receive.code')} &nbsp;</Text>
-            <TouchableOpacity onPress={onResent}>
+            <TouchableOpacity onPress={onResent} disabled={isLoading}>
               <Text style={styles.hyperlink}>
                 {translate('phone.resend.code')}
               </Text>
@@ -103,7 +108,7 @@ const VerifyPhone = ({navigation}) => {
           <Button
             containerStyle={[styles.marginTopMd, styles.alignSelfStretch]}
             titleStyle={styles.textUpperCase}
-            disabled={code.length !== 6}
+            disabled={disabledConfirm()}
             onPress={onConfirm}
             title={translate('common.confirm')}
           />

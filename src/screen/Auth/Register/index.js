@@ -28,6 +28,7 @@ const Register = ({navigation}) => {
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const isLoading = useSelector((state) => state.user.isLoading);
   let phoneRef = useRef();
 
   const onRegister = () => {
@@ -101,6 +102,7 @@ const Register = ({navigation}) => {
             title={translate('common.register')}
             containerStyle={styles.marginTopLg}
             titleStyle={styles.textUpperCase}
+            disabled={isLoading}
           />
         </View>
       </ScrollView>
