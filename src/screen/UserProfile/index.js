@@ -60,7 +60,7 @@ const UserProfile = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        onGoBack={() => navigation.goBack()}
+        onGoBack={() => navigation.navigate(ROUTES.HOME)}
         title={translate('preferences')}
         rightContent={{
           label: translate('common.logout'),
