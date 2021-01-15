@@ -5,6 +5,17 @@ const getActivities = () => {
   return {};
 };
 
+const getTodayActivitySummary = () => {
+  return {
+    success: true,
+    data: {
+      all: 6,
+      completed: 4,
+    },
+  };
+};
+
 export const Activity = {
   getActivities,
+  getTodayActivitySummary,
 };
