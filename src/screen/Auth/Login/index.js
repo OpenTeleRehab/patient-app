@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect, useCallback} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {View, Image, ScrollView, TouchableOpacity, Alert} from 'react-native';
 import {Button, Text} from 'react-native-elements';
 import {loginRequest} from '../../../store/user/actions';
@@ -10,15 +10,18 @@ import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {getLocalData} from '../../../utils/local_storage';
-import {ROUTES} from '../../../variables/constants';
+import {ROUTES, STORAGE_KEY} from '../../../variables/constants';
+import {getTranslate} from 'react-localize-redux';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const fetchLocalData = useCallback(async () => {
-    const data = await getLocalData('OrgHiPatientApp', true);
+    const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
     if (data) {
       setPhone(data.phone);
     }
@@ -53,16 +56,18 @@ const Login = ({navigation}) => {
       <ScrollView style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
-            <Text>Mobile Number</Text>
-            <Text style={[styles.marginTop, styles.leadText, styles.textDark]}>
-              {phone}
-            </Text>
+            <Text style={styles.formLabel}>{translate('phone.number')}</Text>
+            <Text style={[styles.leadText, styles.textDark]}>{phone}</Text>
             <TouchableOpacity
-              style={styles.marginTop}
+              style={styles.marginY}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={styles.hyperlink}>Login with other number</Text>
+              <Text style={styles.hyperlink}>
+                {translate('phone.login.other.number')}
+              </Text>
             </TouchableOpacity>
-            <Text style={styles.marginTop}>Enter PIN Number</Text>
+            <Text style={[styles.formLabel, styles.marginTopMd]}>
+              {translate('pin.enter.number')}
+            </Text>
             <SmoothPinCodeInput
               password
               value={code}
@@ -79,12 +84,16 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               style={styles.marginTop}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={styles.hyperlink}>I forgot my PIN</Text>
+              <Text style={styles.hyperlink}>{translate('pin.forget')}</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.paddingMd}>
-          <Button onPress={() => handleLogin()} title="Login" />
+          <Button
+            onPress={() => handleLogin()}
+            title={translate('common.login')}
+            titleStyle={styles.textUpperCase}
+          />
         </View>
       </ScrollView>
     </>

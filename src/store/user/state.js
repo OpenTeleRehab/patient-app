@@ -4,6 +4,5 @@
 export const initialState = {
   profile: [],
   accessToken: '',
-  timespan: '',
   initialRouteName: '',
 };

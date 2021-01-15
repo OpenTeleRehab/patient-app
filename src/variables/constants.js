@@ -18,3 +18,7 @@ export const ROUTES = {
   SETUP_PIN: 'SetupPIN',
   CONFIRM_PIN: 'ConfirmPin',
 };
+
+export const STORAGE_KEY = {
+  AUTH_INFO: 'AuthInfo',
+};

@@ -78,8 +78,9 @@ const VerifyPhone = ({navigation}) => {
           <Text style={styles.marginTop}>
             {translate('phone.verify.description')}
           </Text>
-          <Text style={styles.marginTop}>
-            {translate('phone.send.to')} {formattedNumber}
+          <Text style={styles.marginY}>
+            {translate('phone.send.to')}
+            <Text style={styles.textDefaultBold}>&nbsp; {formattedNumber}</Text>
           </Text>
           <SmoothPinCodeInput
             codeLength={6}
