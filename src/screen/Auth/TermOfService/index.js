@@ -54,7 +54,7 @@ const TermOfService = ({theme, navigation}) => {
             }}
             title={translate('common.back')}
             type="clear"
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate(ROUTES.REGISTER)}
             containerStyle={styles.marginTop}
             titleStyle={styles.textUpperCase}
           />
