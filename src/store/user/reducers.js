@@ -17,7 +17,6 @@ export const user = (state = initialState, action) => {
       });
     }
     case 'USER_CHANGE_PIN_NUMBER_SUCCEED':
-    case 'USER_SETUP_PIN_NUMBER_SUCCEED':
     case 'USER_LOGIN_SUCCEED': {
       return Object.assign({}, state, {
         profile: action.data.profile,
@@ -33,6 +32,12 @@ export const user = (state = initialState, action) => {
     case 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED': {
       return Object.assign({}, state, {
         initialRouteName: action.data,
+      });
+    }
+    case 'USER_SET_PROFILE_SUCCEED': {
+      return Object.assign({}, state, {
+        profile: action.data.profile,
+        accessToken: action.data.token,
       });
     }
     default:
