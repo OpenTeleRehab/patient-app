@@ -57,6 +57,16 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         profile: action.data,
       });
+    case 'FETCH_TERM_OF_SERVICE_SUCCEED': {
+      return Object.assign({}, state, {
+        termOfService: action.data,
+      });
+    }
+    case 'ACCEPT_TERM_OF_SERVICE_SUCCEED': {
+      return Object.assign({}, state, {
+        accessToken: action.data.token,
+      });
+    }
     case 'USER_SETUP_PIN_NUMBER_SUCCEED':
     case 'USER_COMPARE_PIN_NUMBER_SUCCEED':
     case 'USER_REGISTER_FAILED':

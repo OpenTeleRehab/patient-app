@@ -93,6 +93,26 @@ const updateProfile = async (id, payload) => {
   return await callApi(options, 'put');
 };
 
+const getTermOfService = async () => {
+  const options = {
+    uri: '/user-term-condition',
+  };
+
+  return await callApi(options, 'get', false, true);
+};
+
+const acceptTermOfService = async (id, accessToken) => {
+  const options = {
+    uri: '/auth/accept-term-condition',
+    accessToken,
+    body: {
+      term_and_condition_id: id,
+    },
+  };
+
+  return await callApi(options, 'post');
+};
+
 export const User = {
   register,
   verifyPhoneNumber,
@@ -102,4 +122,6 @@ export const User = {
   comparePinNumber,
   changePinNumber,
   updateProfile,
+  getTermOfService,
+  acceptTermOfService,
 };

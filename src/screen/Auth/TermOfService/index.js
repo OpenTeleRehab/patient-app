@@ -7,8 +7,9 @@ import {ScrollView, TouchableOpacity, View} from 'react-native';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
 import HeaderBar from '../../../components/Common/HeaderBar';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
+import {acceptTermOfServiceRequest} from '../../../store/user/actions';
 
 const customStyles = {
   termDetailLink: {
@@ -17,9 +18,21 @@ const customStyles = {
   },
 };
 const TermOfService = ({theme, navigation}) => {
+  const dispatch = useDispatch();
   const [acceptAgreement, setAcceptAgreement] = useState(false);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const profile = useSelector((state) => state.user.profile);
+  const termContent = useSelector((state) => state.user.termOfService);
+  const accessToken = useSelector((state) => state.user.accessToken);
+
+  const onSubmit = () => {
+    if (profile.id) {
+      dispatch(acceptTermOfServiceRequest(termContent.id, accessToken));
+    } else {
+      navigation.navigate(ROUTES.SETUP_PIN);
+    }
+  };
 
   return (
     <>
@@ -41,7 +54,7 @@ const TermOfService = ({theme, navigation}) => {
           <Button
             title={translate('common.next')}
             disabled={!acceptAgreement}
-            onPress={() => navigation.navigate(ROUTES.SETUP_PIN)}
+            onPress={() => onSubmit()}
             containerStyle={styles.marginTop}
             titleStyle={styles.textUpperCase}
           />

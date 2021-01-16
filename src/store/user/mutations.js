@@ -153,6 +153,37 @@ const updateProfileFailure = () => {
   };
 };
 
+const fetchTermOfServiceSuccess = (data) => {
+  return {
+    type: 'FETCH_TERM_OF_SERVICE_SUCCEED',
+    data,
+  };
+};
+
+const fetchTermOfServiceFailure = () => {
+  return {
+    type: 'FETCH_TERM_OF_SERVICE_FAILED',
+  };
+};
+
+const acceptTermOfServiceRequest = () => {
+  return {
+    type: 'ACCEPT_TERM_OF_SERVICE_REQUESTED',
+  };
+};
+
+const acceptTermOfServiceSuccess = () => {
+  return {
+    type: 'ACCEPT_TERM_OF_SERVICE_SUCCEED',
+  };
+};
+
+const acceptTermOfServiceFailure = () => {
+  return {
+    type: 'ACCEPT_TERM_OF_SERVICE_FAILED',
+  };
+};
+
 export const mutation = {
   userRegisterRequest,
   userRegisterSuccess,
@@ -178,4 +209,9 @@ export const mutation = {
   userSetProfileSuccess,
   updateProfileSuccess,
   updateProfileFailure,
+  fetchTermOfServiceSuccess,
+  fetchTermOfServiceFailure,
+  acceptTermOfServiceRequest,
+  acceptTermOfServiceSuccess,
+  acceptTermOfServiceFailure,
 };
