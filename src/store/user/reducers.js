@@ -40,6 +40,7 @@ export const user = (state = initialState, action) => {
     case 'USER_LOGOUT_SUCCEED': {
       return Object.assign({}, state, {
         accessToken: '',
+        profile: {},
       });
     }
     case 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED': {
