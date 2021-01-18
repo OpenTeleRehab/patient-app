@@ -1,12 +1,13 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {View, Image, ScrollView} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {Button, Input, Text} from 'react-native-elements';
 import PhoneInput from 'react-native-phone-input';
+import RNOtpVerify from '@webessentials/react-native-otp-verify';
 
 import styles from '../../../assets/styles';
 
@@ -25,6 +26,7 @@ const customFlagStyle = {
 const Register = ({navigation}) => {
   const dispatch = useDispatch();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [hash, setHash] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -34,7 +36,7 @@ const Register = ({navigation}) => {
   const onRegister = () => {
     setErrorPhoneNumber(false);
     const formattedNumber = phoneRef.getCountryCode() + phoneNumber;
-    dispatch(registerRequest(formattedNumber)).then((result) => {
+    dispatch(registerRequest(formattedNumber, hash)).then((result) => {
       if (result) {
         navigation.navigate(ROUTES.VERIFY_PHONE);
       } else {
@@ -42,6 +44,12 @@ const Register = ({navigation}) => {
       }
     });
   };
+
+  useEffect(() => {
+    RNOtpVerify.getHash().then((code) => {
+      setHash(code);
+    });
+  }, []);
 
   return (
     <>

@@ -8,9 +8,9 @@ import moment from 'moment';
 import {storeLocalData} from '../../utils/local_storage';
 import {ROUTES, STORAGE_KEY} from '../../variables/constants';
 
-export const registerRequest = (to) => async (dispatch) => {
+export const registerRequest = (to, hash) => async (dispatch) => {
   dispatch(mutation.userRegisterRequest());
-  const data = await User.register(to);
+  const data = await User.register(to, hash);
   if (data.success) {
     dispatch(mutation.userRegisterSuccess({to}));
     return true;

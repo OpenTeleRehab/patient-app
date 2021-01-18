@@ -3,11 +3,12 @@
  */
 import {callApi} from '../utils/request';
 
-const register = async (to) => {
+const register = async (to, hash) => {
   const options = {
     uri: '/register/send-code',
     body: {
       to,
+      hash,
     },
   };
   return await callApi(options, 'post');
