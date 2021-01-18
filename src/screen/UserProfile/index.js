@@ -98,7 +98,9 @@ const UserProfile = ({navigation}) => {
               </ListItem>
               <ListItem bottomDivider key={`value-${i}`}>
                 <ListItem.Content>
-                  <ListItem.Title>{user.value}</ListItem.Title>
+                  <ListItem.Title style={styles.fontWeightBold}>
+                    {user.value}
+                  </ListItem.Title>
                 </ListItem.Content>
                 <Text style={styles.listStyle}>{user.rightContentValue}</Text>
               </ListItem>
