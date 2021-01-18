@@ -6,7 +6,7 @@ import {mutation} from './mutations';
 import settings from '../../../config/settings';
 import moment from 'moment';
 import {storeLocalData} from '../../utils/local_storage';
-import {ROUTES, STORAGE_KEY} from '../../variables/constants';
+import {STORAGE_KEY} from '../../variables/constants';
 
 export const registerRequest = (to) => async (dispatch) => {
   dispatch(mutation.userRegisterRequest());
@@ -74,7 +74,6 @@ export const logoutRequest = (accessToken) => async (dispatch) => {
   const data = await User.logout(accessToken);
   if (data.success) {
     dispatch(mutation.userLogoutSuccess());
-    dispatch(mutation.userSetInitialRouteNameSuccess(ROUTES.LOGIN));
     return true;
   } else {
     dispatch(mutation.userLogoutFailure());

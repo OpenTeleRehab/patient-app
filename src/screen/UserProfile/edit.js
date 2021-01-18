@@ -31,6 +31,8 @@ const UserProfileEdit = ({navigation}) => {
     date_of_birth: '',
     language_id: 1,
   });
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -55,6 +57,8 @@ const UserProfileEdit = ({navigation}) => {
   }, [profile, setUserInfo, setContractDate]);
 
   const handleSave = () => {
+    setFirstNameError(userInfo.first_name === '');
+    setLastNameError(userInfo.last_name === '');
     if (userInfo.first_name === '' || userInfo.last_name === '') {
       Alert.alert(
         translate('edit.profile.title').toString(),
@@ -146,7 +150,9 @@ const UserProfileEdit = ({navigation}) => {
               })
             }
           />
-          <Divider style={styles.marginTop} />
+          <Divider
+            style={[styles.marginTop, firstNameError ? styles.bgDanger : null]}
+          />
           <Input
             label={translate('last.name')}
             labelStyle={[styles.formLabel, styles.textSmall, styles.marginTop]}
@@ -160,7 +166,9 @@ const UserProfileEdit = ({navigation}) => {
               })
             }
           />
-          <Divider style={styles.marginTop} />
+          <Divider
+            style={[styles.marginTop, lastNameError ? styles.bgDanger : null]}
+          />
         </View>
         <View style={styles.formGroup}>
           <Text style={[styles.formLabel, styles.textSmall]}>
