@@ -36,7 +36,7 @@ const UserProfile = ({navigation}) => {
     {
       label: 'common.gender',
       value: profile.gender ? translate(`gender.${profile.gender}`) : '',
-      rightLabel: 'common.edit',
+      hasEdit: true,
     },
     {
       label: 'date.of.birth',
@@ -46,7 +46,7 @@ const UserProfile = ({navigation}) => {
       rightContentValue:
         'Age: ' +
         (profile.date_of_birth ? calculateAge(profile.date_of_birth) : 0),
-      rightLabel: 'common.edit',
+      hasEdit: true,
     },
     {
       label: 'phone.number',
@@ -59,12 +59,39 @@ const UserProfile = ({navigation}) => {
           ? translate('common.language.en')
           : translate('common.language.vn')
         : translate('common.language.en'),
-      rightLabel: 'common.edit',
+      hasEdit: true,
     },
   ];
 
   const handleLogout = () => {
     dispatch(logoutRequest(accessToken));
+  };
+
+  const RenderListItem = (user) => {
+    return (
+      <>
+        <ListItem bottomDivider containerStyle={styles.listBackground}>
+          <ListItem.Content>
+            <ListItem.Title>
+              {translate(user.label).toLocaleUpperCase()}
+            </ListItem.Title>
+          </ListItem.Content>
+          <Text
+            style={styles.textPrimary}
+            onPress={() => navigation.navigate(ROUTES.USER_PROFILE_EDIT)}>
+            {user.hasEdit ? translate('common.edit') : ''}
+          </Text>
+        </ListItem>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title style={styles.fontWeightBold}>
+              {user.value}
+            </ListItem.Title>
+          </ListItem.Content>
+          <Text style={styles.listStyle}>{user.rightContentValue}</Text>
+        </ListItem>
+      </>
+    );
   };
 
   return (
@@ -79,32 +106,8 @@ const UserProfile = ({navigation}) => {
       />
       <ScrollView style={styles.mainContainerLight}>
         <View>
-          {userInfo.map((user, i) => (
-            <>
-              <ListItem
-                key={`label-${i}`}
-                bottomDivider
-                containerStyle={styles.listBackground}>
-                <ListItem.Content>
-                  <ListItem.Title>
-                    {translate(user.label).toLocaleUpperCase()}
-                  </ListItem.Title>
-                </ListItem.Content>
-                <Text
-                  style={styles.textPrimary}
-                  onPress={() => navigation.navigate(ROUTES.USER_PROFILE_EDIT)}>
-                  {user.rightLabel ? translate(user.rightLabel) : ''}
-                </Text>
-              </ListItem>
-              <ListItem bottomDivider key={`value-${i}`}>
-                <ListItem.Content>
-                  <ListItem.Title style={styles.fontWeightBold}>
-                    {user.value}
-                  </ListItem.Title>
-                </ListItem.Content>
-                <Text style={styles.listStyle}>{user.rightContentValue}</Text>
-              </ListItem>
-            </>
+          {userInfo.map((user, index) => (
+            <RenderListItem {...user} key={index} />
           ))}
           <ListItem bottomDivider containerStyle={styles.listBackground}>
             <ListItem.Content>
