@@ -5,7 +5,10 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {View, Image, ScrollView, TouchableOpacity, Alert} from 'react-native';
 import {Button, Text} from 'react-native-elements';
-import {loginRequest} from '../../../store/user/actions';
+import {
+  loginRequest,
+  fetchTermOfServiceRequest,
+} from '../../../store/user/actions';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
@@ -30,7 +33,11 @@ const Login = ({navigation}) => {
 
   const handleLogin = () => {
     dispatch(loginRequest(phone, code)).then((result) => {
-      if (!result) {
+      if (result.success) {
+        if (!result.acceptedTermOfService) {
+          navigation.navigate(ROUTES.TERM_OF_SERVICE);
+        }
+      } else {
         Alert.alert(
           translate('common.login.fail'),
           translate('wrong.pin'),
@@ -48,6 +55,10 @@ const Login = ({navigation}) => {
   useEffect(() => {
     fetchLocalData();
   }, [fetchLocalData]);
+
+  useEffect(() => {
+    dispatch(fetchTermOfServiceRequest());
+  }, [dispatch]);
 
   return (
     <>

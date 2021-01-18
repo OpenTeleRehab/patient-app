@@ -11,7 +11,8 @@ export const user = (state = initialState, action) => {
     case 'USER_SETUP_PIN_NUMBER_REQUESTED':
     case 'USER_LOGIN_REQUESTED':
     case 'USER_COMPARE_PIN_NUMBER_REQUESTED':
-    case 'USER_CHANGE_PIN_NUMBER_REQUESTED': {
+    case 'USER_CHANGE_PIN_NUMBER_REQUESTED':
+    case 'ACCEPT_TERM_OF_SERVICE_REQUESTED': {
       return Object.assign({}, state, {
         isLoading: true,
       });
@@ -67,6 +68,7 @@ export const user = (state = initialState, action) => {
     case 'ACCEPT_TERM_OF_SERVICE_SUCCEED': {
       return Object.assign({}, state, {
         accessToken: action.data.token,
+        isLoading: false,
       });
     }
     case 'USER_SETUP_PIN_NUMBER_SUCCEED':
@@ -76,7 +78,8 @@ export const user = (state = initialState, action) => {
     case 'USER_SETUP_PIN_NUMBER_FAILED':
     case 'USER_LOGIN_FAILED':
     case 'USER_COMPARE_PIN_NUMBER_FAILED':
-    case 'USER_CHANGE_PIN_NUMBER_FAILED': {
+    case 'USER_CHANGE_PIN_NUMBER_FAILED':
+    case 'ACCEPT_TERM_OF_SERVICE_FAILED': {
       return Object.assign({}, state, {
         isLoading: false,
       });

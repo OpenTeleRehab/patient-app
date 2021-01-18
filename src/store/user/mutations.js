@@ -172,9 +172,10 @@ const acceptTermOfServiceRequest = () => {
   };
 };
 
-const acceptTermOfServiceSuccess = () => {
+const acceptTermOfServiceSuccess = (data) => {
   return {
     type: 'ACCEPT_TERM_OF_SERVICE_SUCCEED',
+    data,
   };
 };
 
