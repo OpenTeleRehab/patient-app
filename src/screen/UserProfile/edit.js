@@ -130,10 +130,6 @@ const UserProfileEdit = ({navigation}) => {
       <HeaderBar
         onGoBack={() => navigation.goBack()}
         title={translate('edit.profile.title')}
-        rightContent={{
-          label: translate('common.cancel'),
-          onPress: () => navigation.goBack(),
-        }}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.formGroup}>
