@@ -26,14 +26,10 @@ export default {
   fontWeightBold: {
     fontWeight: 'bold',
   },
-  textFormDisabled: {
-    paddingVertical: variables.spacingBase,
-    paddingLeft: variables.spacingBase,
-    fontSize: variables.fontSizeBase,
-    color: variables.black,
-  },
-  inputContainer: {
-    height: 80,
-    paddingLeft: 1,
+  underlineHeader: {
+    color: variables.primary,
+    borderColor: variables.primary,
+    borderBottomWidth: 2,
+    marginBottom: variables.spacingBase,
   },
 };

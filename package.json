@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^5.12.8",
     "@webessentials/react-native-otp-verify": "https://github.com/webessentials/react-native-otp-verify.git#2.0.0",
     "add": "^2.0.6",
+    "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-localize-redux": "^3.5.3",

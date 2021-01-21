@@ -54,4 +54,10 @@ export default {
   marginBottom: {
     marginBottom: variables.spacingBase,
   },
+  marginBottomMd: {
+    marginBottom: variables.spacingMd,
+  },
+  marginLeft: {
+    marginLeft: variables.spacingBase,
+  },
 };
