@@ -4,12 +4,17 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {Button, Icon, Text, withTheme} from 'react-native-elements';
+import {SliderBox} from 'react-native-image-slider-box';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
+
+const paginationBoxStyle = {
+  bottom: -30,
+};
 
 const ActivityDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
@@ -67,8 +72,21 @@ const ActivityDetail = ({theme, route, navigation}) => {
         }}
       />
       <ScrollView style={styles.mainContainerLight}>
-        <View style={[styles.flexCenter, styles.marginBottomMd]}>
-          <Text h3>{activity.title}</Text>
+        <View style={styles.marginBottomMd}>
+          <SliderBox
+            dotColor={theme.colors.primary}
+            inactiveDotColor={theme.colors.grey}
+            paginationBoxStyle={paginationBoxStyle}
+            images={[
+              'https://source.unsplash.com/1024x768/?nature',
+              'https://source.unsplash.com/1024x768/?water',
+              'https://source.unsplash.com/1024x768/?girl',
+              'https://source.unsplash.com/1024x768/?tree',
+            ]}
+          />
+        </View>
+        <View style={[styles.flexCenter, styles.marginY]}>
+          <Text h4>{activity.title}</Text>
         </View>
 
         {activity.additional_fields.map((additionalField, index) => (
