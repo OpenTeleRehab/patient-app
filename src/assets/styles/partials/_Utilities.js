@@ -36,6 +36,9 @@ export default {
   noneBorderBottom: {
     borderBottomWidth: 0,
   },
+  noPadding: {
+    padding: 0,
+  },
   paddingMd: {
     padding: variables.spacingMd,
   },
