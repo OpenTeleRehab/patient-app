@@ -39,6 +39,7 @@ const HeaderBar = (props) => {
           </Text>
         );
       }
+      return leftContent;
     }
     return <Text style={styles.textPrimary}>Empty</Text>;
   };

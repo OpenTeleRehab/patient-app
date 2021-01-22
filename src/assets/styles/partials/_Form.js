@@ -54,4 +54,14 @@ export default {
     opacity: 1,
     fontSize: variables.fontSizeBase,
   },
+  textFormDisabled: {
+    paddingVertical: variables.spacingBase,
+    paddingLeft: variables.spacingBase,
+    fontSize: variables.fontSizeBase,
+    color: variables.black,
+  },
+  inputContainer: {
+    height: 80,
+    paddingLeft: 1,
+  },
 };

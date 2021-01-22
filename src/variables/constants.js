@@ -6,6 +6,7 @@ export const ROUTES = {
   VERIFY_PHONE: 'VerifyPhone',
   HOME: 'Home',
   ACTIVITY: 'Activity',
+  ACTIVITY_DETAIL: 'ActivityDetail',
   GOAL: 'Goal',
   APPOINTMENT: 'Appointment',
   MESSAGE: 'Message',

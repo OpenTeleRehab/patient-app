@@ -21,6 +21,7 @@ import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
 
 // Activity group
 import ActivityScreen from '../screen/Activity';
+import ActivityDetailScreen from '../screen/Activity/Detail';
 
 // Goal group
 import GoalScreen from '../screen/Goal';
@@ -96,6 +97,10 @@ export const activities = [
   {
     name: ROUTES.ACTIVITY,
     screen: ActivityScreen,
+  },
+  {
+    name: ROUTES.ACTIVITY_DETAIL,
+    screen: ActivityDetailScreen,
   },
 ];
 
