@@ -3,13 +3,18 @@
  */
 import {Activity} from '../../services/activity';
 import {mutation} from './mutations';
+import moment from 'moment';
+import settings from '../../../config/settings';
 
-export const getActivityListRequest = () => async (dispatch) => {
-  const data = await Activity.getActivities();
-  if (data) {
-    dispatch(mutation.activityFetchSuccess(data));
+export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
+  dispatch(mutation.treatmentPlanFetchRequest);
+  const {accessToken} = getState().user;
+  const today = moment().format(settings.format.date);
+  const data = await Activity.getTreatmentPlan(today, accessToken);
+  if (data.success) {
+    dispatch(mutation.treatmentPlanFetchSuccess(data.data));
   } else {
-    dispatch(mutation.activityFetchFailure());
+    dispatch(mutation.treatmentPlanFetchFailure());
   }
 };
 
@@ -24,9 +29,10 @@ export const getTodayActivitySummaryRequest = () => async (dispatch) => {
 
 export const completeActive = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.completeActivityRequest());
-  const {accessToken} = getState().user;
+  const {accessToken, profile} = getState().user;
   const res = await Activity.completeActivity(id, payload, accessToken);
   if (res.success) {
+    getTreatmentPlanRequest(profile.id);
     dispatch(mutation.completeActivitySuccess());
     return true;
   } else {

@@ -15,7 +15,7 @@ const paginationBoxStyle = {
   bottom: -30,
 };
 
-const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
+const TaskDetail = ({theme, activity, activityNumber, navigation, date}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -30,7 +30,11 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
         }
       });
     } else {
-      navigation.navigate(ROUTES.ACTIVITY_COMPLETE_TASK, {id: activity.id});
+      navigation.navigate(ROUTES.ACTIVITY_COMPLETE_TASK, {
+        id: activity.id,
+        activityNumber: activityNumber,
+        date: date,
+      });
     }
   };
 
@@ -53,7 +57,7 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
         <Text h4>{activity.title}</Text>
       </View>
 
-      {activity.additional_fields.map((additionalField, index) => (
+      {activity.additional_fields?.map((additionalField, index) => (
         <View key={index} style={styles.marginBottomMd}>
           <Text h4 style={styles.underlineHeader}>
             {additionalField.field}

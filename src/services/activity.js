@@ -3,8 +3,16 @@
  */
 import {callApi} from '../utils/request';
 
-const getActivities = () => {
-  return {};
+const getTreatmentPlan = async (today, accessToken) => {
+  const options = {
+    uri: '/treatment-plan/get-treatment-plan',
+    accessToken,
+    body: {
+      today,
+    },
+  };
+
+  return await callApi(options);
 };
 
 const getTodayActivitySummary = () => {
@@ -30,7 +38,7 @@ const completeActivity = async (id, payload, accessToken) => {
 };
 
 export const Activity = {
-  getActivities,
+  getTreatmentPlan,
   getTodayActivitySummary,
   completeActivity,
 };
