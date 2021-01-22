@@ -35,6 +35,15 @@ const ActivityDetail = ({theme, route, navigation}) => {
     }
   }, [id, activities]);
 
+  const handleCompleteTask = () => {
+    if (!activity.include_feedback && !activity.get_pain_level) {
+      // todo: submit complete task
+      navigation.navigate(ROUTES.ACTIVITY);
+    } else {
+      navigation.navigate(ROUTES.ACTIVITY_COMPLETE_TASK, {id: activity.id});
+    }
+  };
+
   if (!activity) {
     return (
       <>
@@ -109,9 +118,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
               number: activityNumber,
             })}
             titleStyle={styles.textUpperCase}
-            onPress={() =>
-              navigation.navigate(ROUTES.ACTIVITY_DETAIL, {id: activity.id})
-            }
+            onPress={handleCompleteTask}
           />
         )}
       </ScrollView>

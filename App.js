@@ -25,6 +25,17 @@ const theme = {
       backgroundColor: 'none',
     },
   },
+  Slider: {
+    thumbStyle: {
+      height: 40,
+      width: 10,
+      backgroundColor: colors.blueDark,
+    },
+    trackStyle: {
+      height: 10,
+    },
+    minimumTrackTintColor: colors.primary,
+  },
 };
 
 const App: () => React$Node = () => {
