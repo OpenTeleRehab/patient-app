@@ -7,6 +7,7 @@ export const ROUTES = {
   HOME: 'Home',
   ACTIVITY: 'Activity',
   ACTIVITY_DETAIL: 'ActivityDetail',
+  ACTIVITY_COMPLETE_TASK: 'CompleteTask',
   GOAL: 'Goal',
   APPOINTMENT: 'Appointment',
   MESSAGE: 'Message',

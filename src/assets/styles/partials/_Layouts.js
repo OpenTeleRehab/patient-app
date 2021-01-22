@@ -19,9 +19,11 @@ export default {
     alignItems: 'center',
   },
   flexRow: {
+    flex: 1,
     flexDirection: 'row',
   },
   flexColumn: {
+    flex: 1,
     flexDirection: 'column',
   },
   alignSelfStretch: {
@@ -29,5 +31,11 @@ export default {
   },
   justifyContentCenter: {
     justifyContent: 'center',
+  },
+  justifyContentSpaceAround: {
+    justifyContent: 'space-around',
+  },
+  justifyContentSpaceBetween: {
+    justifyContent: 'space-between',
   },
 };
