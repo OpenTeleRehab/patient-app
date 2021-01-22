@@ -3,6 +3,7 @@
  */
 export const initialState = {
   todaySummary: [],
+  treatmentPlan: [],
   activities: [
     {
       id: 1,
