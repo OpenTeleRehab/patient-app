@@ -12,6 +12,9 @@ export const initialState = {
       include_feedback: true,
       get_pain_level: true,
       completed: true,
+      pain_level: 5,
+      sets: 6,
+      reps: 7,
       additional_fields: [
         {
           field: 'Aim',
