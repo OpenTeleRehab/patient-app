@@ -21,3 +21,16 @@ export const getTodayActivitySummaryRequest = () => async (dispatch) => {
     dispatch(mutation.todayActivitySummaryFailure());
   }
 };
+
+export const completeActive = (id, payload) => async (dispatch, getState) => {
+  dispatch(mutation.completeActivityRequest());
+  const {accessToken} = getState().user;
+  const res = await Activity.completeActivity(id, payload, accessToken);
+  if (res.success) {
+    dispatch(mutation.completeActivitySuccess());
+    return true;
+  } else {
+    dispatch(mutation.completeActivityFailure());
+    return false;
+  }
+};

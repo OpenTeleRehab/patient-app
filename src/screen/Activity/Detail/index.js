@@ -8,20 +8,22 @@ import {SliderBox} from 'react-native-image-slider-box';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
+import {completeActive} from '../../../store/activity/actions';
 
 const paginationBoxStyle = {
   bottom: -30,
 };
 
 const ActivityDetail = ({theme, route, navigation}) => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
   const {id} = route.params;
-  const {activities} = useSelector((state) => state.activity);
+  const {activities, isLoading} = useSelector((state) => state.activity);
   const [activityNumber, setActivityNumber] = useState(undefined);
   const [activity, setActivity] = useState(undefined);
 
@@ -37,8 +39,11 @@ const ActivityDetail = ({theme, route, navigation}) => {
 
   const handleCompleteTask = () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
-      // todo: submit complete task
-      navigation.navigate(ROUTES.ACTIVITY);
+      dispatch(completeActive(activity.id)).then((res) => {
+        if (res) {
+          navigation.navigate(ROUTES.ACTIVITY);
+        }
+      });
     } else {
       navigation.navigate(ROUTES.ACTIVITY_COMPLETE_TASK, {id: activity.id});
     }
@@ -119,6 +124,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
             })}
             titleStyle={styles.textUpperCase}
             onPress={handleCompleteTask}
+            disabled={isLoading}
           />
         )}
       </ScrollView>

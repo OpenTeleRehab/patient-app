@@ -4,6 +4,7 @@
 export const initialState = {
   todaySummary: [],
   treatmentPlan: [],
+  isLoading: false,
   activities: [
     {
       id: 1,

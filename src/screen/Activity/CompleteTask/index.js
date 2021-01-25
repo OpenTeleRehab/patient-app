@@ -3,26 +3,28 @@
  */
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
-import {Button, Slider, Text, withTheme} from 'react-native-elements';
+import {Button, Slider, Text} from 'react-native-elements';
 
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import _ from 'lodash';
 import {ROUTES} from '../../../variables/constants';
 import NumericInput from '../../../components/Common/NumericInput';
+import {completeActive} from '../../../store/activity/actions';
 
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
 };
 
-const CompleteTask = ({theme, route, navigation}) => {
+const CompleteTask = ({route, navigation}) => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
   const {id} = route.params;
-  const {activities} = useSelector((state) => state.activity);
+  const {activities, isLoading} = useSelector((state) => state.activity);
   const [activityNumber, setActivityNumber] = useState(undefined);
   const [painLevel, setPainLevel] = useState(0);
   const [numberOfSets, setNumberOfSets] = useState(0);
@@ -38,7 +40,17 @@ const CompleteTask = ({theme, route, navigation}) => {
   }, [id, activities]);
 
   const handleSubmit = () => {
-    // todo: submit complete task
+    dispatch(
+      completeActive(id, {
+        paint_level: painLevel,
+        sets: numberOfSets,
+        reps: numberOfReps,
+      }),
+    ).then((res) => {
+      if (res) {
+        navigation.navigate(ROUTES.ACTIVITY);
+      }
+    });
     navigation.navigate(ROUTES.ACTIVITY);
   };
 
@@ -98,6 +110,7 @@ const CompleteTask = ({theme, route, navigation}) => {
             title={translate('common.submit')}
             titleStyle={styles.textUpperCase}
             onPress={handleSubmit}
+            disabled={isLoading}
           />
         </View>
       </ScrollView>
@@ -105,4 +118,4 @@ const CompleteTask = ({theme, route, navigation}) => {
   );
 };
 
-export default withTheme(CompleteTask);
+export default CompleteTask;
