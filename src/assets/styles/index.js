@@ -13,6 +13,7 @@ import Button from './partials/_Button';
 import Form from './partials/_Form';
 import UserProfile from './partials/_UserProfile';
 import Calendar from './partials/_Calendar';
+import ActivityCard from './partials/_ActivityCard';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -25,6 +26,7 @@ const styles = StyleSheet.create({
   ...Form,
   ...UserProfile,
   ...Calendar,
+  ...ActivityCard,
 });
 
 export default styles;
