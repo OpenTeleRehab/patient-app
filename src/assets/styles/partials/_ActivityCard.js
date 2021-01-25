@@ -44,16 +44,14 @@ export default {
     justifyContent: 'flex-start',
   },
   activityPaginationView: {
-    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
-  activityPaginationText: {
-    padding: 0,
-    marginBottom: 0,
+  activityPaginationIconContainer: {
     height: 20,
   },
   activityPaginationButton: {
-    width: 65,
-    height: 5,
+    height: 7,
     padding: 0,
   },
   activityPaginationContainer: {

@@ -244,7 +244,7 @@ const Activity = ({theme, navigation}) => {
                 renderDots={(activeIndex) =>
                   activities.map((activity, i) => (
                     <View style={styles.activityPaginationView} key={i}>
-                      <Text style={styles.activityPaginationText}>
+                      <View style={styles.activityPaginationIconContainer}>
                         {i === activeIndex && (
                           <Icon
                             name="caret-down"
@@ -252,7 +252,7 @@ const Activity = ({theme, navigation}) => {
                             type="font-awesome-5"
                           />
                         )}
-                      </Text>
+                      </View>
                       <Button
                         type={activity.completed ? 'solid' : 'outline'}
                         buttonStyle={styles.activityPaginationButton}
