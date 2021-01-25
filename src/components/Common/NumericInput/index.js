@@ -5,7 +5,7 @@ import React from 'react';
 import InputSpinner from 'react-native-input-spinner';
 import {withTheme} from 'react-native-elements';
 
-const NumericInput = ({theme, value, onChange}) => (
+const NumericInput = ({theme, value, onChange, ...rest}) => (
   <InputSpinner
     textColor={theme.colors.white}
     color={theme.colors.primary}
@@ -15,6 +15,7 @@ const NumericInput = ({theme, value, onChange}) => (
     editable={false}
     value={value}
     onChange={onChange}
+    {...rest}
   />
 );
 

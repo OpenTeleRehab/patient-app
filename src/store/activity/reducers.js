@@ -11,6 +11,15 @@ export const activity = (state = initialState, action) => {
       return Object.assign({}, state, {
         todaySummary: action.data,
       });
+    case 'COMPLETE_ACTIVITY_REQUEST':
+      return Object.assign({}, state, {
+        isLoading: true,
+      });
+    case 'COMPLETE_ACTIVITY_SUCCEED':
+    case 'COMPLETE_ACTIVITY_FAILED':
+      return Object.assign({}, state, {
+        isLoading: false,
+      });
     default:
       return state;
   }

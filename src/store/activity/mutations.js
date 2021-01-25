@@ -27,9 +27,31 @@ const todayActivitySummaryFailure = () => {
   };
 };
 
+const completeActivityRequest = (data) => {
+  return {
+    type: 'COMPLETE_ACTIVITY_REQUEST',
+    data,
+  };
+};
+
+const completeActivitySuccess = () => {
+  return {
+    type: 'COMPLETE_ACTIVITY_SUCCEED',
+  };
+};
+
+const completeActivityFailure = () => {
+  return {
+    type: 'COMPLETE_ACTIVITY_FAILED',
+  };
+};
+
 export const mutation = {
   activityFetchSuccess,
   activityFetchFailure,
   todayActivitySummarySuccess,
   todayActivitySummaryFailure,
+  completeActivityRequest,
+  completeActivitySuccess,
+  completeActivityFailure,
 };

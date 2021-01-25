@@ -16,6 +16,11 @@ const theme = {
   Button: {
     raised: true,
   },
+  ButtonGroup: {
+    containerStyle: {
+      marginHorizontal: 0,
+    },
+  },
   CheckBox: {
     containerStyle: {
       borderWidth: 0,
