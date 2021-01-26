@@ -2,20 +2,19 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useRef, useState, useEffect} from 'react';
-import {ScrollView, View, Dimensions, TouchableOpacity} from 'react-native';
-import {Button, Card, Text, Icon, withTheme} from 'react-native-elements';
+import {ScrollView, View, Dimensions} from 'react-native';
+import {Button, Text, Icon, withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {ROUTES} from '../../variables/constants';
 import CalendarStrip from 'react-native-calendar-strip';
 import moment from 'moment';
 import settings from '../../../config/settings';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {Grayscale} from 'react-native-color-matrix-image-filters';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import _ from 'lodash';
+import RenderActivityCard from './_Patials/RenderActivityCard';
 
 const calendarHeaderStyle = {
   ...styles.textWhite,
@@ -110,99 +109,14 @@ const Activity = ({theme, navigation}) => {
   useEffect(() => {
     if (activities?.length && selectedDate) {
       const incompleteActivity = activities.find(
-        (activity) => activity.completed === false,
+        (activity) => !!activity.completed === false,
       );
       const index = incompleteActivity
         ? activities.map((e) => e.id).indexOf(incompleteActivity.id)
         : 0;
-      carouselRef.snapToItem(index);
       setActivePaginationIndex(index);
     }
   }, [activities, selectedDate]);
-
-  const RenderActivityCard = ({item, index}) => {
-    return (
-      <TouchableOpacity
-        key={index}
-        onPress={() =>
-          navigation.navigate(ROUTES.ACTIVITY_DETAIL, {
-            id: item.id,
-            date: selectedDate,
-            activityNumber: index + 1,
-          })
-        }>
-        <Card containerStyle={styles.activityCardContainer}>
-          {item.completed ? (
-            <Grayscale>
-              <Card.Image
-                source={{
-                  uri: item.files.length
-                    ? settings.adminApiBaseURL + '/file/' + item.files[0].id
-                    : 'https://source.unsplash.com/1024x768/?nature',
-                }}
-                style={[styles.activityCardImage]}
-              />
-            </Grayscale>
-          ) : (
-            <Card.Image
-              source={{
-                uri: item.files.length
-                  ? settings.adminApiBaseURL + '/file/' + item.files[0].id
-                  : 'https://source.unsplash.com/1024x768/?nature',
-              }}
-              style={[styles.activityCardImage]}
-            />
-          )}
-          <Text
-            style={[styles.activityCardTitle, styles.textDefaultBold]}
-            numberOfLines={3}>
-            {item.title}
-          </Text>
-          <Text style={styles.activityCardText}>30 sets-10 reps</Text>
-          <Card.Divider style={styles.activityCardDivider} />
-          <View
-            style={[
-              styles.activityCardFooterContainer,
-              {
-                backgroundColor: item.completed
-                  ? theme.colors.primary
-                  : theme.colors.grey5,
-              },
-            ]}>
-            <Text>
-              {item.completed ? (
-                <Icon
-                  name="done"
-                  color={theme.colors.white}
-                  size={25}
-                  type="material"
-                />
-              ) : (
-                ''
-              )}
-            </Text>
-            {item.completed ? (
-              <Text
-                style={[
-                  {color: theme.colors.white},
-                  styles.activityCardFooterText,
-                ]}>
-                Completed
-              </Text>
-            ) : (
-              <Text
-                style={[
-                  {color: theme.colors.black},
-                  styles.activityCardFooterText,
-                ]}>
-                To-do
-              </Text>
-            )}
-          </View>
-        </Card>
-      </TouchableOpacity>
-    );
-  };
 
   return (
     <>
@@ -278,13 +192,16 @@ const Activity = ({theme, navigation}) => {
               <Carousel
                 ref={(ref) => (carouselRef = ref)}
                 data={activities}
-                renderItem={RenderActivityCard}
+                renderItem={(props) =>
+                  RenderActivityCard(props, theme, navigation, selectedDate)
+                }
                 sliderWidth={SLIDER_WIDTH}
                 itemWidth={ITEM_WIDTH}
                 onSnapToItem={(index) => {
                   setActivePaginationIndex(index);
                   setActivityNumber(index + 1);
                 }}
+                onLayout={() => carouselRef.snapToItem(activePaginationIndex)}
                 useScrollView={false}
                 activeSlideAlignment="center"
                 inactiveSlideScale={1}
@@ -294,7 +211,7 @@ const Activity = ({theme, navigation}) => {
           ) : (
             <View style={[styles.flexCenter]}>
               <Text style={styles.marginTop}>
-                {translate('activity.no_task_for_this_day')}
+                {translate('activity.no.task.for.this.day')}
               </Text>
             </View>
           )}

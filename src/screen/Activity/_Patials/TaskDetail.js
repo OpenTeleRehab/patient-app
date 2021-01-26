@@ -15,7 +15,7 @@ const paginationBoxStyle = {
   bottom: -30,
 };
 
-const TaskDetail = ({theme, activity, activityNumber, navigation, date}) => {
+const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -33,7 +33,6 @@ const TaskDetail = ({theme, activity, activityNumber, navigation, date}) => {
       navigation.navigate(ROUTES.ACTIVITY_COMPLETE_TASK, {
         id: activity.id,
         activityNumber: activityNumber,
-        date: date,
       });
     }
   };
