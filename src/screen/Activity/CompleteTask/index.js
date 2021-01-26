@@ -10,25 +10,28 @@ import _ from 'lodash';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import AssessmentForm from '../_Patials/AssessmentForm';
 import styles from '../../../assets/styles';
+import moment from 'moment';
 
 const CompleteTask = ({route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
-  const {id} = route.params;
-  const {activities} = useSelector((state) => state.activity);
-  const [activityNumber, setActivityNumber] = useState(undefined);
+  const {id, date, activityNumber} = route.params;
+  const {treatmentPlan} = useSelector((state) => state.activity);
   const [activity, setActivity] = useState(undefined);
 
   useEffect(() => {
-    if (id && activities.length) {
-      const activityIndex = _.findIndex(activities, {id});
-      if (activityIndex >= 0) {
-        setActivityNumber(activityIndex + 1);
-        setActivity(activities[activityIndex]);
+    if (id && date && treatmentPlan.activities.length) {
+      const selectedActivity = _.find(treatmentPlan.activities, {
+        date: moment(date).format('YYYY-MM-DD'),
+        id,
+      });
+
+      if (selectedActivity) {
+        setActivity(selectedActivity);
       }
     }
-  }, [id, activities]);
+  }, [id, date, treatmentPlan]);
 
   return (
     <>

@@ -1,16 +1,22 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-const activityFetchSuccess = (data) => {
+const treatmentPlanFetchRequest = (data) => {
   return {
-    type: 'ACTIVITY_FETCH_SUCCEED',
+    type: 'TREATMENT_PLAN_FETCH_REQUESTED',
+    data,
+  };
+};
+const treatmentPlanFetchSuccess = (data) => {
+  return {
+    type: 'TREATMENT_PLAN_FETCH_SUCCEED',
     data,
   };
 };
 
-const activityFetchFailure = () => {
+const treatmentPlanFetchFailure = () => {
   return {
-    type: 'ACTIVITY_FETCH_FAILED',
+    type: 'TREATMENT_PLAN_FETCH_FAILED',
   };
 };
 
@@ -47,8 +53,9 @@ const completeActivityFailure = () => {
 };
 
 export const mutation = {
-  activityFetchSuccess,
-  activityFetchFailure,
+  treatmentPlanFetchRequest,
+  treatmentPlanFetchSuccess,
+  treatmentPlanFetchFailure,
   todayActivitySummarySuccess,
   todayActivitySummaryFailure,
   completeActivityRequest,

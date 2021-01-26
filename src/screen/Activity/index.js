@@ -7,13 +7,15 @@ import {Button, Card, Text, Icon, withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../variables/constants';
 import CalendarStrip from 'react-native-calendar-strip';
 import moment from 'moment';
 import settings from '../../../config/settings';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
+import {getTreatmentPlanRequest} from '../../store/activity/actions';
+import _ from 'lodash';
 
 const calendarHeaderStyle = {
   ...styles.textWhite,
@@ -26,25 +28,18 @@ const calendarContainer = {
 };
 
 const Activity = ({theme, navigation}) => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const {activities} = useSelector((state) => state.activity);
+  const {treatmentPlan} = useSelector((state) => state.activity);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
+  let carouselRef = useRef();
   const [selectedDate, setSelectedDate] = useState(moment());
   const [markedDates, setMarkDates] = useState([]);
+  const [activities, setActivities] = useState([]);
   const SLIDER_WIDTH = Dimensions.get('window').width;
   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.75);
-  const incompleteActivity = activities.filter(
-    (activity) => activity.completed === false,
-  );
-  const [activeActivity, setActiveActivity] = useState(
-    incompleteActivity
-      ? activities.map((e) => e.id).indexOf(incompleteActivity[0].id)
-      : 0,
-  );
-  const [activePaginationIndex, setActivePaginationIndex] = useState(
-    activeActivity,
-  );
+  const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [activityNumber, setActivityNumber] = useState(
     activePaginationIndex + 1,
   );
@@ -75,66 +70,86 @@ const Activity = ({theme, navigation}) => {
     };
   };
 
+  useEffect(() => {
+    dispatch(getTreatmentPlanRequest());
+  }, [dispatch]);
+
   const handleTodayPress = () => {
     calendarRef.setSelectedDate(moment());
   };
 
   useEffect(() => {
-    if (activities) {
-      setMarkDates([
-        {
-          date: moment('21-01-2021', settings.format.date),
+    if (!_.isEmpty(treatmentPlan)) {
+      let marks = [];
+      _.uniqBy(treatmentPlan.activities, 'date').map((day) => {
+        marks.push({
+          date: moment(day.date),
           dots: [
             {
               color: 'white',
               selectedColor: 'black',
             },
           ],
-        },
-        {
-          date: moment('22-01-2021', settings.format.date),
-          dots: [
-            {
-              color: 'white',
-              selectedColor: 'black',
-            },
-          ],
-        },
-      ]);
-      const incompleteActivity = activities.filter(
+        });
+      });
+      setMarkDates(marks);
+    }
+  }, [treatmentPlan]);
+
+  useEffect(() => {
+    if (selectedDate && !_.isEmpty(treatmentPlan)) {
+      const selectedActivities = treatmentPlan.activities.filter(
+        (day) =>
+          moment(day.date).format(settings.format.date) ===
+          selectedDate.format(settings.format.date),
+      );
+      setActivities(selectedActivities ? selectedActivities : []);
+    }
+  }, [selectedDate, treatmentPlan]);
+
+  useEffect(() => {
+    if (activities?.length && selectedDate) {
+      const incompleteActivity = activities.find(
         (activity) => activity.completed === false,
       );
-      setActiveActivity(
-        incompleteActivity
-          ? activities.map((e) => e.id).indexOf(incompleteActivity[0].id)
-          : 0,
-      );
-      setActivePaginationIndex(
-        incompleteActivity
-          ? activities.map((e) => e.id).indexOf(incompleteActivity[0].id)
-          : 0,
-      );
+      const index = incompleteActivity
+        ? activities.map((e) => e.id).indexOf(incompleteActivity.id)
+        : 0;
+      carouselRef.snapToItem(index);
+      setActivePaginationIndex(index);
     }
-  }, [activities]);
+  }, [activities, selectedDate]);
 
   const RenderActivityCard = ({item, index}) => {
     return (
       <TouchableOpacity
         key={index}
         onPress={() =>
-          navigation.navigate(ROUTES.ACTIVITY_DETAIL, {id: item.id})
+          navigation.navigate(ROUTES.ACTIVITY_DETAIL, {
+            id: item.id,
+            date: selectedDate,
+            activityNumber: index + 1,
+          })
         }>
         <Card containerStyle={styles.activityCardContainer}>
           {item.completed ? (
             <Grayscale>
               <Card.Image
-                source={{uri: 'https://source.unsplash.com/1024x768/?nature'}}
+                source={{
+                  uri: item.files.length
+                    ? settings.adminApiBaseURL + '/file/' + item.files[0].id
+                    : 'https://source.unsplash.com/1024x768/?nature',
+                }}
                 style={[styles.activityCardImage]}
               />
             </Grayscale>
           ) : (
             <Card.Image
-              source={{uri: 'https://source.unsplash.com/1024x768/?nature'}}
+              source={{
+                uri: item.files.length
+                  ? settings.adminApiBaseURL + '/file/' + item.files[0].id
+                  : 'https://source.unsplash.com/1024x768/?nature',
+              }}
               style={[styles.activityCardImage]}
             />
           )}
@@ -218,58 +233,71 @@ const Activity = ({theme, navigation}) => {
           />
         </View>
         <View style={[styles.mainContainerLight, styles.noPadding]}>
-          <Pagination
-            dotsLength={activities.length}
-            activeDotIndex={activePaginationIndex}
-            containerStyle={styles.activityPaginationContainer}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            renderDots={(activeIndex) =>
-              activities.map((activity, i) => (
-                <View style={styles.activityPaginationView} key={i}>
-                  <Text style={styles.activityPaginationText}>
-                    {i === activeIndex && (
-                      <Icon
-                        name="caret-down"
-                        color={theme.colors.orangeDark}
-                        type="font-awesome-5"
+          {activities?.length ? (
+            <>
+              <Pagination
+                dotsLength={activities.length}
+                activeDotIndex={activePaginationIndex}
+                containerStyle={styles.activityPaginationContainer}
+                inactiveDotOpacity={0.4}
+                inactiveDotScale={0.6}
+                renderDots={(activeIndex) =>
+                  activities.map((activity, i) => (
+                    <View style={styles.activityPaginationView} key={i}>
+                      <Text style={styles.activityPaginationText}>
+                        {i === activeIndex && (
+                          <Icon
+                            name="caret-down"
+                            color={theme.colors.orangeDark}
+                            type="font-awesome-5"
+                          />
+                        )}
+                      </Text>
+                      <Button
+                        type={activity.completed ? 'solid' : 'outline'}
+                        buttonStyle={styles.activityPaginationButton}
                       />
-                    )}
-                  </Text>
-                  <Button
-                    type={activity.completed ? 'solid' : 'outline'}
-                    buttonStyle={styles.activityPaginationButton}
-                  />
-                </View>
-              ))
-            }
-          />
-          <View style={styles.activityTotalNumberContainer}>
-            <Text
-              style={[
-                {color: theme.colors.orangeDark},
-                styles.activityTotalNumberText,
-              ]}>
-              {activityNumber}
-            </Text>
-            <Text style={styles.activityTotalNumberText}>
-              {translate('common.of_total_number', {number: activities.length})}
-            </Text>
-          </View>
-          <Carousel
-            data={activities}
-            renderItem={RenderActivityCard}
-            sliderWidth={SLIDER_WIDTH}
-            itemWidth={ITEM_WIDTH}
-            onSnapToItem={(index) => {
-              setActivePaginationIndex(index);
-              setActivityNumber(index + 1);
-            }}
-            useScrollView={false}
-            activeSlideAlignment="center"
-            inactiveSlideScale={1}
-            firstItem={activeActivity}
-          />
+                    </View>
+                  ))
+                }
+              />
+              <View style={styles.activityTotalNumberContainer}>
+                <Text
+                  style={[
+                    {color: theme.colors.orangeDark},
+                    styles.activityTotalNumberText,
+                  ]}>
+                  {activityNumber}
+                </Text>
+                <Text style={styles.activityTotalNumberText}>
+                  {translate('common.of_total_number', {
+                    number: activities.length,
+                  })}
+                </Text>
+              </View>
+              <Carousel
+                ref={(ref) => (carouselRef = ref)}
+                data={activities}
+                renderItem={RenderActivityCard}
+                sliderWidth={SLIDER_WIDTH}
+                itemWidth={ITEM_WIDTH}
+                onSnapToItem={(index) => {
+                  setActivePaginationIndex(index);
+                  setActivityNumber(index + 1);
+                }}
+                useScrollView={false}
+                activeSlideAlignment="center"
+                inactiveSlideScale={1}
+                firstItem={0}
+              />
+            </>
+          ) : (
+            <View style={[styles.flexCenter]}>
+              <Text style={styles.marginTop}>
+                {translate('activity.no_task_for_this_day')}
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </>

@@ -5,12 +5,16 @@ import {initialState} from './states';
 
 export const activity = (state = initialState, action) => {
   switch (action.type) {
-    case 'ACTIVITY_FETCH_SUCCEED':
-      return action.data;
+    case 'TREATMENT_PLAN_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        treatmentPlan: action.data,
+        isLoading: false,
+      });
     case 'TODAY_ACTIVITY_SUMMARY_REQUEST_SUCCEED':
       return Object.assign({}, state, {
         todaySummary: action.data,
       });
+    case 'TREATMENT_PLAN_FETCH_REQUESTED':
     case 'COMPLETE_ACTIVITY_REQUEST':
       return Object.assign({}, state, {
         isLoading: true,

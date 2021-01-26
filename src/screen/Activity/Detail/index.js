@@ -12,26 +12,29 @@ import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
 import TaskDetail from '../_Patials/TaskDetail';
 import AssessmentForm from '../_Patials/AssessmentForm';
+import moment from 'moment';
 
 const ActivityDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
-  const {id} = route.params;
-  const {activities} = useSelector((state) => state.activity);
-  const [activityNumber, setActivityNumber] = useState(undefined);
+  const {id, date, activityNumber} = route.params;
+  const {treatmentPlan} = useSelector((state) => state.activity);
   const [activity, setActivity] = useState(undefined);
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
-    if (id && activities.length) {
-      const activityIndex = _.findIndex(activities, {id});
-      if (activityIndex >= 0) {
-        setActivityNumber(activityIndex + 1);
-        setActivity(activities[activityIndex]);
+    if (id && date && treatmentPlan.activities.length) {
+      const selectedActivity = _.find(treatmentPlan.activities, {
+        date: moment(date).format('YYYY-MM-DD'),
+        id,
+      });
+
+      if (selectedActivity) {
+        setActivity(selectedActivity);
       }
     }
-  }, [id, activities]);
+  }, [id, date, treatmentPlan]);
 
   if (!activity) {
     return (
@@ -68,7 +71,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
         }}
       />
       <ScrollView style={styles.mainContainerLight}>
-        {activity.completed &&
+        {!!activity.completed &&
           (activity.include_feedback || activity.get_pain_level) && (
             <ButtonGroup
               onPress={(index) => setTabIndex(index)}
@@ -85,6 +88,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
             activity={activity}
             activityNumber={activityNumber}
             navigation={navigation}
+            date={date}
           />
         )}
         {tabIndex === 1 && (
