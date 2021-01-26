@@ -29,10 +29,10 @@ export const getTodayActivitySummaryRequest = () => async (dispatch) => {
 
 export const completeActive = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.completeActivityRequest());
-  const {accessToken, profile} = getState().user;
+  const {accessToken} = getState().user;
   const res = await Activity.completeActivity(id, payload, accessToken);
   if (res.success) {
-    getTreatmentPlanRequest(profile.id);
+    dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeActivitySuccess());
     return true;
   } else {
