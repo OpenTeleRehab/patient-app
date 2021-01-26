@@ -1,18 +1,37 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
-import {View} from 'react-native';
-import {Button, Text, withTheme} from 'react-native-elements';
-import {SliderBox} from 'react-native-image-slider-box';
+import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {Button, Image, Text, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../../variables/constants';
+import MediaView from './MediaView';
+import Carousel from 'react-native-snap-carousel';
+import settings from '../../../../config/settings';
 import {completeActive} from '../../../store/activity/actions';
 
-const paginationBoxStyle = {
-  bottom: -30,
+const SLIDER_WIDTH = Dimensions.get('window').width;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
+const styleImage = {width: '95%', height: 200};
+
+const RenderMediaItem = ({item, index}, setShowMedia) => {
+  return (
+    <TouchableOpacity onPress={() => setShowMedia(index)}>
+      <Image
+        source={{uri: settings.adminApiBaseURL + '/file/' + item.id}}
+        style={styleImage}
+        PlaceholderContent={<ActivityIndicator size={50} />}
+      />
+    </TouchableOpacity>
+  );
 };
 
 const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
@@ -21,6 +40,7 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
   const translate = getTranslate(localize);
 
   const {isLoading} = useSelector((state) => state.activity);
+  const [showMedia, setShowMedia] = useState(undefined);
 
   const handleCompleteTask = () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
@@ -39,17 +59,21 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
 
   return (
     <>
+      {showMedia !== undefined && (
+        <MediaView
+          activity={activity}
+          showMedia={showMedia}
+          onClose={() => setShowMedia(undefined)}
+        />
+      )}
+
       <View style={styles.marginBottomMd}>
-        <SliderBox
-          dotColor={theme.colors.primary}
-          inactiveDotColor={theme.colors.grey}
-          paginationBoxStyle={paginationBoxStyle}
-          images={[
-            'https://source.unsplash.com/1024x768/?nature',
-            'https://source.unsplash.com/1024x768/?water',
-            'https://source.unsplash.com/1024x768/?girl',
-            'https://source.unsplash.com/1024x768/?tree',
-          ]}
+        <Carousel
+          data={activity.files}
+          renderItem={(props) => RenderMediaItem(props, setShowMedia)}
+          sliderWidth={SLIDER_WIDTH}
+          itemWidth={ITEM_WIDTH}
+          inactiveSlideScale={1}
         />
       </View>
       <View style={[styles.flexCenter, styles.marginY]}>
@@ -76,7 +100,7 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
         })}
         titleStyle={styles.textUpperCase}
         onPress={handleCompleteTask}
-        disabled={isLoading || activity.completed}
+        disabled={isLoading || !!activity.completed}
       />
     </>
   );

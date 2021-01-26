@@ -12,21 +12,19 @@ import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
 import TaskDetail from '../_Patials/TaskDetail';
 import AssessmentForm from '../_Patials/AssessmentForm';
-import moment from 'moment';
 
 const ActivityDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
-  const {id, date, activityNumber} = route.params;
+  const {id, activityNumber} = route.params;
   const {treatmentPlan} = useSelector((state) => state.activity);
   const [activity, setActivity] = useState(undefined);
   const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
-    if (id && date && treatmentPlan.activities.length) {
+    if (id && treatmentPlan.activities.length) {
       const selectedActivity = _.find(treatmentPlan.activities, {
-        date: moment(date).format('YYYY-MM-DD'),
         id,
       });
 
@@ -34,7 +32,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
         setActivity(selectedActivity);
       }
     }
-  }, [id, date, treatmentPlan]);
+  }, [id, treatmentPlan]);
 
   if (!activity) {
     return (
@@ -88,7 +86,6 @@ const ActivityDetail = ({theme, route, navigation}) => {
             activity={activity}
             activityNumber={activityNumber}
             navigation={navigation}
-            date={date}
           />
         )}
         {tabIndex === 1 && (
