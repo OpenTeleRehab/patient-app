@@ -71,4 +71,7 @@ export default {
     fontSize: 18,
     padding: 3,
   },
+  activityCardVideo: {
+    height: 250,
+  },
 };
