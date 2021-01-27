@@ -9,9 +9,9 @@ import {
   PORTRAIT,
   LANDSCAPE,
 } from 'react-native-orientation-locker/ScreenOrientation';
+import Video from 'react-native-video';
 
-import styles from '../../../assets/styles';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
 
 const styleToggleScreenBtn = {
@@ -23,15 +23,38 @@ const styleCloseBtn = {
   zIndex: 99,
   right: 0,
 };
+const styleCarouselContainer = {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#000',
+};
+const stylePaginationDot = {
+  width: 10,
+  height: 10,
+  borderRadius: 5,
+  borderWidth: 1,
+  borderColor: '#fff',
+};
 
-const SLIDER_WIDTH = Dimensions.get('window').width;
-const styleImage = {width: '100%', height: 200};
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const styleMedia = {width: '100%', height: '100%'};
 
 const RenderMediaItem = ({item, index}) => {
+  const uri = settings.adminApiBaseURL + '/file/' + item.id;
+  const type = item.fileType;
+
+  if (type === 'video/mp4' || type === 'audio/mpeg') {
+    return <Video source={{uri}} style={styleMedia} resizeMode="contain" />;
+  }
+
   return (
     <Image
       source={{uri: settings.adminApiBaseURL + '/file/' + item.id}}
-      style={styleImage}
+      style={styleMedia}
+      resizeMode="contain"
       PlaceholderContent={<ActivityIndicator size={50} />}
     />
   );
@@ -39,13 +62,17 @@ const RenderMediaItem = ({item, index}) => {
 
 const MediaView = ({theme, activity, showMedia, onClose}) => {
   const [screenOrientation, setScreenOrientation] = useState(PORTRAIT);
+  const [activePaginationIndex, setActivePaginationIndex] = useState(0);
+  const [sliderWidth, setSliderWidth] = useState(SCREEN_WIDTH);
 
   const toggleScreenOrientation = () => {
     if (screenOrientation === PORTRAIT) {
       setScreenOrientation(LANDSCAPE);
+      setSliderWidth(SCREEN_HEIGHT);
       Orientation.lockToLandscape();
     } else {
       setScreenOrientation(PORTRAIT);
+      setSliderWidth(SCREEN_WIDTH);
       Orientation.lockToPortrait();
     }
   };
@@ -56,13 +83,14 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
   };
 
   return (
-    <Modal statusBarTranslucent>
+    <Modal>
       <Button
         type="clear"
         icon={{
           name: `${screenOrientation === PORTRAIT ? 'expand' : 'compress'}`,
           type: 'font-awesome-5',
           size: 32,
+          color: theme.colors.white,
         }}
         onPress={toggleScreenOrientation}
         containerStyle={styleToggleScreenBtn}
@@ -73,25 +101,33 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
           name: 'times-circle',
           type: 'font-awesome-5',
           size: 32,
+          color: theme.colors.white,
         }}
         onPress={handleClose}
         containerStyle={styleCloseBtn}
       />
-
-      <View
-        style={[
-          styles.flexRow,
-          styles.flexCenter,
-          styles.justifyContentCenter,
-        ]}>
-        <Carousel
-          data={activity.files}
-          renderItem={RenderMediaItem}
-          sliderWidth={SLIDER_WIDTH}
-          itemWidth={SLIDER_WIDTH}
-          inactiveSlideScale={1}
-          firstItem={showMedia}
-        />
+      <View style={styleCarouselContainer}>
+        <View>
+          <Carousel
+            data={activity.files}
+            renderItem={RenderMediaItem}
+            sliderWidth={sliderWidth}
+            itemWidth={sliderWidth}
+            inactiveSlideScale={1}
+            firstItem={showMedia}
+            onSnapToItem={(index) => setActivePaginationIndex(index)}
+          />
+          {screenOrientation === PORTRAIT && (
+            <Pagination
+              dotsLength={activity.files.length}
+              activeDotIndex={activePaginationIndex}
+              dotStyle={stylePaginationDot}
+              dotColor={theme.colors.white}
+              inactiveDotColor="transparent"
+              inactiveDotScale={1}
+            />
+          )}
+        </View>
       </View>
     </Modal>
   );

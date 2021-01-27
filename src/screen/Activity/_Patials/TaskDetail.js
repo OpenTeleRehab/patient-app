@@ -14,20 +14,38 @@ import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../../variables/constants';
 import MediaView from './MediaView';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
 import {completeActive} from '../../../store/activity/actions';
+import Video from 'react-native-video';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
-const styleImage = {width: '95%', height: 200};
+const styleMedia = {width: '95%', height: 200};
+
+const stylePaginationDot = {
+  width: 10,
+  height: 10,
+  borderRadius: 5,
+};
 
 const RenderMediaItem = ({item, index}, setShowMedia) => {
+  const uri = settings.adminApiBaseURL + '/file/' + item.id;
+  const type = item.fileType;
+
+  if (type === 'video/mp4' || type === 'audio/mpeg') {
+    return (
+      <TouchableOpacity onPress={() => setShowMedia(index)}>
+        <Video source={{uri}} style={styleMedia} resizeMode="cover" />
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <TouchableOpacity onPress={() => setShowMedia(index)}>
       <Image
-        source={{uri: settings.adminApiBaseURL + '/file/' + item.id}}
-        style={styleImage}
+        source={{uri}}
+        style={styleMedia}
         PlaceholderContent={<ActivityIndicator size={50} />}
       />
     </TouchableOpacity>
@@ -41,6 +59,7 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
 
   const {isLoading} = useSelector((state) => state.activity);
   const [showMedia, setShowMedia] = useState(undefined);
+  const [activePaginationIndex, setActivePaginationIndex] = useState(0);
 
   const handleCompleteTask = () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
@@ -67,13 +86,23 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
         />
       )}
 
-      <View style={styles.marginBottomMd}>
+      <View>
         <Carousel
           data={activity.files}
           renderItem={(props) => RenderMediaItem(props, setShowMedia)}
           sliderWidth={SLIDER_WIDTH}
           itemWidth={ITEM_WIDTH}
           inactiveSlideScale={1}
+          onSnapToItem={(index) => setActivePaginationIndex(index)}
+        />
+        <Pagination
+          dotsLength={activity.files.length}
+          activeDotIndex={activePaginationIndex}
+          dotStyle={stylePaginationDot}
+          dotColor={theme.colors.primary}
+          inactiveDotColor={theme.colors.black}
+          inactiveDotScale={1}
+          containerStyle={styles.paddingY}
         />
       </View>
       <View style={[styles.flexCenter, styles.marginY]}>
