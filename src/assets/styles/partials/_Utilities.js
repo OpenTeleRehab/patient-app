@@ -30,6 +30,9 @@ export default {
   bgDanger: {
     backgroundColor: variables.error,
   },
+  bgPrimary: {
+    backgroundColor: variables.primary,
+  },
   noneFlex: {
     flex: 0,
   },

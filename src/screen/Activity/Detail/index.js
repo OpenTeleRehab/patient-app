@@ -52,7 +52,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
         leftContent={
           <Text h4 style={styles.textLight}>
             {translate('activity.activity_number', {number: activityNumber})}
-            {activity.completed && (
+            {!!activity.completed && (
               <Icon
                 name="check"
                 type="font-awesome-5"

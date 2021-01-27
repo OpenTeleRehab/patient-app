@@ -18,8 +18,14 @@ export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
   }
 };
 
-export const getTodayActivitySummaryRequest = () => async (dispatch) => {
-  const data = await Activity.getTodayActivitySummary();
+export const getTodayActivitySummaryRequest = () => async (
+  dispatch,
+  getState,
+) => {
+  dispatch(mutation.todayActivitySummaryRequest());
+  const {accessToken} = getState().user;
+  const today = moment().format(settings.format.date);
+  const data = await Activity.getTodayActivitySummary(today, accessToken);
   if (data.success) {
     dispatch(mutation.todayActivitySummarySuccess(data.data));
   } else {
@@ -33,6 +39,7 @@ export const completeActive = (id, payload) => async (dispatch, getState) => {
   const res = await Activity.completeActivity(id, payload, accessToken);
   if (res.success) {
     dispatch(getTreatmentPlanRequest());
+    dispatch(getTodayActivitySummaryRequest());
     dispatch(mutation.completeActivitySuccess());
     return true;
   } else {
