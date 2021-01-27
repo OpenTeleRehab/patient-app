@@ -5,6 +5,7 @@ import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import settings from '../../../../config/settings';
+import Video from 'react-native-video';
 
 const ImageCard = ({files, grayscale}) => {
   if (grayscale) {
@@ -15,16 +16,22 @@ const ImageCard = ({files, grayscale}) => {
     );
   }
 
-  return (
-    <Card.Image
-      source={{
-        uri: files.length
-          ? settings.adminApiBaseURL + '/file/' + files[0].id
-          : '',
-      }}
-      style={[styles.activityCardImage]}
-    />
-  );
+  let uri = '';
+  let type = '';
+  if (files.length) {
+    uri = settings.adminApiBaseURL + '/file/' + files[0].id;
+    type = files[0].fileType;
+  }
+  if (type === 'video/mp4' || type === 'audio/mpeg') {
+    return (
+      <Video
+        source={{uri: uri}}
+        style={styles.activityCardVideo}
+        resizeMode="cover"
+      />
+    );
+  }
+  return <Card.Image source={{uri}} style={[styles.activityCardImage]} />;
 };
 
 const RenderActivityCard = ({item, index}, theme, navigation, translate) => {
