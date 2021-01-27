@@ -6,80 +6,79 @@ import styles from '../../../assets/styles';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import settings from '../../../../config/settings';
 
-const ImageCard = ({files}) => (
-  <Card.Image
-    source={{
-      uri: files.length
-        ? settings.adminApiBaseURL + '/file/' + files[0].id
-        : 'https://source.unsplash.com/1024x768/?nature',
-    }}
-    style={[styles.activityCardImage]}
-  />
-);
+const ImageCard = ({files, grayscale}) => {
+  if (grayscale) {
+    return (
+      <Grayscale>
+        <ImageCard files={files} />
+      </Grayscale>
+    );
+  }
 
-const RenderActivityCard = ({item, index}, theme, navigation, selectedDate) => {
+  return (
+    <Card.Image
+      source={{
+        uri: files.length
+          ? settings.adminApiBaseURL + '/file/' + files[0].id
+          : '',
+      }}
+      style={[styles.activityCardImage]}
+    />
+  );
+};
+
+const RenderActivityCard = ({item, index}, theme, navigation, translate) => {
   return (
     <TouchableOpacity
       key={index}
       onPress={() =>
         navigation.navigate(ROUTES.ACTIVITY_DETAIL, {
           id: item.id,
-          date: selectedDate,
           activityNumber: index + 1,
         })
       }>
       <Card containerStyle={styles.activityCardContainer}>
-        {item.completed ? (
-          <Grayscale>
-            <ImageCard files={item.files} />
-          </Grayscale>
-        ) : (
-          <ImageCard files={item.files} />
-        )}
+        <ImageCard files={item.files} grayscale={item.completed} />
         <Text
           style={[styles.activityCardTitle, styles.textDefaultBold]}
           numberOfLines={3}>
           {item.title}
         </Text>
-        <Text style={styles.activityCardText}>30 sets-10 reps</Text>
+        <Text style={styles.activityCardText}>
+          {item.sets &&
+            translate('activity.number_of_sets', {number: item.sets})}
+          {item.reps &&
+            ` - ${translate('activity.number_of_reps', {number: item.sets})}`}
+        </Text>
         <Card.Divider style={styles.activityCardDivider} />
-        <View
-          style={[
-            styles.activityCardFooterContainer,
-            {
-              backgroundColor: item.completed
-                ? theme.colors.primary
-                : theme.colors.grey5,
-            },
-          ]}>
-          <Text>
-            {item.completed && (
-              <Icon
-                name="done"
-                color={theme.colors.white}
-                size={25}
-                type="material"
-              />
-            )}
-          </Text>
-          {item.completed ? (
-            <Text
-              style={[
-                {color: theme.colors.white},
-                styles.activityCardFooterText,
-              ]}>
-              Completed
+
+        {item.completed ? (
+          <View style={styles.activityCardFooterContainer}>
+            <Icon
+              name="done"
+              color={theme.colors.white}
+              size={25}
+              type="material"
+            />
+            <Text style={styles.activityCardFooterText}>
+              {translate('activity.completed')}
             </Text>
-          ) : (
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.activityCardFooterContainer,
+              {backgroundColor: theme.colors.grey5},
+            ]}>
             <Text
               style={[
+                styles.activityCardFooterText,
                 {color: theme.colors.black},
-                styles.activityCardFooterText,
               ]}>
-              To-do
+              {translate('activity.to_do')}
             </Text>
-          )}
-        </View>
+          </View>
+        )}
       </Card>
     </TouchableOpacity>
   );

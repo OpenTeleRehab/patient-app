@@ -22,11 +22,13 @@ export default {
     flex: 1,
     flexDirection: 'row',
     padding: 10,
+    backgroundColor: variables.primary,
   },
   activityCardFooterText: {
     paddingTop: 3,
     fontWeight: 'bold',
     fontSize: variables.fontSizeBase,
+    color: variables.white,
   },
   activityCardText: {
     margin: 10,
@@ -57,6 +59,7 @@ export default {
   activityPaginationContainer: {
     paddingTop: 5,
     paddingBottom: 5,
+    paddingHorizontal: 20,
   },
   activityTotalNumberContainer: {
     flex: 1,

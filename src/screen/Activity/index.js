@@ -21,10 +21,31 @@ const calendarHeaderStyle = {
   marginBottom: 10,
 };
 
+const SLIDER_WIDTH = Dimensions.get('window').width;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.75);
 const calendarContainer = {
   height: 99,
   paddingTop: 10,
 };
+
+const renderPaginateDots = (activities, activeIndex, theme) =>
+  activities.map((activity, i) => (
+    <View style={styles.activityPaginationView} key={i}>
+      <View style={styles.activityPaginationIconContainer}>
+        {i === activeIndex && (
+          <Icon
+            name="caret-down"
+            color={theme.colors.orangeDark}
+            type="font-awesome-5"
+          />
+        )}
+      </View>
+      <Button
+        type={activity.completed ? 'solid' : 'outline'}
+        buttonStyle={styles.activityPaginationButton}
+      />
+    </View>
+  ));
 
 const Activity = ({theme, navigation}) => {
   const dispatch = useDispatch();
@@ -36,12 +57,7 @@ const Activity = ({theme, navigation}) => {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [markedDates, setMarkDates] = useState([]);
   const [activities, setActivities] = useState([]);
-  const SLIDER_WIDTH = Dimensions.get('window').width;
-  const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.75);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
-  const [activityNumber, setActivityNumber] = useState(
-    activePaginationIndex + 1,
-  );
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -108,12 +124,10 @@ const Activity = ({theme, navigation}) => {
 
   useEffect(() => {
     if (activities?.length && selectedDate) {
-      const incompleteActivity = activities.find(
+      const incompleteIndex = activities.findIndex(
         (activity) => !!activity.completed === false,
       );
-      const index = incompleteActivity
-        ? activities.map((e) => e.id).indexOf(incompleteActivity.id)
-        : 0;
+      const index = incompleteIndex >= 0 ? incompleteIndex : 0;
       setActivePaginationIndex(index);
     }
   }, [activities, selectedDate]);
@@ -123,7 +137,7 @@ const Activity = ({theme, navigation}) => {
       <HeaderBar
         leftContent={{label: translate('tab.activities')}}
         rightContent={{
-          label: 'Today',
+          label: translate('common.today'),
           onPress: handleTodayPress,
         }}
       />
@@ -156,32 +170,21 @@ const Activity = ({theme, navigation}) => {
                 inactiveDotOpacity={0.4}
                 inactiveDotScale={0.6}
                 renderDots={(activeIndex) =>
-                  activities.map((activity, i) => (
-                    <View style={styles.activityPaginationView} key={i}>
-                      <View style={styles.activityPaginationIconContainer}>
-                        {i === activeIndex && (
-                          <Icon
-                            name="caret-down"
-                            color={theme.colors.orangeDark}
-                            type="font-awesome-5"
-                          />
-                        )}
-                      </View>
-                      <Button
-                        type={activity.completed ? 'solid' : 'outline'}
-                        buttonStyle={styles.activityPaginationButton}
-                      />
-                    </View>
-                  ))
+                  renderPaginateDots(activities, activeIndex, theme)
                 }
               />
+              {activities.length === 1 && (
+                <View style={styles.activityPaginationContainer}>
+                  {renderPaginateDots(activities, 0, theme)}
+                </View>
+              )}
               <View style={styles.activityTotalNumberContainer}>
                 <Text
                   style={[
                     {color: theme.colors.orangeDark},
                     styles.activityTotalNumberText,
                   ]}>
-                  {activityNumber}
+                  {activePaginationIndex + 1}
                 </Text>
                 <Text style={styles.activityTotalNumberText}>
                   {translate('common.of_total_number', {
@@ -193,13 +196,12 @@ const Activity = ({theme, navigation}) => {
                 ref={(ref) => (carouselRef = ref)}
                 data={activities}
                 renderItem={(props) =>
-                  RenderActivityCard(props, theme, navigation, selectedDate)
+                  RenderActivityCard(props, theme, navigation, translate)
                 }
                 sliderWidth={SLIDER_WIDTH}
                 itemWidth={ITEM_WIDTH}
                 onSnapToItem={(index) => {
                   setActivePaginationIndex(index);
-                  setActivityNumber(index + 1);
                 }}
                 onLayout={() => carouselRef.snapToItem(activePaginationIndex)}
                 useScrollView={false}

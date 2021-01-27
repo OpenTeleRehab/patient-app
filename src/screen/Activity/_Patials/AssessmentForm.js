@@ -23,7 +23,7 @@ const AssessmentForm = ({activity, navigation}) => {
   const translate = getTranslate(localize);
 
   const {isLoading} = useSelector((state) => state.activity);
-  const [painLevel, setPainLevel] = useState(0);
+  const [painLevel, setPainLevel] = useState(1);
   const [numberOfSets, setNumberOfSets] = useState(0);
   const [numberOfReps, setNumberOfReps] = useState(0);
 
@@ -65,9 +65,10 @@ const AssessmentForm = ({activity, navigation}) => {
         <Slider
           value={painLevel}
           onValueChange={(value) => setPainLevel(value)}
+          minimumValue={1}
           maximumValue={10}
           step={1}
-          disabled={activity?.completed}
+          disabled={!!activity?.completed}
         />
       </View>
 
@@ -83,7 +84,7 @@ const AssessmentForm = ({activity, navigation}) => {
             <NumericInput
               value={numberOfSets}
               onChange={(num) => setNumberOfSets(num)}
-              disabled={activity?.completed}
+              disabled={!!activity?.completed}
             />
           </View>
           <View>
@@ -91,7 +92,7 @@ const AssessmentForm = ({activity, navigation}) => {
             <NumericInput
               value={numberOfReps}
               onChange={(num) => setNumberOfReps(num)}
-              disabled={activity?.completed}
+              disabled={!!activity?.completed}
             />
           </View>
         </View>

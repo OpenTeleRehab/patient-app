@@ -133,6 +133,7 @@ android {
         applicationId "org.hi.patient"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
         versionCode generateVersionCode()
         versionName generateVersionName()
     }
