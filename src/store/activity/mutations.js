@@ -20,6 +20,12 @@ const treatmentPlanFetchFailure = () => {
   };
 };
 
+const todayActivitySummaryRequest = () => {
+  return {
+    type: 'TREATMENT_PLAN_FETCH_REQUESTED',
+  };
+};
+
 const todayActivitySummarySuccess = (data) => {
   return {
     type: 'TODAY_ACTIVITY_SUMMARY_REQUEST_SUCCEED',
@@ -56,6 +62,7 @@ export const mutation = {
   treatmentPlanFetchRequest,
   treatmentPlanFetchSuccess,
   treatmentPlanFetchFailure,
+  todayActivitySummaryRequest,
   todayActivitySummarySuccess,
   todayActivitySummaryFailure,
   completeActivityRequest,

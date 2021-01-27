@@ -15,14 +15,16 @@ const getTreatmentPlan = async (today, accessToken) => {
   return await callApi(options);
 };
 
-const getTodayActivitySummary = () => {
-  return {
-    success: true,
-    data: {
-      all: 6,
-      completed: 4,
+const getTodayActivitySummary = async (today, accessToken) => {
+  const options = {
+    uri: '/treatment-plan/get-summary',
+    accessToken,
+    body: {
+      today,
     },
   };
+
+  return await callApi(options);
 };
 
 const completeActivity = async (id, payload, accessToken) => {

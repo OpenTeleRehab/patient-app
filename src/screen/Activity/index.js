@@ -28,6 +28,10 @@ const calendarContainer = {
   paddingTop: 10,
 };
 
+const containerMarginBottom = {
+  marginBottom: 100,
+};
+
 const renderPaginateDots = (activities, activeIndex, theme) =>
   activities.map((activity, i) => (
     <View style={styles.activityPaginationView} key={i}>
@@ -124,101 +128,105 @@ const Activity = ({theme, navigation}) => {
 
   useEffect(() => {
     if (activities?.length && selectedDate) {
-      const incompleteIndex = activities.findIndex(
-        (activity) => !!activity.completed === false,
-      );
-      const index = incompleteIndex >= 0 ? incompleteIndex : 0;
-      setActivePaginationIndex(index);
+      carouselRef.snapToItem(0);
+      setActivePaginationIndex(0);
     }
   }, [activities, selectedDate]);
 
   return (
     <>
       <HeaderBar
-        leftContent={{label: translate('tab.activities')}}
+        leftContent={{
+          label: _.isEmpty(treatmentPlan)
+            ? translate('tab.activities')
+            : treatmentPlan.name,
+        }}
         rightContent={{
           label: translate('common.today'),
           onPress: handleTodayPress,
         }}
       />
-      <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
-        <View style={[styles.mainContainerPrimary, styles.noPadding]}>
-          <CalendarStrip
-            ref={(ref) => (calendarRef = ref)}
-            selectedDate={selectedDate}
-            markedDates={markedDates}
-            scrollable={true}
-            dateNumberStyle={styles.textWhite}
-            dateNameStyle={styles.textWhite}
-            highlightDateNumberStyle={styles.textDark}
-            highlightDateNameStyle={styles.textDark}
-            style={calendarContainer}
-            calendarHeaderStyle={calendarHeaderStyle}
-            customDatesStyles={customDatesStylesFunc}
-            leftSelector={[]}
-            rightSelector={[]}
-            onDateSelected={(date) => setSelectedDate(date)}
-          />
-        </View>
-        <View style={[styles.mainContainerLight, styles.noPadding]}>
-          {activities?.length ? (
-            <>
-              <Pagination
-                dotsLength={activities.length}
-                activeDotIndex={activePaginationIndex}
-                containerStyle={styles.activityPaginationContainer}
-                inactiveDotOpacity={0.4}
-                inactiveDotScale={0.6}
-                renderDots={(activeIndex) =>
-                  renderPaginateDots(activities, activeIndex, theme)
-                }
-              />
-              {activities.length === 1 && (
-                <View style={styles.activityPaginationContainer}>
-                  {renderPaginateDots(activities, 0, theme)}
-                </View>
-              )}
-              <View style={styles.activityTotalNumberContainer}>
-                <Text
-                  style={[
-                    {color: theme.colors.orangeDark},
-                    styles.activityTotalNumberText,
-                  ]}>
-                  {activePaginationIndex + 1}
-                </Text>
-                <Text style={styles.activityTotalNumberText}>
-                  {translate('common.of_total_number', {
-                    number: activities.length,
-                  })}
-                </Text>
+      <View style={styles.bgPrimary}>
+        <CalendarStrip
+          ref={(ref) => (calendarRef = ref)}
+          selectedDate={selectedDate}
+          markedDates={markedDates}
+          scrollable={true}
+          dateNumberStyle={styles.textWhite}
+          dateNameStyle={styles.textWhite}
+          highlightDateNumberStyle={styles.textDark}
+          highlightDateNameStyle={styles.textDark}
+          style={calendarContainer}
+          calendarHeaderStyle={calendarHeaderStyle}
+          customDatesStyles={customDatesStylesFunc}
+          leftSelector={[]}
+          rightSelector={[]}
+          onDateSelected={(date) => setSelectedDate(date)}
+        />
+      </View>
+      {activities?.length ? (
+        <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
+          <View style={[styles.mainContainerLight, styles.noPadding]}>
+            <Pagination
+              dotsLength={activities.length}
+              activeDotIndex={activePaginationIndex}
+              containerStyle={styles.activityPaginationContainer}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+              renderDots={(activeIndex) =>
+                renderPaginateDots(activities, activeIndex, theme)
+              }
+            />
+            {activities.length === 1 && (
+              <View style={styles.activityPaginationContainer}>
+                {renderPaginateDots(activities, 0, theme)}
               </View>
-              <Carousel
-                ref={(ref) => (carouselRef = ref)}
-                data={activities}
-                renderItem={(props) =>
-                  RenderActivityCard(props, theme, navigation, translate)
-                }
-                sliderWidth={SLIDER_WIDTH}
-                itemWidth={ITEM_WIDTH}
-                onSnapToItem={(index) => {
-                  setActivePaginationIndex(index);
-                }}
-                onLayout={() => carouselRef.snapToItem(activePaginationIndex)}
-                useScrollView={false}
-                activeSlideAlignment="center"
-                inactiveSlideScale={1}
-                firstItem={0}
-              />
-            </>
-          ) : (
-            <View style={[styles.flexCenter]}>
-              <Text style={styles.marginTop}>
-                {translate('activity.no.task.for.this.day')}
+            )}
+            <View style={styles.activityTotalNumberContainer}>
+              <Text
+                style={[
+                  {color: theme.colors.orangeDark},
+                  styles.activityTotalNumberText,
+                ]}>
+                {activePaginationIndex + 1}
+              </Text>
+              <Text style={styles.activityTotalNumberText}>
+                {translate('common.of_total_number', {
+                  number: activities.length,
+                })}
               </Text>
             </View>
-          )}
+            <Carousel
+              ref={(ref) => (carouselRef = ref)}
+              data={activities}
+              renderItem={(props) =>
+                RenderActivityCard(props, theme, navigation, translate)
+              }
+              sliderWidth={SLIDER_WIDTH}
+              itemWidth={ITEM_WIDTH}
+              onSnapToItem={(index) => {
+                setActivePaginationIndex(index);
+              }}
+              useScrollView={false}
+              activeSlideAlignment="center"
+              inactiveSlideScale={1}
+              firstItem={0}
+            />
+          </View>
+        </ScrollView>
+      ) : (
+        <View
+          style={[
+            containerMarginBottom,
+            styles.flexCenter,
+            styles.flexColumn,
+            styles.justifyContentCenter,
+          ]}>
+          <Text h4 style={styles.marginTop}>
+            {translate('activity.no.task.for.this.day')}
+          </Text>
         </View>
-      </ScrollView>
+      )}
     </>
   );
 };
