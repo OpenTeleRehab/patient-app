@@ -25,13 +25,14 @@ const verifyPhoneNumber = async (to, code) => {
   return await callApi(options, 'post');
 };
 
-const setupPinNumber = async (pin, phone, otp_code) => {
+const setupPinNumber = async (pin, phone, otp_code, termOfServiceId) => {
   const option = {
     uri: '/auth/add-new-pin',
     body: {
       pin,
       phone,
       otp_code,
+      term_and_condition_id: termOfServiceId,
     },
   };
 

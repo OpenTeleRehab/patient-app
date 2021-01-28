@@ -34,9 +34,15 @@ export const verifyPhoneNumberRequest = (to, code) => async (dispatch) => {
 
 export const setupPinNumberRequest = (pin, phone, otp_code) => async (
   dispatch,
+  getState,
 ) => {
   dispatch(mutation.userSetupPinNumberRequest());
-  const data = await User.setupPinNumber(pin, phone, otp_code);
+  const data = await User.setupPinNumber(
+    pin,
+    phone,
+    otp_code,
+    getState().user.termOfService.id,
+  );
   if (data.success) {
     const timespan = moment()
       .add(1, 'M')
@@ -58,15 +64,24 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
   }
 };
 
-export const loginRequest = (phone, pin) => async (dispatch) => {
+export const loginRequest = (phone, pin) => async (dispatch, getState) => {
   dispatch(mutation.userLoginRequest());
-  const data = await User.login(phone, pin);
+  let data = await User.login(phone, pin);
   if (data.success) {
+    let acceptedTermOfService = true;
+    if (
+      data.data.profile.term_and_condition_id !==
+      getState().user.termOfService.id
+    ) {
+      data.data.profile.token = data.data.token;
+      data.data.token = '';
+      acceptedTermOfService = false;
+    }
     dispatch(mutation.userLoginSuccess(data.data));
-    return true;
+    return {success: true, acceptedTermOfService};
   } else {
     dispatch(mutation.userLoginFailure());
-    return false;
+    return {success: false};
   }
 };
 
@@ -154,11 +169,12 @@ export const fetchTermOfServiceRequest = () => async (dispatch) => {
   }
 };
 
-export const acceptTermOfServiceRequest = (id, accessToken) => async (
+export const acceptTermOfServiceRequest = (id) => async (
   dispatch,
+  getState,
 ) => {
   dispatch(mutation.acceptTermOfServiceRequest());
-  let data = await User.acceptTermOfService(id, accessToken);
+  let data = await User.acceptTermOfService(id, getState().user.profile.token);
   if (data.success) {
     dispatch(mutation.acceptTermOfServiceSuccess(data.data));
     return true;

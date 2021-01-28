@@ -24,11 +24,11 @@ const TermOfService = ({theme, navigation}) => {
   const translate = getTranslate(localize);
   const profile = useSelector((state) => state.user.profile);
   const termContent = useSelector((state) => state.user.termOfService);
-  const accessToken = useSelector((state) => state.user.accessToken);
+  const isLoading = useSelector((state) => state.user.isLoading);
 
   const onSubmit = () => {
     if (profile.id) {
-      dispatch(acceptTermOfServiceRequest(termContent.id, accessToken));
+      dispatch(acceptTermOfServiceRequest(termContent.id));
     } else {
       navigation.navigate(ROUTES.SETUP_PIN);
     }
@@ -53,7 +53,7 @@ const TermOfService = ({theme, navigation}) => {
           </TouchableOpacity>
           <Button
             title={translate('common.next')}
-            disabled={!acceptAgreement}
+            disabled={!acceptAgreement || isLoading}
             onPress={() => onSubmit()}
             containerStyle={styles.marginTop}
             titleStyle={styles.textUpperCase}
@@ -67,7 +67,9 @@ const TermOfService = ({theme, navigation}) => {
             }}
             title={translate('common.back')}
             type="clear"
-            onPress={() => navigation.navigate(ROUTES.REGISTER)}
+            onPress={() =>
+              navigation.navigate(profile.id ? ROUTES.LOGIN : ROUTES.REGISTER)
+            }
             containerStyle={styles.marginTop}
             titleStyle={styles.textUpperCase}
           />
