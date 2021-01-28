@@ -7,7 +7,7 @@ import {Header, Text, Button, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 
-const headerMaxWidth = {maxWidth: '85%'};
+const leftContainerMaxWidth = {maxWidth: '85%'};
 
 const HeaderBar = (props) => {
   const {theme, title, onGoBack, leftContent, rightContent} = props;
@@ -36,7 +36,7 @@ const HeaderBar = (props) => {
       }
       if (label) {
         return (
-          <Text h4 numberOfLines={1} style={[styles.textLight, headerMaxWidth]}>
+          <Text h4 numberOfLines={1} style={styles.textLight}>
             {label}
           </Text>
         );
@@ -83,7 +83,7 @@ const HeaderBar = (props) => {
       leftComponent={renderLeftComponent()}
       centerComponent={renderCenterComponent()}
       rightComponent={renderRightComponent()}
-      leftContainerStyle={styles.noneFlex}
+      leftContainerStyle={[styles.noneFlex, leftContainerMaxWidth]}
       centerContainerStyle={styles.textLight}
       rightContainerStyle={styles.noneFlex}
       containerStyle={styles.noneBorderBottom}
