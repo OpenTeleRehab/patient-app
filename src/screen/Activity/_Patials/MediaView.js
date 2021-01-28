@@ -9,7 +9,7 @@ import {
   PORTRAIT,
   LANDSCAPE,
 } from 'react-native-orientation-locker/ScreenOrientation';
-import Video from 'react-native-video';
+import VideoPlayer from 'react-native-video-player';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
@@ -47,7 +47,14 @@ const RenderMediaItem = ({item, index}) => {
   const type = item.fileType;
 
   if (type === 'video/mp4' || type === 'audio/mpeg') {
-    return <Video source={{uri}} style={styleMedia} resizeMode="contain" />;
+    return (
+      <VideoPlayer
+        autoplay
+        video={{uri}}
+        style={styleMedia}
+        resizeMode="contain"
+      />
+    );
   }
 
   return (
