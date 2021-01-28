@@ -8,7 +8,7 @@ import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import CalendarStrip from 'react-native-calendar-strip';
+import CalendarStrip from '@webessentials/react-native-calendar-strip';
 import moment from 'moment';
 import settings from '../../../config/settings';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
@@ -24,12 +24,12 @@ const calendarHeaderStyle = {
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.75);
 const calendarContainer = {
-  height: 99,
+  height: 120,
   paddingTop: 10,
 };
 
-const containerMarginBottom = {
-  marginBottom: 100,
+const containerPaddingBottom = {
+  paddingBottom: 100,
 };
 
 const renderPaginateDots = (activities, activeIndex, theme) =>
@@ -76,15 +76,11 @@ const Activity = ({theme, navigation}) => {
     if (date.isoWeekday() === 6 || date.isoWeekday() === 7) {
       // Saturdays and Sundays
       return {
-        dateNameStyle: styles.textWhite,
-        dateNumberStyle: styles.textWhite,
         dateContainerStyle: styles.dateContainerWeekend,
       };
     }
 
     return {
-      dateNameStyle: styles.textWhite,
-      dateNumberStyle: styles.textWhite,
       dateContainerStyle: styles.dateContainer,
     };
   };
@@ -154,6 +150,8 @@ const Activity = ({theme, navigation}) => {
           scrollable={true}
           dateNumberStyle={styles.textWhite}
           dateNameStyle={styles.textWhite}
+          weekendDateNameStyle={styles.textWhite}
+          weekendDateNumberStyle={styles.textWhite}
           highlightDateNumberStyle={styles.textDark}
           highlightDateNameStyle={styles.textDark}
           style={calendarContainer}
@@ -217,7 +215,8 @@ const Activity = ({theme, navigation}) => {
       ) : (
         <View
           style={[
-            containerMarginBottom,
+            containerPaddingBottom,
+            styles.mainContainerLight,
             styles.flexCenter,
             styles.flexColumn,
             styles.justifyContentCenter,
