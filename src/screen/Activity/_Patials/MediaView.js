@@ -13,6 +13,7 @@ import VideoPlayer from 'react-native-video-player';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
+import music from '../../../assets/images/music.png';
 
 const styleToggleScreenBtn = {
   position: 'absolute',
@@ -37,7 +38,7 @@ const stylePaginationDot = {
   borderWidth: 1,
   borderColor: '#fff',
 };
-
+const musicUri = Image.resolveAssetSource(music).uri;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const styleMedia = {width: '100%', height: '100%'};
@@ -46,7 +47,7 @@ const RenderMediaItem = ({item, index}) => {
   const uri = settings.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
 
-  if (type === 'video/mp4' || type === 'audio/mpeg') {
+  if (type === 'video/mp4') {
     return (
       <VideoPlayer
         autoplay
@@ -57,6 +58,18 @@ const RenderMediaItem = ({item, index}) => {
     );
   }
 
+  if (type === 'audio/mpeg') {
+    return (
+      <VideoPlayer
+        autoplay
+        video={{uri}}
+        resizeMode="contain"
+        style={styleMedia}
+        poster={musicUri}
+        audioOnly={true}
+      />
+    );
+  }
   return (
     <Image
       source={{uri: settings.adminApiBaseURL + '/file/' + item.id}}
