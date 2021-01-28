@@ -48,6 +48,9 @@ export default {
   marginTop: {
     marginTop: variables.spacingBase,
   },
+  paddingY: {
+    paddingVertical: variables.spacingBase,
+  },
   marginTopMd: {
     marginTop: variables.spacingMd,
   },

@@ -1,11 +1,12 @@
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
+import Video from 'react-native-video';
+
 import {ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import settings from '../../../../config/settings';
-import Video from 'react-native-video';
 
 const ImageCard = ({files, grayscale}) => {
   if (grayscale) {
@@ -25,7 +26,7 @@ const ImageCard = ({files, grayscale}) => {
   if (type === 'video/mp4' || type === 'audio/mpeg') {
     return (
       <Video
-        source={{uri: uri}}
+        source={{uri}}
         style={styles.activityCardVideo}
         resizeMode="cover"
       />
