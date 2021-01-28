@@ -3,7 +3,7 @@ import {TouchableOpacity, View} from 'react-native';
 import Video from 'react-native-video';
 
 import {ROUTES} from '../../../variables/constants';
-import {Card, Icon, Image, Text} from 'react-native-elements';
+import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import settings from '../../../../config/settings';
@@ -59,10 +59,12 @@ const RenderActivityCard = ({item, index}, theme, navigation, translate) => {
           {item.title}
         </Text>
         <Text style={styles.activityCardText}>
-          {item.sets &&
-            translate('activity.number_of_sets', {number: item.sets})}
-          {item.reps &&
-            ` - ${translate('activity.number_of_reps', {number: item.sets})}`}
+          {item.sets
+            ? translate('activity.number_of_sets', {number: item.sets})
+            : ''}
+          {item.reps
+            ? ` - ${translate('activity.number_of_reps', {number: item.sets})}`
+            : ''}
         </Text>
         <Card.Divider style={styles.activityCardDivider} />
 

@@ -43,14 +43,15 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const styleMedia = {width: '100%', height: '100%'};
 
-const RenderMediaItem = ({item, index}) => {
+const RenderMediaItem = ({item, index}, activeItem) => {
   const uri = settings.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
+  const autoplay = index === activeItem;
 
   if (type === 'video/mp4') {
     return (
       <VideoPlayer
-        autoplay
+        autoplay={autoplay}
         video={{uri}}
         style={styleMedia}
         resizeMode="contain"
@@ -61,7 +62,7 @@ const RenderMediaItem = ({item, index}) => {
   if (type === 'audio/mpeg') {
     return (
       <VideoPlayer
-        autoplay
+        autoplay={autoplay}
         video={{uri}}
         resizeMode="contain"
         style={styleMedia}
@@ -130,7 +131,7 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
         <View>
           <Carousel
             data={activity.files}
-            renderItem={RenderMediaItem}
+            renderItem={(props) => RenderMediaItem(props, showMedia)}
             sliderWidth={sliderWidth}
             itemWidth={sliderWidth}
             inactiveSlideScale={1}
