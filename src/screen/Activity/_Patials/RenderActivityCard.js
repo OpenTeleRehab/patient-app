@@ -30,7 +30,7 @@ const ImageCard = ({files, grayscale}) => {
         source={{uri}}
         style={styles.activityCardVideo}
         resizeMode="cover"
-        muted={true}
+        muted
       />
     );
   }

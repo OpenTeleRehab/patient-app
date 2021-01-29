@@ -37,7 +37,7 @@ const RenderMediaItem = ({item, index}, setShowMedia) => {
   if (type === 'video/mp4') {
     return (
       <TouchableOpacity onPress={() => setShowMedia(index)}>
-        <Video source={{uri}} style={styleMedia} resizeMode="cover" />
+        <Video muted source={{uri}} style={styleMedia} resizeMode="cover" />
       </TouchableOpacity>
     );
   }
