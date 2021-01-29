@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, CheckBox, withTheme, Text} from 'react-native-elements';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import styles from '../../../assets/styles';
@@ -9,7 +9,10 @@ import {ROUTES} from '../../../variables/constants';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {acceptTermOfServiceRequest} from '../../../store/user/actions';
+import {
+  acceptTermOfServiceRequest,
+  fetchTermOfServiceRequest,
+} from '../../../store/user/actions';
 
 const customStyles = {
   termDetailLink: {
@@ -25,6 +28,10 @@ const TermOfService = ({theme, navigation}) => {
   const profile = useSelector((state) => state.user.profile);
   const termContent = useSelector((state) => state.user.termOfService);
   const isLoading = useSelector((state) => state.user.isLoading);
+
+  useEffect(() => {
+    dispatch(fetchTermOfServiceRequest());
+  }, [dispatch]);
 
   const onSubmit = () => {
     if (profile.id) {

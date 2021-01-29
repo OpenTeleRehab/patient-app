@@ -63,7 +63,7 @@ const RenderActivityCard = ({item, index}, theme, navigation, translate) => {
             ? translate('activity.number_of_sets', {number: item.sets})
             : ''}
           {item.reps
-            ? ` - ${translate('activity.number_of_reps', {number: item.sets})}`
+            ? ` - ${translate('activity.number_of_reps', {number: item.reps})}`
             : ''}
         </Text>
         <Card.Divider style={styles.activityCardDivider} />
