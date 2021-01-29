@@ -1,13 +1,11 @@
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
-import Video from 'react-native-video';
-
 import {ROUTES} from '../../../variables/constants';
-import {Card, Icon, Text} from 'react-native-elements';
+import {Card, Icon, Text, Image} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import settings from '../../../../config/settings';
-import music from '../../../assets/images/music.png';
+import musicUrl from '../../../assets/images/music.png';
 
 const ImageCard = ({files, grayscale}) => {
   if (grayscale) {
@@ -25,18 +23,11 @@ const ImageCard = ({files, grayscale}) => {
     type = files[0].fileType;
   }
   if (type === 'video/mp4') {
-    return (
-      <Video
-        source={{uri}}
-        style={styles.activityCardVideo}
-        resizeMode="cover"
-        muted
-      />
-    );
+    uri += '?thumbnail=1';
   }
 
   if (type === 'audio/mpeg') {
-    return <Card.Image source={music} style={[styles.activityCardImage]} />;
+    uri = Image.resolveAssetSource(musicUrl).uri;
   }
   return <Card.Image source={{uri}} style={[styles.activityCardImage]} />;
 };

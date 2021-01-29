@@ -68,7 +68,7 @@ const ActivityDetail = ({theme, route, navigation}) => {
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),
         }}
       />
-      <ScrollView>
+      <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
         <View style={styles.mainContainerLight}>
           {!!activity.completed &&
             (activity.include_feedback || activity.get_pain_level) && (

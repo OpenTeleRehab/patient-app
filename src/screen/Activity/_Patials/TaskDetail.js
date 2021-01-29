@@ -17,8 +17,7 @@ import MediaView from './MediaView';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
 import {completeActive} from '../../../store/activity/actions';
-import Video from 'react-native-video';
-import music from '../../../assets/images/music.png';
+import musicUrl from '../../../assets/images/music.png';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
@@ -31,23 +30,15 @@ const stylePaginationDot = {
 };
 
 const RenderMediaItem = ({item, index}, setShowMedia) => {
-  const uri = settings.adminApiBaseURL + '/file/' + item.id;
+  let uri = settings.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
 
   if (type === 'video/mp4') {
-    return (
-      <TouchableOpacity onPress={() => setShowMedia(index)}>
-        <Video muted source={{uri}} style={styleMedia} resizeMode="cover" />
-      </TouchableOpacity>
-    );
+    uri += '?thumbnail=1';
   }
 
   if (type === 'audio/mpeg') {
-    return (
-      <TouchableOpacity onPress={() => setShowMedia(index)}>
-        <Image source={music} style={styleMedia} />
-      </TouchableOpacity>
-    );
+    uri = Image.resolveAssetSource(musicUrl).uri;
   }
 
   return (
