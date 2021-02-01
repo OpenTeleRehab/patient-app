@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ScrollView} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {ButtonGroup, Icon, Text, withTheme} from 'react-native-elements';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
@@ -68,29 +68,31 @@ const ActivityDetail = ({theme, route, navigation}) => {
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),
         }}
       />
-      <ScrollView style={styles.mainContainerLight}>
-        {!!activity.completed &&
-          (activity.include_feedback || activity.get_pain_level) && (
-            <ButtonGroup
-              onPress={(index) => setTabIndex(index)}
-              buttons={[
-                translate('activity.task_detail'),
-                translate('activity.results'),
-              ]}
-              selectedIndex={tabIndex}
+      <ScrollView>
+        <View style={styles.mainContainerLight}>
+          {!!activity.completed &&
+            (activity.include_feedback || activity.get_pain_level) && (
+              <ButtonGroup
+                onPress={(index) => setTabIndex(index)}
+                buttons={[
+                  translate('activity.task_detail'),
+                  translate('activity.results'),
+                ]}
+                selectedIndex={tabIndex}
+              />
+            )}
+
+          {tabIndex === 0 && (
+            <TaskDetail
+              activity={activity}
+              activityNumber={activityNumber}
+              navigation={navigation}
             />
           )}
-
-        {tabIndex === 0 && (
-          <TaskDetail
-            activity={activity}
-            activityNumber={activityNumber}
-            navigation={navigation}
-          />
-        )}
-        {tabIndex === 1 && (
-          <AssessmentForm activity={activity} navigation={navigation} />
-        )}
+          {tabIndex === 1 && (
+            <AssessmentForm activity={activity} navigation={navigation} />
+          )}
+        </View>
       </ScrollView>
     </>
   );

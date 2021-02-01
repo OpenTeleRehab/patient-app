@@ -13,7 +13,6 @@ export const ROUTES = {
   MESSAGE: 'Message',
   USER_PROFILE: 'UserProfile',
   USER_PROFILE_EDIT: 'UserProfileEdit',
-  PRIVACY: 'Privacy',
   ABOUT: 'About',
   REGISTER: 'Register',
   TERM_OF_SERVICE: 'TermOfService',
