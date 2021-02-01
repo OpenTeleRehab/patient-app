@@ -85,6 +85,13 @@ const Register = ({navigation}) => {
                 priority: 0,
                 areaCodes: null,
               },
+              {
+                name: 'Philippine',
+                iso2: 'ph',
+                dialCode: '63',
+                priority: 2,
+                areaCodes: null,
+              },
             ]}
           />
 
@@ -102,6 +109,7 @@ const Register = ({navigation}) => {
               <Picker prompt={translate('common.language')}>
                 <Picker.Item label="English" value="en" />
                 <Picker.Item label="Vietnam" value="vn" />
+                <Picker.Item label="Philippines" value="ph" />
               </Picker>
             </View>
           </View>
