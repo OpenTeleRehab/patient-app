@@ -12,10 +12,6 @@ import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {getTranslate} from 'react-localize-redux';
 import {getTodayActivitySummaryRequest} from '../../store/activity/actions';
 
-const containerMarginBottom = {
-  marginBottom: 100,
-};
-
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -51,56 +47,51 @@ const Home = ({navigation}) => {
           onPress: () => navigation.toggleDrawer(),
         }}
       />
-      <View style={[styles.mainContainerPrimary]}>
-        <View
-          style={[
-            containerMarginBottom,
-            styles.flexCenter,
-            styles.flexColumn,
-            styles.justifyContentCenter,
-          ]}>
-          <Text style={styles.textLightBold}>
-            {translate('common.hi')}, {profile.last_name}!
-          </Text>
-          {todayActivitySummary.all ? (
-            <>
-              <Text h4 style={[styles.textLight, styles.marginTop]}>
-                {translate('home.activities.today')}
-              </Text>
-              <AnimatedCircularProgress
-                size={250}
-                width={20}
-                fill={completedPercentage}
-                lineCap="round"
-                tintColor={colors.white}
-                rotation={0}
-                backgroundColor={colors.blueLight}
-                style={[styles.marginTopMd]}>
-                {() => (
-                  <>
-                    <Text style={styles.leadText}>
-                      {translate('common.completed')}
-                    </Text>
-                    <Text style={styles.progressTextStyle}>
-                      <Text
-                        style={[
-                          styles.progressTextStyle,
-                          styles.fontWeightBold,
-                        ]}>
-                        {todayActivitySummary.completed}
-                      </Text>
-                      /{todayActivitySummary.all}
-                    </Text>
-                  </>
-                )}
-              </AnimatedCircularProgress>
-            </>
-          ) : (
+      <View
+        style={[
+          styles.mainContainerPrimary,
+          styles.flexCenter,
+          styles.flexColumn,
+          styles.justifyContentCenter,
+        ]}>
+        <Text style={styles.textLightBold}>
+          {translate('common.hi')}, {profile.last_name}!
+        </Text>
+        {todayActivitySummary.all ? (
+          <>
             <Text h4 style={[styles.textLight, styles.marginTop]}>
-              {translate('home.no.activity.for.today')}
+              {translate('home.activities.today')}
             </Text>
-          )}
-        </View>
+            <AnimatedCircularProgress
+              size={250}
+              width={20}
+              fill={completedPercentage}
+              lineCap="round"
+              tintColor={colors.white}
+              rotation={0}
+              backgroundColor={colors.blueLight}
+              style={[styles.marginTopMd]}>
+              {() => (
+                <>
+                  <Text style={styles.leadText}>
+                    {translate('common.completed')}
+                  </Text>
+                  <Text style={styles.progressTextStyle}>
+                    <Text
+                      style={[styles.progressTextStyle, styles.fontWeightBold]}>
+                      {todayActivitySummary.completed}
+                    </Text>
+                    /{todayActivitySummary.all}
+                  </Text>
+                </>
+              )}
+            </AnimatedCircularProgress>
+          </>
+        ) : (
+          <Text h4 style={[styles.textLight, styles.marginTop]}>
+            {translate('home.no.activity.for.today')}
+          </Text>
+        )}
       </View>
     </>
   );

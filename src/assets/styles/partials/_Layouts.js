@@ -5,12 +5,10 @@ import variables from '../variables';
 
 export default {
   mainContainerPrimary: {
-    flex: 1,
     padding: variables.spacingBase,
     backgroundColor: variables.primary,
   },
   mainContainerLight: {
-    flex: 1,
     padding: variables.spacingBase,
     backgroundColor: 'white',
   },

@@ -7,8 +7,6 @@ export default {
   navTabBar: {
     borderTopWidth: 1,
     borderTopColor: variables.primary,
-    position: 'absolute',
-    zIndex: 10,
   },
   navTabLabel: {
     fontWeight: 'bold',
