@@ -52,7 +52,7 @@ const AssessmentForm = ({activity, navigation}) => {
 
   return (
     <>
-      {!!activity?.get_pain_level && (
+      {!activity?.get_pain_level && (
         <View style={styles.marginTopLg}>
           <View style={[styles.flexCenter, styles.marginBottomMd]}>
             <Text h3 style={styles.textPrimary}>
@@ -73,7 +73,7 @@ const AssessmentForm = ({activity, navigation}) => {
           />
         </View>
       )}
-      {!!activity?.include_feedback && (
+      {!activity?.include_feedback && (
         <View style={styleSetsAndRapsContainer}>
           <View style={[styles.flexCenter, styles.marginBottomMd]}>
             <Text h3 style={styles.textPrimary}>
@@ -100,7 +100,7 @@ const AssessmentForm = ({activity, navigation}) => {
           </View>
         </View>
       )}
-      {!!activity?.completed && (
+      {!activity?.completed && (
         <View style={styles.marginTopLg}>
           <Button
             title={translate('common.submit')}
