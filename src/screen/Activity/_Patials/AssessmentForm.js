@@ -52,53 +52,55 @@ const AssessmentForm = ({activity, navigation}) => {
 
   return (
     <>
-      <View style={styles.marginTopLg}>
-        <View style={[styles.flexCenter, styles.marginBottomMd]}>
-          <Text h3 style={styles.textPrimary}>
-            {translate('activity.pain_level.question')}
-          </Text>
-        </View>
-        <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-          <Text h4>{translate('activity.pain_level.no_paint')}</Text>
-          <Text h4>{translate('activity.pain_level.worst_paint')}</Text>
-        </View>
-        <Slider
-          value={painLevel}
-          onValueChange={(value) => setPainLevel(value)}
-          minimumValue={1}
-          maximumValue={10}
-          step={1}
-          disabled={!!activity?.completed}
-        />
-      </View>
-
-      <View style={styleSetsAndRapsContainer}>
-        <View style={[styles.flexCenter, styles.marginBottomMd]}>
-          <Text h3 style={styles.textPrimary}>
-            {translate('activity.sets_reps.completed_label')}
-          </Text>
-        </View>
-        <View style={[styles.flexRow, styles.justifyContentSpaceAround]}>
-          <View>
-            <Text h4>{translate('activity.sets')}</Text>
-            <NumericInput
-              value={numberOfSets}
-              onChange={(num) => setNumberOfSets(num)}
-              disabled={!!activity?.completed}
-            />
+      {!!activity?.get_pain_level && (
+        <View style={styles.marginTopLg}>
+          <View style={[styles.flexCenter, styles.marginBottomMd]}>
+            <Text h3 style={styles.textPrimary}>
+              {translate('activity.pain_level.question')}
+            </Text>
           </View>
-          <View>
-            <Text h4>{translate('activity.reps')}</Text>
-            <NumericInput
-              value={numberOfReps}
-              onChange={(num) => setNumberOfReps(num)}
-              disabled={!!activity?.completed}
-            />
+          <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
+            <Text h4>{translate('activity.pain_level.no_paint')}</Text>
+            <Text h4>{translate('activity.pain_level.worst_paint')}</Text>
+          </View>
+          <Slider
+            value={painLevel}
+            onValueChange={(value) => setPainLevel(value)}
+            minimumValue={1}
+            maximumValue={10}
+            step={1}
+            disabled={!!activity?.completed}
+          />
+        </View>
+      )}
+      {!!activity?.include_feedback && (
+        <View style={styleSetsAndRapsContainer}>
+          <View style={[styles.flexCenter, styles.marginBottomMd]}>
+            <Text h3 style={styles.textPrimary}>
+              {translate('activity.sets_reps.completed_label')}
+            </Text>
+          </View>
+          <View style={[styles.flexRow, styles.justifyContentSpaceAround]}>
+            <View>
+              <Text h4>{translate('activity.sets')}</Text>
+              <NumericInput
+                value={numberOfSets}
+                onChange={(num) => setNumberOfSets(num)}
+                disabled={!!activity?.completed}
+              />
+            </View>
+            <View>
+              <Text h4>{translate('activity.reps')}</Text>
+              <NumericInput
+                value={numberOfReps}
+                onChange={(num) => setNumberOfReps(num)}
+                disabled={!!activity?.completed}
+              />
+            </View>
           </View>
         </View>
-      </View>
-
-      {!activity?.completed && (
+      )}
+      {!!activity?.completed && (
         <View style={styles.marginTopLg}>
           <Button
             title={translate('common.submit')}
