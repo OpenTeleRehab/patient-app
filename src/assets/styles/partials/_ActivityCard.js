@@ -74,4 +74,16 @@ export default {
   activityCardVideo: {
     height: 250,
   },
+  educationalMaterialCardHeader: {
+    height: 250,
+    backgroundColor: variables.primary,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  educationalMaterialCardHeaderTitle: {
+    color: variables.white,
+    fontWeight: 'bold',
+    fontSize: variables.fontSizeMd,
+  },
 };

@@ -32,7 +32,7 @@ const ImageCard = ({files, grayscale}) => {
   return <Card.Image source={{uri}} style={[styles.activityCardImage]} />;
 };
 
-const RenderActivityCard = ({item, index}, theme, navigation, translate) => {
+const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
   return (
     <TouchableOpacity
       key={index}
@@ -91,4 +91,4 @@ const RenderActivityCard = ({item, index}, theme, navigation, translate) => {
   );
 };
 
-export default RenderActivityCard;
+export default RenderExerciseCard;
