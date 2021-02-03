@@ -9,6 +9,7 @@ import {indicator} from './indicator/reducers';
 import {activity} from './activity/reducers';
 import {goal} from './goal/reducers';
 import {appointment} from './appointment/reducers';
+import {country} from './country/reducers';
 import settings from '../../config/settings';
 
 const rootReducers = {
@@ -18,6 +19,7 @@ const rootReducers = {
   activity,
   goal,
   appointment,
+  country,
 };
 
 const middlewares = [thunk];
