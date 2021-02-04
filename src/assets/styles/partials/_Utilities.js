@@ -27,6 +27,9 @@ export default {
   textSmall: {
     fontSize: variables.fontSizeSm,
   },
+  bgDark: {
+    backgroundColor: variables.grey,
+  },
   bgDanger: {
     backgroundColor: variables.error,
   },
