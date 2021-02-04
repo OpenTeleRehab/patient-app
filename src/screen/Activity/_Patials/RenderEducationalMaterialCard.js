@@ -13,7 +13,12 @@ const RenderEducationalMaterialCard = (
   return (
     <TouchableOpacity
       key={index}
-      onPress={() => navigation.navigate(ROUTES.MATERIAL_DETAIL)}>
+      onPress={() =>
+        navigation.navigate(ROUTES.MATERIAL_DETAIL, {
+          id: item.id,
+          activityNumber: index + 1,
+        })
+      }>
       <Card containerStyle={styles.activityCardContainer}>
         <View
           style={[

@@ -27,6 +27,9 @@ export default {
   alignSelfStretch: {
     alignSelf: 'stretch',
   },
+  alignSelfCenter: {
+    alignSelf: 'center',
+  },
   justifyContentCenter: {
     justifyContent: 'center',
   },
