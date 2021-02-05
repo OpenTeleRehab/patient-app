@@ -33,7 +33,9 @@ export default {
   activityCardText: {
     margin: 10,
     fontSize: variables.fontSizeBase,
-    height: 20,
+  },
+  activityCardInfoWrapper: {
+    height: 130,
   },
   activityCardDivider: {
     marginBottom: 0,
@@ -74,16 +76,28 @@ export default {
   activityCardVideo: {
     height: 250,
   },
-  educationalMaterialCardHeader: {
+  educationMaterialCardHeader: {
     height: 250,
     backgroundColor: variables.primary,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  educationMaterialIconWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  educationalMaterialCardHeaderTitle: {
+  educationMaterialCardHeaderTitle: {
     color: variables.white,
     fontWeight: 'bold',
     fontSize: variables.fontSizeMd,
+  },
+  educationMaterialDownloadWrapper: {
+    padding: variables.spacingMd,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  educationMaterialFileName: {
+    maxWidth: '90%',
   },
 };
