@@ -93,8 +93,10 @@ const Register = ({theme, navigation}) => {
   const onRegister = () => {
     setErrorPhoneNumber(false);
     const formattedInputPhoneNumber = phoneNumber.replace(countryPhoneCode, '');
-    const formattedNumber =
-      countryPhoneCode + parseInt(formattedInputPhoneNumber, 10);
+    const formattedNumber = `${countryPhoneCode}${parseInt(
+      formattedInputPhoneNumber,
+      10,
+    )}`;
     dispatch(registerRequest(formattedNumber, hash)).then((result) => {
       if (result) {
         navigation.navigate(ROUTES.VERIFY_PHONE);
