@@ -44,21 +44,23 @@ const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
       }>
       <Card containerStyle={styles.activityCardContainer}>
         <ImageCard files={item.files} grayscale={item.completed} />
-        <Text
-          style={[styles.activityCardTitle, styles.textDefaultBold]}
-          numberOfLines={3}>
-          {item.title}
-        </Text>
-        <Text style={styles.activityCardText}>
-          {item.sets
-            ? translate('activity.number_of_sets', {number: item.sets})
-            : ''}
-          {item.reps
-            ? ` - ${translate('activity.number_of_reps', {number: item.reps})}`
-            : ''}
-        </Text>
-        <Card.Divider style={styles.activityCardDivider} />
-
+        <View style={styles.activityCardInfoWrapper}>
+          <Text
+            style={[styles.activityCardTitle, styles.textDefaultBold]}
+            numberOfLines={3}>
+            {item.title}
+          </Text>
+          <Text style={styles.activityCardText}>
+            {item.sets
+              ? translate('activity.number_of_sets', {number: item.sets})
+              : ''}
+            {item.reps
+              ? ` - ${translate('activity.number_of_reps', {
+                  number: item.reps,
+                })}`
+              : ''}
+          </Text>
+        </View>
         {item.completed ? (
           <View style={styles.activityCardFooterContainer}>
             <Icon

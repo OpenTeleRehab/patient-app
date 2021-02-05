@@ -25,3 +25,8 @@ export const ROUTES = {
 export const STORAGE_KEY = {
   AUTH_INFO: 'AuthInfo',
 };
+
+export const ACTIVITY_TYPES = {
+  EXERCISE: 'exercise',
+  MATERIAL: 'material',
+};

@@ -4,7 +4,7 @@ import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 
-const RenderEducationalMaterialCard = (
+const RenderEducationMaterialCard = (
   {item, index},
   theme,
   navigation,
@@ -22,30 +22,41 @@ const RenderEducationalMaterialCard = (
       <Card containerStyle={styles.activityCardContainer}>
         <View
           style={[
-            styles.educationalMaterialCardHeader,
+            styles.educationMaterialCardHeader,
             item.completed ? styles.bgDark : {},
           ]}>
-          <Icon
-            name="description"
-            color={item.completed ? theme.colors.black : theme.colors.white}
-            size={100}
-            type="material"
-          />
+          <View style={styles.educationMaterialIconWrapper}>
+            <Icon
+              name="description"
+              color={item.completed ? theme.colors.black : theme.colors.white}
+              size={100}
+              type="material"
+            />
+            <Text
+              style={[
+                styles.educationMaterialCardHeaderTitle,
+                item.completed ? styles.textDark : {},
+              ]}
+              numberOfLines={1}>
+              {translate('activity.material')}
+            </Text>
+          </View>
           <Text
             style={[
-              styles.educationalMaterialCardHeaderTitle,
-              item.completed ? styles.textDark : {},
-            ]}
-            numberOfLines={1}>
-            MATERIAL
+              styles.marginLeft,
+              styles.marginY,
+              item.completed ? styles.textDark : styles.textWhite,
+            ]}>
+            {translate(item.file.fileGroupType)}
           </Text>
         </View>
-        <Text
-          style={[styles.activityCardTitle, styles.textDefaultBold]}
-          numberOfLines={3}>
-          {item.title}
-        </Text>
-        <Card.Divider style={styles.activityCardDivider} />
+        <View style={styles.activityCardInfoWrapper}>
+          <Text
+            style={[styles.activityCardTitle, styles.textDefaultBold]}
+            numberOfLines={3}>
+            {item.title}
+          </Text>
+        </View>
         {item.completed ? (
           <View style={styles.activityCardFooterContainer}>
             <Icon
@@ -78,4 +89,4 @@ const RenderEducationalMaterialCard = (
   );
 };
 
-export default RenderEducationalMaterialCard;
+export default RenderEducationMaterialCard;

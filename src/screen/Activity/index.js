@@ -15,7 +15,8 @@ import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import _ from 'lodash';
 import RenderExerciseCard from './_Patials/RenderExerciseCard';
-import RenderEducationalMaterialCard from './_Patials/RenderEducationalMaterialCard';
+import RenderEducationMaterialCard from './_Patials/RenderEducationMaterialCard';
+import {ACTIVITY_TYPES} from '../../variables/constants';
 
 const calendarHeaderStyle = {
   ...styles.textWhite,
@@ -199,8 +200,8 @@ const Activity = ({theme, navigation}) => {
               ref={(ref) => (carouselRef = ref)}
               data={activities}
               renderItem={(props) => {
-                if (props.item.type === 'material') {
-                  return RenderEducationalMaterialCard(
+                if (props.item.type === ACTIVITY_TYPES.MATERIAL) {
+                  return RenderEducationMaterialCard(
                     props,
                     theme,
                     navigation,
