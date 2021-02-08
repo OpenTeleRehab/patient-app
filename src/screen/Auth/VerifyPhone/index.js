@@ -23,6 +23,7 @@ const VerifyPhone = ({navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
+  const [hash, setHash] = useState('');
 
   const onConfirm = () => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, code)).then((result) => {
@@ -41,7 +42,7 @@ const VerifyPhone = ({navigation}) => {
   };
 
   const onResent = () => {
-    dispatch(registerRequest(formattedNumber));
+    dispatch(registerRequest(formattedNumber, hash));
   };
 
   const reset = () => {
@@ -71,6 +72,12 @@ const VerifyPhone = ({navigation}) => {
       .then((p) => RNOtpVerify.addListener(otpHandler))
       .catch((p) => console.log(p));
   });
+
+  useEffect(() => {
+    RNOtpVerify.getHash().then((hasCode) => {
+      setHash(hasCode);
+    });
+  }, []);
 
   return (
     <>
