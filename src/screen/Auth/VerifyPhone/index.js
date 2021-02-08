@@ -53,7 +53,7 @@ const VerifyPhone = ({navigation}) => {
       if (message) {
         const messageArray = message.split(': ');
         if (messageArray[1]) {
-          const otp = messageArray[1].split('\n')[0];
+          const otp = parseInt(messageArray[1].substring(0, 6), 10);
           setCode(otp);
         }
       }
