@@ -50,7 +50,7 @@ const UserProfile = ({navigation}) => {
     },
     {
       label: 'phone.number',
-      value: profile.phone,
+      value: `+${profile.phone}`,
     },
     {
       label: 'common.language',

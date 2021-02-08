@@ -69,7 +69,7 @@ const Login = ({navigation}) => {
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
             <Text style={styles.formLabel}>{translate('phone.number')}</Text>
-            <Text style={[styles.leadText, styles.textDark]}>{phone}</Text>
+            <Text style={[styles.leadText, styles.textDark]}>+{phone}</Text>
             <TouchableOpacity
               style={styles.marginY}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
