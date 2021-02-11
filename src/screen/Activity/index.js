@@ -207,13 +207,15 @@ const Activity = ({theme, navigation}) => {
                     navigation,
                     translate,
                   );
-                } else {
+                } else if (props.item.type === ACTIVITY_TYPES.EXERCISE) {
                   return RenderExerciseCard(
                     props,
                     theme,
                     navigation,
                     translate,
                   );
+                } else {
+                  return <Text>Todo: Questionnaire Card</Text>;
                 }
               }}
               sliderWidth={SLIDER_WIDTH}
