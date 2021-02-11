@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ListItem, Text} from 'react-native-elements';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
 import styles from '../../assets/styles';
@@ -11,15 +11,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
-import {logoutRequest} from '../../store/user/actions';
 import {formatDate, isValidDateFormat} from '../../utils/helper';
+import {getLanguageName} from '../../utils/language';
+import {getLanguageRequest} from '../../store/language/actions';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.user.profile);
-  const accessToken = useSelector((state) => state.user.accessToken);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {languages} = useSelector((state) => state.language);
+
   const calculateAge = (dob) => {
     const currentDate = moment();
     const dateOfBirth = isValidDateFormat(dob)
@@ -36,7 +38,6 @@ const UserProfile = ({navigation}) => {
     {
       label: 'common.gender',
       value: profile.gender ? translate(`gender.${profile.gender}`) : '',
-      hasEdit: true,
     },
     {
       label: 'date.of.birth',
@@ -46,7 +47,6 @@ const UserProfile = ({navigation}) => {
       rightContentValue:
         'Age: ' +
         (profile.date_of_birth ? calculateAge(profile.date_of_birth) : 0),
-      hasEdit: true,
     },
     {
       label: 'phone.number',
@@ -54,18 +54,13 @@ const UserProfile = ({navigation}) => {
     },
     {
       label: 'common.language',
-      value: profile.language_id
-        ? profile.language_id === 1
-          ? translate('common.language.en')
-          : translate('common.language.vn')
-        : translate('common.language.en'),
-      hasEdit: true,
+      value: getLanguageName(profile.language_id, languages),
     },
   ];
 
-  const handleLogout = () => {
-    dispatch(logoutRequest(accessToken));
-  };
+  useEffect(() => {
+    dispatch(getLanguageRequest());
+  }, [dispatch]);
 
   const RenderListItem = (user) => {
     return (
@@ -76,11 +71,6 @@ const UserProfile = ({navigation}) => {
               {translate(user.label).toLocaleUpperCase()}
             </ListItem.Title>
           </ListItem.Content>
-          <Text
-            style={styles.textPrimary}
-            onPress={() => navigation.navigate(ROUTES.USER_PROFILE_EDIT)}>
-            {user.hasEdit ? translate('common.edit') : ''}
-          </Text>
         </ListItem>
         <ListItem bottomDivider>
           <ListItem.Content>
@@ -100,8 +90,8 @@ const UserProfile = ({navigation}) => {
         onGoBack={() => navigation.navigate(ROUTES.HOME)}
         title={translate('preferences')}
         rightContent={{
-          label: translate('common.logout'),
-          onPress: () => handleLogout(),
+          label: translate('common.edit'),
+          onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
       <ScrollView style={styles.mainContainerLight}>
