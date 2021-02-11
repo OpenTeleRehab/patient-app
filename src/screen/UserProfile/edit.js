@@ -15,12 +15,15 @@ import {getTranslate} from 'react-localize-redux';
 import {formatDate, isValidDateFormat} from '../../utils/helper';
 import DatePicker from '../../components/Common/DatePicker';
 import settings from '../../../config/settings';
+import {getTranslations} from '../../store/translation/actions';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {languages} = useSelector((state) => state.language);
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [contractDate, setContractDate] = useState(null);
   const [userInfo, setUserInfo] = useState({
@@ -29,7 +32,7 @@ const UserProfileEdit = ({navigation}) => {
     last_name: '',
     gender: '',
     date_of_birth: '',
-    language_id: 1,
+    language_id: '',
   });
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
@@ -107,6 +110,7 @@ const UserProfileEdit = ({navigation}) => {
   };
 
   const onSucceed = () => {
+    dispatch(getTranslations(userInfo.language_id));
     navigation.navigate(ROUTES.USER_PROFILE);
   };
 
@@ -200,8 +204,9 @@ const UserProfileEdit = ({navigation}) => {
             onValueChange={(itemValue, itemIndex) =>
               setUserInfo({...userInfo, ['language_id']: itemValue})
             }>
-            <Picker.Item label={translate('common.language.en')} value={1} />
-            <Picker.Item label={translate('common.language.vn')} value={2} />
+            {languages.map((lang, i) => (
+              <Picker.Item key={i} label={lang.name} value={lang.id} />
+            ))}
           </Picker>
           <Divider />
         </View>

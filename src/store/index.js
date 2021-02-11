@@ -10,6 +10,7 @@ import {activity} from './activity/reducers';
 import {goal} from './goal/reducers';
 import {appointment} from './appointment/reducers';
 import {country} from './country/reducers';
+import {language} from './language/reducers';
 import settings from '../../config/settings';
 
 const rootReducers = {
@@ -20,6 +21,7 @@ const rootReducers = {
   goal,
   appointment,
   country,
+  language,
 };
 
 const middlewares = [thunk];

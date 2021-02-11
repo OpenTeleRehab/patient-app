@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-const countryFetchRequest = (data) => {
+const countryFetchRequest = () => {
   return {
     type: 'COUNTRY_FETCH_REQUESTED',
-    data,
   };
 };
 const countryFetchSuccess = (data) => {

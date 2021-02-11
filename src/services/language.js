@@ -3,17 +3,14 @@
  */
 import {callApi} from '../utils/request';
 
-const getTranslations = async (lang) => {
+const getLanguages = async () => {
   const options = {
-    uri: '/translation/i18n/patient_app',
-    body: {
-      lang,
-    },
+    uri: '/language',
   };
 
   return await callApi(options, 'get', false, true);
 };
 
-export const Translation = {
-  getTranslations,
+export const Language = {
+  getLanguages,
 };

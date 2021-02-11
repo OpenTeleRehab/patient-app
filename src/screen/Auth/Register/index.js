@@ -31,13 +31,15 @@ import {getTranslate} from 'react-localize-redux';
 import {getCountryRequest} from '../../../store/country/actions';
 import Modal from 'react-native-modal';
 import _ from 'lodash';
+import {getLanguageRequest} from '../../../store/language/actions';
+import {getTranslations} from '../../../store/translation/actions';
 
 const phoneCodeContainerStyle = {
-  width: '30%',
+  width: '25%',
   marginRight: 5,
 };
 const phoneContainerStyle = {
-  width: '70%',
+  width: '75%',
 };
 const containerStyle = {
   flex: 1,
@@ -70,33 +72,66 @@ const phoneCodeSelectBoxStyle = {
 const phoneCodeFontStyle = {
   fontSize: 17,
 };
-const modalTitleStyle = {
-  fontWeight: 'bold',
-};
 const phoneCodeDividerStyle = {
   height: 1,
 };
 
 const Register = ({theme, navigation}) => {
   const dispatch = useDispatch();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [countryPhoneCode, setCountryPhoneCode] = useState(84);
-  const [hash, setHash] = useState('');
-  const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
   const {countries} = useSelector((state) => state.country);
-  const [modalVisible, setModalVisible] = useState(false);
+  const {languages} = useSelector((state) => state.language);
   const phoneInput = useRef();
 
-  const onRegister = () => {
+  const [hash, setHash] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryPhoneCode, setCountryPhoneCode] = useState('');
+  const [language, setLanguage] = useState('');
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
+
+  useEffect(() => {
+    dispatch(getCountryRequest());
+    dispatch(getLanguageRequest());
+  }, [dispatch]);
+
+  // Set default selected phone code
+  useEffect(() => {
+    if (countries.length) {
+      setCountryPhoneCode(countries[0].phone_code);
+    }
+  }, [countries]);
+
+  // Set language by phone code selected
+  useEffect(() => {
+    if (countryPhoneCode && countries.length) {
+      const selectedCountry = _.findLast(countries, {
+        phone_code: countryPhoneCode,
+      });
+      if (selectedCountry && selectedCountry.language_id) {
+        setLanguage(selectedCountry.language_id);
+        dispatch(getTranslations(selectedCountry.language_id));
+      }
+    }
+  }, [countryPhoneCode, countries, dispatch]);
+
+  useEffect(() => {
+    RNOtpVerify.getHash().then((code) => {
+      setHash(code);
+    });
+  }, []);
+
+  const handleLanguageChange = (lang) => {
+    setLanguage(lang);
+    dispatch(getTranslations(lang));
+  };
+
+  const handleRegister = () => {
     setErrorPhoneNumber(false);
-    const formattedInputPhoneNumber = phoneNumber.replace(countryPhoneCode, '');
-    const formattedNumber = `${countryPhoneCode}${parseInt(
-      formattedInputPhoneNumber,
-      10,
-    )}`;
+    const mobileNumber = phoneNumber.replace(countryPhoneCode, '');
+    const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
     dispatch(registerRequest(formattedNumber, hash)).then((result) => {
       if (result) {
         navigation.navigate(ROUTES.VERIFY_PHONE);
@@ -105,16 +140,6 @@ const Register = ({theme, navigation}) => {
       }
     });
   };
-
-  useEffect(() => {
-    dispatch(getCountryRequest());
-  }, [dispatch]);
-
-  useEffect(() => {
-    RNOtpVerify.getHash().then((code) => {
-      setHash(code);
-    });
-  }, []);
 
   return (
     <>
@@ -132,7 +157,7 @@ const Register = ({theme, navigation}) => {
                 }}>
                 <View style={phoneCodeSelectBoxStyle}>
                   <Text style={phoneCodeFontStyle}>
-                    {'+' + countryPhoneCode}
+                    {countryPhoneCode ? `+${countryPhoneCode}` : ''}
                   </Text>
                   <Text>
                     <Icon
@@ -174,59 +199,58 @@ const Register = ({theme, navigation}) => {
           <View>
             <Text style={styles.formLabel}>{translate('common.language')}</Text>
             <View style={styles.formControl}>
-              <Picker prompt={translate('common.language')}>
-                <Picker.Item label="English" value="en" />
-                <Picker.Item label="Vietnam" value="vn" />
-                <Picker.Item label="Philippines" value="ph" />
+              <Picker
+                prompt={translate('common.language')}
+                selectedValue={language}
+                onValueChange={handleLanguageChange}>
+                {languages.map((lang, i) => (
+                  <Picker.Item key={i} label={lang.name} value={lang.id} />
+                ))}
               </Picker>
             </View>
           </View>
           <Button
-            onPress={onRegister}
+            onPress={handleRegister}
             title={translate('common.register')}
             containerStyle={styles.marginTopLg}
             titleStyle={styles.textUpperCase}
             disabled={isLoading}
           />
         </View>
-        <View>
-          <Modal
-            backdropTransitionOutTiming={0}
-            animationIn={'fadeIn'}
-            animationOut={'fadeOut'}
-            isVisible={modalVisible}
-            onBackButtonPress={() => setModalVisible(false)}
-            onBackdropPress={() => setModalVisible(false)}>
-            <View style={modalView}>
-              <Text style={[styles.formLabel, modalTitleStyle]}>
-                {translate('common.country')}
-              </Text>
-              <ScrollView style={modalContentContainer}>
-                {countries.map((country, i) => (
-                  <View key={i}>
-                    <TouchableHighlight
-                      key={i}
-                      style={listElementStyle}
-                      activeOpacity={0.6}
-                      onPress={() => {
-                        setCountryPhoneCode(country.phone_code);
-                        setModalVisible(false);
-                        phoneInput.current.focus();
-                      }}
-                      underlayColor={theme.colors.grey5}>
-                      <Text>
-                        {country.name + ' (' + '+' + country.phone_code + ')'}
-                      </Text>
-                    </TouchableHighlight>
-                    {_.findLastIndex(countries) !== i && (
-                      <Divider style={{backgroundColor: theme.colors.grey3}} />
-                    )}
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
-          </Modal>
-        </View>
+        <Modal
+          backdropTransitionOutTiming={0}
+          animationIn={'fadeIn'}
+          animationOut={'fadeOut'}
+          isVisible={modalVisible}
+          onBackButtonPress={() => setModalVisible(false)}
+          onBackdropPress={() => setModalVisible(false)}>
+          <View style={modalView}>
+            <Text style={[styles.formLabel, styles.fontWeightBold]}>
+              {translate('common.country')}
+            </Text>
+            <ScrollView style={modalContentContainer}>
+              {countries.map((country, i) => (
+                <View key={i}>
+                  <TouchableHighlight
+                    key={i}
+                    style={listElementStyle}
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setCountryPhoneCode(country.phone_code);
+                      setModalVisible(false);
+                      phoneInput.current.focus();
+                    }}
+                    underlayColor={theme.colors.grey5}>
+                    <Text>{`${country.name} (+${country.phone_code})`}</Text>
+                  </TouchableHighlight>
+                  {_.findLastIndex(countries) !== i && (
+                    <Divider style={{backgroundColor: theme.colors.grey3}} />
+                  )}
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </Modal>
       </ScrollView>
     </>
   );
