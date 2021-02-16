@@ -3,4 +3,5 @@
  */
 export const initialState = {
   countries: [],
+  userCountryCode: null,
 };

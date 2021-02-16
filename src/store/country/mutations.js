@@ -6,10 +6,11 @@ const countryFetchRequest = () => {
     type: 'COUNTRY_FETCH_REQUESTED',
   };
 };
-const countryFetchSuccess = (data) => {
+const countryFetchSuccess = (data, userCountryCode) => {
   return {
     type: 'COUNTRY_FETCH_SUCCEED',
     data,
+    userCountryCode,
   };
 };
 

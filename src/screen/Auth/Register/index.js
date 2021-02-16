@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -81,9 +81,8 @@ const Register = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
-  const {countries} = useSelector((state) => state.country);
+  const {countries, userCountryCode} = useSelector((state) => state.country);
   const {languages} = useSelector((state) => state.language);
-  const phoneInput = useRef();
 
   const [hash, setHash] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -100,28 +99,34 @@ const Register = ({theme, navigation}) => {
   // Set default selected phone code
   useEffect(() => {
     if (countries.length) {
-      setCountryPhoneCode(countries[0].phone_code);
-    }
-  }, [countries]);
+      let defaultCountry = countries[0];
 
-  // Set language by phone code selected
-  useEffect(() => {
-    if (countryPhoneCode && countries.length) {
-      const selectedCountry = _.findLast(countries, {
-        phone_code: countryPhoneCode,
-      });
-      if (selectedCountry && selectedCountry.language_id) {
-        setLanguage(selectedCountry.language_id);
-        dispatch(getTranslations(selectedCountry.language_id));
+      if (userCountryCode) {
+        const userCountry = _.find(countries, {iso_code: userCountryCode});
+        if (userCountry) {
+          defaultCountry = userCountry;
+        }
       }
+
+      setCountryPhoneCode(defaultCountry.phone_code);
+      setLanguage(defaultCountry.language_id);
+      dispatch(getTranslations(defaultCountry.language_id));
     }
-  }, [countryPhoneCode, countries, dispatch]);
+  }, [countries, userCountryCode, dispatch]);
 
   useEffect(() => {
     RNOtpVerify.getHash().then((code) => {
       setHash(code);
     });
   }, []);
+
+  const handlePhoneCodeChange = (phoneCode) => {
+    setCountryPhoneCode(phoneCode);
+    const selectedCountry = _.find(countries, {phone_code: phoneCode});
+    setLanguage(selectedCountry.language_id);
+    dispatch(getTranslations(selectedCountry.language_id));
+    setModalVisible(false);
+  };
 
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
@@ -181,7 +186,6 @@ const Register = ({theme, navigation}) => {
             </View>
             <View style={phoneContainerStyle}>
               <Input
-                ref={phoneInput}
                 placeholder={translate('placeholder.phone')}
                 keyboardType="phone-pad"
                 value={phoneNumber}
@@ -235,11 +239,7 @@ const Register = ({theme, navigation}) => {
                     key={i}
                     style={listElementStyle}
                     activeOpacity={0.6}
-                    onPress={() => {
-                      setCountryPhoneCode(country.phone_code);
-                      setModalVisible(false);
-                      phoneInput.current.focus();
-                    }}
+                    onPress={() => handlePhoneCodeChange(country.phone_code)}
                     underlayColor={theme.colors.grey5}>
                     <Text>{`${country.name} (+${country.phone_code})`}</Text>
                   </TouchableHighlight>
