@@ -76,19 +76,17 @@ export default {
   activityCardVideo: {
     height: 250,
   },
-  educationMaterialCardHeader: {
+  cardWithIconHeader: {
     height: 250,
-    backgroundColor: variables.primary,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
-  educationMaterialIconWrapper: {
+  cardWithIconWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  educationMaterialCardHeaderTitle: {
-    color: variables.white,
+  cardWithIconHeaderTitle: {
     fontWeight: 'bold',
     fontSize: variables.fontSizeMd,
   },
