@@ -8,8 +8,31 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
-import RenderPaginateDots from '../_Patials/RenderPaginateDots';
 import RenderQuestion from '../_Patials/RenderQuestion';
+
+const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
+  questions.map((question, i) => (
+    <View style={styles.activityPaginationView} key={i}>
+      <View style={styles.activityPaginationIconContainer}>
+        {i === activeIndex && (
+          <Icon
+            name="caret-down"
+            color={theme.colors.orangeDark}
+            type="font-awesome-5"
+          />
+        )}
+      </View>
+      <Button
+        type={
+          (patientAnswers[question.id] && patientAnswers[question.id].length) ||
+          patientAnswers[question.id] > 0
+            ? 'solid'
+            : 'outline'
+        }
+        buttonStyle={styles.activityPaginationButton}
+      />
+    </View>
+  ));
 
 const QuestionnaireDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
@@ -19,6 +42,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const [questionnaire, setQuestionnaire] = useState(undefined);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [question, setQuestion] = useState(undefined);
+  const [patientAnswers, setPatientAnswers] = useState([]);
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -108,9 +132,24 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
             inactiveDotOpacity={0.4}
             inactiveDotScale={0.6}
             renderDots={(activeIndex) =>
-              RenderPaginateDots(questionnaire.questions, activeIndex, theme)
+              RenderPaginateDots(
+                questionnaire.questions,
+                patientAnswers,
+                activeIndex,
+                theme,
+              )
             }
           />
+          {questionnaire.questions.length === 1 && (
+            <View style={styles.activityPaginationContainer}>
+              {RenderPaginateDots(
+                questionnaire.questions,
+                patientAnswers,
+                0,
+                theme,
+              )}
+            </View>
+          )}
           <View
             style={[
               styles.activityTotalNumberContainer,
@@ -132,7 +171,13 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           </View>
         </View>
         <ScrollView contentContainerStyle={[styles.marginBottom]}>
-          {question && <RenderQuestion question={question} />}
+          {question && (
+            <RenderQuestion
+              question={question}
+              patientAnswers={patientAnswers}
+              setPatientAnswers={setPatientAnswers}
+            />
+          )}
         </ScrollView>
         <Divider />
         <View style={[styles.questionnaireButtonWrapper]}>

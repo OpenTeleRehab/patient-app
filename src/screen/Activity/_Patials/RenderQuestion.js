@@ -14,16 +14,27 @@ const containerStyle = {
   marginTop: 0,
 };
 
-const RenderQuestion = ({question, setPatientAnswers}) => {
+const RenderQuestion = ({question, setPatientAnswers, patientAnswers}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
   const handleOnClickRadio = (answer) => {
-    console.log(answer.id);
+    setPatientAnswers({...patientAnswers, [question.id]: answer.id});
   };
 
   const handleOnClickCheckbox = (answer) => {
-    console.log(answer.id);
+    let answers = patientAnswers[question.id] || [];
+    const index = answers.findIndex((item) => item === answer.id);
+    if (index > -1) {
+      answers.splice(index, 1);
+    } else {
+      answers.push(answer.id);
+    }
+    setPatientAnswers({...patientAnswers, [question.id]: answers});
+  };
+
+  const handleOnChange = (value) => {
+    setPatientAnswers({...patientAnswers, [question.id]: value});
   };
 
   return (
@@ -50,6 +61,11 @@ const RenderQuestion = ({question, setPatientAnswers}) => {
                   uncheckedIcon="circle-o"
                   onPress={() => handleOnClickRadio(answer)}
                   key={answer.id}
+                  checked={
+                    patientAnswers[question.id]
+                      ? answer.id === patientAnswers[question.id]
+                      : false
+                  }
                 />
               );
             })}
@@ -64,6 +80,11 @@ const RenderQuestion = ({question, setPatientAnswers}) => {
                   title={answer.description}
                   onPress={() => handleOnClickCheckbox(answer)}
                   key={answer.id}
+                  checked={
+                    patientAnswers[question.id]
+                      ? patientAnswers[question.id].includes(answer.id)
+                      : false
+                  }
                 />
               );
             })}
@@ -73,10 +94,16 @@ const RenderQuestion = ({question, setPatientAnswers}) => {
           <Input
             keyboardType="phone-pad"
             placeholder={translate('activity.enter_your_answer')}
+            value={patientAnswers[question.id] || ''}
+            onChangeText={(value) => handleOnChange(value)}
           />
         )}
         {question.type === 'open-text' && (
-          <Input placeholder={translate('activity.enter_your_answer')} />
+          <Input
+            placeholder={translate('activity.enter_your_answer')}
+            value={patientAnswers[question.id] || ''}
+            onChangeText={(value) => handleOnChange(value)}
+          />
         )}
       </View>
     </>
