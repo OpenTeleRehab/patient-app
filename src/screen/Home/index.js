@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {getTranslate} from 'react-localize-redux';
 import {getTodayActivitySummaryRequest} from '../../store/activity/actions';
+import {useIsDrawerOpen} from '@react-navigation/drawer';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -20,8 +21,19 @@ const Home = ({navigation}) => {
   const todayActivitySummary = useSelector(
     (state) => state.activity.todaySummary,
   );
+  const isDrawerOpen = useIsDrawerOpen();
 
   const [completedPercentage, setCompletedPercentage] = useState(0);
+
+  useEffect(() => {
+    const tabNav = navigation.dangerouslyGetParent();
+    if (isDrawerOpen) {
+      tabNav.setOptions({tabBarVisible: false});
+    }
+    return () => {
+      tabNav.setOptions({tabBarVisible: true});
+    };
+  }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
     dispatch(getTodayActivitySummaryRequest());

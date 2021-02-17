@@ -20,7 +20,7 @@ export default {
   },
   navDrawerContainer: {
     flex: 1,
-    paddingBottom: 70,
+    paddingBottom: variables.spacingMd,
   },
   navDrawerBottom: {
     marginHorizontal: variables.spacingMd,

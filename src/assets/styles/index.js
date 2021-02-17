@@ -14,6 +14,7 @@ import Form from './partials/_Form';
 import UserProfile from './partials/_UserProfile';
 import Calendar from './partials/_Calendar';
 import ActivityCard from './partials/_ActivityCard';
+import Messages from './partials/_Messages';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
   ...UserProfile,
   ...Calendar,
   ...ActivityCard,
+  ...Messages,
 });
 
 export default styles;
