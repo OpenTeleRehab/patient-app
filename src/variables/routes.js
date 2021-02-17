@@ -23,6 +23,7 @@ import ActivityScreen from '../screen/Activity';
 import ActivityDetailScreen from '../screen/Activity/Detail';
 import CompleteTaskScreen from '../screen/Activity/CompleteTask';
 import MaterialDetailScreen from '../screen/Activity/Detail/MaterialDetail';
+import QuestinnaireDetailScreen from '../screen/Activity/Detail/QuestionnaireDetail';
 
 // Goal group
 import GoalScreen from '../screen/Goal';
@@ -104,6 +105,10 @@ export const activities = [
   {
     name: ROUTES.MATERIAL_DETAIL,
     screen: MaterialDetailScreen,
+  },
+  {
+    name: ROUTES.QUESTIONNAIRE_DETAIL,
+    screen: QuestinnaireDetailScreen,
   },
 ];
 

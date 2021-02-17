@@ -87,8 +87,8 @@ const MaterialDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text h4 style={styles.textLight}>
-            {translate('activity.activity_number', {number: activityNumber})}
+          <Text numberOfLines={1} h4 style={styles.textLight}>
+            {material.title}
             {!!material.completed && (
               <Icon
                 name="check"

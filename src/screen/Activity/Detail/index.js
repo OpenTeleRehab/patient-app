@@ -50,8 +50,8 @@ const ActivityDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text h4 style={styles.textLight}>
-            {translate('activity.activity_number', {number: activityNumber})}
+          <Text numberOfLines={1} h4 style={styles.textLight}>
+            {activity.title}
             {!!activity.completed && (
               <Icon
                 name="check"
