@@ -78,4 +78,7 @@ export default {
   marginLeft: {
     marginLeft: variables.spacingBase,
   },
+  marginRight: {
+    marginRight: variables.spacingBase,
+  },
 };

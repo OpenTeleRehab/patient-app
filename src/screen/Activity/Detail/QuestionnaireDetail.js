@@ -1,0 +1,189 @@
+import React, {useEffect, useState} from 'react';
+import {Button, Divider, Icon, Text, withTheme} from 'react-native-elements';
+import {Pagination} from 'react-native-snap-carousel';
+import styles from '../../../assets/styles';
+import {useSelector} from 'react-redux';
+import {ScrollView, View} from 'react-native';
+import HeaderBar from '../../../components/Common/HeaderBar';
+import {ROUTES} from '../../../variables/constants';
+import {getTranslate} from 'react-localize-redux';
+import _ from 'lodash';
+import RenderPaginateDots from '../_Patials/RenderPaginateDots';
+import RenderQuestion from '../_Patials/RenderQuestion';
+
+const QuestionnaireDetail = ({theme, route, navigation}) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+  const {id} = route.params;
+  const {treatmentPlan} = useSelector((state) => state.activity);
+  const [questionnaire, setQuestionnaire] = useState(undefined);
+  const [activePaginationIndex, setActivePaginationIndex] = useState(0);
+  const [question, setQuestion] = useState(undefined);
+
+  useEffect(() => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    return () => {
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    };
+  }, [navigation]);
+
+  useEffect(() => {
+    if (id && treatmentPlan.activities.length) {
+      const selectedQuestionnaire = _.find(treatmentPlan.activities, {
+        id,
+      });
+
+      if (selectedQuestionnaire) {
+        setQuestionnaire(selectedQuestionnaire);
+      }
+    }
+  }, [id, treatmentPlan]);
+
+  useEffect(() => {
+    if (questionnaire?.questions.length) {
+      setQuestion(questionnaire.questions[activePaginationIndex]);
+    }
+  }, [activePaginationIndex, questionnaire]);
+
+  const handleNext = () => {
+    if (activePaginationIndex < questionnaire.questions.length - 1) {
+      setActivePaginationIndex(activePaginationIndex + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (activePaginationIndex > 0) {
+      setActivePaginationIndex(activePaginationIndex - 1);
+    }
+  };
+
+  if (!questionnaire) {
+    return (
+      <HeaderBar
+        leftContent={{label: ''}}
+        rightContent={{
+          label: translate('common.close'),
+          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+        }}
+      />
+    );
+  }
+
+  return (
+    <>
+      <HeaderBar
+        leftContent={
+          <Text
+            numberOfLines={1}
+            h4
+            style={[styles.textLight, styles.marginRight]}>
+            {questionnaire.title}
+            {!!questionnaire.completed && (
+              <Icon
+                name="check"
+                type="font-awesome-5"
+                color={theme.colors.white}
+                size={18}
+                style={styles.marginLeft}
+              />
+            )}
+          </Text>
+        }
+        rightContent={{
+          label: translate('common.close'),
+          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+        }}
+      />
+      <View
+        style={[
+          styles.flexColumn,
+          styles.mainContainerLight,
+          styles.noPadding,
+        ]}>
+        <View>
+          <Pagination
+            dotsLength={questionnaire.questions.length}
+            activeDotIndex={activePaginationIndex}
+            containerStyle={styles.activityPaginationContainer}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+            renderDots={(activeIndex) =>
+              RenderPaginateDots(questionnaire.questions, activeIndex, theme)
+            }
+          />
+          <View
+            style={[
+              styles.activityTotalNumberContainer,
+              styles.marginTopMd,
+              styles.marginBottomMd,
+            ]}>
+            <Text
+              style={[
+                {color: theme.colors.orangeDark},
+                styles.activityTotalNumberText,
+              ]}>
+              {activePaginationIndex + 1}
+            </Text>
+            <Text style={styles.activityTotalNumberText}>
+              {translate('common.of_total_number', {
+                number: questionnaire.questions.length,
+              })}
+            </Text>
+          </View>
+        </View>
+        <ScrollView contentContainerStyle={[styles.marginBottom]}>
+          {question && <RenderQuestion question={question} />}
+        </ScrollView>
+        <Divider />
+        <View style={[styles.questionnaireButtonWrapper]}>
+          {activePaginationIndex > 0 && questionnaire.questions.length > 1 && (
+            <Button
+              containerStyle={[styles.questionnaireButtonContainer]}
+              icon={{
+                name: 'angle-left',
+                type: 'font-awesome',
+                color: theme.colors.primary,
+              }}
+              title={translate('activity.previous')}
+              titleStyle={styles.textUpperCase}
+              onPress={handlePrevious}
+              type="outline"
+            />
+          )}
+          {activePaginationIndex < questionnaire.questions.length - 1 &&
+            questionnaire.questions.length > 1 && (
+              <Button
+                containerStyle={[styles.questionnaireButtonContainer]}
+                icon={{
+                  name: 'angle-right',
+                  type: 'font-awesome',
+                  color: theme.colors.primary,
+                }}
+                title={translate('activity.continue')}
+                titleStyle={styles.textUpperCase}
+                iconRight={true}
+                onPress={handleNext}
+                type="outline"
+              />
+            )}
+          {activePaginationIndex === questionnaire.questions.length - 1 && (
+            <Button
+              containerStyle={[styles.questionnaireButtonContainer]}
+              icon={{
+                name: 'angle-right',
+                type: 'font-awesome',
+                color: theme.colors.white,
+              }}
+              title={translate('activity.submit_questionnaire')}
+              titleStyle={[styles.textUpperCase]}
+              iconRight={true}
+              onPress={handleNext}
+            />
+          )}
+        </View>
+      </View>
+    </>
+  );
+};
+
+export default withTheme(QuestionnaireDetail);

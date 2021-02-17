@@ -15,6 +15,7 @@ import UserProfile from './partials/_UserProfile';
 import Calendar from './partials/_Calendar';
 import ActivityCard from './partials/_ActivityCard';
 import Messages from './partials/_Messages';
+import Questionnaire from './partials/_Questionnaire';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
   ...Calendar,
   ...ActivityCard,
   ...Messages,
+  ...Questionnaire,
 });
 
 export default styles;

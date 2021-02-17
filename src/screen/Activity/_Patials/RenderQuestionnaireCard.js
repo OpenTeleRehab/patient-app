@@ -2,6 +2,7 @@ import React from 'react';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
+import {ROUTES} from '../../../variables/constants';
 
 const RenderQuestionnaireCard = (
   {item, index},
@@ -10,7 +11,13 @@ const RenderQuestionnaireCard = (
   translate,
 ) => {
   return (
-    <TouchableOpacity key={index}>
+    <TouchableOpacity
+      key={index}
+      onPress={() =>
+        navigation.navigate(ROUTES.QUESTIONNAIRE_DETAIL, {
+          id: item.id,
+        })
+      }>
       <Card containerStyle={styles.activityCardContainer}>
         <View
           style={[
