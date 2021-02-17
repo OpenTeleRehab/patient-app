@@ -1,60 +1,48 @@
 import React from 'react';
-import {ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 
-const RenderEducationMaterialCard = (
+const RenderQuestionnaireCard = (
   {item, index},
   theme,
   navigation,
   translate,
 ) => {
   return (
-    <TouchableOpacity
-      key={index}
-      onPress={() =>
-        navigation.navigate(ROUTES.MATERIAL_DETAIL, {
-          id: item.id,
-          activityNumber: index + 1,
-        })
-      }>
+    <TouchableOpacity key={index}>
       <Card containerStyle={styles.activityCardContainer}>
         <View
           style={[
             styles.cardWithIconHeader,
-            item.completed ? styles.bgDark : styles.bgPrimary,
+            item.completed ? styles.bgDark : styles.bgOrangeLight,
           ]}>
           <View style={styles.cardWithIconWrapper}>
             <Icon
-              name="description"
-              color={item.completed ? theme.colors.black : theme.colors.white}
+              name="twitch"
+              color={item.completed ? theme.colors.black : theme.colors.warning}
               size={100}
-              type="material"
+              type="font-awesome"
             />
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed ? styles.textDark : styles.textWhite,
+                item.completed ? styles.textDark : styles.textWarning,
               ]}
               numberOfLines={1}>
-              {translate('activity.material')}
+              {translate('activity.questionnaire')}
             </Text>
           </View>
-          <Text
-            style={[
-              styles.marginLeft,
-              styles.marginY,
-              item.completed ? styles.textDark : styles.textWhite,
-            ]}>
-            {translate(item.file.fileGroupType)}
-          </Text>
         </View>
         <View style={styles.activityCardInfoWrapper}>
           <Text
             style={[styles.activityCardTitle, styles.textDefaultBold]}
             numberOfLines={3}>
             {item.title}
+          </Text>
+          <Text style={styles.activityCardText}>
+            <Text style={styles.fontWeightBold}>{item.questions.length}</Text>{' '}
+            {translate('activity.questions')}
           </Text>
         </View>
         {item.completed ? (
@@ -89,4 +77,4 @@ const RenderEducationMaterialCard = (
   );
 };
 
-export default RenderEducationMaterialCard;
+export default RenderQuestionnaireCard;

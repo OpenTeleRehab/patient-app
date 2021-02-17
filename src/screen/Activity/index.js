@@ -16,6 +16,7 @@ import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import _ from 'lodash';
 import RenderExerciseCard from './_Patials/RenderExerciseCard';
 import RenderEducationMaterialCard from './_Patials/RenderEducationMaterialCard';
+import RenderQuestionnaireCard from './_Patials/RenderQuestionnaireCard';
 import {ACTIVITY_TYPES} from '../../variables/constants';
 
 const calendarHeaderStyle = {
@@ -215,7 +216,12 @@ const Activity = ({theme, navigation}) => {
                     translate,
                   );
                 } else {
-                  return <Text>Todo: Questionnaire Card</Text>;
+                  return RenderQuestionnaireCard(
+                    props,
+                    theme,
+                    navigation,
+                    translate,
+                  );
                 }
               }}
               sliderWidth={SLIDER_WIDTH}

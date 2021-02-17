@@ -113,8 +113,8 @@ const MaterialDetail = ({theme, route, navigation}) => {
         ]}>
         <ScrollView contentContainerStyle={styles.marginBottom}>
           <Card containerStyle={styles.activityCardContainer}>
-            <View style={styles.educationMaterialCardHeader}>
-              <View style={styles.educationMaterialIconWrapper}>
+            <View style={[styles.cardWithIconHeader, styles.bgPrimary]}>
+              <View style={styles.cardWithIconWrapper}>
                 <Icon
                   name="description"
                   color={theme.colors.white}
@@ -122,7 +122,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
                   type="material"
                 />
                 <Text
-                  style={styles.educationMaterialCardHeaderTitle}
+                  style={[styles.cardWithIconHeaderTitle, styles.textWhite]}
                   numberOfLines={1}>
                   {translate('activity.material')}
                 </Text>

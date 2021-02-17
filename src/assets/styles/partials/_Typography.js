@@ -25,6 +25,9 @@ export default {
   textDark: {
     color: variables.black,
   },
+  textWarning: {
+    color: variables.warning,
+  },
   progressTextStyle: {
     color: variables.white,
     fontSize: 72,

@@ -9,6 +9,7 @@ export default {
   blueLight: '#3392D3',
   blueLight2: '#0065BF',
   orangeDark: '#c95508',
+  orangeLight: '#EDC8A3',
   grey: '#777777',
   grey1: '#575757',
   grey2: '#858585',
