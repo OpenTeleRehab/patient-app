@@ -57,6 +57,9 @@ export default {
   paddingY: {
     paddingVertical: variables.spacingBase,
   },
+  paddingX: {
+    paddingHorizontal: variables.spacingBase,
+  },
   paddingXMd: {
     paddingHorizontal: variables.spacingMd,
   },
