@@ -47,3 +47,21 @@ export const completeActive = (id, payload) => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const completeQuestionnaire = (id, payload) => async (
+  dispatch,
+  getState,
+) => {
+  dispatch(mutation.completeQuestionnaireRequest());
+  const {accessToken} = getState().user;
+  const res = await Activity.completeQuestionnaire(id, payload, accessToken);
+  if (res.success) {
+    dispatch(getTreatmentPlanRequest());
+    dispatch(getTodayActivitySummaryRequest());
+    dispatch(mutation.completeQuestionnaireSuccess());
+    return true;
+  } else {
+    dispatch(mutation.completeQuestionnaireFailure());
+    return false;
+  }
+};

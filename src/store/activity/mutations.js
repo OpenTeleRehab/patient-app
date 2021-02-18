@@ -58,6 +58,25 @@ const completeActivityFailure = () => {
   };
 };
 
+const completeQuestionnaireRequest = (data) => {
+  return {
+    type: 'COMPLETE_QUESTIONNAIRE_REQUEST',
+    data,
+  };
+};
+
+const completeQuestionnaireSuccess = () => {
+  return {
+    type: 'COMPLETE_QUESTIONNAIRE_SUCCEED',
+  };
+};
+
+const completeQuestionnaireFailure = () => {
+  return {
+    type: 'COMPLETE_QUESTIONNAIRE_FAILED',
+  };
+};
+
 export const mutation = {
   treatmentPlanFetchRequest,
   treatmentPlanFetchSuccess,
@@ -68,4 +87,7 @@ export const mutation = {
   completeActivityRequest,
   completeActivitySuccess,
   completeActivityFailure,
+  completeQuestionnaireRequest,
+  completeQuestionnaireSuccess,
+  completeQuestionnaireFailure,
 };

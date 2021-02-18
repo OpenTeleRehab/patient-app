@@ -14,7 +14,12 @@ const containerStyle = {
   marginTop: 0,
 };
 
-const RenderQuestion = ({question, setPatientAnswers, patientAnswers}) => {
+const RenderQuestion = ({
+  question,
+  setPatientAnswers,
+  patientAnswers,
+  notEditable,
+}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -66,6 +71,7 @@ const RenderQuestion = ({question, setPatientAnswers, patientAnswers}) => {
                       ? answer.id === patientAnswers[question.id]
                       : false
                   }
+                  disabled={notEditable}
                 />
               );
             })}
@@ -85,6 +91,7 @@ const RenderQuestion = ({question, setPatientAnswers, patientAnswers}) => {
                       ? patientAnswers[question.id].includes(answer.id)
                       : false
                   }
+                  disabled={notEditable}
                 />
               );
             })}
@@ -96,6 +103,8 @@ const RenderQuestion = ({question, setPatientAnswers, patientAnswers}) => {
             placeholder={translate('activity.enter_your_answer')}
             value={patientAnswers[question.id] || ''}
             onChangeText={(value) => handleOnChange(value)}
+            maxLength={15}
+            disabled={notEditable}
           />
         )}
         {question.type === 'open-text' && (
@@ -103,6 +112,8 @@ const RenderQuestion = ({question, setPatientAnswers, patientAnswers}) => {
             placeholder={translate('activity.enter_your_answer')}
             value={patientAnswers[question.id] || ''}
             onChangeText={(value) => handleOnChange(value)}
+            maxLength={255}
+            disabled={notEditable}
           />
         )}
       </View>

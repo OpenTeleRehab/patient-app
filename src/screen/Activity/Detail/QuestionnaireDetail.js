@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Button, Divider, Icon, Text, withTheme} from 'react-native-elements';
 import {Pagination} from 'react-native-snap-carousel';
 import styles from '../../../assets/styles';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {ScrollView, View} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 import RenderQuestion from '../_Patials/RenderQuestion';
+import {completeQuestionnaire} from '../../../store/activity/actions';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   questions.map((question, i) => (
@@ -35,10 +36,12 @@ const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   ));
 
 const QuestionnaireDetail = ({theme, route, navigation}) => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {id} = route.params;
   const {treatmentPlan} = useSelector((state) => state.activity);
+  const {isLoading} = useSelector((state) => state.activity);
   const [questionnaire, setQuestionnaire] = useState(undefined);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [question, setQuestion] = useState(undefined);
@@ -64,6 +67,17 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   }, [id, treatmentPlan]);
 
   useEffect(() => {
+    if (questionnaire && questionnaire.completed) {
+      let answers = [];
+      questionnaire.answers.map((item) => {
+        answers[item.question_id] = item.answer;
+      });
+
+      setPatientAnswers(answers);
+    }
+  }, [questionnaire]);
+
+  useEffect(() => {
     if (questionnaire?.questions.length) {
       setQuestion(questionnaire.questions[activePaginationIndex]);
     }
@@ -79,6 +93,17 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
     if (activePaginationIndex > 0) {
       setActivePaginationIndex(activePaginationIndex - 1);
     }
+  };
+
+  const handleCompleteTask = () => {
+    const data = {
+      answers: patientAnswers,
+    };
+    dispatch(completeQuestionnaire(id, data)).then((res) => {
+      if (res) {
+        navigation.navigate(ROUTES.ACTIVITY);
+      }
+    });
   };
 
   if (!questionnaire) {
@@ -176,6 +201,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               question={question}
               patientAnswers={patientAnswers}
               setPatientAnswers={setPatientAnswers}
+              notEditable={!!questionnaire.completed}
             />
           )}
         </ScrollView>
@@ -219,10 +245,13 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
                 type: 'font-awesome',
                 color: theme.colors.white,
               }}
-              title={translate('activity.submit_questionnaire')}
+              title={translate(
+                questionnaire.completed ? 'common.submitted' : 'common.submit',
+              )}
               titleStyle={[styles.textUpperCase]}
               iconRight={true}
-              onPress={handleNext}
+              onPress={handleCompleteTask}
+              disabled={isLoading || !!questionnaire.completed}
             />
           )}
         </View>

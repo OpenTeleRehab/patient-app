@@ -39,8 +39,21 @@ const completeActivity = async (id, payload, accessToken) => {
   return await callApi(options, 'post');
 };
 
+const completeQuestionnaire = async (id, payload, accessToken) => {
+  const options = {
+    uri: `/treatment-plan/complete_questionnaire/${id}`,
+    accessToken,
+    body: {
+      ...payload,
+    },
+  };
+
+  return await callApi(options, 'post');
+};
+
 export const Activity = {
   getTreatmentPlan,
   getTodayActivitySummary,
   completeActivity,
+  completeQuestionnaire,
 };
