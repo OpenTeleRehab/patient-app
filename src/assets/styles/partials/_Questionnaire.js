@@ -2,7 +2,7 @@ export default {
   questionnaireButtonWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    paddingVertical: 10,
+    padding: 10,
   },
   questionnaireButtonContainer: {
     flex: 1,

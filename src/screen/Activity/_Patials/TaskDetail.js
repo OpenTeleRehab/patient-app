@@ -124,9 +124,14 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
           type: 'font-awesome-5',
           color: theme.colors.white,
         }}
-        title={translate('activity.complete_task_number', {
-          number: activityNumber,
-        })}
+        title={translate(
+          activity.completed
+            ? 'activity.completed_task_number'
+            : 'activity.complete_task_number',
+          {
+            number: activityNumber,
+          },
+        )}
         titleStyle={styles.textUpperCase}
         onPress={handleCompleteTask}
         disabled={isLoading || !!activity.completed}

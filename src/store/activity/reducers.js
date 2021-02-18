@@ -16,11 +16,14 @@ export const activity = (state = initialState, action) => {
       });
     case 'TREATMENT_PLAN_FETCH_REQUESTED':
     case 'COMPLETE_ACTIVITY_REQUEST':
+    case 'COMPLETE_QUESTIONNAIRE_REQUEST':
       return Object.assign({}, state, {
         isLoading: true,
       });
     case 'COMPLETE_ACTIVITY_SUCCEED':
     case 'COMPLETE_ACTIVITY_FAILED':
+    case 'COMPLETE_QUESTIONNAIRE_SUCCEED':
+    case 'COMPLETE_QUESTIONNAIRE_FAILED':
       return Object.assign({}, state, {
         isLoading: false,
       });
