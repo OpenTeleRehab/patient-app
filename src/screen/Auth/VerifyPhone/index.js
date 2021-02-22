@@ -3,7 +3,13 @@
  */
 import React, {useState, useEffect} from 'react';
 import {Button, Text} from 'react-native-elements';
-import {ScrollView, TouchableOpacity, View, Alert} from 'react-native';
+import {
+  ScrollView,
+  TouchableOpacity,
+  View,
+  Alert,
+  Platform,
+} from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
@@ -14,7 +20,11 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
-import RNOtpVerify from '@webessentials/react-native-otp-verify';
+
+let RNOtpVerify;
+if (Platform.OS === 'android') {
+  RNOtpVerify = require('@webessentials/react-native-otp-verify').default;
+}
 
 const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
@@ -25,10 +35,23 @@ const VerifyPhone = ({navigation}) => {
   const isLoading = useSelector((state) => state.user.isLoading);
   const [hash, setHash] = useState('');
 
+  useEffect(() => {
+    if (RNOtpVerify && hash === '') {
+      RNOtpVerify.getHash().then((hasCode) => {
+        setHash(hasCode);
+      });
+      RNOtpVerify.getOtp()
+        .then((p) => RNOtpVerify.addListener(otpHandler))
+        .catch((p) => console.log(p));
+    }
+  }, [hash]);
+
   const onConfirm = () => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, code)).then((result) => {
       if (result) {
-        RNOtpVerify.removeListener();
+        if (RNOtpVerify) {
+          RNOtpVerify.removeListener();
+        }
         navigation.navigate(ROUTES.TERM_OF_SERVICE);
       } else {
         Alert.alert(
@@ -66,18 +89,6 @@ const VerifyPhone = ({navigation}) => {
   const disabledConfirm = () => {
     return code.length !== 6 || isLoading;
   };
-
-  useEffect(() => {
-    RNOtpVerify.getOtp()
-      .then((p) => RNOtpVerify.addListener(otpHandler))
-      .catch((p) => console.log(p));
-  });
-
-  useEffect(() => {
-    RNOtpVerify.getHash().then((hasCode) => {
-      setHash(hasCode);
-    });
-  }, []);
 
   return (
     <>
