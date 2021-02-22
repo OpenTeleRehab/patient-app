@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
   Image,
+  Platform,
   ScrollView,
   TouchableHighlight,
   TouchableOpacity,
@@ -19,7 +20,6 @@ import {
   Text,
   withTheme,
 } from 'react-native-elements';
-import RNOtpVerify from '@webessentials/react-native-otp-verify';
 
 import styles from '../../../assets/styles';
 
@@ -33,6 +33,11 @@ import Modal from 'react-native-modal';
 import _ from 'lodash';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
+
+let RNOtpVerify;
+if (Platform.OS === 'android') {
+  RNOtpVerify = require('@webessentials/react-native-otp-verify').default;
+}
 
 const phoneCodeContainerStyle = {
   width: '25%',
@@ -92,6 +97,14 @@ const Register = ({theme, navigation}) => {
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
 
   useEffect(() => {
+    if (RNOtpVerify && hash === '') {
+      RNOtpVerify.getHash().then((code) => {
+        setHash(code);
+      });
+    }
+  }, [hash]);
+
+  useEffect(() => {
     dispatch(getCountryRequest());
     dispatch(getLanguageRequest());
   }, [dispatch]);
@@ -113,12 +126,6 @@ const Register = ({theme, navigation}) => {
       dispatch(getTranslations(defaultCountry.language_id));
     }
   }, [countries, userCountryCode, dispatch]);
-
-  useEffect(() => {
-    RNOtpVerify.getHash().then((code) => {
-      setHash(code);
-    });
-  }, []);
 
   const handlePhoneCodeChange = (phoneCode) => {
     setCountryPhoneCode(phoneCode);
