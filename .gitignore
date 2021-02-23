@@ -59,6 +59,8 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+/ios/PatientApp.xcworkspace/
+/ios/Podfile.lock
 
 # App
 /config/settings.js
