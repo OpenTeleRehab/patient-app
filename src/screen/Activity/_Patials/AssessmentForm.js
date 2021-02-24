@@ -38,9 +38,9 @@ const AssessmentForm = ({activity, navigation}) => {
   const handleSubmit = () => {
     dispatch(
       completeActive(activity.id, {
-        pain_level: painLevel,
-        sets: numberOfSets,
-        reps: numberOfReps,
+        pain_level: activity.get_pain_level ? painLevel : null,
+        sets: activity.include_feedback ? numberOfSets : null,
+        reps: activity.include_feedback ? numberOfReps : null,
       }),
     ).then((res) => {
       if (res) {
