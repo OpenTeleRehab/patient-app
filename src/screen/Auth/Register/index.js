@@ -11,7 +11,6 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import {
   Button,
   Divider,
@@ -33,6 +32,7 @@ import Modal from 'react-native-modal';
 import _ from 'lodash';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
+import SelectPicker from '../../../components/Common/SelectPicker';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -122,21 +122,27 @@ const Register = ({theme, navigation}) => {
       }
 
       setCountryPhoneCode(defaultCountry.phone_code);
-      setLanguage(defaultCountry.language_id);
-      dispatch(getTranslations(defaultCountry.language_id));
+      validateAndSetLanguage(defaultCountry.language_id);
     }
   }, [countries, userCountryCode, dispatch]);
+
+  const validateAndSetLanguage = (language) => {
+    let languageId = language;
+    if (!languageId) {
+      languageId = languages.length > 0 ? languages[0].id : '';
+    }
+    setLanguage(languageId);
+  }
 
   const handlePhoneCodeChange = (phoneCode) => {
     setCountryPhoneCode(phoneCode);
     const selectedCountry = _.find(countries, {phone_code: phoneCode});
-    setLanguage(selectedCountry.language_id);
-    dispatch(getTranslations(selectedCountry.language_id));
     setModalVisible(false);
+    validateAndSetLanguage(selectedCountry.language_id);
   };
 
   const handleLanguageChange = (lang) => {
-    setLanguage(lang);
+    validateAndSetLanguage(lang);
     dispatch(getTranslations(lang));
   };
 
@@ -210,14 +216,20 @@ const Register = ({theme, navigation}) => {
           <View>
             <Text style={styles.formLabel}>{translate('common.language')}</Text>
             <View style={styles.formControl}>
-              <Picker
-                prompt={translate('common.language')}
-                selectedValue={language}
-                onValueChange={handleLanguageChange}>
-                {languages.map((lang, i) => (
-                  <Picker.Item key={i} label={lang.name} value={lang.id} />
-                ))}
-              </Picker>
+              <SelectPicker
+                placeholder={{}}
+                value={language}
+                onValueChange={handleLanguageChange}
+                items={
+                  language
+                    ? languages.map((lang) => ({
+                        label: lang.name,
+                        value: lang.id,
+                        key: lang.id,
+                      }))
+                    : []
+                }
+              />
             </View>
           </View>
           <Button
