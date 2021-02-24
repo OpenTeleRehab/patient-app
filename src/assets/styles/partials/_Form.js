@@ -27,7 +27,7 @@ export default {
     borderWidth: 1,
     borderRadius: variables.borderRadiusBase,
     borderColor: variables.inputBorderColor,
-    paddingVertical: variables.spacingLg,
+    height: 60,
   },
   formPinCellFocused: {
     borderColor: variables.primary,
