@@ -8,7 +8,7 @@ import styles from '../../assets/styles';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {Picker} from '@react-native-picker/picker';
-import {ROUTES} from '../../variables/constants';
+import {ROUTES, STORAGE_KEY} from '../../variables/constants';
 import {updateProfileRequest} from '../../store/user/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
@@ -16,6 +16,7 @@ import {formatDate, isValidDateFormat} from '../../utils/helper';
 import DatePicker from '../../components/Common/DatePicker';
 import settings from '../../../config/settings';
 import {getTranslations} from '../../store/translation/actions';
+import {storeLocalData} from '../../utils/local_storage';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
@@ -111,6 +112,7 @@ const UserProfileEdit = ({navigation}) => {
 
   const onSucceed = () => {
     dispatch(getTranslations(userInfo.language_id));
+    storeLocalData(STORAGE_KEY.LANGUAGE, userInfo.language_id);
     navigation.navigate(ROUTES.USER_PROFILE);
   };
 

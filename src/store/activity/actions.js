@@ -9,8 +9,9 @@ import settings from '../../../config/settings';
 export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
   dispatch(mutation.treatmentPlanFetchRequest);
   const {accessToken} = getState().user;
+  const {language} = getState().translation;
   const today = moment().format(settings.format.date);
-  const data = await Activity.getTreatmentPlan(today, accessToken);
+  const data = await Activity.getTreatmentPlan(today, accessToken, language);
   if (data.success) {
     dispatch(mutation.treatmentPlanFetchSuccess(data.data));
   } else {

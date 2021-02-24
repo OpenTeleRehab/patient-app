@@ -37,11 +37,13 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
   getState,
 ) => {
   dispatch(mutation.userSetupPinNumberRequest());
+  const {language} = getState().translation;
   const data = await User.setupPinNumber(
     pin,
     phone,
     otp_code,
     getState().user.termOfService.id,
+    language,
   );
   if (data.success) {
     const timespan = moment()
@@ -57,6 +59,7 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
       true,
     );
     dispatch(mutation.userSetupPinNumberSuccess());
+    await storeLocalData(STORAGE_KEY.LANGUAGE, language);
     return {success: true, data: data.data};
   } else {
     dispatch(mutation.userSetupPinNumberFailure());
