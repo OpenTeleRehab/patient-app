@@ -4,7 +4,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const storeLocalData = async (key, data, isJson = false) => {
-  let value = data;
+  if (!data) {
+    return;
+  }
+
+  let value = data.toString();
   if (isJson) {
     value = JSON.stringify(data);
   }

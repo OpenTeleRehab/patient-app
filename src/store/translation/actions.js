@@ -14,7 +14,7 @@ export const getTranslations = (lang) => async (dispatch) => {
       return true;
     });
     dispatch(addTranslationForLanguage(messages, 'en'));
-    dispatch(mutation.translationFetchSuccess());
+    dispatch(mutation.translationFetchSuccess(lang));
     return true;
   }
   dispatch(mutation.translationFetchFailure());

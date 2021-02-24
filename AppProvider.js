@@ -16,12 +16,16 @@ const AppProvider = ({children}) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
+  const [language, setLanguage] = useState(undefined);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
     if (data) {
       setTimespan(data.timespan);
     }
+
+    const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
+    setLanguage(lang);
   }, []);
 
   useEffect(() => {
@@ -39,14 +43,14 @@ const AppProvider = ({children}) => {
   }, [timespan, dispatch]);
 
   useEffect(() => {
-    if (loading) {
-      dispatch(getTranslations()).then((res) => {
+    if (loading && language !== undefined) {
+      dispatch(getTranslations(language)).then((res) => {
         if (res) {
           setLoading(false);
         }
       });
     }
-  }, [loading, dispatch]);
+  }, [loading, language, dispatch]);
 
   return loading ? <SplashScreen /> : children;
 };

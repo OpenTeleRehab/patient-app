@@ -11,6 +11,7 @@ import {goal} from './goal/reducers';
 import {appointment} from './appointment/reducers';
 import {country} from './country/reducers';
 import {language} from './language/reducers';
+import {translation} from './translation/reducers';
 import {message} from './message/reducers';
 import settings from '../../config/settings';
 
@@ -23,6 +24,7 @@ const rootReducers = {
   appointment,
   country,
   language,
+  translation,
   message,
 };
 

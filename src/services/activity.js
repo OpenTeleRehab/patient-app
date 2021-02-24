@@ -3,12 +3,13 @@
  */
 import {callApi} from '../utils/request';
 
-const getTreatmentPlan = async (today, accessToken) => {
+const getTreatmentPlan = async (today, accessToken, lang) => {
   const options = {
     uri: '/treatment-plan/get-treatment-plan',
     accessToken,
     body: {
       today,
+      lang,
     },
   };
 

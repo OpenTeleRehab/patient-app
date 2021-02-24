@@ -58,6 +58,7 @@ const Activity = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const {treatmentPlan} = useSelector((state) => state.activity);
+  const {language} = useSelector((state) => state.translation);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
   let carouselRef = useRef();
@@ -90,7 +91,7 @@ const Activity = ({theme, navigation}) => {
 
   useEffect(() => {
     dispatch(getTreatmentPlanRequest());
-  }, [dispatch]);
+  }, [language, dispatch]);
 
   const handleTodayPress = () => {
     calendarRef.setSelectedDate(moment());
