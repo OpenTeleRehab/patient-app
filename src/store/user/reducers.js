@@ -34,6 +34,7 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         profile: action.data.profile,
         accessToken: action.data.token,
+        phone: action.phone,
         initialRouteName: ROUTES.LOGIN,
         isLoading: false,
       });

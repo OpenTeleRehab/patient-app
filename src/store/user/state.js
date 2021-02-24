@@ -7,4 +7,5 @@ export const initialState = {
   initialRouteName: '',
   isLoading: false,
   termOfService: {},
+  phone: '',
 };
