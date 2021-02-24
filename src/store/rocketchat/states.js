@@ -7,4 +7,5 @@ export const initialState = {
   chatAuth: undefined,
   subscribeIds: undefined,
   selectedRoom: undefined,
+  videoCall: {status: '', _id: ''},
 };

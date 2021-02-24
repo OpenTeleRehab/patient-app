@@ -25,14 +25,15 @@ export const rocketchat = (state = initialState, action) => {
         selectedRoom: action.data,
       });
     }
+    case 'PREPEND_NEW_MESSAGE_SUCCEED':
     case 'GET_MESSAGES_IN_ROOM_SUCCEED': {
       return Object.assign({}, state, {
         messages: action.data,
       });
     }
-    case 'PREPEND_NEW_MESSAGE_SUCCEED': {
+    case 'UPDATE_VIDEO_CALL_STATUS_SUCCEED': {
       return Object.assign({}, state, {
-        messages: [action.data, ...state.messages],
+        videoCall: action.data,
       });
     }
     case 'CLEAR_CHAT_DATA_SUCCEED': {

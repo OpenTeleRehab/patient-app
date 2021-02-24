@@ -8,23 +8,17 @@ export default {
     backgroundColor: variables.grey6,
   },
   callerName: {
-    textAlign: 'center',
-    color: variables.black,
     fontSize: 48,
     paddingBottom: variables.spacingBase,
   },
   callingText: {
-    textAlign: 'center',
     color: variables.blueLight,
     fontSize: 20,
     fontStyle: 'italic',
     paddingBottom: variables.spacingBase,
   },
   btnCallOption: {
-    alignItems: 'center',
-    paddingLeft: variables.spacingLg,
-    paddingRight: variables.spacingLg,
-    width: '30%',
+    width: 100,
   },
   btnCallAction: {
     alignItems: 'center',
@@ -42,34 +36,23 @@ export default {
     height: 50,
     width: 50,
   },
-  callOptionIconActive: {
-    backgroundColor: variables.black,
-    fontWeight: 'bold',
-  },
   callActionIcon: {
     justifyContent: 'center',
     textAlign: 'center',
-    borderRadius: 45,
+    borderRadius: 40,
     color: variables.white,
     marginBottom: variables.spacingBase,
-    lineHeight: 90,
-    height: 90,
-    width: 90,
-  },
-  callDeclineIcon: {
-    backgroundColor: variables.red,
-  },
-  callAcceptIcon: {
-    backgroundColor: variables.primary,
+    lineHeight: 80,
+    height: 80,
+    width: 80,
   },
   callActionLabel: {
     fontSize: variables.fontSizeMd,
     fontWeight: 'bold',
   },
-  callDeclineText: {
-    color: variables.red,
-  },
-  callAcceptText: {
-    color: variables.primary,
+  videoMeetingWrapper: {
+    flex: 1,
+    height: '100%',
+    width: '100%',
   },
 };

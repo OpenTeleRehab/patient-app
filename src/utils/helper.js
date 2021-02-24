@@ -59,6 +59,7 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     received: true,
     pending: false,
     unread: !!unread,
+    isVideoCall: msg !== '' && msg.includes('jitsi_call_'),
   };
 };
 

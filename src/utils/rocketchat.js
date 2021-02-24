@@ -4,6 +4,7 @@ import {
   prependNewMessage,
   updateChatUserStatus,
   clearChatData,
+  updateVideoCallStatus,
 } from '../store/rocketchat/actions';
 import {
   updateIndicatorList,
@@ -28,12 +29,6 @@ export const initialChatSocket = (
   const socket = new WebSocket(settings.chatWebsocketUrl);
 
   // observer
-  socket.onclose = (e) => {
-    if (e.target.readyState === socket.CLOSED) {
-      dispatch(updateIndicatorList({isChatConnected: false}));
-      dispatch(clearChatData());
-    }
-  };
   socket.onmessage = (e) => {
     const response = JSON.parse(e.data);
     const {id, result, error, collection, fields} = response;
@@ -103,6 +98,10 @@ export const initialChatSocket = (
     } else if (resMessage === 'changed') {
       if (collection === 'stream-room-messages') {
         // trigger change in chat room
+        const {_id, msg} = fields.args[0];
+        if (msg !== '' && msg.includes('jitsi_call_')) {
+          dispatch(updateVideoCallStatus({_id, status: msg}));
+        }
         const newMessage = getChatMessage(fields.args[0], userId, authToken);
         dispatch(prependNewMessage(newMessage));
         dispatch(updateUnreadMessageIndicator());
@@ -119,6 +118,8 @@ export const initialChatSocket = (
     } else if (resMessage === 'removed' && collection === 'users') {
       // close connection on logout
       socket.close();
+      dispatch(updateIndicatorList({isChatConnected: false}));
+      dispatch(clearChatData());
     }
   };
 
@@ -158,6 +159,16 @@ export const sendNewMessage = (socket, newMessage, patientId) => {
         msg: newMessage.text,
       },
     ],
+  };
+  socket.send(JSON.stringify(options));
+};
+
+export const updateMessage = (socket, message, patientId) => {
+  const options = {
+    msg: 'method',
+    method: 'updateMessage',
+    id: getUniqueId(patientId),
+    params: [{...message}],
   };
   socket.send(JSON.stringify(options));
 };

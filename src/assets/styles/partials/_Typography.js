@@ -16,18 +16,6 @@ export default {
     color: variables.primary,
     textDecorationLine: 'underline',
   },
-  textWhite: {
-    color: variables.white,
-  },
-  textDanger: {
-    color: variables.error,
-  },
-  textDark: {
-    color: variables.black,
-  },
-  textWarning: {
-    color: variables.warning,
-  },
   progressTextStyle: {
     color: variables.white,
     fontSize: 72,

@@ -37,7 +37,7 @@ const RenderQuestionnaireCard = (
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed ? styles.textDark : styles.textWhite,
+                item.completed ? styles.textDefault : styles.textLight,
               ]}
               numberOfLines={1}>
               {translate('activity.questionnaire')}

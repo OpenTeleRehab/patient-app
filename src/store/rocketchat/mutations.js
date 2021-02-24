@@ -80,6 +80,11 @@ const sendAttachmentMessagesFailure = () => ({
   type: 'SEND_ATTACHMENT_MESSAGES_FAILED',
 });
 
+const updateVideoCallStatusSuccess = (data) => ({
+  type: 'UPDATE_VIDEO_CALL_STATUS_SUCCEED',
+  data,
+});
+
 export const mutation = {
   setChatSubscribeIdsSuccess,
   chatUserLoginSuccess,
@@ -98,4 +103,5 @@ export const mutation = {
   clearChatDataSuccess,
   sendAttachmentMessagesSuccess,
   sendAttachmentMessagesFailure,
+  updateVideoCallStatusSuccess,
 };

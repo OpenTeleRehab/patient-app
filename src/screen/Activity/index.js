@@ -30,7 +30,7 @@ import {ACTIVITY_TYPES} from '../../variables/constants';
 import RNFS from 'react-native-fs';
 
 const calendarHeaderStyle = {
-  ...styles.textWhite,
+  ...styles.textLight,
   marginBottom: 10,
 };
 
@@ -220,7 +220,7 @@ const Activity = ({theme, navigation}) => {
         <Button
           type="outline"
           title={translate('common.today')}
-          titleStyle={styles.textWhite}
+          titleStyle={styles.textLight}
           buttonStyle={styles.headerButton(true)}
           containerStyle={styles.todayButton}
           onPress={handleTodayPress}
@@ -230,12 +230,12 @@ const Activity = ({theme, navigation}) => {
           selectedDate={selectedDate}
           markedDates={markedDates}
           scrollable={true}
-          dateNumberStyle={styles.textWhite}
-          dateNameStyle={styles.textWhite}
-          weekendDateNameStyle={styles.textWhite}
-          weekendDateNumberStyle={styles.textWhite}
-          highlightDateNumberStyle={styles.textDark}
-          highlightDateNameStyle={styles.textDark}
+          dateNumberStyle={styles.textLight}
+          dateNameStyle={styles.textLight}
+          weekendDateNameStyle={styles.textLight}
+          weekendDateNumberStyle={styles.textLight}
+          highlightDateNumberStyle={styles.textDefault}
+          highlightDateNameStyle={styles.textDefault}
           style={calendarContainer}
           calendarHeaderStyle={calendarHeaderStyle}
           customDatesStyles={customDatesStylesFunc}

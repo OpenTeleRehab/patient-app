@@ -105,7 +105,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
           styles.paddingY,
           styles.listHeight,
         ]}>
-        <Text style={styles.textWhite}>
+        <Text style={styles.textLight}>
           {translate('activity.goal.detail.question')}
         </Text>
       </View>

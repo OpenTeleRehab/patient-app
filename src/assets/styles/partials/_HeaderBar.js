@@ -4,6 +4,12 @@
 import variables from '../variables';
 
 export default {
+  // TODO why video ended break header
+  headerWorkAround: {
+    height: 56,
+    paddingTop: 0,
+    borderBottomWidth: 0,
+  },
   headerLogo: {
     width: 94,
     height: 40,

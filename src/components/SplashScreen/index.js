@@ -40,12 +40,12 @@ const SplashScreen = () => {
         </View>
         <View style={styles.splashScreenPoweredByContainer}>
           <View style={styles.splashScreenPoweredByWrapper}>
-            <Text style={[styles.fontWeightBold, styles.textWhite]}>
+            <Text style={[styles.fontWeightBold, styles.textLight]}>
               {translate ? translate.powered_by : 'Powered by'}
             </Text>
             <Image source={hiLogo} style={styles.splashScreenPoweredByLogo} />
           </View>
-          <Text style={[styles.textWhite]}>{settings.appVersion}</Text>
+          <Text style={[styles.textLight]}>{settings.appVersion}</Text>
         </View>
       </View>
       <View style={styles.splashScreenSponsorsContainer}>

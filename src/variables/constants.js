@@ -46,6 +46,13 @@ export const CHAT_USER_STATUS = {
   OFFLINE: 'offline',
 };
 
+export const CALL_STATUS = {
+  STARTED: 'jitsi_call_started',
+  ACCEPTED: 'jitsi_call_accepted',
+  MISSED: 'jitsi_call_missed', // missed and declined
+  ENDED: 'jitsi_call_ended',
+};
+
 export const APPOINTMENT_STATUS = {
   REQUEST_CANCELLATION: 'request_cancellation',
 };

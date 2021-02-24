@@ -11,6 +11,14 @@ export const authenticateChatUser = (payload) => (dispatch) => {
   dispatch(mutation.chatUserLoginSuccess(payload));
 };
 
+export const clearChatData = () => (dispatch) => {
+  dispatch(mutation.clearChatDataSuccess());
+};
+
+export const updateVideoCallStatus = (payload) => (dispatch) => {
+  dispatch(mutation.updateVideoCallStatusSuccess(payload));
+};
+
 export const getChatRooms = () => async (dispatch, getState) => {
   const {profile} = getState().user;
   const data = await Therapist.getTherapists({
@@ -53,7 +61,7 @@ export const getChatRooms = () => async (dispatch, getState) => {
 
 export const getChatUsersStatus = () => async (dispatch, getState) => {
   const {chatAuth, chatRooms} = getState().rocketchat;
-  const {userId, token} = chatAuth;
+  const {userId, token} = chatAuth || {};
   const userIds = [];
   const mapIndex = [];
   chatRooms.forEach((room, idx) => {
@@ -79,7 +87,7 @@ export const getChatUsersStatus = () => async (dispatch, getState) => {
 
 export const getLastMessages = (roomIds) => async (dispatch, getState) => {
   const {chatAuth, chatRooms} = getState().rocketchat;
-  const {token, userId} = chatAuth;
+  const {token, userId} = chatAuth || {};
   const data = await Rocketchat.getLastMessages(roomIds, userId, token);
   if (data.success) {
     data.ims.forEach((message) => {
@@ -117,14 +125,18 @@ export const selectRoom = (payload) => (dispatch, getState) => {
 };
 
 export const prependNewMessage = (payload) => (dispatch, getState) => {
-  const {messages, chatRooms, selectedRoom} = getState().rocketchat;
+  const {chatRooms, selectedRoom} = getState().rocketchat;
+  let messages = getState().rocketchat.messages;
   let currentRoom = false;
   if (selectedRoom !== undefined && selectedRoom.rid === payload.rid) {
     currentRoom = true;
     const fIndex = messages.findIndex((msg) => msg._id === payload._id);
     if (fIndex === -1) {
-      dispatch(mutation.prependNewMessageSuccess(payload));
+      messages = [payload].concat(messages);
+    } else {
+      messages[fIndex] = payload;
     }
+    dispatch(mutation.prependNewMessageSuccess(messages));
   }
   const fIndex = chatRooms.findIndex((cr) => cr.rid === payload.rid);
   if (fIndex > -1) {
@@ -144,10 +156,6 @@ export const updateChatUserStatus = (payload) => (dispatch, getState) => {
     chatRooms[fIndex].u.status = payload.status;
     dispatch(mutation.updateChatUserStatusSuccess(chatRooms));
   }
-};
-
-export const clearChatData = () => (dispatch) => {
-  dispatch(mutation.clearChatDataSuccess());
 };
 
 export const postAttachmentMessage = (roomId, attachment) => async (

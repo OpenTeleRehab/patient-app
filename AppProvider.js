@@ -93,13 +93,13 @@ const AppProvider = ({children}) => {
   }, [dispatch, loading, accessToken, profile]);
 
   useEffect(() => {
-    if (chatAuth) {
+    if (chatAuth !== undefined) {
       dispatch(getChatRooms());
     }
   }, [dispatch, chatAuth]);
 
   useEffect(() => {
-    if (chatRooms.length) {
+    if (chatAuth !== undefined && chatRooms.length) {
       const activeRoomIds = [];
       chatRooms.forEach((cr) => {
         if (cr.enabled) {
@@ -111,10 +111,15 @@ const AppProvider = ({children}) => {
         dispatch(getLastMessages(activeRoomIds));
       }
     }
-  }, [dispatch, chatRooms]);
+  }, [dispatch, chatRooms, chatAuth]);
 
   useEffect(() => {
-    if (chatSocket !== null && profile.id && selectedRoom) {
+    if (
+      chatSocket !== null &&
+      chatSocket.readyState === chatSocket.OPEN &&
+      profile.id &&
+      selectedRoom
+    ) {
       loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
     }
   }, [selectedRoom, profile]);

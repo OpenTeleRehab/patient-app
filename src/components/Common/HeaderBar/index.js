@@ -6,11 +6,15 @@ import {Image} from 'react-native';
 import {Header, Text, Button, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
+import VideoCall from '../../VideoCall';
+import {useSelector} from 'react-redux';
+import {CALL_STATUS} from '../../../variables/constants';
 
 const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
   const {theme, title, onGoBack, leftContent, rightContent} = props;
+  const {videoCall} = useSelector((state) => state.rocketchat);
 
   const renderLeftComponent = () => {
     if (onGoBack) {
@@ -80,15 +84,22 @@ const HeaderBar = (props) => {
   };
 
   return (
-    <Header
-      leftComponent={renderLeftComponent()}
-      centerComponent={renderCenterComponent()}
-      rightComponent={renderRightComponent()}
-      leftContainerStyle={[styles.noneFlex, leftContainerMaxWidth]}
-      centerContainerStyle={styles.textLight}
-      rightContainerStyle={styles.noneFlex}
-      containerStyle={styles.noneBorderBottom}
-    />
+    <>
+      <Header
+        leftComponent={renderLeftComponent()}
+        centerComponent={renderCenterComponent()}
+        rightComponent={renderRightComponent()}
+        leftContainerStyle={[styles.noneFlex, leftContainerMaxWidth]}
+        centerContainerStyle={styles.textLight}
+        rightContainerStyle={styles.noneFlex}
+        containerStyle={
+          videoCall && videoCall.status === CALL_STATUS.ENDED
+            ? styles.headerWorkAround
+            : styles.noneBorderBottom
+        }
+      />
+      <VideoCall />
+    </>
   );
 };
 

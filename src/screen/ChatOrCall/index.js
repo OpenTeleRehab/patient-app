@@ -2,17 +2,8 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useContext, useEffect, useState} from 'react';
-import {Icon, Text, withTheme, Image} from 'react-native-elements';
-import {
-  Actions,
-  Message,
-  Bubble,
-  Composer,
-  Day,
-  GiftedChat,
-  InputToolbar,
-  Send,
-} from 'react-native-gifted-chat';
+import {Text, withTheme} from 'react-native-elements';
+import {GiftedChat} from 'react-native-gifted-chat';
 import {useIsFocused} from '@react-navigation/native';
 import styles from '../../assets/styles';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -25,9 +16,10 @@ import {CHAT_USER_STATUS} from '../../variables/constants';
 import RocketchatContext from '../../context/RocketchatContext';
 import {sendNewMessage} from '../../utils/rocketchat';
 import {updateIndicatorList} from '../../store/indicator/actions';
-import VideoPlayer from 'react-native-video-player';
 import MediaPicker from '../../components/MediaPicker';
 import {postAttachmentMessage} from '../../store/rocketchat/actions';
+import ChatContainer from './_Partials/ChatContainer';
+import ChatToolbar from './_Partials/ChatToolbar';
 
 const ChatOrCall = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -95,7 +87,7 @@ const ChatOrCall = ({navigation, theme}) => {
             ? file.uri
             : file.uri.replace('file://', ''),
         type,
-        name: file.uri.replace(/^.*[\\\/]/, ''),
+        name: file.uri.replace(/^.*[\\/]/, ''),
       },
     };
     dispatch(postAttachmentMessage(selectedRoom.rid, attachment));
@@ -103,48 +95,11 @@ const ChatOrCall = ({navigation, theme}) => {
 
   const renderMessage = (chatProps) => {
     return (
-      <Message
-        {...chatProps}
-        renderBubble={() => (
-          <Bubble
-            {...chatProps}
-            wrapperStyle={{
-              left: styles.chatBubbleLeft,
-              right: styles.chatBubbleRight,
-            }}
-            renderMessageImage={() => (
-              <View style={styles.chatAttachmentContainer}>
-                <Image
-                  source={{uri: chatProps.currentMessage.image}}
-                  style={styles.chatMessageImage}
-                />
-              </View>
-            )}
-            renderMessageVideo={() => (
-              <View style={styles.chatAttachmentContainer}>
-                <VideoPlayer
-                  video={{uri: chatProps.currentMessage.video}}
-                  thumbnail={{uri: chatProps.currentMessage.video}}
-                  endThumbnail={{uri: chatProps.currentMessage.video}}
-                  style={styles.chatMessageVideo}
-                />
-              </View>
-            )}
-          />
-        )}
-        renderDay={() => (
-          <Day
-            {...chatProps}
-            textStyle={styles.chatDay}
-            dateFormat={settings.format.date}
-          />
-        )}
-        renderAvatar={null}
-      />
+      <ChatContainer chatData={chatProps} theme={theme} translate={translate} />
     );
   };
 
-  const renderTherapistNotOnline = () => {
+  const renderFooter = () => {
     if (selectedRoom.u.status === CHAT_USER_STATUS.OFFLINE) {
       return (
         <View style={[styles.flexCenter, styles.paddingXLg, styles.paddingYMd]}>
@@ -159,45 +114,11 @@ const ChatOrCall = ({navigation, theme}) => {
 
   const renderInputToolbar = (chatProps) => {
     return (
-      <InputToolbar
-        {...chatProps}
-        containerStyle={styles.chatInputToolBar}
-        renderComposer={() => (
-          <Composer
-            {...chatProps}
-            textInputStyle={styles.chatComposer}
-            placeholder={translate('placeholder.type.message')}
-          />
-        )}
-        renderActions={() => (
-          <Actions
-            {...chatProps}
-            icon={() => (
-              <Icon
-                name="paperclip"
-                size={28}
-                type="feather"
-                color={theme.colors.grey3}
-                onPress={() => setShowPicker(true)}
-              />
-            )}
-            containerStyle={styles.chatAttachment}
-          />
-        )}
-        renderSend={() => (
-          <Send
-            {...chatProps}
-            containerStyle={styles.chatSendButton}
-            children={
-              <Icon
-                name="send"
-                type="material"
-                color={theme.colors.primary}
-                size={28}
-              />
-            }
-          />
-        )}
+      <ChatToolbar
+        chatData={chatProps}
+        theme={theme}
+        translate={translate}
+        onShowPicker={setShowPicker}
       />
     );
   };
@@ -219,7 +140,7 @@ const ChatOrCall = ({navigation, theme}) => {
         user={{_id: profile.chat_user_id}}
         renderMessage={renderMessage}
         renderInputToolbar={renderInputToolbar}
-        renderFooter={renderTherapistNotOnline}
+        renderFooter={renderFooter}
         onSend={(newMessage) => onSend(newMessage)}
       />
       {showPicker && (

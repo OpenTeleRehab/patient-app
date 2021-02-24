@@ -196,7 +196,7 @@ const Appointment = () => {
             style={[
               styles.fontWeightBold,
               styles.leadText,
-              styles.textDark,
+              styles.textDefault,
               styles.marginBottomMd,
             ]}>
             {translate('appointment.request_appointment')}
@@ -247,7 +247,7 @@ const Appointment = () => {
             h4
             style={[
               styles.alignSelfCenter,
-              styles.textWhite,
+              styles.textLight,
               styles.fontWeightBold,
             ]}>
             {translate('appointment.no_appointment')}
@@ -258,7 +258,7 @@ const Appointment = () => {
             <Text
               style={[
                 styles.fontWeightBold,
-                styles.textWhite,
+                styles.textLight,
                 styles.marginBottom,
               ]}>
               {group.month}
@@ -290,7 +290,7 @@ const Appointment = () => {
               <TouchableOpacity
                 style={styles.appointmentShowMoreButton}
                 onPress={() => showMore()}>
-                <Text style={[styles.textWhite, styles.fontWeightBold]}>
+                <Text style={[styles.textLight, styles.fontWeightBold]}>
                   {translate('appointment.show_more', {
                     number: listInfo.total_count - currentPage * pageSize,
                   })}

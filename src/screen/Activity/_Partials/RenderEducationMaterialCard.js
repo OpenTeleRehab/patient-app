@@ -23,7 +23,7 @@ const RenderEducationMaterialCard = (
         <View
           style={[
             styles.cardWithIconHeader,
-            item.completed ? styles.bgDark : styles.bgPrimary,
+            item.completed ? styles.bgGrey : styles.bgPrimary,
           ]}>
           <View style={styles.cardWithIconWrapper}>
             <Icon
@@ -35,7 +35,7 @@ const RenderEducationMaterialCard = (
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed ? styles.textDark : styles.textWhite,
+                item.completed ? styles.textDefault : styles.textLight,
               ]}
               numberOfLines={1}>
               {translate('activity.material')}
@@ -45,7 +45,7 @@ const RenderEducationMaterialCard = (
             style={[
               styles.marginLeft,
               styles.marginY,
-              item.completed ? styles.textDark : styles.textWhite,
+              item.completed ? styles.textDefault : styles.textLight,
             ]}>
             {item.file ? translate(item.file.fileGroupType) : ''}
           </Text>

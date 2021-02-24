@@ -10,6 +10,12 @@ export default {
   textPrimary: {
     color: variables.primary,
   },
+  textDanger: {
+    color: variables.error,
+  },
+  textWarning: {
+    color: variables.warning,
+  },
   textLight: {
     color: variables.white,
   },
@@ -33,14 +39,20 @@ export default {
   bgBlack: {
     backgroundColor: variables.dark,
   },
+  bgLight: {
+    backgroundColor: variables.white,
+  },
   bgDark: {
-    backgroundColor: variables.grey,
+    backgroundColor: variables.black,
   },
   bgDanger: {
     backgroundColor: variables.error,
   },
   bgPrimary: {
     backgroundColor: variables.primary,
+  },
+  bgGrey: {
+    backgroundColor: variables.grey,
   },
   bgOrangeLight: {
     backgroundColor: variables.orangeLight,

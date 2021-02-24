@@ -37,7 +37,7 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
               style={[
                 styles.cardWithIconHeaderTitle,
                 item.completed
-                  ? styles.textDark
+                  ? styles.textDefault
                   : {color: theme.colors.blueDark},
               ]}
               numberOfLines={1}>
