@@ -6,6 +6,7 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import _ from 'lodash';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  Alert,
   View,
   PermissionsAndroid,
   Platform,
@@ -64,10 +65,17 @@ const MaterialDetail = ({theme, route, navigation}) => {
       fromUrl: settings.adminApiBaseURL + '/file/' + material.file.id,
       toFile: `${location}/${material.file.fileName}`,
     }).promise.then(() => {
-      ToastAndroid.show(
-        translate('activity.file_has_been_downloaded_successfully'),
-        ToastAndroid.SHORT,
-      );
+      if (Platform.OS === 'ios') {
+        Alert.alert(
+          translate('common.download'),
+          translate('activity.file_has_been_downloaded_successfully'),
+        );
+      } else {
+        ToastAndroid.show(
+          translate('activity.file_has_been_downloaded_successfully'),
+          ToastAndroid.SHORT,
+        );
+      }
     });
   };
 
