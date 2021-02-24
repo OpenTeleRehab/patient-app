@@ -80,7 +80,7 @@ export const loginRequest = (phone, pin) => async (dispatch, getState) => {
       data.data.token = '';
       acceptedTermOfService = false;
     }
-    dispatch(mutation.userLoginSuccess(data.data));
+    dispatch(mutation.userLoginSuccess(data.data, phone));
     return {success: true, acceptedTermOfService};
   } else {
     dispatch(mutation.userLoginFailure());

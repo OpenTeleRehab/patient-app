@@ -64,10 +64,11 @@ const userLoginRequest = () => {
   };
 };
 
-const userLoginSuccess = (data) => {
+const userLoginSuccess = (data, phone) => {
   return {
     type: 'USER_LOGIN_SUCCEED',
     data,
+    phone,
   };
 };
 
