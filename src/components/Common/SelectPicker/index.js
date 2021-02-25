@@ -10,10 +10,12 @@ const pickerStyles = {
   inputIOS: {
     paddingVertical: 12,
     color: 'black',
+    fontSize: 17,
   },
   inputAndroid: {
     paddingVertical: 10,
     color: 'black',
+    fontSize: 17,
   },
   iconContainer: {
     top: Platform.OS === 'android' ? 12 : 10,
