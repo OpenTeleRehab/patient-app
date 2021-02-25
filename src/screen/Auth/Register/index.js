@@ -1,25 +1,11 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  View,
-  Image,
-  Platform,
-  ScrollView,
-  TouchableHighlight,
-  TouchableOpacity,
-} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import {
-  Button,
-  Divider,
-  Icon,
-  Input,
-  Text,
-  withTheme,
-} from 'react-native-elements';
+import {View, Image, Platform, ScrollView} from 'react-native';
+import {Button, Divider, Input, Text, withTheme} from 'react-native-elements';
+import _ from 'lodash';
 
 import styles from '../../../assets/styles';
 
@@ -29,10 +15,9 @@ import {ROUTES} from '../../../variables/constants';
 import {registerRequest} from '../../../store/user/actions';
 import {getTranslate} from 'react-localize-redux';
 import {getCountryRequest} from '../../../store/country/actions';
-import Modal from 'react-native-modal';
-import _ from 'lodash';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
+import SelectPicker from '../../../components/Common/SelectPicker';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -46,37 +31,7 @@ const phoneCodeContainerStyle = {
 const phoneContainerStyle = {
   width: '75%',
 };
-const containerStyle = {
-  flex: 1,
-  flexDirection: 'row',
-  justifyContent: 'flex-start',
-};
-const modalView = {
-  backgroundColor: 'white',
-  alignItems: 'center',
-  width: '100%',
-  borderRadius: 3,
-  paddingTop: 10,
-};
-const listElementStyle = {
-  width: '100%',
-  padding: 12,
-  fontSize: 17,
-};
-const modalContentContainer = {
-  width: '100%',
-  padding: 0,
-};
-const phoneCodeSelectBoxStyle = {
-  flex: 1,
-  justifyContent: 'space-between',
-  flexDirection: 'row',
-  padding: 10,
-  marginTop: 3,
-};
-const phoneCodeFontStyle = {
-  fontSize: 17,
-};
+
 const phoneCodeDividerStyle = {
   height: 1,
 };
@@ -90,11 +45,21 @@ const Register = ({theme, navigation}) => {
   const {languages} = useSelector((state) => state.language);
 
   const [hash, setHash] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
   const [language, setLanguage] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
+
+  const validateAndSetLanguage = useCallback(
+    (lang) => {
+      let languageId = lang;
+      if (!languageId) {
+        languageId = languages.length > 0 ? languages[0].id : '';
+      }
+      setLanguage(languageId);
+    },
+    [languages],
+  );
 
   useEffect(() => {
     if (RNOtpVerify && hash === '') {
@@ -122,21 +87,18 @@ const Register = ({theme, navigation}) => {
       }
 
       setCountryPhoneCode(defaultCountry.phone_code);
-      setLanguage(defaultCountry.language_id);
-      dispatch(getTranslations(defaultCountry.language_id));
+      validateAndSetLanguage(defaultCountry.language_id);
     }
-  }, [countries, userCountryCode, dispatch]);
+  }, [countries, userCountryCode, dispatch, validateAndSetLanguage]);
 
   const handlePhoneCodeChange = (phoneCode) => {
     setCountryPhoneCode(phoneCode);
     const selectedCountry = _.find(countries, {phone_code: phoneCode});
-    setLanguage(selectedCountry.language_id);
-    dispatch(getTranslations(selectedCountry.language_id));
-    setModalVisible(false);
+    validateAndSetLanguage(selectedCountry.language_id);
   };
 
   const handleLanguageChange = (lang) => {
-    setLanguage(lang);
+    validateAndSetLanguage(lang);
     dispatch(getTranslations(lang));
   };
 
@@ -161,29 +123,22 @@ const Register = ({theme, navigation}) => {
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <Text style={styles.formLabel}>{translate('common.phone')}</Text>
-          <View style={containerStyle}>
+          <View style={styles.flexRow}>
             <View style={phoneCodeContainerStyle}>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(true);
-                }}>
-                <View style={phoneCodeSelectBoxStyle}>
-                  <Text style={phoneCodeFontStyle}>
-                    {countryPhoneCode ? `+${countryPhoneCode}` : ''}
-                  </Text>
-                  <Text>
-                    <Icon
-                      name="caret-down"
-                      size={15}
-                      type="font-awesome-5"
-                      color="black"
-                      onPress={() => {
-                        setModalVisible(true);
-                      }}
-                    />
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              <SelectPicker
+                placeholder={{}}
+                value={countryPhoneCode}
+                onValueChange={handlePhoneCodeChange}
+                items={
+                  countryPhoneCode
+                    ? countries.map((country) => ({
+                        label: `${country.name} (+${country.phone_code})`,
+                        value: country.phone_code,
+                        inputLabel: `+${country.phone_code}`,
+                      }))
+                    : []
+                }
+              />
               <Divider
                 style={[
                   phoneCodeDividerStyle,
@@ -210,14 +165,19 @@ const Register = ({theme, navigation}) => {
           <View>
             <Text style={styles.formLabel}>{translate('common.language')}</Text>
             <View style={styles.formControl}>
-              <Picker
-                prompt={translate('common.language')}
-                selectedValue={language}
-                onValueChange={handleLanguageChange}>
-                {languages.map((lang, i) => (
-                  <Picker.Item key={i} label={lang.name} value={lang.id} />
-                ))}
-              </Picker>
+              <SelectPicker
+                placeholder={{}}
+                value={language}
+                onValueChange={handleLanguageChange}
+                items={
+                  language
+                    ? languages.map((lang) => ({
+                        label: lang.name,
+                        value: lang.id,
+                      }))
+                    : []
+                }
+              />
             </View>
           </View>
           <Button
@@ -228,36 +188,6 @@ const Register = ({theme, navigation}) => {
             disabled={isLoading}
           />
         </View>
-        <Modal
-          backdropTransitionOutTiming={0}
-          animationIn={'fadeIn'}
-          animationOut={'fadeOut'}
-          isVisible={modalVisible}
-          onBackButtonPress={() => setModalVisible(false)}
-          onBackdropPress={() => setModalVisible(false)}>
-          <View style={modalView}>
-            <Text style={[styles.formLabel, styles.fontWeightBold]}>
-              {translate('common.country')}
-            </Text>
-            <ScrollView style={modalContentContainer}>
-              {countries.map((country, i) => (
-                <View key={i}>
-                  <TouchableHighlight
-                    key={i}
-                    style={listElementStyle}
-                    activeOpacity={0.6}
-                    onPress={() => handlePhoneCodeChange(country.phone_code)}
-                    underlayColor={theme.colors.grey5}>
-                    <Text>{`${country.name} (+${country.phone_code})`}</Text>
-                  </TouchableHighlight>
-                  {_.findLastIndex(countries) !== i && (
-                    <Divider style={{backgroundColor: theme.colors.grey3}} />
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        </Modal>
       </ScrollView>
     </>
   );

@@ -17,6 +17,7 @@ import DatePicker from '../../components/Common/DatePicker';
 import settings from '../../../config/settings';
 import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
+import SelectPicker from '../../components/Common/SelectPicker';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
@@ -199,17 +200,17 @@ const UserProfileEdit = ({navigation}) => {
           <Text style={[styles.formLabel, styles.textSmall]}>
             {translate('common.language')}
           </Text>
-          <Picker
-            prompt={translate('common.language')}
-            style={styles.formControl}
-            selectedValue={userInfo.language_id}
-            onValueChange={(itemValue, itemIndex) =>
-              setUserInfo({...userInfo, ['language_id']: itemValue})
-            }>
-            {languages.map((lang, i) => (
-              <Picker.Item key={i} label={lang.name} value={lang.id} />
-            ))}
-          </Picker>
+          <SelectPicker
+            placeholder={{}}
+            value={userInfo.language_id}
+            onValueChange={(value) =>
+              setUserInfo({...userInfo, ['language_id']: value})
+            }
+            items={languages.map((lang) => ({
+              label: lang.name,
+              value: lang.id,
+            }))}
+          />
           <Divider />
         </View>
         <View style={styles.formGroup}>
