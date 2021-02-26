@@ -7,7 +7,6 @@ import {Alert, ScrollView, View, Platform} from 'react-native';
 import styles from '../../assets/styles';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
-import {Picker} from '@react-native-picker/picker';
 import {ROUTES, STORAGE_KEY} from '../../variables/constants';
 import {updateProfileRequest} from '../../store/user/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -177,15 +176,17 @@ const UserProfileEdit = ({navigation}) => {
           <Text style={[styles.formLabel, styles.textSmall]}>
             {translate('common.gender')}
           </Text>
-          <Picker
-            prompt={translate('common.gender')}
-            selectedValue={userInfo.gender}
-            onValueChange={(itemValue, itemIndex) =>
-              setUserInfo({...userInfo, ['gender']: itemValue})
-            }>
-            <Picker.Item label={translate('gender.male')} value="male" />
-            <Picker.Item label={translate('gender.female')} value="female" />
-          </Picker>
+          <SelectPicker
+            placeholder={{}}
+            value={userInfo.language_id}
+            onValueChange={(value) =>
+              setUserInfo({...userInfo, ['gender']: value})
+            }
+            items={[
+              {label: translate('gender.male'), value: 'male'},
+              {label: translate('gender.female'), value: 'female'},
+            ]}
+          />
           <Divider />
         </View>
         <DatePicker

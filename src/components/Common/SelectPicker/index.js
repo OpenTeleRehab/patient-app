@@ -8,7 +8,7 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 const pickerStyles = {
   inputIOS: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     color: 'black',
     fontSize: 17,
   },
