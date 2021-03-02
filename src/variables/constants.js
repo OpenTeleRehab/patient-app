@@ -31,4 +31,6 @@ export const STORAGE_KEY = {
 export const ACTIVITY_TYPES = {
   EXERCISE: 'exercise',
   MATERIAL: 'material',
+  QUESTIONNAIRE: 'questionnaire',
+  GOAL: 'goal',
 };

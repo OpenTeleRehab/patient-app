@@ -17,6 +17,7 @@ import _ from 'lodash';
 import RenderExerciseCard from './_Patials/RenderExerciseCard';
 import RenderEducationMaterialCard from './_Patials/RenderEducationMaterialCard';
 import RenderQuestionnaireCard from './_Patials/RenderQuestionnaireCard';
+import RenderGoalCard from './_Patials/RenderGoalCard';
 import {ACTIVITY_TYPES} from '../../variables/constants';
 
 const calendarHeaderStyle = {
@@ -216,13 +217,15 @@ const Activity = ({theme, navigation}) => {
                     navigation,
                     translate,
                   );
-                } else {
+                } else if (props.item.type === ACTIVITY_TYPES.QUESTIONNAIRE) {
                   return RenderQuestionnaireCard(
                     props,
                     theme,
                     navigation,
                     translate,
                   );
+                } else if (props.item.type === ACTIVITY_TYPES.GOAL) {
+                  return RenderGoalCard(props, theme, navigation, translate);
                 }
               }}
               sliderWidth={SLIDER_WIDTH}
