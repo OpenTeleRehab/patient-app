@@ -24,6 +24,8 @@ export const activity = (state = initialState, action) => {
     case 'COMPLETE_ACTIVITY_FAILED':
     case 'COMPLETE_QUESTIONNAIRE_SUCCEED':
     case 'COMPLETE_QUESTIONNAIRE_FAILED':
+    case 'COMPLETE_GOAL_SUCCEED':
+    case 'COMPLETE_GOAL_FAILED':
       return Object.assign({}, state, {
         isLoading: false,
       });

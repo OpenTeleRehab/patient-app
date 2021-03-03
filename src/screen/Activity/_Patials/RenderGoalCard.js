@@ -2,10 +2,19 @@ import React from 'react';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
+import {ROUTES} from '../../../variables/constants';
 
 const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
   return (
-    <TouchableOpacity key={index}>
+    <TouchableOpacity
+      key={index}
+      onPress={() =>
+        navigation.navigate(ROUTES.GOAl_DETAIL, {
+          activity_id: item.activity_id,
+          activityNumber: index + 1,
+          day: item.day,
+        })
+      }>
       <Card containerStyle={styles.activityCardContainer}>
         <View
           style={[
@@ -16,12 +25,12 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
           ]}>
           <View style={styles.cardWithIconWrapper}>
             <Icon
-              name="chart-line"
+              name="trending-up"
               color={
                 item.completed ? theme.colors.black : theme.colors.blueDark
               }
               size={100}
-              type="font-awesome-5"
+              type="material"
             />
             <Text
               style={[
