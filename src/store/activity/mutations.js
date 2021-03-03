@@ -77,6 +77,25 @@ const completeQuestionnaireFailure = () => {
   };
 };
 
+const completeGoalRequest = (data) => {
+  return {
+    type: 'COMPLETE_GOAL_REQUEST',
+    data,
+  };
+};
+
+const completeGoalSuccess = () => {
+  return {
+    type: 'COMPLETE_GOAL_SUCCEED',
+  };
+};
+
+const completeGoalFailure = () => {
+  return {
+    type: 'COMPLETE_GOAL_FAILED',
+  };
+};
+
 export const mutation = {
   treatmentPlanFetchRequest,
   treatmentPlanFetchSuccess,
@@ -90,4 +109,7 @@ export const mutation = {
   completeQuestionnaireRequest,
   completeQuestionnaireSuccess,
   completeQuestionnaireFailure,
+  completeGoalRequest,
+  completeGoalSuccess,
+  completeGoalFailure,
 };

@@ -21,6 +21,7 @@ export const ROUTES = {
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
   SETUP_PIN: 'SetupPIN',
   CONFIRM_PIN: 'ConfirmPin',
+  GOAl_DETAIL: 'GoalDetail',
 };
 
 export const STORAGE_KEY = {

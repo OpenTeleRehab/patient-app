@@ -66,3 +66,18 @@ export const completeQuestionnaire = (id, payload) => async (
     return false;
   }
 };
+
+export const completeGoal = (payload) => async (dispatch, getState) => {
+  dispatch(mutation.completeGoalRequest());
+  const {accessToken} = getState().user;
+  const res = await Activity.completeGoal(payload, accessToken);
+  if (res.success) {
+    dispatch(getTreatmentPlanRequest());
+    dispatch(getTodayActivitySummaryRequest());
+    dispatch(mutation.completeGoalSuccess());
+    return true;
+  } else {
+    dispatch(mutation.completeGoalFailure());
+    return false;
+  }
+};

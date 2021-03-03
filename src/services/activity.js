@@ -52,9 +52,22 @@ const completeQuestionnaire = async (id, payload, accessToken) => {
   return await callApi(options, 'post');
 };
 
+const completeGoal = async (payload, accessToken) => {
+  const options = {
+    uri: '/treatment-plan/complete_goal',
+    accessToken,
+    body: {
+      ...payload,
+    },
+  };
+
+  return await callApi(options, 'post');
+};
+
 export const Activity = {
   getTreatmentPlan,
   getTodayActivitySummary,
   completeActivity,
   completeQuestionnaire,
+  completeGoal,
 };
