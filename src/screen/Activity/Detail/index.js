@@ -10,8 +10,8 @@ import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
-import TaskDetail from '../_Patials/TaskDetail';
-import AssessmentForm from '../_Patials/AssessmentForm';
+import TaskDetail from '../_Partials/TaskDetail';
+import AssessmentForm from '../_Partials/AssessmentForm';
 
 const ActivityDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);

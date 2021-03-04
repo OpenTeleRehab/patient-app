@@ -8,7 +8,7 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
-import RenderQuestion from '../_Patials/RenderQuestion';
+import RenderQuestion from '../_Partials/RenderQuestion';
 import {completeQuestionnaire} from '../../../store/activity/actions';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
