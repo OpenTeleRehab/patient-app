@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Web Essentials Co., Ltd
+ * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
 import {ScrollView, View, TouchableOpacity} from 'react-native';

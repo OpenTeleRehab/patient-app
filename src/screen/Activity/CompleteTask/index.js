@@ -8,7 +8,7 @@ import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 
 import HeaderBar from '../../../components/Common/HeaderBar';
-import AssessmentForm from '../_Patials/AssessmentForm';
+import AssessmentForm from '../_Partials/AssessmentForm';
 import styles from '../../../assets/styles';
 
 const CompleteTask = ({route, navigation}) => {

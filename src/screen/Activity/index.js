@@ -14,10 +14,10 @@ import settings from '../../../config/settings';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import _ from 'lodash';
-import RenderExerciseCard from './_Patials/RenderExerciseCard';
-import RenderEducationMaterialCard from './_Patials/RenderEducationMaterialCard';
-import RenderQuestionnaireCard from './_Patials/RenderQuestionnaireCard';
-import RenderGoalCard from './_Patials/RenderGoalCard';
+import RenderExerciseCard from './_Partials/RenderExerciseCard';
+import RenderEducationMaterialCard from './_Partials/RenderEducationMaterialCard';
+import RenderQuestionnaireCard from './_Partials/RenderQuestionnaireCard';
+import RenderGoalCard from './_Partials/RenderGoalCard';
 import {ACTIVITY_TYPES} from '../../variables/constants';
 
 const calendarHeaderStyle = {
