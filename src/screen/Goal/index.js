@@ -47,7 +47,7 @@ const Goal = ({theme}) => {
   const {language} = useSelector((state) => state.translation);
   const translate = getTranslate(localize);
   const {treatmentPlan} = useSelector((state) => state.activity);
-  const [selectedGoal, setSelectedGoal] = useState(1);
+  const [selectedGoal, setSelectedGoal] = useState(0);
 
   useEffect(() => {
     dispatch(getTreatmentPlanRequest());
