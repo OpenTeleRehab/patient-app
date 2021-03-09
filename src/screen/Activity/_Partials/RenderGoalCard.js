@@ -13,6 +13,7 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
           activity_id: item.activity_id,
           activityNumber: index + 1,
           day: item.day,
+          week: item.week,
         })
       }>
       <Card containerStyle={styles.activityCardContainer}>

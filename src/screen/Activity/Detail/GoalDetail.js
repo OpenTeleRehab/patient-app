@@ -32,7 +32,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {activity_id, activityNumber, day} = route.params;
+  const {activity_id, activityNumber, day, week} = route.params;
   const {treatmentPlan} = useSelector((state) => state.activity);
   const [goal, setGoal] = useState(undefined);
   const [satisfactionLevel, setSatisfactionLevel] = useState(5);
@@ -44,13 +44,14 @@ const AssessmentForm = ({theme, route, navigation}) => {
         activity_id,
         type,
         day,
+        week,
       });
 
       if (selectedGoal) {
         setGoal(selectedGoal);
       }
     }
-  }, [activity_id, treatmentPlan, type, day]);
+  }, [activity_id, treatmentPlan, type, day, week]);
 
   useEffect(() => {
     if (goal && goal.completed) {
