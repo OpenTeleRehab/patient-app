@@ -95,6 +95,7 @@ const Goal = ({theme}) => {
       );
       setNumberOfWeeks(treatmentPlan.total_of_weeks);
       setGoal(activeGoal);
+      setSelectedGoal(0);
     }
   }, [treatmentPlan]);
 
