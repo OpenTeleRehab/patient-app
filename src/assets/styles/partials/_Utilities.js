@@ -39,6 +39,9 @@ export default {
   bgOrangeLight: {
     backgroundColor: variables.orangeLight,
   },
+  bgBlueDark: {
+    backgroundColor: variables.blueDark,
+  },
   noneFlex: {
     flex: 0,
   },
