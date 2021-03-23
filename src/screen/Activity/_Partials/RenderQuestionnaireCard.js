@@ -1,8 +1,12 @@
 import React from 'react';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
-import {TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
+import questionIcon from '../../../assets/images/questionnaire.svg';
+import {SvgUri} from 'react-native-svg';
+
+const uri = Image.resolveAssetSource(questionIcon).uri;
 
 const RenderQuestionnaireCard = (
   {item, index},
@@ -22,19 +26,18 @@ const RenderQuestionnaireCard = (
         <View
           style={[
             styles.cardWithIconHeader,
-            item.completed ? styles.bgDark : styles.bgOrangeLight,
+            item.completed ? styles.bgDark : styles.bgBlueDark,
           ]}>
           <View style={styles.cardWithIconWrapper}>
-            <Icon
-              name="twitch"
-              color={item.completed ? theme.colors.black : theme.colors.warning}
-              size={100}
-              type="font-awesome"
-            />
+            {item.completed ? (
+              <SvgUri width="100" height="100" uri={uri} fillOpacity={0.3} />
+            ) : (
+              <SvgUri width="100" height="100" uri={uri} />
+            )}
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed ? styles.textDark : styles.textWarning,
+                item.completed ? styles.textDark : styles.textWhite,
               ]}
               numberOfLines={1}>
               {translate('activity.questionnaire')}

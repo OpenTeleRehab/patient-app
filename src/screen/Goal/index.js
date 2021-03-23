@@ -26,19 +26,21 @@ const chartConfig = {
   fillShadowGradient: '#FF8747',
   fillShadowGradientOpacity: 1,
 };
+const containerFlexStyle = {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
 
 const goalContainerStyle = {
   paddingTop: 5,
   paddingBottom: 5,
-  paddingLeft: 12,
-  paddingRight: 12,
 };
 
 const selectedGoalContainerStyle = {
   paddingTop: 5,
   paddingBottom: 5,
-  paddingLeft: 12,
-  paddingRight: 12,
   backgroundColor: '#FFFFFF',
   borderColor: '#0078CC',
   borderWidth: 2,
@@ -49,17 +51,23 @@ const goalTextStyle = {
   color: '#FFFFFF',
   textAlign: 'center',
   fontWeight: 'bold',
+  fontSize: 20,
 };
 
 const selectedGoalTextStyle = {
   color: '#06038D',
   textAlign: 'center',
   fontWeight: 'bold',
-  fontSize: 18,
+  fontSize: 25,
 };
 
 const chartStyle = {
   paddingBottom: -35,
+};
+
+const containerPaddingStyle = {
+  paddingLeft: 2,
+  paddingRight: 6,
 };
 
 const Goal = ({theme}) => {
@@ -141,6 +149,7 @@ const Goal = ({theme}) => {
           style={[
             styles.flexRow,
             styles.justifyContentCenter,
+            containerPaddingStyle,
             {
               backgroundColor: theme.colors.blueDark,
             },
@@ -149,21 +158,16 @@ const Goal = ({theme}) => {
             treatmentPlan.goals.map((treatmentGoal, i) => (
               <TouchableOpacity
                 key={i}
-                style={
+                style={[
+                  containerFlexStyle,
                   selectedGoal === i
                     ? selectedGoalContainerStyle
-                    : goalContainerStyle
-                }
+                    : goalContainerStyle,
+                ]}
                 onPress={() => {
                   setSelectedGoal(i);
                   setGoal(treatmentGoal);
                 }}>
-                <Text
-                  style={
-                    selectedGoal === i ? selectedGoalTextStyle : goalTextStyle
-                  }>
-                  Goal
-                </Text>
                 <Text
                   style={[
                     selectedGoal === i ? selectedGoalTextStyle : goalTextStyle,

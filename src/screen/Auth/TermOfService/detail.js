@@ -2,12 +2,14 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {Text} from 'react-native-elements';
-import {ScrollView, View} from 'react-native';
+import {ScrollView, View, Dimensions} from 'react-native';
 import styles from '../../../assets/styles';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
+import HTML from 'react-native-render-html';
+
+const contentWidth = Dimensions.get('window').width;
 
 const TermOfServiceDetail = ({navigation}) => {
   const localize = useSelector((state) => state.localize);
@@ -22,9 +24,12 @@ const TermOfServiceDetail = ({navigation}) => {
       />
       <ScrollView style={styles.mainContainerLight}>
         <View>
-          <Text>
-            {termContent.content || translate('term.of.service.not_found')}
-          </Text>
+          {(
+            <HTML
+              source={{html: termContent.content}}
+              contentWidth={contentWidth}
+            />
+          ) || translate('term.of.service.not_found')}
         </View>
       </ScrollView>
     </>
