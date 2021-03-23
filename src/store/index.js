@@ -13,6 +13,7 @@ import {country} from './country/reducers';
 import {language} from './language/reducers';
 import {translation} from './translation/reducers';
 import {message} from './message/reducers';
+import {aboutPage} from './aboutPage/reducers';
 import settings from '../../config/settings';
 
 const rootReducers = {
@@ -26,6 +27,7 @@ const rootReducers = {
   language,
   translation,
   message,
+  aboutPage,
 };
 
 const middlewares = [thunk];
