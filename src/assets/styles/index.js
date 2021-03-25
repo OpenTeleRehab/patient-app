@@ -17,6 +17,7 @@ import ActivityCard from './partials/_ActivityCard';
 import Messages from './partials/_Messages';
 import Questionnaire from './partials/_Questionnaire';
 import Call from './partials/_Call';
+import SplashScreen from './partials/_SplashScreen';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
   ...Messages,
   ...Questionnaire,
   ...Call,
+  ...SplashScreen,
 });
 
 export default styles;
