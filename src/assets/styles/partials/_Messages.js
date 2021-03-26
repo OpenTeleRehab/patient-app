@@ -35,11 +35,21 @@ export default {
     padding: variables.spacingBase,
     paddingRight: 45,
     marginRight: variables.spacingBase,
+    lineHeight: 20,
+  },
+  chatAttachment: {
+    marginLeft: 0,
   },
   chatSendButton: {
     position: 'absolute',
     bottom: 12,
     right: 15,
     height: 28,
+  },
+  chatTherapistNotOnlineText: {
+    color: variables.grey1,
+    fontSize: variables.fontSizeMd,
+    textAlign: 'center',
+    lineHeight: 24,
   },
 };

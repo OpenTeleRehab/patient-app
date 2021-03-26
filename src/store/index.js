@@ -12,8 +12,8 @@ import {appointment} from './appointment/reducers';
 import {country} from './country/reducers';
 import {language} from './language/reducers';
 import {translation} from './translation/reducers';
-import {message} from './message/reducers';
 import {aboutPage} from './aboutPage/reducers';
+import {rocketchat} from './rocketchat/reducers';
 import settings from '../../config/settings';
 
 const rootReducers = {
@@ -26,8 +26,8 @@ const rootReducers = {
   country,
   language,
   translation,
-  message,
   aboutPage,
+  rocketchat,
 };
 
 const middlewares = [thunk];

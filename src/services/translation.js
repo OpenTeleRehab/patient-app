@@ -1,17 +1,10 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {callApi} from '../utils/request';
+import {callAdminApi} from '../utils/request';
 
 const getTranslations = async (lang) => {
-  const options = {
-    uri: '/translation/i18n/patient_app',
-    body: {
-      lang,
-    },
-  };
-
-  return await callApi(options, 'get', false, true);
+  return await callAdminApi('/translation/i18n/patient_app', {lang});
 };
 
 export const Translation = {

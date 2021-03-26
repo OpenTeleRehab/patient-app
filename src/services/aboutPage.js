@@ -1,16 +1,16 @@
-import {callApi} from '../utils/request';
+/*
+ * Copyright (c) 2021 Web Essentials Co., Ltd
+ */
+import {callAdminApi} from '../utils/request';
 
 const getAboutPage = async (lang) => {
-  const options = {
-    uri: '/page/about',
-    body: {
-      'url-segment': 'about-us',
-      platform: 'patient_app',
-      lang: lang,
-    },
+  const body = {
+    'url-segment': 'about-us',
+    platform: 'patient_app',
+    lang: lang,
   };
 
-  return await callApi(options, 'get', false, true);
+  return await callAdminApi('/page/about', body);
 };
 
 export const AboutPage = {

@@ -4,44 +4,48 @@
 import settings from '../../config/settings';
 import {URL} from 'react-native/Libraries/Blob/URL';
 
-const initialOptions = {
-  uri: '',
-  accessToken: '',
-  body: {},
-};
-
-/**
- * @param options
- * @param method
- * @param isFormData
- * @param isAdminApi
- * @returns {Promise<any>}
- */
 export const callApi = async (
-  options = initialOptions,
+  uri,
+  accessToken = '',
+  body = null,
   method = 'get',
   isFormData = false,
-  isAdminApi = false,
 ) => {
-  const websocket = isAdminApi ? settings.adminApiBaseURL : settings.apiBaseURL;
-  const {uri, accessToken, body} = options;
-  let url = websocket + uri;
+  const endpoint = settings.apiBaseURL + uri;
+  const headers = getHeaders(accessToken, isFormData);
+  body = isFormData && method !== 'get' ? body : JSON.stringify(body);
+  return await fetchApi(endpoint, headers, body, method);
+};
 
+export const callAdminApi = async (uri, body = null) => {
+  const endpoint = settings.adminApiBaseURL + uri;
+  const headers = getHeaders();
+  return await fetchApi(endpoint, headers, body);
+};
+
+export const callTherapistApi = async (uri, body = null) => {
+  const endpoint = settings.therapistApiBaseURL + uri;
+  const headers = getHeaders();
+  return await fetchApi(endpoint, headers, body);
+};
+
+export const callChatApi = async (uri, userId, authToken, body = null) => {
+  const endpoint = settings.chatApiBaseUrl + uri;
   const headers = {
     Accept: 'application/json',
-    'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
+    'Content-Type': 'application/json',
+    'X-Auth-Token': authToken,
+    'X-User-Id': userId,
   };
+  return await fetchApi(endpoint, headers, body);
+};
 
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
+const fetchApi = async (endpoint, headers, body = null, method = 'get') => {
+  let url = endpoint;
   const configs = {
     method,
     headers,
   };
-
   if (method === 'get') {
     url = new URL(url, '');
     if (body) {
@@ -50,7 +54,7 @@ export const callApi = async (
       );
     }
   } else {
-    configs.body = isFormData ? body : JSON.stringify(body);
+    configs.body = body;
   }
 
   const response = await fetch(url, configs).catch((error) => {
@@ -61,4 +65,16 @@ export const callApi = async (
   return !response || (response && (response.status !== 200 || !response.ok))
     ? {}
     : response.json();
+};
+
+const getHeaders = (accessToken = '', isFormData = false) => {
+  const headers = {
+    Accept: 'application/json',
+    'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+  };
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return headers;
 };
