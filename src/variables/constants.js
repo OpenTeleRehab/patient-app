@@ -12,7 +12,7 @@ export const ROUTES = {
   QUESTIONNAIRE_DETAIL: 'QuestionnaireDetail',
   GOAL: 'Goal',
   APPOINTMENT: 'Appointment',
-  MESSAGE: 'Message',
+  MESSAGE: 'ChatOrCall',
   USER_PROFILE: 'UserProfile',
   USER_PROFILE_EDIT: 'UserProfileEdit',
   ABOUT: 'About',
@@ -35,4 +35,13 @@ export const ACTIVITY_TYPES = {
   MATERIAL: 'material',
   QUESTIONNAIRE: 'questionnaire',
   GOAL: 'goal',
+};
+
+export const CHAT_USER_STATUS = {
+  0: 'offline',
+  1: 'online',
+  2: 'away',
+  3: 'busy',
+  ONLINE: 'online',
+  OFFLINE: 'offline',
 };

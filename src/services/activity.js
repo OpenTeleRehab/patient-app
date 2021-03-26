@@ -4,64 +4,39 @@
 import {callApi} from '../utils/request';
 
 const getTreatmentPlan = async (today, accessToken, lang) => {
-  const options = {
-    uri: '/treatment-plan/get-treatment-plan',
-    accessToken,
-    body: {
-      today,
-      lang,
-    },
-  };
-
-  return await callApi(options);
+  const body = {today, lang};
+  return await callApi('/treatment-plan/get-treatment-plan', accessToken, body);
 };
 
 const getTodayActivitySummary = async (today, accessToken) => {
-  const options = {
-    uri: '/treatment-plan/get-summary',
-    accessToken,
-    body: {
-      today,
-    },
-  };
-
-  return await callApi(options);
+  return await callApi('/treatment-plan/get-summary', accessToken, {today});
 };
 
 const completeActivity = async (id, payload, accessToken) => {
-  const options = {
-    uri: `/treatment-plan/complete_activity/${id}`,
+  return await callApi(
+    `/treatment-plan/complete_activity/${id}`,
     accessToken,
-    body: {
-      ...payload,
-    },
-  };
-
-  return await callApi(options, 'post');
+    {...payload},
+    'post',
+  );
 };
 
 const completeQuestionnaire = async (id, payload, accessToken) => {
-  const options = {
-    uri: `/treatment-plan/complete_questionnaire/${id}`,
+  return await callApi(
+    `/treatment-plan/complete_questionnaire/${id}`,
     accessToken,
-    body: {
-      ...payload,
-    },
-  };
-
-  return await callApi(options, 'post');
+    {...payload},
+    'post',
+  );
 };
 
 const completeGoal = async (payload, accessToken) => {
-  const options = {
-    uri: '/treatment-plan/complete_goal',
+  return await callApi(
+    '/treatment-plan/complete_goal',
     accessToken,
-    body: {
-      ...payload,
-    },
-  };
-
-  return await callApi(options, 'post');
+    {...payload},
+    'post',
+  );
 };
 
 export const Activity = {

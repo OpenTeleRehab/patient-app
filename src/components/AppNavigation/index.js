@@ -13,7 +13,7 @@ import HomeTab from './Tab/HomeTab';
 import ActivityTab from './Tab/ActivityTab';
 import GoalTab from './Tab/GoalTab';
 import AppointmentTab from './Tab/AppointmentTab';
-import MessageTab from '../../screen/Message';
+import MessageTab from '../../screen/ChatOrCall';
 import {ROUTES} from '../../variables/constants';
 import {auths} from '../../variables/routes';
 import styles from '../../assets/styles';
@@ -55,7 +55,7 @@ const tabs = [
     screen: MessageTab,
     label: 'tab.messages',
     icon: 'message-text-outline',
-    badge: 'hasMessage',
+    badge: 'hasUnreadMessage',
   },
 ];
 
@@ -78,7 +78,7 @@ const AuthStackNavigator = () => {
 };
 
 const AppTabNavigator = (props) => {
-  const {theme} = props;
+  const {theme, hasChatAccount} = props;
   const indicator = useSelector((state) => state.indicator);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -103,6 +103,9 @@ const AppTabNavigator = (props) => {
         safeAreaInsets: {bottom: 5},
       }}>
       {tabs.map((route, index) => {
+        if (route.name === ROUTES.MESSAGE && !hasChatAccount) {
+          return null;
+        }
         return (
           <AppTab.Screen
             key={index}
@@ -129,7 +132,10 @@ const AppNavigation = (props) => {
   return (
     <NavigationContainer>
       {user.accessToken ? (
-        <AppTabNavigator {...props} />
+        <AppTabNavigator
+          {...props}
+          hasChatAccount={user.profile.chat_user_id !== ''}
+        />
       ) : (
         <AuthStackNavigator />
       )}

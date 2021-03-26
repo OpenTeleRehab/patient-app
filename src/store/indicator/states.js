@@ -3,8 +3,10 @@
  */
 export const initialState = {
   isOnlineMode: true,
+  isChatConnected: false,
+  isOnChatScreen: false,
   hasActivity: false,
   hasGoal: false,
   hasAppointment: false,
-  hasMessage: true,
+  hasUnreadMessage: false,
 };

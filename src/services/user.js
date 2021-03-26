@@ -1,28 +1,16 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {callApi} from '../utils/request';
+import {callApi, callAdminApi} from '../utils/request';
 
 const register = async (to, hash) => {
-  const options = {
-    uri: '/register/send-code',
-    body: {
-      to,
-      hash,
-    },
-  };
-  return await callApi(options, 'post');
+  const body = {to, hash};
+  return await callApi('/register/send-code', '', body, 'post');
 };
 
 const verifyPhoneNumber = async (to, code) => {
-  const options = {
-    uri: '/register/verify-code',
-    body: {
-      to,
-      code,
-    },
-  };
-  return await callApi(options, 'post');
+  const body = {to, code};
+  return await callApi('/register/verify-code', '', body, 'post');
 };
 
 const setupPinNumber = async (
@@ -32,94 +20,48 @@ const setupPinNumber = async (
   termOfServiceId,
   language,
 ) => {
-  const option = {
-    uri: '/auth/add-new-pin',
-    body: {
-      pin,
-      phone,
-      otp_code,
-      language,
-      term_and_condition_id: termOfServiceId,
-    },
+  const body = {
+    pin,
+    phone,
+    otp_code,
+    language,
+    term_and_condition_id: termOfServiceId,
   };
-
-  return await callApi(option, 'post');
+  return await callApi('/auth/add-new-pin', '', body, 'post');
 };
 
 const login = async (phone, pin) => {
-  const option = {
-    uri: '/auth/login',
-    body: {
-      phone,
-      pin,
-    },
-  };
-
-  return await callApi(option, 'post');
+  const body = {phone, pin};
+  return await callApi('/auth/login', '', body, 'post');
 };
 
 const logout = async (accessToken) => {
-  const options = {
-    uri: '/auth/logout',
-    accessToken,
-  };
-
-  return await callApi(options);
+  return await callApi('/auth/logout', accessToken);
 };
 
 const comparePinNumber = async (pin, accessToken) => {
-  const options = {
-    uri: '/auth/compare-pin',
-    accessToken,
-    body: {
-      pin,
-    },
-  };
-
-  return await callApi(options);
+  return await callApi('/auth/compare-pin', accessToken, {pin});
 };
 
 const changePinNumber = async (pin, accessToken) => {
-  const options = {
-    uri: '/auth/change-pin',
-    accessToken,
-    body: {
-      pin,
-    },
-  };
-
-  return await callApi(options, 'post');
+  return await callApi('/auth/change-pin', accessToken, {pin}, 'post');
 };
 
 const updateProfile = async (id, payload) => {
-  const options = {
-    uri: `/patient/${id}`,
-    body: {
-      ...payload,
-    },
-  };
-
-  return await callApi(options, 'put');
+  return await callApi(`/patient/${id}`, '', {...payload}, 'put');
 };
 
 const getTermOfService = async () => {
-  const options = {
-    uri: '/user-term-condition',
-  };
-
-  return await callApi(options, 'get', false, true);
+  return await callAdminApi('/user-term-condition');
 };
 
 const acceptTermOfService = async (id, accessToken) => {
-  const options = {
-    uri: '/auth/accept-term-condition',
+  return await callApi(
+    '/auth/accept-term-condition',
     accessToken,
-    body: {
-      term_and_condition_id: id,
-    },
-  };
-
-  return await callApi(options, 'post');
+    {term_and_condition_id: id},
+    'post',
+  );
 };
 
 export const User = {

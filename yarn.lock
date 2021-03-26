@@ -1440,18 +1440,18 @@
     semver "^7.3.2"
     tsutils "^3.17.1"
 
-"@webessentials/react-native-calendar-strip@https://github.com/webessentials/react-native-calendar-strip.git":
+"@webessentials/react-native-calendar-strip@webessentials/react-native-calendar-strip#master":
   version "2.1.5"
-  resolved "https://github.com/webessentials/react-native-calendar-strip.git#ac5b6aab30418824e80dabf0817463c086b974d9"
+  resolved "https://codeload.github.com/webessentials/react-native-calendar-strip/tar.gz/ac5b6aab30418824e80dabf0817463c086b974d9"
   dependencies:
     moment ">=2.0.0"
     node-git-hooks "^1.0.1"
     prop-types "^15.6.0"
     recyclerlistview "^3.0.0"
 
-"@webessentials/react-native-otp-verify@https://github.com/webessentials/react-native-otp-verify.git#2.0.0":
+"@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
   version "2.0.0"
-  resolved "https://github.com/webessentials/react-native-otp-verify.git#4ac9c354e080f08d4034144f61b7839c194a0808"
+  resolved "https://codeload.github.com/webessentials/react-native-otp-verify/tar.gz/4ac9c354e080f08d4034144f61b7839c194a0808"
 
 abab@^2.0.0:
   version "2.0.5"
