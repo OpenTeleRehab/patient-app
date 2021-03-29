@@ -13,7 +13,7 @@ export const callApi = async (
 ) => {
   const endpoint = settings.apiBaseURL + uri;
   const headers = getHeaders(accessToken, isFormData);
-  body = isFormData && method !== 'get' ? body : JSON.stringify(body);
+  body = isFormData || method === 'get' ? body : JSON.stringify(body);
   return await fetchApi(endpoint, headers, body, method);
 };
 

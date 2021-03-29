@@ -18,6 +18,7 @@ import Messages from './partials/_Messages';
 import Questionnaire from './partials/_Questionnaire';
 import Call from './partials/_Call';
 import SplashScreen from './partials/_SplashScreen';
+import Appointment from './partials/_Appointment';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
   ...Questionnaire,
   ...Call,
   ...SplashScreen,
+  ...Appointment,
 });
 
 export default styles;
