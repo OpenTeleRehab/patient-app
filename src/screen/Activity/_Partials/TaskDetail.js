@@ -69,7 +69,7 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
         }
       });
     } else {
-      navigation.navigate(ROUTES.ACTIVITY_COMPLETE_TASK, {
+      navigation.navigate(ROUTES.COMPLETE_EXERCISE, {
         id: activity.id,
         activityNumber: activityNumber,
       });
@@ -107,6 +107,14 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
       </View>
       <View style={[styles.flexCenter, styles.marginY]}>
         <Text h4>{activity.title}</Text>
+        {activity.sets > 0 && (
+          <Text>
+            {translate('activity.number_of_sets_and_reps', {
+              sets: activity.sets,
+              reps: activity.reps,
+            })}
+          </Text>
+        )}
       </View>
 
       {activity.additional_fields?.map((additionalField, index) => (

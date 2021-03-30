@@ -13,7 +13,7 @@ import _ from 'lodash';
 import TaskDetail from '../_Partials/TaskDetail';
 import AssessmentForm from '../_Partials/AssessmentForm';
 
-const ActivityDetail = ({theme, route, navigation}) => {
+const ExerciseDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -98,4 +98,4 @@ const ActivityDetail = ({theme, route, navigation}) => {
   );
 };
 
-export default withTheme(ActivityDetail);
+export default withTheme(ExerciseDetail);

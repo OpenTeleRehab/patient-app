@@ -37,7 +37,7 @@ const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
     <TouchableOpacity
       key={index}
       onPress={() =>
-        navigation.navigate(ROUTES.ACTIVITY_DETAIL, {
+        navigation.navigate(ROUTES.EXERCISE_DETAIL, {
           id: item.id,
           activityNumber: index + 1,
         })
@@ -51,14 +51,14 @@ const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
             {item.title}
           </Text>
           <Text style={styles.activityCardText}>
-            {item.sets
-              ? translate('activity.number_of_sets', {number: item.sets})
-              : ''}
-            {item.reps
-              ? ` - ${translate('activity.number_of_reps', {
-                  number: item.reps,
-                })}`
-              : ''}
+            {item.sets > 0 && (
+              <Text>
+                {translate('activity.number_of_sets_and_reps', {
+                  sets: item.sets,
+                  reps: item.reps,
+                })}
+              </Text>
+            )}
           </Text>
         </View>
         {item.completed ? (
