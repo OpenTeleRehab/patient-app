@@ -78,35 +78,40 @@ const UserProfileEdit = ({navigation}) => {
         {cancelable: false},
       );
     } else {
-      dispatch(updateProfileRequest(profile.id, userInfo, profile.phone)).then(
-        (result) => {
-          if (result) {
-            Alert.alert(
-              translate('edit.profile.title').toString(),
-              translate('success.message.edit.profile').toString(),
-              [
-                {
-                  text: translate('common.ok').toString(),
-                  onPress: () => onSucceed(),
-                },
-              ],
-              {cancelable: false},
-            );
-          } else {
-            Alert.alert(
-              translate('edit.profile.title').toString(),
-              translate('error.message.edit.profile').toString(),
-              [
-                {
-                  text: translate('common.ok').toString(),
-                  onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
-                },
-              ],
-              {cancelable: false},
-            );
-          }
-        },
-      );
+      dispatch(
+        updateProfileRequest(
+          profile.id,
+          userInfo,
+          profile.phone,
+          profile.therapist_id,
+        ),
+      ).then((result) => {
+        if (result) {
+          Alert.alert(
+            translate('edit.profile.title').toString(),
+            translate('success.message.edit.profile').toString(),
+            [
+              {
+                text: translate('common.ok').toString(),
+                onPress: () => onSucceed(),
+              },
+            ],
+            {cancelable: false},
+          );
+        } else {
+          Alert.alert(
+            translate('edit.profile.title').toString(),
+            translate('error.message.edit.profile').toString(),
+            [
+              {
+                text: translate('common.ok').toString(),
+                onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
+      });
     }
   };
 
