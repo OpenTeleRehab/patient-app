@@ -147,12 +147,13 @@ export const setProfileInfo = (data) => async (dispatch) => {
   dispatch(mutation.userSetProfileSuccess(data));
 };
 
-export const updateProfileRequest = (id, payload, phone) => async (
+export const updateProfileRequest = (id, payload, phone, therapistId) => async (
   dispatch,
 ) => {
   let data = await User.updateProfile(id, payload);
   if (data.success) {
     payload.phone = phone;
+    payload.therapist_id = therapistId;
     dispatch(mutation.updateProfileSuccess(payload));
     return true;
   } else {

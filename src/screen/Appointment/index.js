@@ -1,31 +1,197 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React from 'react';
-import {ScrollView, View} from 'react-native';
-import {Text} from 'react-native-elements';
+import React, {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  Animated,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {Divider, Icon, ListItem, Text} from 'react-native-elements';
+import {RectButton} from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {getAppointmentsListRequest} from '../../store/appointment/actions';
+import {getTherapistRequest} from '../../store/therapist/actions';
+import {getTherapistName} from '../../utils/therapist';
+import _ from 'lodash';
+import moment from 'moment/min/moment-with-locales';
 
 const Appointment = () => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {profile} = useSelector((state) => state.user);
+  const {therapists} = useSelector((state) => state.therapist);
+  const {appointments, listInfo, loading} = useSelector(
+    (state) => state.appointment,
+  );
+  const {languages} = useSelector((state) => state.language);
+  const [appointmentObjs, setAppointmentObjs] = useState([]);
+  const [groupedAppointments, setGroupedAppointments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  useEffect(() => {
+    if (languages.length) {
+      const language = languages.find((l) => l.id === profile.language_id);
+      moment.locale(language ? language.code : '');
+    }
+  }, [languages, profile]);
+
+  useEffect(() => {
+    if (profile) {
+      dispatch(
+        getTherapistRequest({ids: JSON.stringify([profile.therapist_id])}),
+      );
+    }
+  }, [profile, dispatch]);
+
+  useEffect(() => {
+    dispatch(
+      getAppointmentsListRequest({
+        page_size: pageSize,
+        page: currentPage,
+      }),
+    );
+  }, [dispatch, currentPage]);
+
+  useEffect(() => {
+    if (appointments.length) {
+      setAppointmentObjs([...appointmentObjs, ...appointments]);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appointments]);
+
+  useEffect(() => {
+    if (appointmentObjs.length) {
+      const groupedData = _.chain(appointmentObjs)
+        .groupBy((item) =>
+          moment.utc(item.start_date).local().format('MMMM YYYY'),
+        )
+        .map((value, key) => ({month: key, appointments: value}))
+        .value();
+      setGroupedAppointments(groupedData);
+    }
+  }, [appointmentObjs]);
+
+  const renderRightActions = (progress, dragX) => {
+    const trans = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [0.7, 0],
+    });
+    return (
+      <RectButton style={styles.appointmentCancelButtonWrapper}>
+        <Animated.Text
+          style={[
+            styles.appointmentCancelButtonText,
+            {transform: [{translateX: trans}]},
+          ]}>
+          {translate('appointment.request_cancel')}
+        </Animated.Text>
+      </RectButton>
+    );
+  };
+
+  const showMore = () => {
+    if (listInfo.last_page > currentPage) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <>
       <HeaderBar
         leftContent={{label: translate('tab.appointments')}}
         rightContent={{
-          label: translate('request.appointments'),
+          label: translate('appointment.request_appointment'),
           onPress: () => null,
         }}
       />
       <ScrollView style={styles.mainContainerPrimary}>
-        <View style={styles.flexCenter}>
-          <Text h4 style={styles.textLight}>
-            Appointment Screen
-          </Text>
+        {groupedAppointments.map((group) => (
+          <>
+            <Text
+              style={[
+                styles.fontWeightBold,
+                styles.textWhite,
+                styles.marginBottom,
+              ]}>
+              {group.month}
+            </Text>
+            {group.appointments.map((appointment) => (
+              <View style={styles.appointmentListWrapper}>
+                <Swipeable
+                  renderRightActions={renderRightActions}
+                  containerStyle={styles.appointmentSwipeableContainer}>
+                  <ListItem
+                    key={appointment.id}
+                    bottomDivider
+                    containerStyle={styles.appointmentListContainer}>
+                    <View style={styles.appointmentListLeftContent}>
+                      <Text style={styles.appointmentListMonth}>
+                        {moment
+                          .utc(appointment.start_date)
+                          .local()
+                          .format('MMM')}
+                      </Text>
+                      <Text style={styles.appointmentListDay}>
+                        {moment
+                          .utc(appointment.start_date)
+                          .local()
+                          .format('DD')}
+                      </Text>
+                    </View>
+                    <ListItem.Content>
+                      <View style={styles.appointmentListRightContent}>
+                        <Text
+                          style={[styles.fontWeightBold, styles.textWarning]}>
+                          {moment
+                            .utc(appointment.start_date)
+                            .local()
+                            .format('hh:mm A')}
+                          {' - '}
+                          {moment
+                            .utc(appointment.end_date)
+                            .local()
+                            .format('hh:mm A')}
+                        </Text>
+                        <Divider style={styles.marginY} />
+                        <Text>{translate('appointment.appointment_with')}</Text>
+                        <Text style={styles.fontWeightBold}>
+                          {getTherapistName(
+                            appointment.therapist_id,
+                            therapists,
+                          )}
+                        </Text>
+                      </View>
+                    </ListItem.Content>
+                  </ListItem>
+                </Swipeable>
+              </View>
+            ))}
+          </>
+        ))}
+        <View style={styles.appointmentShowMoreButtonWrapper}>
+          {!loading && currentPage < listInfo.last_page && (
+            <TouchableOpacity
+              style={styles.appointmentShowMoreButton}
+              onPress={() => showMore()}>
+              <Text style={[styles.textWhite, styles.fontWeightBold]}>
+                {translate('appointment.show_more', {
+                  number: listInfo.total_count - currentPage * pageSize,
+                })}
+              </Text>
+              <Icon name="chevron-down" type="font-awesome" color="white" />
+            </TouchableOpacity>
+          )}
+          {loading && <ActivityIndicator size={30} color="white" />}
         </View>
       </ScrollView>
     </>

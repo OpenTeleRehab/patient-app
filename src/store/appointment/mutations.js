@@ -1,10 +1,17 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-const appointmentFetchSuccess = (data) => {
+const appointmentFetchRequest = () => {
+  return {
+    type: 'APPOINTMENT_FETCH_REQUESTED',
+  };
+};
+
+const appointmentFetchSuccess = (data, info) => {
   return {
     type: 'APPOINTMENT_FETCH_SUCCEED',
     data,
+    info,
   };
 };
 
@@ -15,6 +22,7 @@ const appointmentFetchFailure = () => {
 };
 
 export const mutation = {
+  appointmentFetchRequest,
   appointmentFetchSuccess,
   appointmentFetchFailure,
 };

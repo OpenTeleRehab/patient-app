@@ -14,6 +14,7 @@ import {language} from './language/reducers';
 import {translation} from './translation/reducers';
 import {aboutPage} from './aboutPage/reducers';
 import {rocketchat} from './rocketchat/reducers';
+import {therapist} from './therapist/reducers';
 import settings from '../../config/settings';
 
 const rootReducers = {
@@ -28,6 +29,7 @@ const rootReducers = {
   translation,
   aboutPage,
   rocketchat,
+  therapist,
 };
 
 const middlewares = [thunk];
