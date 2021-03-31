@@ -10,7 +10,7 @@ export const getAppointmentsListRequest = (payload) => async (
   getState,
 ) => {
   dispatch(mutation.appointmentFetchRequest());
-  const now = moment().locale('en').format('YYYY-MM-DD HH:mm:ss');
+  const now = moment.utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
   const {accessToken} = getState().user;
   const data = await Appointment.getAppointments(
     {...payload, now},
