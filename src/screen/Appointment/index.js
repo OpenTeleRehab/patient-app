@@ -132,8 +132,8 @@ const Appointment = () => {
             {translate('appointment.no_appointment')}
           </Text>
         )}
-        {groupedAppointments.map((group) => (
-          <>
+        {groupedAppointments.map((group, index) => (
+          <View key={index}>
             <Text
               style={[
                 styles.fontWeightBold,
@@ -142,13 +142,12 @@ const Appointment = () => {
               ]}>
               {group.month}
             </Text>
-            {group.appointments.map((appointment) => (
-              <View style={styles.appointmentListWrapper}>
+            {group.appointments.map((appointment, i) => (
+              <View key={i} style={styles.appointmentListWrapper}>
                 <Swipeable
                   renderRightActions={renderRightActions}
                   containerStyle={styles.appointmentSwipeableContainer}>
                   <ListItem
-                    key={appointment.id}
                     bottomDivider
                     containerStyle={styles.appointmentListContainer}>
                     <View style={styles.appointmentListLeftContent}>
@@ -193,7 +192,7 @@ const Appointment = () => {
                 </Swipeable>
               </View>
             ))}
-          </>
+          </View>
         ))}
         <View style={styles.appointmentShowMoreButtonWrapper}>
           {!loading && currentPage < listInfo.last_page && (
