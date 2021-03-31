@@ -23,6 +23,7 @@ export default {
     color: variables.white,
     fontSize: 18,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   appointmentListDay: {
     color: variables.white,

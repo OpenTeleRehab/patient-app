@@ -114,7 +114,24 @@ const Appointment = () => {
           onPress: () => null,
         }}
       />
-      <ScrollView style={styles.mainContainerPrimary}>
+      <ScrollView
+        style={styles.mainContainerPrimary}
+        contentContainerStyle={
+          !groupedAppointments.length
+            ? [styles.flexColumn, styles.justifyContentCenter]
+            : []
+        }>
+        {!groupedAppointments.length && !loading && (
+          <Text
+            h4
+            style={[
+              styles.alignSelfCenter,
+              styles.textWhite,
+              styles.fontWeightBold,
+            ]}>
+            {translate('appointment.no_appointment')}
+          </Text>
+        )}
         {groupedAppointments.map((group) => (
           <>
             <Text
