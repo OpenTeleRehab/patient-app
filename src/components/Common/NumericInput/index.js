@@ -11,6 +11,9 @@ const NumericInput = ({theme, value, onChange, ...rest}) => (
     color={theme.colors.primary}
     colorPress={theme.colors.blueLight2}
     background={theme.colors.blueLight}
+    fontSize={22}
+    width={160}
+    height={55}
     rounded={false}
     editable={false}
     value={value}

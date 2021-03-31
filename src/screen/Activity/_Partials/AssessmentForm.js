@@ -30,8 +30,8 @@ const AssessmentForm = ({activity, navigation}) => {
   useEffect(() => {
     if (activity && activity.completed) {
       setPainLevel(activity.pain_level);
-      setNumberOfSets(activity.sets);
-      setNumberOfReps(activity.reps);
+      setNumberOfSets(activity.completed_sets);
+      setNumberOfReps(activity.completed_reps);
     }
   }, [activity]);
 
@@ -86,16 +86,20 @@ const AssessmentForm = ({activity, navigation}) => {
               <NumericInput
                 value={numberOfSets}
                 onChange={(num) => setNumberOfSets(num)}
+                onLongPress={(num) => setNumberOfSets(num)}
                 disabled={!!activity?.completed}
               />
+              <Text style={styles.fontSizeMd}>(recommend {activity.sets})</Text>
             </View>
             <View>
               <Text h4>{translate('activity.reps')}</Text>
               <NumericInput
                 value={numberOfReps}
                 onChange={(num) => setNumberOfReps(num)}
+                onLongPress={(num) => setNumberOfReps(num)}
                 disabled={!!activity?.completed}
               />
+              <Text style={styles.fontSizeMd}>(recommend {activity.reps})</Text>
             </View>
           </View>
         </View>

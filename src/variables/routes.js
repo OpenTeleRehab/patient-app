@@ -20,10 +20,10 @@ import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
 
 // Activity group
 import ActivityScreen from '../screen/Activity';
-import ActivityDetailScreen from '../screen/Activity/Detail';
 import CompleteTaskScreen from '../screen/Activity/CompleteTask';
+import ExerciseDetailScreen from '../screen/Activity/Detail/ExerciseDetail';
 import MaterialDetailScreen from '../screen/Activity/Detail/MaterialDetail';
-import QuestinnaireDetailScreen from '../screen/Activity/Detail/QuestionnaireDetail';
+import QuestionnaireDetailScreen from '../screen/Activity/Detail/QuestionnaireDetail';
 import GoalDetailScreen from '../screen/Activity/Detail/GoalDetail';
 
 // Goal group
@@ -96,11 +96,11 @@ export const activities = [
     screen: ActivityScreen,
   },
   {
-    name: ROUTES.ACTIVITY_DETAIL,
-    screen: ActivityDetailScreen,
+    name: ROUTES.EXERCISE_DETAIL,
+    screen: ExerciseDetailScreen,
   },
   {
-    name: ROUTES.ACTIVITY_COMPLETE_TASK,
+    name: ROUTES.COMPLETE_EXERCISE,
     screen: CompleteTaskScreen,
   },
   {
@@ -109,7 +109,7 @@ export const activities = [
   },
   {
     name: ROUTES.QUESTIONNAIRE_DETAIL,
-    screen: QuestinnaireDetailScreen,
+    screen: QuestionnaireDetailScreen,
   },
   {
     name: ROUTES.GOAl_DETAIL,
