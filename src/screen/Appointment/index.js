@@ -9,16 +9,26 @@ import {
   TouchableOpacity,
   View,
   Alert,
+  Platform,
+  ToastAndroid,
 } from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {Divider, Icon, ListItem, Text} from 'react-native-elements';
+import {
+  Divider,
+  Icon,
+  ListItem,
+  Text,
+  Overlay,
+  Button,
+} from 'react-native-elements';
 import {RectButton} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {
   getAppointmentsListRequest,
+  requestAppointment,
   cancelRequestToCancelAppointment,
 } from '../../store/appointment/actions';
 import {getTherapistRequest} from '../../store/therapist/actions';
@@ -27,6 +37,7 @@ import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import moment from 'moment/min/moment-with-locales';
 import {APPOINTMENT_STATUS} from '../../variables/constants';
+import SelectPicker from '../../components/Common/SelectPicker';
 
 const Appointment = () => {
   const dispatch = useDispatch();
@@ -41,6 +52,8 @@ const Appointment = () => {
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [therapistId, setTherapistId] = useState('');
   const pageSize = 10;
   const swipeableRef = [];
 
@@ -147,15 +160,103 @@ const Appointment = () => {
     swipeableRef[id].close();
   };
 
+  const handleCloseOverlay = () => {
+    setShowOverlay(false);
+    setTherapistId('');
+  };
+
+  const handleRequestAppoint = () => {
+    if (therapistId) {
+      dispatch(
+        requestAppointment({
+          therapist_id: therapistId,
+        }),
+      ).then((result) => {
+        if (result) {
+          handleCloseOverlay();
+          if (Platform.OS === 'ios') {
+            Alert.alert(
+              translate('appointment'),
+              translate('appointment.request_has_been_submitted_successfully'),
+            );
+          } else {
+            ToastAndroid.show(
+              translate('appointment.request_has_been_submitted_successfully'),
+              ToastAndroid.SHORT,
+            );
+          }
+        }
+      });
+    } else {
+      Alert.alert(
+        translate('appointment').toString(),
+        translate('error.message.therapist').toString(),
+        [
+          {
+            text: translate('common.ok').toString(),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
   return (
     <>
       <HeaderBar
         leftContent={{label: translate('tab.appointments')}}
         rightContent={{
           label: translate('appointment.request_appointment'),
-          onPress: () => null,
+          onPress: () => setShowOverlay(true),
         }}
       />
+      <Overlay
+        isVisible={showOverlay}
+        overlayStyle={styles.appointmentOverlayContainer}>
+        <>
+          <Text
+            style={[
+              styles.fontWeightBold,
+              styles.leadText,
+              styles.textDark,
+              styles.marginBottomMd,
+            ]}>
+            {translate('appointment.request_appointment')}
+          </Text>
+          <View style={styles.formGroup}>
+            <Text style={[styles.formLabel, styles.textSmall]}>
+              {translate('appointment.choose_therapist')}
+            </Text>
+            <SelectPicker
+              placeholder={{
+                label: translate('appointment.choose_therapist'),
+                value: null,
+              }}
+              items={therapists.map((therapist) => ({
+                label: therapist.last_name + ' ' + therapist.first_name,
+                value: therapist.id,
+              }))}
+              value={therapistId}
+              onValueChange={(value) => setTherapistId(value)}
+            />
+            <Divider style={styles.marginBottomMd} />
+            <View style={styles.appointmentOverlayButtonsWrapper}>
+              <Button
+                title={translate('common.submit')}
+                titleStyle={[styles.textUpperCase]}
+                containerStyle={styles.appointmentOverlayLeftButtonContainer}
+                onPress={() => handleRequestAppoint()}
+              />
+              <Button
+                title={translate('common.cancel')}
+                titleStyle={[styles.textUpperCase]}
+                containerStyle={styles.appointmentOverlayRightButtonContainer}
+                onPress={() => handleCloseOverlay()}
+              />
+            </View>
+          </View>
+        </>
+      </Overlay>
       <ScrollView
         style={styles.mainContainerPrimary}
         contentContainerStyle={

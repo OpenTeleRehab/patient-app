@@ -21,6 +21,24 @@ const appointmentFetchFailure = () => {
   };
 };
 
+const appointmentRequestRequest = () => {
+  return {
+    type: 'APPOINTMENT_REQUEST_REQUESTED',
+  };
+};
+
+const appointmentRequestSuccess = () => {
+  return {
+    type: 'APPOINTMENT_REQUEST_SUCCEED',
+  };
+};
+
+const appointmentRequestFailure = () => {
+  return {
+    type: 'APPOINTMENT_REQUEST_FAILED',
+  };
+};
+
 const appointmentRequestToCancelRequest = () => {
   return {
     type: 'APPOINTMENT_REQUEST_TO_CANCEL_REQUESTED',
@@ -43,6 +61,9 @@ export const mutation = {
   appointmentFetchRequest,
   appointmentFetchSuccess,
   appointmentFetchFailure,
+  appointmentRequestRequest,
+  appointmentRequestSuccess,
+  appointmentRequestFailure,
   appointmentRequestToCancelRequest,
   appointmentRequestToCancelSuccess,
   appointmentRequestToCancelFailure,
