@@ -22,3 +22,23 @@ export const getAppointmentsListRequest = (payload) => async (
     dispatch(mutation.appointmentFetchFailure());
   }
 };
+
+export const cancelRequestToCancelAppointment = (id, payload) => async (
+  dispatch,
+  getState,
+) => {
+  dispatch(mutation.appointmentRequestToCancelRequest());
+  const {accessToken} = getState().user;
+  const data = await Appointment.requestToCancelAppointment(
+    id,
+    payload,
+    accessToken,
+  );
+  if (data.success) {
+    dispatch(mutation.appointmentRequestToCancelSuccess());
+    return true;
+  } else {
+    dispatch(mutation.appointmentRequestToCancelFailure());
+    return false;
+  }
+};

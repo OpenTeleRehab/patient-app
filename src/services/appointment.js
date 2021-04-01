@@ -11,6 +11,16 @@ const getAppointments = async (payload, accessToken) => {
   );
 };
 
+const requestToCancelAppointment = async (id, payload, accessToken) => {
+  return await callApi(
+    `/appointment/updateStatus/${id}`,
+    accessToken,
+    {...payload},
+    'post',
+  );
+};
+
 export const Appointment = {
   getAppointments,
+  requestToCancelAppointment,
 };
