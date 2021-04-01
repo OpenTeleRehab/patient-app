@@ -45,3 +45,7 @@ export const CHAT_USER_STATUS = {
   ONLINE: 'online',
   OFFLINE: 'offline',
 };
+
+export const APPOINTMENT_STATUS = {
+  REQUEST_CANCELLATION: 'request_cancellation',
+};

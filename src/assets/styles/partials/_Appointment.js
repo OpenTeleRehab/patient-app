@@ -18,6 +18,7 @@ export default {
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
     width: 120,
+    height: '100%',
   },
   appointmentListMonth: {
     color: variables.white,

@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
@@ -16,11 +17,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Divider, Icon, ListItem, Text} from 'react-native-elements';
 import {RectButton} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import {getAppointmentsListRequest} from '../../store/appointment/actions';
+import {
+  getAppointmentsListRequest,
+  cancelRequestToCancelAppointment,
+} from '../../store/appointment/actions';
 import {getTherapistRequest} from '../../store/therapist/actions';
 import {getTherapistName} from '../../utils/therapist';
+import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import moment from 'moment/min/moment-with-locales';
+import {APPOINTMENT_STATUS} from '../../variables/constants';
 
 const Appointment = () => {
   const dispatch = useDispatch();
@@ -36,6 +42,7 @@ const Appointment = () => {
   const [groupedAppointments, setGroupedAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const swipeableRef = [];
 
   useEffect(() => {
     if (languages.length) {
@@ -49,6 +56,7 @@ const Appointment = () => {
       dispatch(
         getTherapistRequest({ids: JSON.stringify([profile.therapist_id])}),
       );
+      dispatch(getLanguageRequest());
     }
   }, [profile, dispatch]);
 
@@ -81,13 +89,15 @@ const Appointment = () => {
     }
   }, [appointmentObjs]);
 
-  const renderRightActions = (progress, dragX) => {
+  const renderRightActions = (progress, dragX, id) => {
     const trans = dragX.interpolate({
       inputRange: [-100, 0],
       outputRange: [0.7, 0],
     });
     return (
-      <RectButton style={styles.appointmentCancelButtonWrapper}>
+      <RectButton
+        style={styles.appointmentCancelButtonWrapper}
+        onPress={() => handleRequestCancelPress(id)}>
         <Animated.Text
           style={[
             styles.appointmentCancelButtonText,
@@ -103,6 +113,38 @@ const Appointment = () => {
     if (listInfo.last_page > currentPage) {
       setCurrentPage(currentPage + 1);
     }
+  };
+
+  const handleRequestCancelPress = (id) => {
+    Alert.alert(
+      translate('appointment.request_to_cancel'),
+      translate('appointment.are_you_sure_to_request_for_cancellation'),
+      [
+        {text: translate('common.ok'), onPress: () => handleConfirm(id)},
+        {text: translate('common.cancel'), onPress: () => handleClose(id)},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleConfirm = (id) => {
+    swipeableRef[id].close();
+    dispatch(
+      cancelRequestToCancelAppointment(id, {
+        status: APPOINTMENT_STATUS.REQUEST_CANCELLATION,
+      }),
+    ).then((result) => {
+      if (result) {
+        const newAppointmentObjs = [...appointmentObjs];
+        newAppointmentObjs.find((appointment) => appointment.id === id).status =
+          APPOINTMENT_STATUS.REQUEST_CANCELLATION;
+        setAppointmentObjs(newAppointmentObjs);
+      }
+    });
+  };
+
+  const handleClose = (id) => {
+    swipeableRef[id].close();
   };
 
   return (
@@ -145,7 +187,13 @@ const Appointment = () => {
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
                 <Swipeable
-                  renderRightActions={renderRightActions}
+                  ref={(ref) => (swipeableRef[appointment.id] = ref)}
+                  renderRightActions={(progress, dragX) =>
+                    appointment.status ===
+                    APPOINTMENT_STATUS.REQUEST_CANCELLATION
+                      ? null
+                      : renderRightActions(progress, dragX, appointment.id)
+                  }
                   containerStyle={styles.appointmentSwipeableContainer}>
                   <ListItem
                     bottomDivider
@@ -186,6 +234,15 @@ const Appointment = () => {
                             therapists,
                           )}
                         </Text>
+                        {appointment.status ===
+                          APPOINTMENT_STATUS.REQUEST_CANCELLATION && (
+                          <Text
+                            style={[styles.textWarning, styles.marginTopMd]}>
+                            {translate(
+                              'appointment.pending_request_for_cancellation',
+                            )}
+                          </Text>
+                        )}
                       </View>
                     </ListItem.Content>
                   </ListItem>
