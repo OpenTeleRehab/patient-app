@@ -23,6 +23,19 @@ export const getAppointmentsListRequest = (payload) => async (
   }
 };
 
+export const requestAppointment = (payload) => async (dispatch, getState) => {
+  dispatch(mutation.appointmentRequestRequest());
+  const {accessToken} = getState().user;
+  const data = await Appointment.requestAppointment(payload, accessToken);
+  if (data.success) {
+    dispatch(mutation.appointmentRequestSuccess());
+    return true;
+  } else {
+    dispatch(mutation.appointmentRequestFailure());
+    return false;
+  }
+};
+
 export const cancelRequestToCancelAppointment = (id, payload) => async (
   dispatch,
   getState,

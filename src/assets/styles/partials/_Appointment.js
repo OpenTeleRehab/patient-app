@@ -59,4 +59,21 @@ export default {
     flexDirection: 'column',
     alignItems: 'center',
   },
+  appointmentOverlayContainer: {
+    maxWidth: 500,
+    minWidth: 300,
+  },
+  appointmentOverlayButtonsWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'space-between',
+  },
+  appointmentOverlayLeftButtonContainer: {
+    flex: 1,
+    marginRight: 5,
+  },
+  appointmentOverlayRightButtonContainer: {
+    flex: 1,
+    marginLeft: 5,
+  },
 };
