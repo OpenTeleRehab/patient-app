@@ -7,7 +7,7 @@ import {Header, Text, Button, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 
-const leftContainerMaxWidth = {maxWidth: '85%'};
+const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
   const {theme, title, onGoBack, leftContent, rightContent} = props;

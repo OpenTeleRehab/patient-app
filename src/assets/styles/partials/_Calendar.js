@@ -19,4 +19,10 @@ export default {
     borderRadius: 0,
     width: '100%',
   },
+  todayButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: 5,
+    left: 10,
+  },
 };
