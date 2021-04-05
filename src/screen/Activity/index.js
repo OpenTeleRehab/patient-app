@@ -2,7 +2,15 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useRef, useState, useEffect} from 'react';
-import {ScrollView, View, Dimensions} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Dimensions,
+  Platform,
+  PermissionsAndroid,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import {Button, Text, Icon, withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
@@ -19,6 +27,7 @@ import RenderEducationMaterialCard from './_Partials/RenderEducationMaterialCard
 import RenderQuestionnaireCard from './_Partials/RenderQuestionnaireCard';
 import RenderGoalCard from './_Partials/RenderGoalCard';
 import {ACTIVITY_TYPES} from '../../variables/constants';
+import RNFS from 'react-native-fs';
 
 const calendarHeaderStyle = {
   ...styles.textWhite,
@@ -98,6 +107,38 @@ const Activity = ({theme, navigation}) => {
     calendarRef.setSelectedDate(moment());
   };
 
+  const handleDownload = async (treatment) => {
+    let location = '';
+    if (Platform.OS === 'ios') {
+      location = RNFS.DocumentDirectoryPath;
+    } else {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+      if (!granted) {
+        return;
+      }
+      location = RNFS.ExternalStorageDirectoryPath + '/Download';
+    }
+
+    RNFS.downloadFile({
+      fromUrl: settings.apiBaseURL + '/treatment-plan/export/' + treatment.id,
+      toFile: `${location}/${treatment.name}.pdf`,
+    }).promise.then(() => {
+      if (Platform.OS === 'ios') {
+        Alert.alert(
+          translate('common.download'),
+          translate('activity.file_has_been_downloaded_successfully'),
+        );
+      } else {
+        ToastAndroid.show(
+          translate('activity.file_has_been_downloaded_successfully'),
+          ToastAndroid.SHORT,
+        );
+      }
+    });
+  };
+
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
       let marks = [];
@@ -142,12 +183,26 @@ const Activity = ({theme, navigation}) => {
             ? translate('tab.activities')
             : treatmentPlan.name,
         }}
-        rightContent={{
-          label: translate('common.today'),
-          onPress: handleTodayPress,
-        }}
+        rightContent={
+          _.isEmpty(treatmentPlan)
+            ? null
+            : {
+                label: translate('common.download'),
+                icon: 'download',
+                iconType: 'font-awesome-5',
+                onPress: () => handleDownload(treatmentPlan),
+              }
+        }
       />
       <View style={styles.bgPrimary}>
+        <Button
+          type="outline"
+          title={translate('common.today')}
+          titleStyle={styles.textWhite}
+          buttonStyle={styles.headerButton(true)}
+          containerStyle={styles.todayButton}
+          onPress={handleTodayPress}
+        />
         <CalendarStrip
           ref={(ref) => (calendarRef = ref)}
           selectedDate={selectedDate}
