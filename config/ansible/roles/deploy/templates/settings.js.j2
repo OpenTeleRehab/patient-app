@@ -2,13 +2,17 @@ const settings = {
   apiBaseURL: '{{ patient_api_base_url }}',
   adminApiBaseURL: '{{ admin_api_base_url }}',
   therapistApiBaseURL: '{{ therapist_api_base_url }}',
+  chatBaseUrl: '{{ rocketchat_base_url }}',
+  get chatApiBaseUrl() {
+    return `${this.chatBaseUrl}/api/v1`;
+  },
+  chatWebsocketUrl: '{{ chat_websocket_url }}',
   isDebugMode: {{ is_debug_mode }},
   format: {
     date: 'DD/MM/YYYY',
     time: 'HH:mm',
   },
   appVersion: '{{ major_release_version }}.{{ minor_release_version }}.{{ patch_release_version }}-{{ stage }}',
-  chatWebsocketUrl: '{{ chat_websocket_url }}',
 };
 
 export default settings;

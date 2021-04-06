@@ -21,6 +21,22 @@ export default {
     backgroundColor: variables.primary,
     borderRadius: 15,
   },
+  chatAttachmentContainer: {
+    width: 150,
+    paddingHorizontal: 5,
+    paddingTop: 5,
+  },
+  chatMessageImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+    borderRadius: 15,
+  },
+  chatMessageVideo: {
+    width: '100%',
+    height: 100,
+    borderRadius: 15,
+  },
   chatInputToolBar: {
     padding: variables.spacingBase,
     paddingRight: 0,

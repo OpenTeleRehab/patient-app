@@ -5,13 +5,13 @@ import {
   updateChatUserStatus,
   clearChatData,
 } from '../store/rocketchat/actions';
-import {CHAT_USER_STATUS} from '../variables/constants';
-import {getUniqueId} from './helper';
-import settings from '../../config/settings';
 import {
   updateIndicatorList,
   updateUnreadMessageIndicator,
 } from '../store/indicator/actions';
+import {CHAT_USER_STATUS} from '../variables/constants';
+import {getUniqueId, getChatMessage} from './helper';
+import settings from '../../config/settings';
 
 export const initialChatSocket = (
   dispatch,
@@ -20,6 +20,8 @@ export const initialChatSocket = (
   password,
 ) => {
   let isConnected = false;
+  let userId = '';
+  let authToken = '';
   const {loginId, roomMessageId, notifyLoggedId} = subscribeIds;
 
   // register websocket
@@ -78,7 +80,9 @@ export const initialChatSocket = (
         // set auth token
         const {token, tokenExpires} = result;
         const expiredAt = new Date(tokenExpires.$date);
-        dispatch(authenticateChatUser({userId: result.id, token, expiredAt}));
+        userId = result.id;
+        authToken = token;
+        dispatch(authenticateChatUser({userId, token, expiredAt}));
 
         // subscribe chat room message
         subscribeChatRoomMessage(socket, roomMessageId);
@@ -91,32 +95,15 @@ export const initialChatSocket = (
         // load messages in a room
         const allMessages = [];
         result.messages.forEach((message) => {
-          const {_id, msg, ts, u} = message;
-          allMessages.push({
-            _id,
-            text: msg,
-            createdAt: new Date(ts.$date),
-            user: {_id: u._id},
-            sent: true,
-            pending: false,
-          });
+          const data = getChatMessage(message, userId, authToken);
+          allMessages.push(data);
         });
         dispatch(getMessagesInRoom(allMessages));
       }
     } else if (resMessage === 'changed') {
       if (collection === 'stream-room-messages') {
         // trigger change in chat room
-        const {_id, rid, msg, ts, u} = fields.args[0];
-        const newMessage = {
-          _id,
-          rid,
-          text: msg,
-          createdAt: new Date(ts.$date),
-          user: {_id: u._id},
-          received: true,
-          pending: false,
-          unread: 0,
-        };
+        const newMessage = getChatMessage(fields.args[0], userId, authToken);
         dispatch(prependNewMessage(newMessage));
         dispatch(updateUnreadMessageIndicator());
       } else if (collection === 'stream-notify-logged') {
@@ -145,6 +132,16 @@ export const loadHistoryInRoom = (socket, roomId, patientId) => {
     method: 'loadHistory',
     id: getUniqueId(patientId),
     params: [roomId, null, 999999, {$date: new Date().getTime()}],
+  };
+  socket.send(JSON.stringify(options));
+};
+
+export const markMessagesAsRead = (socket, roomId, patientId) => {
+  const options = {
+    msg: 'method',
+    method: 'readMessages',
+    id: getUniqueId(patientId),
+    params: [roomId],
   };
   socket.send(JSON.stringify(options));
 };

@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useContext, useEffect, useState} from 'react';
-import {Icon, Text, withTheme} from 'react-native-elements';
+import {Icon, Text, withTheme, Image} from 'react-native-elements';
 import {
   Actions,
   Message,
@@ -25,6 +25,7 @@ import {CHAT_USER_STATUS} from '../../variables/constants';
 import RocketchatContext from '../../context/RocketchatContext';
 import {sendNewMessage} from '../../utils/rocketchat';
 import {updateIndicatorList} from '../../store/indicator/actions';
+import VideoPlayer from 'react-native-video-player';
 
 const ChatOrCall = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const ChatOrCall = ({navigation, theme}) => {
       dispatch(updateIndicatorList({isOnChatScreen: isFocused}));
     }
     if (isFocused && hasUnreadMessage) {
+      // markMessagesAsRead(chatSocket, selectedRoom.rid, profile.id);
       dispatch(updateIndicatorList({hasUnreadMessage: false}));
     }
   }, [dispatch, isFocused, isOnChatScreen, hasUnreadMessage]);
@@ -76,6 +78,24 @@ const ChatOrCall = ({navigation, theme}) => {
               left: styles.chatBubbleLeft,
               right: styles.chatBubbleRight,
             }}
+            renderMessageImage={() => (
+              <View style={styles.chatAttachmentContainer}>
+                <Image
+                  source={{uri: chatProps.currentMessage.image}}
+                  style={styles.chatMessageImage}
+                />
+              </View>
+            )}
+            renderMessageVideo={() => (
+              <View style={styles.chatAttachmentContainer}>
+                <VideoPlayer
+                  autoplay={false}
+                  video={{uri: chatProps.currentMessage.video}}
+                  resizeMode="contain"
+                  style={styles.chatMessageVideo}
+                />
+              </View>
+            )}
           />
         )}
         renderDay={() => (
