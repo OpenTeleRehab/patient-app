@@ -69,6 +69,7 @@ const Activity = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const {treatmentPlan} = useSelector((state) => state.activity);
   const {language} = useSelector((state) => state.translation);
+  const {accessToken} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
   let carouselRef = useRef();
@@ -124,6 +125,9 @@ const Activity = ({theme, navigation}) => {
     RNFS.downloadFile({
       fromUrl: settings.apiBaseURL + '/treatment-plan/export/' + treatment.id,
       toFile: `${location}/${treatment.name}.pdf`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     }).promise.then(() => {
       if (Platform.OS === 'ios') {
         Alert.alert(
