@@ -46,7 +46,7 @@ export const getChatRooms = () => async (dispatch, getState) => {
     }
     return true;
   } else {
-    dispatch(mutation.getChatRoomsFail());
+    dispatch(mutation.getChatRoomsFailure());
     return false;
   }
 };
@@ -71,7 +71,7 @@ export const getChatUsersStatus = () => async (dispatch, getState) => {
       dispatch(mutation.getChatUsersStatusSuccess(chatRooms));
       return true;
     } else {
-      dispatch(mutation.getChatUsersStatusFail());
+      dispatch(mutation.getChatUsersStatusFailure());
       return false;
     }
   }
