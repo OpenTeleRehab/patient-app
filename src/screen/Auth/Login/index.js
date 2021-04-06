@@ -30,7 +30,7 @@ const Login = ({navigation}) => {
   const {subscribeIds} = useSelector((state) => state.rocketchat);
 
   useEffect(() => {
-    if (isChatConnected) {
+    if (isChatConnected && chatSocket !== null) {
       unSubscribeEvent(chatSocket, subscribeIds.roomMessageId);
       unSubscribeEvent(chatSocket, subscribeIds.notifyLoggedId);
       chatLogout(chatSocket, subscribeIds.loginId);

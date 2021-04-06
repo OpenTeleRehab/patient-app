@@ -114,7 +114,7 @@ const AppProvider = ({children}) => {
   }, [dispatch, chatRooms]);
 
   useEffect(() => {
-    if (profile.id && selectedRoom) {
+    if (chatSocket !== null && profile.id && selectedRoom) {
       loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
     }
   }, [selectedRoom, profile]);
