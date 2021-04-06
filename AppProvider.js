@@ -15,6 +15,7 @@ import RocketchatContext from './src/context/RocketchatContext';
 import {initialChatSocket, loadHistoryInRoom} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
 import {
+  clearChatData,
   getChatRooms,
   getChatUsersStatus,
   getLastMessages,
@@ -48,6 +49,7 @@ const AppProvider = ({children}) => {
   }, [fetchLocalData]);
 
   useEffect(() => {
+    dispatch(clearChatData());
     if (timespan) {
       if (moment().diff(moment(timespan, settings.format.date), 'days') > 0) {
         dispatch(setInitialRouteName(ROUTES.REGISTER));
@@ -69,6 +71,7 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (
+      !loading &&
       !chatSocket &&
       accessToken &&
       profile.chat_user_id &&
@@ -87,7 +90,7 @@ const AppProvider = ({children}) => {
         profile.chat_password,
       );
     }
-  }, [accessToken, dispatch, profile]);
+  }, [dispatch, loading, accessToken, profile]);
 
   useEffect(() => {
     if (chatAuth) {
@@ -111,7 +114,7 @@ const AppProvider = ({children}) => {
   }, [dispatch, chatRooms]);
 
   useEffect(() => {
-    if (profile.id && selectedRoom && selectedRoom.rid) {
+    if (profile.id && selectedRoom) {
       loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
     }
   }, [selectedRoom, profile]);
