@@ -4,9 +4,10 @@ project_name:             'hiv'
 
 git_repos:                'git@git.web-essentials.asia:hiv-tra-20/patient-app.git'
 
-patient_api_base_url:     'https://demo-api-patient-rehabilitation.wehost.asia/api'
-admin_api_base_url:       'https://demo-api-admin-rehabilitation.wehost.asia/api'
-therapist_api_base_url:   'https://demo-api-therapist-rehabilitation.wehost.asia/api'
+patient_api_base_url:     'https://{{ stage }}-api-patient-rehabilitation.wehost.asia/api'
+admin_api_base_url:       'https://{{ stage }}-api-admin-rehabilitation.wehost.asia/api'
+therapist_api_base_url:   'https://{{ stage }}-api-therapist-rehabilitation.wehost.asia/api'
+chat_websocket_url:       'https://{{ stage }}-chat-rehabilitation.wehost.asia'
 is_debug_mode:            'false'
 
 major_release_version:    '1'
@@ -20,5 +21,5 @@ android_release_key_src:  '/opt/Android/{{ project_name }}/hiv-release-key.keyst
 android_release_path:     '/storage/satis/web/apk/{{ project_name }}'
 android_apk_release_file: '{{ stage }}-{{ build_id }}-{{ ansible_date_time.date }}-app-release.apk'
 
-store_pass:         '{{ store_pass_vault }}'
-key_pass:           '{{ key_pass_vault }}'
+store_pass:               '{{ store_pass_vault }}'
+key_pass:                 '{{ key_pass_vault }}'
