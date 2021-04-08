@@ -137,28 +137,30 @@ const MaterialDetail = ({theme, route, navigation}) => {
               </View>
               <Text
                 style={[styles.marginLeft, styles.marginY, styles.textWhite]}>
-                {translate(material.file.fileGroupType)}
+                {material.file ? translate(material.file.fileGroupType) : ''}
               </Text>
             </View>
           </Card>
           <View style={[styles.paddingXMd, styles.alignSelfCenter]}>
             <Text h4>{material.title}</Text>
           </View>
-          <TouchableOpacity
-            onPress={handleDownload}
-            style={styles.educationMaterialDownloadWrapper}>
-            <Text
-              numberOfLines={1}
-              style={[styles.hyperlink, styles.educationMaterialFileName]}>
-              {material.file.fileName}
-            </Text>
-            <Icon
-              name="download"
-              color={theme.colors.primary}
-              size={25}
-              type="font-awesome-5"
-            />
-          </TouchableOpacity>
+          {material.file && (
+            <TouchableOpacity
+              onPress={handleDownload}
+              style={styles.educationMaterialDownloadWrapper}>
+              <Text
+                numberOfLines={1}
+                style={[styles.hyperlink, styles.educationMaterialFileName]}>
+                {material.file.fileName}
+              </Text>
+              <Icon
+                name="download"
+                color={theme.colors.primary}
+                size={25}
+                type="font-awesome-5"
+              />
+            </TouchableOpacity>
+          )}
         </ScrollView>
         <Button
           icon={{
