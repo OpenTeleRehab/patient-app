@@ -77,6 +77,7 @@ const Activity = ({theme, navigation}) => {
   const [markedDates, setMarkDates] = useState([]);
   const [activities, setActivities] = useState([]);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
+  const [downloading, setDownloading] = useState(false);
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -109,6 +110,7 @@ const Activity = ({theme, navigation}) => {
   };
 
   const handleDownload = async (treatment) => {
+    setDownloading(true);
     let location = '';
     if (Platform.OS === 'ios') {
       location = RNFS.DocumentDirectoryPath;
@@ -123,12 +125,13 @@ const Activity = ({theme, navigation}) => {
     }
 
     RNFS.downloadFile({
-      fromUrl: settings.apiBaseURL + '/treatment-plan/export/' + treatment.id,
+      fromUrl: settings.apiBaseURL + '/treatment-plan/export/on-going',
       toFile: `${location}/${treatment.name}.pdf`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     }).promise.then(() => {
+      setDownloading(false);
       if (Platform.OS === 'ios') {
         Alert.alert(
           translate('common.download'),
@@ -195,6 +198,7 @@ const Activity = ({theme, navigation}) => {
                 icon: 'download',
                 iconType: 'font-awesome-5',
                 onPress: () => handleDownload(treatmentPlan),
+                disabled: downloading,
               }
         }
       />
