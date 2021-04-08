@@ -47,7 +47,7 @@ const RenderEducationMaterialCard = (
               styles.marginY,
               item.completed ? styles.textDark : styles.textWhite,
             ]}>
-            {translate(item.file.fileGroupType)}
+            {item.file ? translate(item.file.fileGroupType) : ''}
           </Text>
         </View>
         <View style={styles.activityCardInfoWrapper}>
