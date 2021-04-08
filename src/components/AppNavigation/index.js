@@ -128,13 +128,14 @@ const AppTabNavigator = (props) => {
 
 const AppNavigation = (props) => {
   const user = useSelector((state) => state.user);
+  const {selectedRoom} = useSelector((state) => state.rocketchat);
 
   return (
     <NavigationContainer>
       {user.accessToken ? (
         <AppTabNavigator
           {...props}
-          hasChatAccount={user.profile.chat_user_id !== ''}
+          hasChatAccount={user.profile.chat_user_id !== '' && selectedRoom}
         />
       ) : (
         <AuthStackNavigator />
