@@ -54,7 +54,7 @@ const HeaderBar = (props) => {
 
   const renderRightComponent = () => {
     if (rightContent) {
-      const {icon, iconType, iconSize, label, onPress} = rightContent;
+      const {icon, iconType, iconSize, label, onPress, disabled} = rightContent;
       return (
         <Button
           title={label}
@@ -63,7 +63,7 @@ const HeaderBar = (props) => {
               ? {
                   name: icon,
                   type: iconType,
-                  color: theme.colors.white,
+                  color: disabled ? theme.colors.disabled : theme.colors.white,
                   size: iconSize || 20,
                 }
               : null
@@ -72,6 +72,7 @@ const HeaderBar = (props) => {
           titleStyle={styles.textLight}
           buttonStyle={styles.headerButton(label)}
           onPress={onPress}
+          disabled={disabled}
         />
       );
     }
