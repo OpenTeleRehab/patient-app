@@ -8,11 +8,11 @@ import moment from 'moment';
 import {storeLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY} from '../../variables/constants';
 
-export const registerRequest = (to, hash) => async (dispatch) => {
+export const registerRequest = (to, hash, country) => async (dispatch) => {
   dispatch(mutation.userRegisterRequest());
-  const data = await User.register(to, hash);
+  const data = await User.register(to, hash, country);
   if (data.success) {
-    dispatch(mutation.userRegisterSuccess({to}));
+    dispatch(mutation.userRegisterSuccess({to, country}));
     return true;
   } else {
     dispatch(mutation.userRegisterFailure());
@@ -20,9 +20,11 @@ export const registerRequest = (to, hash) => async (dispatch) => {
   }
 };
 
-export const verifyPhoneNumberRequest = (to, code) => async (dispatch) => {
+export const verifyPhoneNumberRequest = (to, code, country) => async (
+  dispatch,
+) => {
   dispatch(mutation.userVerifyPhoneNumberRequest());
-  const data = await User.verifyPhoneNumber(to, code);
+  const data = await User.verifyPhoneNumber(to, code, country);
   if (data.success) {
     dispatch(mutation.userVerifyPhoneNumberSuccess({code}));
     return true;
@@ -38,12 +40,14 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
 ) => {
   dispatch(mutation.userSetupPinNumberRequest());
   const {language} = getState().translation;
+  const {countryCode} = getState().user;
   const data = await User.setupPinNumber(
     pin,
     phone,
     otp_code,
     getState().user.termOfService.id,
     language,
+    countryCode,
   );
   if (data.success) {
     const timespan = moment()
@@ -55,6 +59,7 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
       {
         phone,
         timespan,
+        country: countryCode,
       },
       true,
     );
@@ -67,9 +72,12 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
   }
 };
 
-export const loginRequest = (phone, pin) => async (dispatch, getState) => {
+export const loginRequest = (phone, pin, country) => async (
+  dispatch,
+  getState,
+) => {
   dispatch(mutation.userLoginRequest());
-  let data = await User.login(phone, pin);
+  let data = await User.login(phone, pin, country);
   if (data.success) {
     let acceptedTermOfService = true;
     if (

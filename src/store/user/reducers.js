@@ -20,6 +20,7 @@ export const user = (state = initialState, action) => {
     case 'USER_REGISTER_SUCCEED': {
       return Object.assign({}, state, {
         phone: action.data.to,
+        countryCode: action.data.country,
         isLoading: false,
       });
     }

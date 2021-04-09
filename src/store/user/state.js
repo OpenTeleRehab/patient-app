@@ -8,4 +8,5 @@ export const initialState = {
   isLoading: false,
   termOfService: {},
   phone: '',
+  countryCode: '',
 };
