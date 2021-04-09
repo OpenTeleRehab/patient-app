@@ -78,7 +78,7 @@ const AuthStackNavigator = () => {
 };
 
 const AppTabNavigator = (props) => {
-  const {theme, hasChatAccount} = props;
+  const {theme, enabledChat} = props;
   const indicator = useSelector((state) => state.indicator);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -103,7 +103,7 @@ const AppTabNavigator = (props) => {
         safeAreaInsets: {bottom: 5},
       }}>
       {tabs.map((route, index) => {
-        if (route.name === ROUTES.MESSAGE && !hasChatAccount) {
+        if (route.name === ROUTES.MESSAGE && !enabledChat) {
           return null;
         }
         return (
@@ -127,15 +127,18 @@ const AppTabNavigator = (props) => {
 };
 
 const AppNavigation = (props) => {
-  const user = useSelector((state) => state.user);
+  const {accessToken} = useSelector((state) => state.user);
+  const {isChatConnected} = useSelector((state) => state.indicator);
+  const {chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
+
+  const isChatEnabled = () => {
+    return isChatConnected && chatAuth && chatRooms.length > 0;
+  };
 
   return (
     <NavigationContainer>
-      {user.accessToken ? (
-        <AppTabNavigator
-          {...props}
-          hasChatAccount={user.profile.chat_user_id !== ''}
-        />
+      {accessToken ? (
+        <AppTabNavigator {...props} enabledChat={isChatEnabled()} />
       ) : (
         <AuthStackNavigator />
       )}
