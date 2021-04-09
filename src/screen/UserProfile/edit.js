@@ -17,6 +17,7 @@ import settings from '../../../config/settings';
 import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
 import SelectPicker from '../../components/Common/SelectPicker';
+import _ from 'lodash';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
@@ -37,19 +38,24 @@ const UserProfileEdit = ({navigation}) => {
   });
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
+  const [originUserInfo, setOrginUserInfo] = useState(null);
 
   useEffect(() => {
     if (profile) {
-      setUserInfo({
+      const profileInfo = {
         id: profile.id,
         first_name: profile.first_name,
         last_name: profile.last_name,
         gender: profile.gender,
-        date_of_birth: isValidDateFormat(profile.date_of_birth)
-          ? profile.date_of_birth
-          : moment(profile.date_of_birth).format(settings.format.date),
+        date_of_birth: profile.date_of_birth
+          ? isValidDateFormat(profile.date_of_birth)
+            ? profile.date_of_birth
+            : moment(profile.date_of_birth).format(settings.format.date)
+          : null,
         language_id: profile.language_id,
-      });
+      };
+      setUserInfo(profileInfo);
+      setOrginUserInfo(profileInfo);
       if (profile.date_of_birth) {
         if (isValidDateFormat(profile.date_of_birth)) {
           moment(profile.date_of_birth, settings.format.date).toDate();
@@ -136,10 +142,50 @@ const UserProfileEdit = ({navigation}) => {
     }
   };
 
+  const resetData = () => {
+    setUserInfo(originUserInfo);
+    if (originUserInfo.date_of_birth) {
+      if (isValidDateFormat(originUserInfo.date_of_birth)) {
+        setContractDate(
+          moment(originUserInfo.date_of_birth, settings.format.date).toDate(),
+        );
+      } else {
+        setContractDate(moment(originUserInfo.date_of_birth).toDate());
+      }
+    } else {
+      setContractDate(null);
+    }
+  };
+
+  const handleGoBack = () => {
+    if (_.isEqual(userInfo, originUserInfo)) {
+      navigation.navigate(ROUTES.USER_PROFILE);
+    } else {
+      Alert.alert(
+        translate('edit.profile.title').toString(),
+        translate('edit.profile.discard.message').toString(),
+        [
+          {
+            text: translate('common.cancel').toString(),
+            onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
+            style: 'cancel',
+          },
+          {
+            text: translate('common.ok').toString(),
+            onPress: () => {
+              resetData();
+              navigation.navigate(ROUTES.USER_PROFILE);
+            },
+          },
+        ],
+      );
+    }
+  };
+
   return (
     <>
       <HeaderBar
-        onGoBack={() => navigation.goBack()}
+        onGoBack={() => handleGoBack()}
         title={translate('edit.profile.title')}
       />
       <ScrollView style={styles.mainContainerLight}>
