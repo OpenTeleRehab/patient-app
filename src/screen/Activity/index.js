@@ -124,6 +124,20 @@ const Activity = ({theme, navigation}) => {
       location = RNFS.ExternalStorageDirectoryPath + '/Download';
     }
 
+    // Download education material file attached
+    const materials = treatment.activities.filter(
+      (activity) =>
+        activity.type === ACTIVITY_TYPES.MATERIAL &&
+        activity.file &&
+        activity.file.fileGroupType !== 'common.type.image',
+    );
+    materials.forEach((material) => {
+      RNFS.downloadFile({
+        fromUrl: settings.adminApiBaseURL + `/file/${material.file.id}`,
+        toFile: `${location}/${material.title}_${material.file.fileName}`,
+      });
+    });
+
     RNFS.downloadFile({
       fromUrl: settings.apiBaseURL + '/treatment-plan/export/on-going',
       toFile: `${location}/${treatment.name}.pdf`,
