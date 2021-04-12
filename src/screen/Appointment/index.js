@@ -12,18 +12,10 @@ import {
   Platform,
   ToastAndroid,
 } from 'react-native';
-import HeaderBar from '../../components/Common/HeaderBar';
-import styles from '../../assets/styles';
+import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  Divider,
-  Icon,
-  ListItem,
-  Text,
-  Overlay,
-  Button,
-} from 'react-native-elements';
+import {Divider, Icon, Text, Overlay, Button} from 'react-native-elements';
 import {RectButton} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {
@@ -31,24 +23,22 @@ import {
   requestAppointment,
   cancelRequestToCancelAppointment,
 } from '../../store/appointment/actions';
-import {getTherapistRequest} from '../../store/therapist/actions';
-import {getTherapistName} from '../../utils/therapist';
-import {getLanguageRequest} from '../../store/language/actions';
-import _ from 'lodash';
+import HeaderBar from '../../components/Common/HeaderBar';
+import styles from '../../assets/styles';
 import moment from 'moment/min/moment-with-locales';
 import {APPOINTMENT_STATUS} from '../../variables/constants';
 import SelectPicker from '../../components/Common/SelectPicker';
+import AppointmentCard from './_Partials/AppointmentCard';
 
 const Appointment = () => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile} = useSelector((state) => state.user);
   const {therapists} = useSelector((state) => state.therapist);
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
-  const {languages} = useSelector((state) => state.language);
+
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,22 +46,6 @@ const Appointment = () => {
   const [therapistId, setTherapistId] = useState('');
   const pageSize = 10;
   const swipeableRef = [];
-
-  useEffect(() => {
-    if (languages.length) {
-      const language = languages.find((l) => l.id === profile.language_id);
-      moment.locale(language ? language.code : '');
-    }
-  }, [languages, profile]);
-
-  useEffect(() => {
-    if (profile) {
-      dispatch(
-        getTherapistRequest({ids: JSON.stringify([profile.therapist_id])}),
-      );
-      dispatch(getLanguageRequest());
-    }
-  }, [profile, dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -84,7 +58,11 @@ const Appointment = () => {
 
   useEffect(() => {
     if (appointments.length) {
-      setAppointmentObjs([...appointmentObjs, ...appointments]);
+      if (currentPage === 1) {
+        setAppointmentObjs(appointments);
+      } else {
+        setAppointmentObjs([...appointmentObjs, ...appointments]);
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -295,76 +273,31 @@ const Appointment = () => {
                       ? null
                       : renderRightActions(progress, dragX, appointment.id)
                   }
-                  containerStyle={styles.appointmentSwipeableContainer}>
-                  <ListItem
-                    bottomDivider
-                    containerStyle={styles.appointmentListContainer}>
-                    <View style={styles.appointmentListLeftContent}>
-                      <Text style={styles.appointmentListMonth}>
-                        {moment
-                          .utc(appointment.start_date)
-                          .local()
-                          .format('MMM')}
-                      </Text>
-                      <Text style={styles.appointmentListDay}>
-                        {moment
-                          .utc(appointment.start_date)
-                          .local()
-                          .format('DD')}
-                      </Text>
-                    </View>
-                    <ListItem.Content>
-                      <View style={styles.appointmentListRightContent}>
-                        <Text
-                          style={[styles.fontWeightBold, styles.textWarning]}>
-                          {moment
-                            .utc(appointment.start_date)
-                            .local()
-                            .format('hh:mm A')}
-                          {' - '}
-                          {moment
-                            .utc(appointment.end_date)
-                            .local()
-                            .format('hh:mm A')}
-                        </Text>
-                        <Divider style={styles.marginY} />
-                        <Text>{translate('appointment.appointment_with')}</Text>
-                        <Text style={styles.fontWeightBold}>
-                          {getTherapistName(
-                            appointment.therapist_id,
-                            therapists,
-                          )}
-                        </Text>
-                        {appointment.status ===
-                          APPOINTMENT_STATUS.REQUEST_CANCELLATION && (
-                          <Text
-                            style={[styles.textWarning, styles.marginTopMd]}>
-                            {translate(
-                              'appointment.pending_request_for_cancellation',
-                            )}
-                          </Text>
-                        )}
-                      </View>
-                    </ListItem.Content>
-                  </ListItem>
+                  containerStyle={styles.borderRightRadius}>
+                  <AppointmentCard
+                    appointment={appointment}
+                    style={styles.noBorderTopRightRadius}
+                  />
                 </Swipeable>
               </View>
             ))}
           </View>
         ))}
         <View style={styles.appointmentShowMoreButtonWrapper}>
-          {!loading && currentPage < listInfo.last_page && (
-            <TouchableOpacity
-              style={styles.appointmentShowMoreButton}
-              onPress={() => showMore()}>
-              <Text style={[styles.textWhite, styles.fontWeightBold]}>
-                {translate('appointment.show_more', {
-                  number: listInfo.total_count - currentPage * pageSize,
-                })}
-              </Text>
-              <Icon name="chevron-down" type="font-awesome" color="white" />
-            </TouchableOpacity>
-          )}
+          {!loading &&
+            pageSize < listInfo.total_count &&
+            currentPage < listInfo.last_page && (
+              <TouchableOpacity
+                style={styles.appointmentShowMoreButton}
+                onPress={() => showMore()}>
+                <Text style={[styles.textWhite, styles.fontWeightBold]}>
+                  {translate('appointment.show_more', {
+                    number: listInfo.total_count - currentPage * pageSize,
+                  })}
+                </Text>
+                <Icon name="chevron-down" type="font-awesome" color="white" />
+              </TouchableOpacity>
+            )}
           {loading && <ActivityIndicator size={30} color="white" />}
         </View>
       </ScrollView>

@@ -22,7 +22,7 @@ const treatmentPlanFetchFailure = () => {
 
 const todayActivitySummaryRequest = () => {
   return {
-    type: 'TREATMENT_PLAN_FETCH_REQUESTED',
+    type: 'TODAY_ACTIVITY_SUMMARY_REQUEST',
   };
 };
 

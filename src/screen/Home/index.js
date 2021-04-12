@@ -2,28 +2,40 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 import {Text} from 'react-native-elements';
+import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import colors from '../../assets/styles/variables/colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {getTranslate} from 'react-localize-redux';
-import {getTodayActivitySummaryRequest} from '../../store/activity/actions';
 import {useIsDrawerOpen} from '@react-navigation/drawer';
+import {getTodayActivitySummaryRequest} from '../../store/activity/actions';
+import {getAppointmentsListRequest} from '../../store/appointment/actions';
+import AppointmentCard from '../Appointment/_Partials/AppointmentCard';
+import {getTherapistRequest} from '../../store/therapist/actions';
+import {getLanguageRequest} from '../../store/language/actions';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const profile = useSelector((state) => state.user.profile);
   const translate = getTranslate(localize);
-  const todayActivitySummary = useSelector(
-    (state) => state.activity.todaySummary,
-  );
+  const {profile} = useSelector((state) => state.user);
+  const {languages} = useSelector((state) => state.language);
+  const {appointments} = useSelector((state) => state.appointment);
+  const {todaySummary, isLoading} = useSelector((state) => state.activity);
   const isDrawerOpen = useIsDrawerOpen();
-
   const [completedPercentage, setCompletedPercentage] = useState(0);
+  const [upComingAppointment, setUpComingAppointment] = useState();
+
+  useEffect(() => {
+    if (languages.length) {
+      const language = languages.find((l) => l.id === profile.language_id);
+      moment.locale(language ? language.code : '');
+    }
+  }, [languages, profile]);
 
   useEffect(() => {
     const tabNav = navigation.dangerouslyGetParent();
@@ -40,12 +52,29 @@ const Home = ({navigation}) => {
   }, [dispatch, profile]);
 
   useEffect(() => {
-    if (todayActivitySummary) {
-      setCompletedPercentage(
-        (todayActivitySummary.completed * 100) / todayActivitySummary.all,
-      );
+    if (todaySummary) {
+      setCompletedPercentage((todaySummary.completed * 100) / todaySummary.all);
     }
-  }, [todayActivitySummary]);
+  }, [todaySummary]);
+
+  useEffect(() => {
+    if (profile) {
+      dispatch(
+        getTherapistRequest({ids: JSON.stringify([profile.therapist_id])}),
+      );
+      dispatch(getLanguageRequest());
+    }
+  }, [profile, dispatch]);
+
+  useEffect(() => {
+    dispatch(getAppointmentsListRequest({page_size: 1}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!upComingAppointment && appointments.length) {
+      setUpComingAppointment(appointments[0]);
+    }
+  }, [upComingAppointment, appointments]);
 
   return (
     <>
@@ -69,7 +98,7 @@ const Home = ({navigation}) => {
         <Text style={styles.textLightBold}>
           {translate('common.hi')}, {profile.last_name}!
         </Text>
-        {todayActivitySummary.all ? (
+        {todaySummary.all ? (
           <>
             <Text h4 style={[styles.textLight, styles.marginTop]}>
               {translate('home.activities.today')}
@@ -91,20 +120,36 @@ const Home = ({navigation}) => {
                   <Text style={styles.progressTextStyle}>
                     <Text
                       style={[styles.progressTextStyle, styles.fontWeightBold]}>
-                      {todayActivitySummary.completed}
+                      {todaySummary.completed}
                     </Text>
-                    /{todayActivitySummary.all}
+                    /{todaySummary.all}
                   </Text>
                 </>
               )}
             </AnimatedCircularProgress>
           </>
         ) : (
-          <Text h4 style={[styles.textLight, styles.marginTop]}>
-            {translate('home.no.activity.for.today')}
-          </Text>
+          <>
+            {isLoading === true ? (
+              <ActivityIndicator
+                size={60}
+                color="white"
+                style={styles.marginTopLg}
+              />
+            ) : (
+              <Text h4 style={[styles.textLight, styles.marginTop]}>
+                {translate('home.no.activity.for.today')}
+              </Text>
+            )}
+          </>
         )}
       </View>
+
+      {upComingAppointment && (
+        <View style={styles.mainContainerPrimary}>
+          <AppointmentCard appointment={upComingAppointment} />
+        </View>
+      )}
     </>
   );
 };

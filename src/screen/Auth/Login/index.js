@@ -33,7 +33,7 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getCountryRequest());
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (isChatConnected && chatSocket !== null) {
