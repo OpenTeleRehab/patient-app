@@ -17,7 +17,22 @@ const getLastMessages = async (chatRooms, userId, authToken) => {
   return await callChatApi('/im.list', userId, authToken, body);
 };
 
+const sendAttachmentMessage = async (roomId, userId, authToken, attachment) => {
+  const formData = new FormData();
+  formData.append('description', attachment.caption);
+  formData.append('file', attachment.file);
+  return await callChatApi(
+    `/rooms.upload/${roomId}`,
+    userId,
+    authToken,
+    formData,
+    'post',
+    true,
+  );
+};
+
 export const Rocketchat = {
   getUserStatus,
   getLastMessages,
+  sendAttachmentMessage,
 };

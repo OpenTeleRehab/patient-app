@@ -27,6 +27,9 @@ export default {
   textSmall: {
     fontSize: variables.fontSizeSm,
   },
+  textCenter: {
+    textAlign: 'center',
+  },
   bgDark: {
     backgroundColor: variables.grey,
   },

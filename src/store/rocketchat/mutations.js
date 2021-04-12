@@ -72,6 +72,14 @@ const clearChatDataSuccess = () => ({
   type: 'CLEAR_CHAT_DATA_SUCCEED',
 });
 
+const sendAttachmentMessagesSuccess = () => ({
+  type: 'SEND_ATTACHMENT_MESSAGES_SUCCEED',
+});
+
+const sendAttachmentMessagesFailure = () => ({
+  type: 'SEND_ATTACHMENT_MESSAGES_FAILED',
+});
+
 export const mutation = {
   setChatSubscribeIdsSuccess,
   chatUserLoginSuccess,
@@ -88,4 +96,6 @@ export const mutation = {
   updateLastMessageSuccess,
   updateChatUserStatusSuccess,
   clearChatDataSuccess,
+  sendAttachmentMessagesSuccess,
+  sendAttachmentMessagesFailure,
 };
