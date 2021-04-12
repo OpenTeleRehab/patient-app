@@ -35,15 +35,22 @@ export const callTherapistApi = async (uri, body = null) => {
   return await fetchApi(endpoint, headers, body);
 };
 
-export const callChatApi = async (uri, userId, authToken, body = null) => {
+export const callChatApi = async (
+  uri,
+  userId,
+  authToken,
+  body = null,
+  method = 'get',
+  isFormData = false,
+) => {
   const endpoint = settings.chatApiBaseUrl + uri;
+  const defaultHeaders = getHeaders('', isFormData);
   const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    ...defaultHeaders,
     'X-Auth-Token': authToken,
     'X-User-Id': userId,
   };
-  return await fetchApi(endpoint, headers, body);
+  return await fetchApi(endpoint, headers, body, method);
 };
 
 const fetchApi = async (endpoint, headers, body = null, method = 'get') => {

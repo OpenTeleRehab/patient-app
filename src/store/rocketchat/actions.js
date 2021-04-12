@@ -149,3 +149,23 @@ export const updateChatUserStatus = (payload) => (dispatch, getState) => {
 export const clearChatData = () => (dispatch) => {
   dispatch(mutation.clearChatDataSuccess());
 };
+
+export const postAttachmentMessage = (roomId, attachment) => async (
+  dispatch,
+  getState,
+) => {
+  const {chatAuth} = getState().rocketchat;
+  const data = await Rocketchat.sendAttachmentMessage(
+    roomId,
+    chatAuth.userId,
+    chatAuth.token,
+    attachment,
+  );
+  if (data.success) {
+    dispatch(mutation.sendAttachmentMessagesSuccess());
+    return true;
+  } else {
+    dispatch(mutation.sendAttachmentMessagesFailure());
+    return false;
+  }
+};

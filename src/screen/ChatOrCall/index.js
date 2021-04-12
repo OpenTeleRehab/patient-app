@@ -20,12 +20,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import settings from '../../../config/settings';
 import {generateHash} from '../../utils/helper';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {CHAT_USER_STATUS} from '../../variables/constants';
 import RocketchatContext from '../../context/RocketchatContext';
 import {sendNewMessage} from '../../utils/rocketchat';
 import {updateIndicatorList} from '../../store/indicator/actions';
 import VideoPlayer from 'react-native-video-player';
+import MediaPicker from '../../components/MediaPicker';
+import {postAttachmentMessage} from '../../store/rocketchat/actions';
 
 const ChatOrCall = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -38,6 +40,7 @@ const ChatOrCall = ({navigation, theme}) => {
   const profile = useSelector((state) => state.user.profile);
   const translate = getTranslate(localize);
   const [allMessages, setAllMessages] = useState(messages);
+  const [showPicker, setShowPicker] = useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -67,6 +70,37 @@ const ChatOrCall = ({navigation, theme}) => {
     sendNewMessage(chatSocket, newMessage[0], profile.id);
   };
 
+  const onSendAttachment = (caption, file, type) => {
+    const newMessage = {
+      _id: generateHash(),
+      createdAt: new Date(),
+      pending: true,
+      text: caption,
+      user: {_id: profile.chat_user_id},
+    };
+    if (type.includes('video/')) {
+      newMessage.video = file.uri;
+    } else {
+      newMessage.image = file.uri;
+    }
+    setAllMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, [newMessage]),
+    );
+
+    const attachment = {
+      caption,
+      file: {
+        uri:
+          Platform.OS === 'android'
+            ? file.uri
+            : file.uri.replace('file://', ''),
+        type,
+        name: file.uri.replace(/^.*[\\\/]/, ''),
+      },
+    };
+    dispatch(postAttachmentMessage(selectedRoom.rid, attachment));
+  };
+
   const renderMessage = (chatProps) => {
     return (
       <Message
@@ -89,9 +123,9 @@ const ChatOrCall = ({navigation, theme}) => {
             renderMessageVideo={() => (
               <View style={styles.chatAttachmentContainer}>
                 <VideoPlayer
-                  autoplay={false}
                   video={{uri: chatProps.currentMessage.video}}
-                  resizeMode="contain"
+                  thumbnail={{uri: chatProps.currentMessage.video}}
+                  endThumbnail={{uri: chatProps.currentMessage.video}}
                   style={styles.chatMessageVideo}
                 />
               </View>
@@ -111,7 +145,7 @@ const ChatOrCall = ({navigation, theme}) => {
   };
 
   const renderTherapistNotOnline = () => {
-    if (selectedRoom.u.status !== CHAT_USER_STATUS.ONLINE) {
+    if (selectedRoom.u.status === CHAT_USER_STATUS.OFFLINE) {
       return (
         <View style={[styles.flexCenter, styles.paddingXLg, styles.paddingYMd]}>
           <Text style={styles.chatTherapistNotOnlineText}>
@@ -144,10 +178,10 @@ const ChatOrCall = ({navigation, theme}) => {
                 size={28}
                 type="feather"
                 color={theme.colors.grey3}
+                onPress={() => setShowPicker(true)}
               />
             )}
             containerStyle={styles.chatAttachment}
-            onPressActionButton={() => null}
           />
         )}
         renderSend={() => (
@@ -188,6 +222,21 @@ const ChatOrCall = ({navigation, theme}) => {
         renderFooter={renderTherapistNotOnline}
         onSend={(newMessage) => onSend(newMessage)}
       />
+      {showPicker && (
+        <MediaPicker
+          visible={showPicker}
+          onClose={setShowPicker}
+          onSend={onSendAttachment}
+          allMediaText={translate('all_medias')}
+          allVideoText={translate('all_videos')}
+          emptyText={translate('no_medias')}
+          captionPlaceholder={translate('add_a_caption')}
+          sizeErrorText={translate('common.error_message_invalid_file_size', {
+            size: settings.fileMaxUploadSize,
+          })}
+          buttonOKLabel={translate('common.ok')}
+        />
+      )}
     </>
   );
 };

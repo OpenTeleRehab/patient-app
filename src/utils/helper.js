@@ -61,3 +61,40 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     unread: !!unread,
   };
 };
+
+export const toMB = (bytes) => {
+  return bytes / Math.pow(1024, 2);
+};
+
+export const isValidFileSize = (fileSize, maxFileSize = 0) => {
+  let defaultMaxSize = settings.fileMaxUploadSize;
+  if (maxFileSize > 0) {
+    defaultMaxSize = maxFileSize;
+  }
+  return fileSize <= defaultMaxSize;
+};
+
+export const arrayObjectIndexOf = (array, property, value) =>
+  array.map((o) => o[property]).indexOf(value);
+
+export const nEveryRow = (data, n) => {
+  const result = [];
+  let temp = [];
+
+  for (let i = 0; i < data.length; ++i) {
+    if (i > 0 && i % n === 0) {
+      result.push(temp);
+      temp = [];
+    }
+    temp.push(data[i]);
+  }
+
+  if (temp.length > 0) {
+    while (temp.length !== n) {
+      temp.push(null);
+    }
+    result.push(temp);
+  }
+
+  return result;
+};
