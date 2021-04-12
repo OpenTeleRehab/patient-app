@@ -3,6 +3,7 @@
  */
 import settings from '../../config/settings';
 import {URL} from 'react-native/Libraries/Blob/URL';
+import {getUserCountryIsoCode} from '../utils/country';
 
 export const callApi = async (
   uri,
@@ -10,11 +11,16 @@ export const callApi = async (
   body = null,
   method = 'get',
   isFormData = false,
+  headers = {},
 ) => {
   const endpoint = settings.apiBaseURL + uri;
-  const headers = getHeaders(accessToken, isFormData);
+  const allHeaders = {
+    country: getUserCountryIsoCode(),
+    ...getHeaders(accessToken, isFormData),
+    ...headers,
+  };
   body = isFormData || method === 'get' ? body : JSON.stringify(body);
-  return await fetchApi(endpoint, headers, body, method);
+  return await fetchApi(endpoint, allHeaders, body, method);
 };
 
 export const callAdminApi = async (uri, body = null) => {

@@ -48,6 +48,7 @@ const Register = ({theme, navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
   const [language, setLanguage] = useState('');
+  const [countryCode, setCountryCode] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
 
   const validateAndSetLanguage = useCallback(
@@ -88,6 +89,7 @@ const Register = ({theme, navigation}) => {
 
       setCountryPhoneCode(defaultCountry.phone_code);
       validateAndSetLanguage(defaultCountry.language_id);
+      setCountryCode(defaultCountry.iso_code);
     }
   }, [countries, userCountryCode, dispatch, validateAndSetLanguage]);
 
@@ -95,6 +97,7 @@ const Register = ({theme, navigation}) => {
     setCountryPhoneCode(phoneCode);
     const selectedCountry = _.find(countries, {phone_code: phoneCode});
     validateAndSetLanguage(selectedCountry.language_id);
+    setCountryCode(selectedCountry.iso_code);
   };
 
   const handleLanguageChange = (lang) => {
@@ -106,13 +109,15 @@ const Register = ({theme, navigation}) => {
     setErrorPhoneNumber(false);
     const mobileNumber = phoneNumber.replace(countryPhoneCode, '');
     const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
-    dispatch(registerRequest(formattedNumber, hash)).then((result) => {
-      if (result) {
-        navigation.navigate(ROUTES.VERIFY_PHONE);
-      } else {
-        setErrorPhoneNumber(true);
-      }
-    });
+    dispatch(registerRequest(formattedNumber, hash, countryCode)).then(
+      (result) => {
+        if (result) {
+          navigation.navigate(ROUTES.VERIFY_PHONE);
+        } else {
+          setErrorPhoneNumber(true);
+        }
+      },
+    );
   };
 
   return (

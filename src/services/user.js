@@ -2,15 +2,20 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import {callApi, callAdminApi} from '../utils/request';
+import {getCountryCodeFromStore} from '../utils/country';
 
-const register = async (to, hash) => {
+const register = async (to, hash, country) => {
   const body = {to, hash};
-  return await callApi('/register/send-code', '', body, 'post');
+  return await callApi('/register/send-code', '', body, 'post', false, {
+    country,
+  });
 };
 
 const verifyPhoneNumber = async (to, code) => {
   const body = {to, code};
-  return await callApi('/register/verify-code', '', body, 'post');
+  return await callApi('/register/verify-code', '', body, 'post', false, {
+    country: getCountryCodeFromStore(),
+  });
 };
 
 const setupPinNumber = async (
@@ -27,12 +32,14 @@ const setupPinNumber = async (
     language,
     term_and_condition_id: termOfServiceId,
   };
-  return await callApi('/auth/add-new-pin', '', body, 'post');
+  return await callApi('/auth/add-new-pin', '', body, 'post', false, {
+    country: getCountryCodeFromStore(),
+  });
 };
 
-const login = async (phone, pin) => {
+const login = async (phone, pin, country) => {
   const body = {phone, pin};
-  return await callApi('/auth/login', '', body, 'post');
+  return await callApi('/auth/login', '', body, 'post', false, {country});
 };
 
 const logout = async (accessToken) => {

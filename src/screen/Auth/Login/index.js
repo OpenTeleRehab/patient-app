@@ -17,17 +17,23 @@ import {ROUTES, STORAGE_KEY} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import {chatLogout, unSubscribeEvent} from '../../../utils/rocketchat';
 import RocketchatContext from '../../../context/RocketchatContext';
+import {getCountryRequest} from '../../../store/country/actions';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
+  const [country, setCountry] = useState('');
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
   const {isChatConnected} = useSelector((state) => state.indicator);
   const {subscribeIds} = useSelector((state) => state.rocketchat);
+
+  useEffect(() => {
+    dispatch(getCountryRequest());
+  });
 
   useEffect(() => {
     if (isChatConnected && chatSocket !== null) {
@@ -41,11 +47,12 @@ const Login = ({navigation}) => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
     if (data) {
       setPhone(data.phone);
+      setCountry(data.country);
     }
   }, []);
 
   const handleLogin = () => {
-    dispatch(loginRequest(phone, code)).then((result) => {
+    dispatch(loginRequest(phone, code, country)).then((result) => {
       if (result.success) {
         if (!result.acceptedTermOfService) {
           navigation.navigate(ROUTES.TERM_OF_SERVICE);
