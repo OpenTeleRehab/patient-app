@@ -10,7 +10,10 @@ const Stack = createStackNavigator();
 
 const ActivityTab = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName={ROUTES.ACTIVITY}>
+    <Stack.Navigator
+      headerMode="none"
+      initialRouteName={ROUTES.ACTIVITY}
+      screenOptions={{gestureEnabled: false}}>
       {activities.map((route, index) => {
         return (
           <Stack.Screen
