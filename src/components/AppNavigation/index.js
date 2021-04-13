@@ -63,7 +63,10 @@ const AuthStackNavigator = () => {
   const initialRouteName = useSelector((state) => state.user.initialRouteName);
 
   return (
-    <AuthStack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+    <AuthStack.Navigator
+      headerMode="none"
+      initialRouteName={initialRouteName}
+      screenOptions={{gestureEnabled: false}}>
       {auths.map((route, index) => {
         return (
           <AuthStack.Screen

@@ -10,7 +10,10 @@ const Stack = createStackNavigator();
 
 const GoalTab = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName={ROUTES.GOAL}>
+    <Stack.Navigator
+      headerMode="none"
+      initialRouteName={ROUTES.GOAL}
+      screenOptions={{gestureEnabled: false}}>
       {goals.map((route, index) => {
         return (
           <Stack.Screen

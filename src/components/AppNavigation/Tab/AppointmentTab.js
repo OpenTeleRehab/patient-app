@@ -10,7 +10,10 @@ const Stack = createStackNavigator();
 
 const AppointmentTab = () => {
   return (
-    <Stack.Navigator headerMode="none" initialRouteName={ROUTES.APPOINTMENT}>
+    <Stack.Navigator
+      headerMode="none"
+      initialRouteName={ROUTES.APPOINTMENT}
+      screenOptions={{gestureEnabled: false}}>
       {appointments.map((route, index) => {
         return (
           <Stack.Screen
