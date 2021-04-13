@@ -3,7 +3,7 @@
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image, Platform, ScrollView} from 'react-native';
+import {View, Image, Platform, ScrollView, SafeAreaView} from 'react-native';
 import {Button, Divider, Input, Text, withTheme} from 'react-native-elements';
 import _ from 'lodash';
 
@@ -121,7 +121,7 @@ const Register = ({theme, navigation}) => {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.bgPrimary}>
       <View style={styles.authBanner}>
         <Image source={logoWhite} style={styles.authLogoWhite} />
       </View>
@@ -168,7 +168,9 @@ const Register = ({theme, navigation}) => {
             </View>
           )}
           <View>
-            <Text style={styles.formLabel}>{translate('common.language')}</Text>
+            <Text style={styles.formLabel}>
+              {translate('common.language')}
+            </Text>
             <View style={styles.formControl}>
               <SelectPicker
                 placeholder={{}}
@@ -194,7 +196,7 @@ const Register = ({theme, navigation}) => {
           />
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 
