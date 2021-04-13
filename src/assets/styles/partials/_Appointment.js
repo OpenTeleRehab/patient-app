@@ -5,8 +5,7 @@ export default {
     marginBottom: 10,
   },
   appointmentListContainer: {
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
+    borderRadius: 10,
     padding: 2,
     borderColor: variables.white,
   },
@@ -32,15 +31,18 @@ export default {
     fontWeight: 'bold',
   },
   appointmentListRightContent: {
-    flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     width: '100%',
     paddingRight: 30,
   },
-  appointmentSwipeableContainer: {
+  borderRightRadius: {
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
+  },
+  noBorderTopRightRadius: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
   },
   appointmentCancelButtonWrapper: {
     backgroundColor: variables.error,
