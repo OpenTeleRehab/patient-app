@@ -88,7 +88,7 @@ const Login = ({navigation}) => {
   }, [dispatch]);
 
   return (
-    <SafeAreaView style={styles.bgPrimary}>
+    <SafeAreaView style={styles.bgBlack}>
       <View style={styles.authBanner}>
         <Image source={logoWhite} style={styles.authLogoWhite} />
       </View>

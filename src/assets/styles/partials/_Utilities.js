@@ -30,6 +30,9 @@ export default {
   textCenter: {
     textAlign: 'center',
   },
+  bgBlack: {
+    backgroundColor: variables.dark,
+  },
   bgDark: {
     backgroundColor: variables.grey,
   },

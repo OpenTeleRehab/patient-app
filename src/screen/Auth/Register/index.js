@@ -168,9 +168,7 @@ const Register = ({theme, navigation}) => {
             </View>
           )}
           <View>
-            <Text style={styles.formLabel}>
-              {translate('common.language')}
-            </Text>
+            <Text style={styles.formLabel}>{translate('common.language')}</Text>
             <View style={styles.formControl}>
               <SelectPicker
                 placeholder={{}}

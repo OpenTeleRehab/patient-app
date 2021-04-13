@@ -2,7 +2,13 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {ActivityIndicator, Dimensions, Modal, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Modal,
+  SafeAreaView,
+  View,
+} from 'react-native';
 import {Button, Image, withTheme} from 'react-native-elements';
 import Orientation from 'react-native-orientation-locker';
 import {
@@ -14,6 +20,7 @@ import VideoPlayer from 'react-native-video-player';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
 import music from '../../../assets/images/music.png';
+import styles from '../../../assets/styles';
 
 const styleToggleScreenBtn = {
   position: 'absolute',
@@ -105,51 +112,55 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
 
   return (
     <Modal>
-      <Button
-        type="clear"
-        icon={{
-          name: `${screenOrientation === PORTRAIT ? 'expand' : 'compress'}`,
-          type: 'font-awesome-5',
-          size: 32,
-          color: theme.colors.white,
-        }}
-        onPress={toggleScreenOrientation}
-        containerStyle={styleToggleScreenBtn}
-      />
-      <Button
-        type="clear"
-        icon={{
-          name: 'times-circle',
-          type: 'font-awesome-5',
-          size: 32,
-          color: theme.colors.white,
-        }}
-        onPress={handleClose}
-        containerStyle={styleCloseBtn}
-      />
-      <View style={styleCarouselContainer}>
-        <View>
-          <Carousel
-            data={activity.files}
-            renderItem={(props) => RenderMediaItem(props, showMedia)}
-            sliderWidth={sliderWidth}
-            itemWidth={sliderWidth}
-            inactiveSlideScale={1}
-            firstItem={showMedia}
-            onSnapToItem={(index) => setActivePaginationIndex(index)}
+      <SafeAreaView style={[styles.flexCenter, styles.bgPrimary]}>
+        <View style={styles.flexRow}>
+          <Button
+            type="clear"
+            icon={{
+              name: `${screenOrientation === PORTRAIT ? 'expand' : 'compress'}`,
+              type: 'font-awesome-5',
+              size: 32,
+              color: theme.colors.white,
+            }}
+            onPress={toggleScreenOrientation}
+            containerStyle={styleToggleScreenBtn}
           />
-          {screenOrientation === PORTRAIT && (
-            <Pagination
-              dotsLength={activity.files.length}
-              activeDotIndex={activePaginationIndex}
-              dotStyle={stylePaginationDot}
-              dotColor={theme.colors.white}
-              inactiveDotColor="transparent"
-              inactiveDotScale={1}
-            />
-          )}
+          <Button
+            type="clear"
+            icon={{
+              name: 'times-circle',
+              type: 'font-awesome-5',
+              size: 32,
+              color: theme.colors.white,
+            }}
+            onPress={handleClose}
+            containerStyle={styleCloseBtn}
+          />
+          <View style={styleCarouselContainer}>
+            <View>
+              <Carousel
+                data={activity.files}
+                renderItem={(props) => RenderMediaItem(props, showMedia)}
+                sliderWidth={sliderWidth}
+                itemWidth={sliderWidth}
+                inactiveSlideScale={1}
+                firstItem={showMedia}
+                onSnapToItem={(index) => setActivePaginationIndex(index)}
+              />
+              {screenOrientation === PORTRAIT && (
+                <Pagination
+                  dotsLength={activity.files.length}
+                  activeDotIndex={activePaginationIndex}
+                  dotStyle={stylePaginationDot}
+                  dotColor={theme.colors.white}
+                  inactiveDotColor="transparent"
+                  inactiveDotScale={1}
+                />
+              )}
+            </View>
+          </View>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };
