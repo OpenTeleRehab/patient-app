@@ -20,6 +20,7 @@ import MediaPicker from '../../components/MediaPicker';
 import {postAttachmentMessage} from '../../store/rocketchat/actions';
 import ChatContainer from './_Partials/ChatContainer';
 import ChatToolbar from './_Partials/ChatToolbar';
+import ChatMediaSlider from './_Partials/ChatMediaSlider';
 
 const ChatOrCall = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -34,6 +35,11 @@ const ChatOrCall = ({navigation, theme}) => {
   const [allMessages, setAllMessages] = useState(messages);
   const [showPicker, setShowPicker] = useState(false);
   const isFocused = useIsFocused();
+  const [showMediaSlider, setShowMediaSlider] = useState(false);
+  const [isVideoAttachment, setIsVideoAttachment] = useState(false);
+  const [videoAttachments, setVideoAttachments] = useState(undefined);
+  const [imageAttachments, setImageAttachments] = useState(undefined);
+  const [currentAttachment, setCurrentAttachment] = useState(undefined);
 
   useEffect(() => {
     navigation.setOptions({tabBarVisible: false});
@@ -42,6 +48,11 @@ const ChatOrCall = ({navigation, theme}) => {
       navigation.setOptions({tabBarVisible: true});
     };
   }, [dispatch, navigation, messages]);
+
+  useEffect(() => {
+    setVideoAttachments(messages.filter((item) => item.video !== '').reverse());
+    setImageAttachments(messages.filter((item) => item.image !== '').reverse());
+  }, [messages, currentAttachment, isVideoAttachment]);
 
   useEffect(() => {
     if (isOnChatScreen !== isFocused) {
@@ -95,7 +106,14 @@ const ChatOrCall = ({navigation, theme}) => {
 
   const renderMessage = (chatProps) => {
     return (
-      <ChatContainer chatData={chatProps} theme={theme} translate={translate} />
+      <ChatContainer
+        chatData={chatProps}
+        onShowMediaSlider={setShowMediaSlider}
+        onCurrentAttachment={setCurrentAttachment}
+        isVideoAttachment={setIsVideoAttachment}
+        theme={theme}
+        translate={translate}
+      />
     );
   };
 
@@ -156,6 +174,16 @@ const ChatOrCall = ({navigation, theme}) => {
             size: settings.fileMaxUploadSize,
           })}
           buttonOKLabel={translate('common.ok')}
+        />
+      )}
+
+      {showMediaSlider && (
+        <ChatMediaSlider
+          theme={theme}
+          items={isVideoAttachment ? videoAttachments : imageAttachments}
+          currentAttachment={currentAttachment}
+          onShowMediaSlider={setShowMediaSlider}
+          isVideoAttachment={isVideoAttachment}
         />
       )}
     </>
