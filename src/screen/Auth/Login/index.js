@@ -3,7 +3,14 @@
  */
 import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image, ScrollView, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 import {Button, Text} from 'react-native-elements';
 import {
   loginRequest,
@@ -81,7 +88,7 @@ const Login = ({navigation}) => {
   }, [dispatch]);
 
   return (
-    <>
+    <SafeAreaView style={styles.bgPrimary}>
       <View style={styles.authBanner}>
         <Image source={logoWhite} style={styles.authLogoWhite} />
       </View>
@@ -129,7 +136,7 @@ const Login = ({navigation}) => {
           />
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 
