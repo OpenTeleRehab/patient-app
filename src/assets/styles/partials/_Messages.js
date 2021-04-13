@@ -68,4 +68,12 @@ export default {
     textAlign: 'center',
     lineHeight: 24,
   },
+  modalHeaderAction: {
+    position: 'absolute',
+    padding: variables.spacingSm,
+    top: 0,
+    left: 0,
+    width: '100%',
+    zIndex: 99,
+  },
 };
