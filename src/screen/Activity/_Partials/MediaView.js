@@ -62,6 +62,7 @@ const RenderMediaItem = ({item, index}, activeItem) => {
         video={{uri}}
         style={styleMedia}
         resizeMode="contain"
+        disableFullscreen={true}
       />
     );
   }
@@ -75,6 +76,7 @@ const RenderMediaItem = ({item, index}, activeItem) => {
         style={styleMedia}
         poster={musicUri}
         audioOnly={true}
+        disableFullscreen={true}
       />
     );
   }
