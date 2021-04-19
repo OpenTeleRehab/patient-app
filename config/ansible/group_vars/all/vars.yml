@@ -4,9 +4,9 @@ project_name:             'hiv'
 
 git_repos:                'git@git.web-essentials.asia:hiv-tra-20/patient-app.git'
 
-patient_api_base_url:     'https://demo-api-patient-rehabilitation.wehost.asia/api'
-admin_api_base_url:       'https://demo-api-admin-rehabilitation.wehost.asia/api'
-therapist_api_base_url:   'https://demo-api-therapist-rehabilitation.wehost.asia/api'
+patient_api_base_url:     'https://demo-admin-rehabilitation.wehost.asia/api/patient'
+admin_api_base_url:       'https://demo-admin-rehabilitation.wehost.asia/api/admin'
+therapist_api_base_url:   'https://demo-admin-rehabilitation.wehost.asia/api/therapist'
 rocketchat_base_url:      'https://demo-chat-rehabilitation.wehost.asia'
 chat_websocket_url:       'wss://demo-chat-rehabilitation.wehost.asia/websocket'
 
