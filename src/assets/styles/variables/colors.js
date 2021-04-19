@@ -3,6 +3,7 @@
  * @see https://reactnativeelements.com/docs/customization/#the-theme-object
  */
 export default {
+  dark: '#000000',
   black: '#333333',
   white: '#FFFFFF',
   blueDark: '#06038D',
