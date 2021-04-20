@@ -188,95 +188,109 @@ const UserProfileEdit = ({navigation}) => {
         onGoBack={() => handleGoBack()}
         title={translate('edit.profile.title')}
       />
-      <ScrollView style={styles.mainContainerLight}>
-        <View style={styles.formGroup}>
-          <Input
-            label={translate('first.name')}
-            labelStyle={[styles.formLabel, styles.textSmall, styles.marginTop]}
-            inputContainerStyle={styles.noneBorderBottom}
-            containerStyle={styles.inputContainer}
-            value={userInfo.first_name}
-            onChangeText={(value) =>
-              setUserInfo({
-                ...userInfo,
-                ['first_name']: value,
-              })
-            }
+      <ScrollView>
+        <View style={styles.mainContainerLight}>
+          <View style={styles.formGroup}>
+            <Input
+              label={translate('first.name')}
+              labelStyle={[
+                styles.formLabel,
+                styles.textSmall,
+                styles.marginTop,
+              ]}
+              inputContainerStyle={styles.noneBorderBottom}
+              containerStyle={styles.inputContainer}
+              value={userInfo.first_name}
+              onChangeText={(value) =>
+                setUserInfo({
+                  ...userInfo,
+                  ['first_name']: value,
+                })
+              }
+            />
+            <Divider
+              style={[
+                styles.marginTop,
+                firstNameError ? styles.bgDanger : null,
+              ]}
+            />
+            <Input
+              label={translate('last.name')}
+              labelStyle={[
+                styles.formLabel,
+                styles.textSmall,
+                styles.marginTop,
+              ]}
+              inputContainerStyle={styles.noneBorderBottom}
+              containerStyle={styles.inputContainer}
+              value={userInfo.last_name}
+              onChangeText={(value) =>
+                setUserInfo({
+                  ...userInfo,
+                  ['last_name']: value,
+                })
+              }
+            />
+            <Divider
+              style={[styles.marginTop, lastNameError ? styles.bgDanger : null]}
+            />
+          </View>
+          <View style={styles.formGroup}>
+            <Text style={[styles.formLabel, styles.textSmall]}>
+              {translate('common.gender')}
+            </Text>
+            <SelectPicker
+              placeholder={{}}
+              value={userInfo.language_id}
+              onValueChange={(value) =>
+                setUserInfo({...userInfo, ['gender']: value})
+              }
+              items={[
+                {label: translate('gender.male'), value: 'male'},
+                {label: translate('gender.female'), value: 'female'},
+              ]}
+            />
+            <Divider />
+          </View>
+          <DatePicker
+            label={translate('date.of.birth')}
+            value={contractDate}
+            mode="date"
+            onSetDate={onSetDate}
+            show={showDatePicker}
+            onClickIcon={showDatepicker}
           />
-          <Divider
-            style={[styles.marginTop, firstNameError ? styles.bgDanger : null]}
-          />
-          <Input
-            label={translate('last.name')}
-            labelStyle={[styles.formLabel, styles.textSmall, styles.marginTop]}
-            inputContainerStyle={styles.noneBorderBottom}
-            containerStyle={styles.inputContainer}
-            value={userInfo.last_name}
-            onChangeText={(value) =>
-              setUserInfo({
-                ...userInfo,
-                ['last_name']: value,
-              })
-            }
-          />
-          <Divider
-            style={[styles.marginTop, lastNameError ? styles.bgDanger : null]}
+          <View style={styles.formGroup}>
+            <Text style={[styles.formLabel, styles.textSmall]}>
+              {translate('common.language')}
+            </Text>
+            <SelectPicker
+              placeholder={{}}
+              value={userInfo.language_id}
+              onValueChange={(value) =>
+                setUserInfo({...userInfo, ['language_id']: value})
+              }
+              items={languages.map((lang) => ({
+                label: lang.name,
+                value: lang.id,
+              }))}
+            />
+            <Divider />
+          </View>
+          <View style={styles.formGroup}>
+            <Text style={[styles.formLabel, styles.textSmall]}>
+              {translate('phone.number')}
+            </Text>
+            <Text style={styles.textFormDisabled}>{profile.phone}</Text>
+            <Divider style={styles.marginTop} />
+          </View>
+          <Button
+            title={translate('common.save')}
+            onPress={handleSave}
+            containerStyle={styles.marginTopMd}
+            disabled={_.isEqual(userInfo, originUserInfo)}
           />
         </View>
-        <View style={styles.formGroup}>
-          <Text style={[styles.formLabel, styles.textSmall]}>
-            {translate('common.gender')}
-          </Text>
-          <SelectPicker
-            placeholder={{}}
-            value={userInfo.language_id}
-            onValueChange={(value) =>
-              setUserInfo({...userInfo, ['gender']: value})
-            }
-            items={[
-              {label: translate('gender.male'), value: 'male'},
-              {label: translate('gender.female'), value: 'female'},
-            ]}
-          />
-          <Divider />
-        </View>
-        <DatePicker
-          label={translate('date.of.birth')}
-          value={contractDate}
-          mode="date"
-          onSetDate={onSetDate}
-          show={showDatePicker}
-          onClickIcon={showDatepicker}
-        />
-        <View style={styles.formGroup}>
-          <Text style={[styles.formLabel, styles.textSmall]}>
-            {translate('common.language')}
-          </Text>
-          <SelectPicker
-            placeholder={{}}
-            value={userInfo.language_id}
-            onValueChange={(value) =>
-              setUserInfo({...userInfo, ['language_id']: value})
-            }
-            items={languages.map((lang) => ({
-              label: lang.name,
-              value: lang.id,
-            }))}
-          />
-          <Divider />
-        </View>
-        <View style={styles.formGroup}>
-          <Text style={[styles.formLabel, styles.textSmall]}>
-            {translate('phone.number')}
-          </Text>
-          <Text style={styles.textFormDisabled}>{profile.phone}</Text>
-          <Divider style={styles.marginTop} />
-        </View>
-        <Button
-          title={translate('common.save')}
-          onPress={handleSave}
-          containerStyle={styles.marginTopMd}
-        />
       </ScrollView>
     </>
   );
