@@ -2,8 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import settings from '../../config/settings';
-import {URL} from 'react-native/Libraries/Blob/URL';
-import {getUserCountryIsoCode} from '../utils/country';
+import {getUserCountryIsoCode} from './country';
 
 export const callApi = async (
   uri,
@@ -60,11 +59,16 @@ const fetchApi = async (endpoint, headers, body = null, method = 'get') => {
     headers,
   };
   if (method === 'get') {
-    url = new URL(url, '');
     if (body) {
-      Object.keys(body).forEach((key) =>
-        url.searchParams.append(key, body[key]),
-      );
+      const queryString = Object.keys(body)
+        .reduce((result, key) => {
+          return [
+            ...result,
+            `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`,
+          ];
+        }, [])
+        .join('&');
+      url += (url.includes('?') ? '&' : '?') + queryString;
     }
   } else {
     configs.body = body;
