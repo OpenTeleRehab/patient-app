@@ -12,8 +12,6 @@ import {
   View,
 } from 'react-native';
 import styles from '../../assets/styles';
-import moment from 'moment';
-import settings from '../../../config/settings';
 import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
@@ -27,6 +25,7 @@ import {
 } from '../../store/user/actions';
 import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import RNFS from 'react-native-fs';
+import {ageCalculation} from '../../utils/age';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -34,14 +33,9 @@ const UserProfile = ({navigation}) => {
   const translate = getTranslate(localize);
   const {profile, accessToken} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
-
-  const calculateAge = (dob) => {
-    const currentDate = moment();
-    const dateOfBirth = isValidDateFormat(dob)
-      ? moment(dob, settings.format.date).toDate()
-      : moment(dob);
-    return currentDate.diff(dateOfBirth, 'year');
-  };
+  const dob = isValidDateFormat(profile.date_of_birth)
+    ? profile.date_of_birth
+    : formatDate(profile.date_of_birth);
 
   const userInfo = [
     {
@@ -54,12 +48,8 @@ const UserProfile = ({navigation}) => {
     },
     {
       label: 'date.of.birth',
-      value: isValidDateFormat(profile.date_of_birth)
-        ? profile.date_of_birth
-        : formatDate(profile.date_of_birth),
-      rightContentValue:
-        'Age: ' +
-        (profile.date_of_birth ? calculateAge(profile.date_of_birth) : 0),
+      value: dob,
+      rightContentValue: 'Age: ' + ageCalculation(dob, translate),
     },
     {
       label: 'phone.number',
