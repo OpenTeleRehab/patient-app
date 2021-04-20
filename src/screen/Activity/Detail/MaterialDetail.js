@@ -130,13 +130,13 @@ const MaterialDetail = ({theme, route, navigation}) => {
                   type="material"
                 />
                 <Text
-                  style={[styles.cardWithIconHeaderTitle, styles.textWhite]}
+                  style={[styles.cardWithIconHeaderTitle, styles.textLight]}
                   numberOfLines={1}>
                   {translate('activity.material')}
                 </Text>
               </View>
               <Text
-                style={[styles.marginLeft, styles.marginY, styles.textWhite]}>
+                style={[styles.marginLeft, styles.marginY, styles.textLight]}>
                 {material.file ? translate(material.file.fileGroupType) : ''}
               </Text>
             </View>

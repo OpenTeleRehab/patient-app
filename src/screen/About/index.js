@@ -75,7 +75,7 @@ const About = ({navigation}) => {
         {aboutPage.file ? (
           <View>
             <Image source={{uri}} style={imageStyle} />
-            <Text style={[titleStyle, styles.textWhite, styles.fontSizeMd]}>
+            <Text style={[titleStyle, styles.textLight, styles.fontSizeMd]}>
               {aboutPage.title}
             </Text>
           </View>

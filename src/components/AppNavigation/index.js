@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {useSelector} from 'react-redux';
+import {PermissionsAndroid, Platform} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {NavigationContainer} from '@react-navigation/native';
@@ -133,6 +134,25 @@ const AppNavigation = (props) => {
   const {accessToken} = useSelector((state) => state.user);
   const {isChatConnected} = useSelector((state) => state.indicator);
   const {chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
+
+  // check required permission(s) on android
+  const checkAndroidPermission = useCallback(async () => {
+    const permission = PermissionsAndroid.PERMISSIONS.CAMERA;
+    const hasPermission = await PermissionsAndroid.check(permission);
+    if (!hasPermission) {
+      await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      checkAndroidPermission();
+    }
+  }, [checkAndroidPermission]);
 
   const isChatEnabled = () => {
     return isChatConnected && chatAuth && chatRooms.length > 0;
