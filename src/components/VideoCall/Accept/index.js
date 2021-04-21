@@ -53,7 +53,7 @@ const AcceptCall = ({
   const onConferenceJoined = (event) => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 1200);
+    }, 1500);
   };
 
   const onConferenceWillJoin = (event) => {};
