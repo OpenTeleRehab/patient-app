@@ -42,7 +42,7 @@ export const callChatApi = async (
   method = 'get',
   isFormData = false,
 ) => {
-  const endpoint = settings.chatApiBaseUrl + uri;
+  const endpoint = settings.chatApiBaseURL + uri;
   const defaultHeaders = getHeaders('', isFormData);
   const headers = {
     ...defaultHeaders,

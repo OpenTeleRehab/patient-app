@@ -26,7 +26,7 @@ export const initialChatSocket = (
   const {loginId, roomMessageId, notifyLoggedId} = subscribeIds;
 
   // register websocket
-  const socket = new WebSocket(settings.chatWebsocketUrl);
+  const socket = new WebSocket(settings.chatWebsocketURL);
 
   // observer
   socket.onmessage = (e) => {
