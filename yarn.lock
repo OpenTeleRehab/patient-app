@@ -1425,8 +1425,8 @@
     recyclerlistview "^3.0.0"
 
 "@webessentials/react-native-jitsi-meet@webessentials/react-native-jitsi-meet#master":
-  version "2.2.2"
-  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/853c6170d5fce021795ec91761c0e5035bf8e3b5"
+  version "2.2.3"
+  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/8b706e204fcdfd1a69e237b2aa66069f517cd73f"
 
 "@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
   version "2.0.0"
@@ -2740,9 +2740,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.712:
-  version "1.3.717"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.717.tgz#78d4c857070755fb58ab64bcc173db1d51cbc25f"
-  integrity sha512-OfzVPIqD1MkJ7fX+yTl2nKyOE4FReeVfMCzzxQS+Kp43hZYwHwThlGP+EGIZRXJsxCM7dqo8Y65NOX/HP12iXQ==
+  version "1.3.718"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.718.tgz#a192981ced608978410ebc011e24ecab1bb4beb3"
+  integrity sha512-CikzdUSShGXwjq1pcW740wK8j+KbazgHZiwzlHICejDaczM6OVsPcrZmBHPwzj9i2rj5twg20MBwp+cYZwldYA==
 
 eme-encryption-scheme-polyfill@^2.0.1:
   version "2.0.3"
