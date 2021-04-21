@@ -2,12 +2,12 @@ const settings = {
   apiBaseURL: '{{ patient_api_base_url }}',
   adminApiBaseURL: '{{ admin_api_base_url }}',
   therapistApiBaseURL: '{{ therapist_api_base_url }}',
-  jitsiBaseUrl: '{{ jitsi_base_url }}',
-  chatBaseUrl: '{{ rocketchat_base_url }}',
-  get chatApiBaseUrl() {
-    return `${this.chatBaseUrl}/api/v1`;
+  jitsiBaseURL: '{{ jitsi_base_url }}',
+  chatBaseURL: '{{ rocketchat_base_url }}',
+  get chatApiBaseURL() {
+    return `${this.chatBaseURL}/api/v1`;
   },
-  chatWebsocketUrl: '{{ chat_websocket_url }}',
+  chatWebsocketURL: '{{ chat_websocket_url }}',
   isDebugMode: {{ is_debug_mode }},
   format: {
     date: 'DD/MM/YYYY',
