@@ -1424,10 +1424,6 @@
     prop-types "^15.6.0"
     recyclerlistview "^3.0.0"
 
-"@webessentials/react-native-jitsi-meet@webessentials/react-native-jitsi-meet#master":
-  version "2.3.0"
-  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/2892df881ef6e651104f4cd6e5e2e3e2d90b8fe1"
-
 "@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
   version "2.0.0"
   resolved "https://codeload.github.com/webessentials/react-native-otp-verify/tar.gz/4ac9c354e080f08d4034144f61b7839c194a0808"
