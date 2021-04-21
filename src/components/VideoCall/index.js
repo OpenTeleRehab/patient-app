@@ -28,7 +28,6 @@ const VideoCall = ({theme}) => {
   useEffect(() => {
     if (
       chatRoom.rid &&
-      videoCall !== undefined &&
       [CALL_STATUS.STARTED, CALL_STATUS.ACCEPTED].includes(videoCall.status)
     ) {
       setShowModal(true);
@@ -43,7 +42,6 @@ const VideoCall = ({theme}) => {
   };
 
   const onEndCall = () => {
-    console.log('on end call');
     handleUpdateMessage(CALL_STATUS.ENDED);
   };
 
@@ -74,7 +72,7 @@ const VideoCall = ({theme}) => {
           subject={chatRoom.name}
           displayName={`${patient.last_name} ${patient.first_name}`}
         />
-      ) : (
+      ) : videoCall.status === CALL_STATUS.STARTED ? (
         <IncomingCall
           onAcceptCall={onAcceptCall}
           onDeclineCall={onDeclineCall}
@@ -85,7 +83,7 @@ const VideoCall = ({theme}) => {
           theme={theme}
           callName={chatRoom.name}
         />
-      )}
+      ) : null}
     </Modal>
   );
 };
