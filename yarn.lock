@@ -1425,8 +1425,8 @@
     recyclerlistview "^3.0.0"
 
 "@webessentials/react-native-jitsi-meet@webessentials/react-native-jitsi-meet#master":
-  version "2.2.3"
-  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/8b706e204fcdfd1a69e237b2aa66069f517cd73f"
+  version "2.2.4"
+  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/9915d8d02bee0e38ba27c06232d9041ea40ad524"
 
 "@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
   version "2.0.0"
