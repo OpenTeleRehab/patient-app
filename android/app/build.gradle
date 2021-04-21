@@ -78,7 +78,6 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    enableHermes: false,  // clean and rebuild if changing
     entryFile: "index.js",
     bundleAssetName: "app.bundle",
 ]
@@ -187,7 +186,6 @@ android {
                 output.versionCodeOverride =
                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
             }
-
         }
     }
 }
@@ -201,6 +199,14 @@ dependencies {
 
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
+
+    implementation(project(':webessentials_react-native-jitsi-meet')) {
+        exclude group: 'com.facebook.react',module:'react-native-vector-icons'
+        exclude group: 'com.facebook.react',module:'react-native-async-storage'
+        exclude group: 'com.facebook.react',module:'react-native-community-async-storage'
+        exclude group: 'com.facebook.react',module:'react-native-svg'
+        transitive = true
+    }
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
