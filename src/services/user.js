@@ -58,6 +58,10 @@ const updateProfile = async (id, payload) => {
   return await callApi(`/patient/${id}`, '', {...payload}, 'put');
 };
 
+const deleteProfile = async (accessToken) => {
+  return await callApi('/patient/profile/delete', accessToken, null, 'delete');
+};
+
 const getTermOfService = async () => {
   return await callAdminApi('/user-term-condition');
 };
@@ -80,6 +84,7 @@ export const User = {
   comparePinNumber,
   changePinNumber,
   updateProfile,
+  deleteProfile,
   getTermOfService,
   acceptTermOfService,
 };

@@ -2,8 +2,15 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect} from 'react';
-import {ListItem, Text} from 'react-native-elements';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {Button, ListItem, Text} from 'react-native-elements';
+import {
+  Alert,
+  Platform,
+  ScrollView,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import styles from '../../assets/styles';
 import moment from 'moment';
 import settings from '../../../config/settings';
@@ -14,12 +21,18 @@ import HeaderBar from '../../components/Common/HeaderBar';
 import {formatDate, isValidDateFormat} from '../../utils/helper';
 import {getLanguageName} from '../../utils/language';
 import {getLanguageRequest} from '../../store/language/actions';
+import {
+  deleteLocalProfile,
+  deleteProfileRequest,
+} from '../../store/user/actions';
+import {getDownloadDirectoryPath} from '../../utils/fileSystem';
+import RNFS from 'react-native-fs';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.user.profile);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {profile, accessToken} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
 
   const calculateAge = (dob) => {
@@ -62,6 +75,66 @@ const UserProfile = ({navigation}) => {
     dispatch(getLanguageRequest());
   }, [dispatch]);
 
+  const handleExport = async () => {
+    const location = await getDownloadDirectoryPath();
+    if (location === false) {
+      return;
+    }
+
+    RNFS.downloadFile({
+      fromUrl: settings.apiBaseURL + '/patient/profile/export',
+      toFile: `${location}/profile_export.pdf`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).promise.then(() => {
+      if (Platform.OS === 'ios') {
+        Alert.alert(
+          translate('common.download'),
+          translate('activity.file_has_been_downloaded_successfully'),
+        );
+      } else {
+        ToastAndroid.show(
+          translate('activity.file_has_been_downloaded_successfully'),
+          ToastAndroid.SHORT,
+        );
+      }
+    });
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      translate('user.request_to_delete'),
+      translate('user.are_you_sure_to_delete'),
+      [
+        {text: translate('common.yes'), onPress: handleConfirmDelete},
+        {text: translate('common.no')},
+      ],
+    );
+  };
+
+  const handleConfirmDelete = () => {
+    dispatch(deleteProfileRequest()).then((result) => {
+      if (result) {
+        Alert.alert(
+          translate('user.request_to_delete'),
+          translate('user.delete.success'),
+          [
+            {
+              text: translate('common.ok').toString(),
+              onPress: () => dispatch(deleteLocalProfile()),
+            },
+          ],
+        );
+      } else {
+        Alert.alert(
+          translate('user.request_to_delete'),
+          translate('user.delete.failed'),
+        );
+      }
+    });
+  };
+
   const RenderListItem = (user) => {
     return (
       <>
@@ -94,8 +167,8 @@ const UserProfile = ({navigation}) => {
           onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
-      <ScrollView style={styles.mainContainerLight}>
-        <View>
+      <ScrollView>
+        <View style={styles.mainContainerLight}>
           {userInfo.map((user, index) => (
             <RenderListItem {...user} key={index} />
           ))}
@@ -111,6 +184,17 @@ const UserProfile = ({navigation}) => {
               </ListItem.Title>
             </ListItem.Content>
           </ListItem>
+          <Button
+            type="clear"
+            title={translate('user.download_my_data')}
+            containerStyle={styles.marginTopMd}
+            onPress={handleExport}
+          />
+          <Button
+            title={translate('user.delete')}
+            buttonStyle={styles.bgGrey}
+            onPress={handleDelete}
+          />
         </View>
       </ScrollView>
     </>

@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   Alert,
   View,
-  PermissionsAndroid,
   Platform,
   ToastAndroid,
   TouchableOpacity,
@@ -18,6 +17,7 @@ import {getTranslate} from 'react-localize-redux';
 import RNFS from 'react-native-fs';
 import {completeActive} from '../../../store/activity/actions';
 import settings from '../../../../config/settings';
+import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
@@ -48,17 +48,9 @@ const MaterialDetail = ({theme, route, navigation}) => {
   };
 
   const handleDownload = async () => {
-    let location = '';
-    if (Platform.OS === 'ios') {
-      location = RNFS.DocumentDirectoryPath;
-    } else {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (!granted) {
-        return;
-      }
-      location = RNFS.ExternalStorageDirectoryPath + '/Download';
+    const location = await getDownloadDirectoryPath();
+    if (location === false) {
+      return;
     }
 
     RNFS.downloadFile({

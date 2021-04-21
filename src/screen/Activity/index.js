@@ -7,7 +7,6 @@ import {
   View,
   Dimensions,
   Platform,
-  PermissionsAndroid,
   Alert,
   ToastAndroid,
 } from 'react-native';
@@ -28,6 +27,7 @@ import RenderQuestionnaireCard from './_Partials/RenderQuestionnaireCard';
 import RenderGoalCard from './_Partials/RenderGoalCard';
 import {ACTIVITY_TYPES} from '../../variables/constants';
 import RNFS from 'react-native-fs';
+import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 
 const calendarHeaderStyle = {
   ...styles.textLight,
@@ -111,17 +111,9 @@ const Activity = ({theme, navigation}) => {
 
   const handleDownload = async (treatment) => {
     setDownloading(true);
-    let location = '';
-    if (Platform.OS === 'ios') {
-      location = RNFS.DocumentDirectoryPath;
-    } else {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (!granted) {
-        return;
-      }
-      location = RNFS.ExternalStorageDirectoryPath + '/Download';
+    const location = await getDownloadDirectoryPath();
+    if (location === false) {
+      return;
     }
 
     // Download education material file attached

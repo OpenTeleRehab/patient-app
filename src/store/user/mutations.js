@@ -154,6 +154,18 @@ const updateProfileFailure = () => {
   };
 };
 
+const deleteProfileSuccess = () => {
+  return {
+    type: 'DELETE_PROFILE_SUCCEED',
+  };
+};
+
+const deleteProfileFailure = () => {
+  return {
+    type: 'DELETE_PROFILE_FAILED',
+  };
+};
+
 const fetchTermOfServiceSuccess = (data) => {
   return {
     type: 'FETCH_TERM_OF_SERVICE_SUCCEED',
@@ -211,6 +223,8 @@ export const mutation = {
   userSetProfileSuccess,
   updateProfileSuccess,
   updateProfileFailure,
+  deleteProfileSuccess,
+  deleteProfileFailure,
   fetchTermOfServiceSuccess,
   fetchTermOfServiceFailure,
   acceptTermOfServiceRequest,
