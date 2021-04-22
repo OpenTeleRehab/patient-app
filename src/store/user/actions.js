@@ -170,6 +170,22 @@ export const updateProfileRequest = (id, payload, phone, therapistId) => async (
   }
 };
 
+export const deleteProfileRequest = () => async (dispatch, getState) => {
+  const {accessToken} = getState().user;
+  const res = await User.deleteProfile(accessToken);
+  if (res.success) {
+    dispatch(mutation.deleteProfileSuccess());
+    return true;
+  } else {
+    dispatch(mutation.deleteProfileFailure());
+    return false;
+  }
+};
+
+export const deleteLocalProfile = () => async (dispatch) => {
+  dispatch(mutation.userLogoutSuccess());
+};
+
 export const fetchTermOfServiceRequest = () => async (dispatch) => {
   let res = await User.getTermOfService();
   if (res && res.data) {
