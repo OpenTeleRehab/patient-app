@@ -248,6 +248,7 @@ const UserProfileEdit = ({navigation}) => {
               items={[
                 {label: translate('gender.male'), value: 'male'},
                 {label: translate('gender.female'), value: 'female'},
+                {label: translate('gender.other'), value: 'other'},
               ]}
             />
             <Divider />
