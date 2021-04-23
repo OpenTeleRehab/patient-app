@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, ListItem, Text} from 'react-native-elements';
 import {
   Alert,
@@ -25,6 +25,7 @@ import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import RNFS from 'react-native-fs';
 import {ageCalculation} from '../../utils/age';
 import settings from '../../../config/settings';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const UserProfile = ({navigation}) => {
   const translate = getTranslate(localize);
   const {profile, accessToken} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
+  const [downloading, setDownloading] = useState(false);
   const dob = isValidDateFormat(profile.date_of_birth)
     ? profile.date_of_birth
     : formatDate(profile.date_of_birth);
@@ -70,13 +72,15 @@ const UserProfile = ({navigation}) => {
       return;
     }
 
+    setDownloading(true);
     RNFS.downloadFile({
       fromUrl: settings.apiBaseURL + '/patient/profile/export',
-      toFile: `${location}/profile_export.pdf`,
+      toFile: `${location}/patient_data.zip`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     }).promise.then(() => {
+      setDownloading(false);
       if (Platform.OS === 'ios') {
         Alert.alert(
           translate('common.download'),
@@ -186,6 +190,13 @@ const UserProfile = ({navigation}) => {
           />
         </View>
       </ScrollView>
+
+      <Spinner
+        visible={downloading}
+        textContent={translate('common.downloading')}
+        overlayColor="rgba(0, 0, 0, 0.75)"
+        textStyle={styles.textLight}
+      />
     </>
   );
 };
