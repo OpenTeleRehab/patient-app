@@ -3,7 +3,8 @@
  */
 import React, {useEffect, useState} from 'react';
 import {Button, Divider, Input, Text} from 'react-native-elements';
-import {Alert, ScrollView, View, Platform} from 'react-native';
+import {Alert, ScrollView, View, Platform, I18nManager} from 'react-native';
+import RNRestart from 'react-native-restart';
 import styles from '../../assets/styles';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,6 +19,7 @@ import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
 import SelectPicker from '../../components/Common/SelectPicker';
 import _ from 'lodash';
+import {Language} from '../../services/language';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
@@ -39,6 +41,7 @@ const UserProfileEdit = ({navigation}) => {
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [originUserInfo, setOrginUserInfo] = useState(null);
+  const textAlign = I18nManager.isRTL ? 'right' : 'left';
 
   useEffect(() => {
     if (profile) {
@@ -66,6 +69,13 @@ const UserProfileEdit = ({navigation}) => {
     }
   }, [profile, setUserInfo, setContractDate]);
 
+  const fetchLayoutDirection = async (lang) => {
+    const data = await Language.getLanguageById(lang);
+    if (data && data.data) {
+      I18nManager.forceRTL(!!data.data.rtl);
+    }
+  };
+
   const handleSave = () => {
     setFirstNameError(userInfo.first_name === '');
     setLastNameError(userInfo.last_name === '');
@@ -84,6 +94,7 @@ const UserProfileEdit = ({navigation}) => {
         {cancelable: false},
       );
     } else {
+      fetchLayoutDirection(userInfo.language_id);
       dispatch(
         updateProfileRequest(
           profile.id,
@@ -124,6 +135,8 @@ const UserProfileEdit = ({navigation}) => {
   const onSucceed = () => {
     dispatch(getTranslations(userInfo.language_id));
     storeLocalData(STORAGE_KEY.LANGUAGE, userInfo.language_id);
+    // Immediately reload the React Native Bundle
+    RNRestart.Restart();
     navigation.navigate(ROUTES.USER_PROFILE);
   };
 
@@ -197,7 +210,9 @@ const UserProfileEdit = ({navigation}) => {
                 styles.formLabel,
                 styles.textSmall,
                 styles.marginTop,
+                styles.textLeft,
               ]}
+              textAlign={textAlign}
               inputContainerStyle={styles.noneBorderBottom}
               containerStyle={styles.inputContainer}
               value={userInfo.first_name}
@@ -220,7 +235,9 @@ const UserProfileEdit = ({navigation}) => {
                 styles.formLabel,
                 styles.textSmall,
                 styles.marginTop,
+                styles.textLeft,
               ]}
+              textAlign={textAlign}
               inputContainerStyle={styles.noneBorderBottom}
               containerStyle={styles.inputContainer}
               value={userInfo.last_name}
@@ -236,7 +253,7 @@ const UserProfileEdit = ({navigation}) => {
             />
           </View>
           <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
+            <Text style={[styles.formLabel, styles.textSmall, styles.textLeft]}>
               {translate('common.gender')}
             </Text>
             <SelectPicker
@@ -262,7 +279,7 @@ const UserProfileEdit = ({navigation}) => {
             onClickIcon={showDatepicker}
           />
           <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
+            <Text style={[styles.formLabel, styles.textSmall, styles.textLeft]}>
               {translate('common.language')}
             </Text>
             <SelectPicker
@@ -279,10 +296,12 @@ const UserProfileEdit = ({navigation}) => {
             <Divider />
           </View>
           <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
+            <Text style={[styles.formLabel, styles.textSmall, styles.textLeft]}>
               {translate('phone.number')}
             </Text>
-            <Text style={styles.textFormDisabled}>{profile.phone}</Text>
+            <Text style={[styles.textFormDisabled, styles.textLeft]}>
+              {profile.phone}
+            </Text>
             <Divider style={styles.marginTop} />
           </View>
           <Button

@@ -3,6 +3,7 @@
  */
 import React, {useState} from 'react';
 import {ScrollView, View, Alert} from 'react-native';
+import RNRestart from 'react-native-restart';
 import {Text, Button} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles/index';
@@ -100,6 +101,8 @@ const SetupPin = ({navigation, route}) => {
 
   const onSetProfileInfo = (data) => {
     dispatch(setProfileInfo(data));
+    // Immediately reload the React Native Bundle
+    RNRestart.Restart();
   };
 
   return (

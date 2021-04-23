@@ -3,7 +3,14 @@
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image, Platform, ScrollView, SafeAreaView} from 'react-native';
+import {
+  View,
+  Image,
+  Platform,
+  ScrollView,
+  SafeAreaView,
+  I18nManager,
+} from 'react-native';
 import {Button, Divider, Input, Text, withTheme} from 'react-native-elements';
 import _ from 'lodash';
 
@@ -18,6 +25,7 @@ import {getCountryRequest} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
+import {Language} from '../../../services/language';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -93,6 +101,13 @@ const Register = ({theme, navigation}) => {
     }
   }, [countries, userCountryCode, dispatch, validateAndSetLanguage]);
 
+  const fetchLayoutDirection = async (lang) => {
+    const data = await Language.getLanguageById(lang);
+    if (data && data.data) {
+      I18nManager.forceRTL(!!data.data.rtl);
+    }
+  };
+
   const handlePhoneCodeChange = (phoneCode) => {
     setCountryPhoneCode(phoneCode);
     const selectedCountry = _.find(countries, {phone_code: phoneCode});
@@ -103,6 +118,7 @@ const Register = ({theme, navigation}) => {
   const handleLanguageChange = (lang) => {
     validateAndSetLanguage(lang);
     dispatch(getTranslations(lang));
+    fetchLayoutDirection(lang);
   };
 
   const handleRegister = () => {

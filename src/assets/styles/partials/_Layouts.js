@@ -39,4 +39,7 @@ export default {
   justifyContentSpaceBetween: {
     justifyContent: 'space-between',
   },
+  directionRTL: {
+    direction: 'rtl',
+  },
 };

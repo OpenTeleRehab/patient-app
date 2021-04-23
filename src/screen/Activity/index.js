@@ -222,6 +222,7 @@ const Activity = ({theme, navigation}) => {
           selectedDate={selectedDate}
           markedDates={markedDates}
           scrollable={true}
+          useNativeDriver
           dateNumberStyle={styles.textLight}
           dateNameStyle={styles.textLight}
           weekendDateNameStyle={styles.textLight}

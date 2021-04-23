@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-const translationFetchSuccess = (language) => {
+const translationFetchSuccess = (language, rtl) => {
   return {
     type: 'TRANSLATION_FETCH_SUCCEED',
     language,
+    rtl: rtl,
   };
 };
 

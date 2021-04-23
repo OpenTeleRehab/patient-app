@@ -3,6 +3,7 @@
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {I18nManager} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
@@ -27,6 +28,7 @@ let chatSocket = null;
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
   const {accessToken, profile} = useSelector((state) => state.user);
+  const isRTL = useSelector((state) => state.translation.rtl);
   const {chatAuth, chatRooms, selectedRoom} = useSelector(
     (state) => state.rocketchat,
   );
@@ -47,6 +49,10 @@ const AppProvider = ({children}) => {
   useEffect(() => {
     fetchLocalData();
   }, [fetchLocalData]);
+
+  useEffect(() => {
+    I18nManager.forceRTL(!!isRTL);
+  }, [isRTL]);
 
   useEffect(() => {
     dispatch(clearChatData());

@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {View} from 'react-native';
+import {View, I18nManager} from 'react-native';
 import {Input, Divider} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {formatDate} from '../../../utils/helper';
@@ -10,13 +10,15 @@ import styles from '../../../assets/styles';
 
 const DatePicker = (props) => {
   const {label, value, mode, onSetDate, show, onClickIcon} = props;
+  const textAlign = I18nManager.isRTL ? 'right' : 'left';
 
   return (
     <>
       <View style={styles.formGroup}>
         <Input
           label={label}
-          labelStyle={[styles.formLabel, styles.textSmall]}
+          labelStyle={[styles.formLabel, styles.textSmall, styles.textLeft]}
+          textAlign={textAlign}
           disabled
           value={value ? formatDate(value) : ''}
           rightIcon={{

@@ -8,6 +8,7 @@ export const translation = (state = initialState, action) => {
     case 'TRANSLATION_FETCH_SUCCEED': {
       return Object.assign({}, state, {
         language: action.language,
+        rtl: action.rtl,
       });
     }
     default:

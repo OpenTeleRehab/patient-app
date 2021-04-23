@@ -28,6 +28,7 @@ export const STORAGE_KEY = {
   AUTH_INFO: 'AuthInfo',
   LANGUAGE: 'Language',
   TRANSLATE: 'Translate',
+  RTL: 'rtl',
 };
 
 export const ACTIVITY_TYPES = {

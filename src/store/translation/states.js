@@ -3,4 +3,5 @@
  */
 export const initialState = {
   language: undefined,
+  rtl: undefined,
 };

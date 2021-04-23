@@ -27,6 +27,9 @@ export default {
     color: variables.white,
     fontWeight: 'bold',
   },
+  textOrangeDark: {
+    color: variables.orangeDark,
+  },
   textUpperCase: {
     textTransform: 'uppercase',
   },
@@ -35,6 +38,9 @@ export default {
   },
   textCenter: {
     textAlign: 'center',
+  },
+  textLeft: {
+    textAlign: 'left',
   },
   bgBlack: {
     backgroundColor: variables.dark,

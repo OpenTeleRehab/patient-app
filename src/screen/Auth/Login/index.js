@@ -3,6 +3,7 @@
  */
 import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {I18nManager} from 'react-native';
 import {
   View,
   Image,
@@ -40,6 +41,7 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getCountryRequest());
+    I18nManager.forceRTL(true);
   }, [dispatch]);
 
   useEffect(() => {

@@ -179,12 +179,12 @@ const Goal = ({theme}) => {
         </View>
         <View
           style={[styles.marginTopMd, styles.paddingX, styles.marginBottom]}>
-          <Text h5 style={styles.fontWeightBold}>
+          <Text h5 style={[styles.fontWeightBold, styles.textLeft]}>
             {goal && goal.title ? goal.title : ''}
           </Text>
         </View>
         <View style={[styles.paddingX, styles.marginTopLg]}>
-          <Text h5 style={{color: theme.colors.orangeDark}}>
+          <Text h5 style={[styles.textOrangeDark, styles.textLeft]}>
             {translate('activity.satisfaction_level.extreme_satisfaction')}
           </Text>
         </View>
@@ -205,7 +205,7 @@ const Goal = ({theme}) => {
           />
         </ScrollView>
         <View style={[styles.paddingX]}>
-          <Text h5 style={{color: theme.colors.orangeDark}}>
+          <Text h5 style={[styles.textOrangeDark, styles.textLeft]}>
             {translate('activity.satisfaction_level.no_satisfaction')}
           </Text>
         </View>
