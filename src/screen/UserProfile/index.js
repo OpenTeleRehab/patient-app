@@ -19,13 +19,12 @@ import HeaderBar from '../../components/Common/HeaderBar';
 import {formatDate, isValidDateFormat} from '../../utils/helper';
 import {getLanguageName} from '../../utils/language';
 import {getLanguageRequest} from '../../store/language/actions';
-import {
-  deleteLocalProfile,
-  deleteProfileRequest,
-} from '../../store/user/actions';
+import {deleteProfileRequest} from '../../store/user/actions';
+import {forceLogout} from '../../store/auth/actions';
 import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import RNFS from 'react-native-fs';
 import {ageCalculation} from '../../utils/age';
+import settings from '../../../config/settings';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -112,7 +111,7 @@ const UserProfile = ({navigation}) => {
           [
             {
               text: translate('common.ok').toString(),
-              onPress: () => dispatch(deleteLocalProfile()),
+              onPress: () => dispatch(forceLogout()),
             },
           ],
         );

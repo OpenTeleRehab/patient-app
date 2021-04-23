@@ -182,10 +182,6 @@ export const deleteProfileRequest = () => async (dispatch, getState) => {
   }
 };
 
-export const deleteLocalProfile = () => async (dispatch) => {
-  dispatch(mutation.userLogoutSuccess());
-};
-
 export const fetchTermOfServiceRequest = () => async (dispatch) => {
   let res = await User.getTermOfService();
   if (res && res.data) {
