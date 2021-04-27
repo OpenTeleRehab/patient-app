@@ -70,13 +70,7 @@ const AppProvider = ({children}) => {
   }, [loading, language, dispatch]);
 
   useEffect(() => {
-    if (
-      !loading &&
-      !chatSocket &&
-      accessToken &&
-      profile.chat_user_id &&
-      profile.chat_rooms.length
-    ) {
+    if (!loading && accessToken && profile.chat_user_id && profile.chat_rooms) {
       const subscribeIds = {
         loginId: getUniqueId(profile.id),
         roomMessageId: getUniqueId(profile.id),
