@@ -29,12 +29,14 @@ import moment from 'moment/min/moment-with-locales';
 import {APPOINTMENT_STATUS} from '../../variables/constants';
 import SelectPicker from '../../components/Common/SelectPicker';
 import AppointmentCard from './_Partials/AppointmentCard';
+import {getProfessionRequest} from '../../store/profession/actions';
 
 const Appointment = () => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {therapists} = useSelector((state) => state.therapist);
+  const {professions} = useSelector((state) => state.profession);
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
@@ -46,6 +48,10 @@ const Appointment = () => {
   const [therapistId, setTherapistId] = useState('');
   const pageSize = 10;
   const swipeableRef = [];
+
+  useEffect(() => {
+    dispatch(getProfessionRequest());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -104,6 +110,12 @@ const Appointment = () => {
     if (listInfo.last_page > currentPage) {
       setCurrentPage(currentPage + 1);
     }
+  };
+
+  const getProfession = (id) => {
+    const profession = professions.find((item) => item.id === id);
+
+    return profession ? ' - ' + profession.name : '';
   };
 
   const handleRequestCancelPress = (id) => {
@@ -211,7 +223,11 @@ const Appointment = () => {
                 value: null,
               }}
               items={therapists.map((therapist) => ({
-                label: therapist.last_name + ' ' + therapist.first_name,
+                label:
+                  therapist.last_name +
+                  ' ' +
+                  therapist.first_name +
+                  getProfession(therapist.profession_id),
                 value: therapist.id,
               }))}
               value={therapistId}
