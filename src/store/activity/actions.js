@@ -7,7 +7,7 @@ import moment from 'moment';
 import settings from '../../../config/settings';
 
 export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
-  dispatch(mutation.treatmentPlanFetchRequest);
+  dispatch(mutation.treatmentPlanFetchRequest());
   const {accessToken} = getState().user;
   const {language} = getState().translation;
   const today = moment().format(settings.format.date);
@@ -19,6 +19,11 @@ export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
   }
 };
 
+/**
+ * @deprecated It is wrong with goal activity count,
+ * use getTreatmentPlanRequest() instead of, then count them
+ * @returns {(function(*, *): Promise<void>)|*}
+ */
 export const getTodayActivitySummaryRequest = () => async (
   dispatch,
   getState,
@@ -40,7 +45,6 @@ export const completeActive = (id, payload) => async (dispatch, getState) => {
   const res = await Activity.completeActivity(id, payload, accessToken);
   if (res.success) {
     dispatch(getTreatmentPlanRequest());
-    dispatch(getTodayActivitySummaryRequest());
     dispatch(mutation.completeActivitySuccess());
     return true;
   } else {
@@ -58,7 +62,6 @@ export const completeQuestionnaire = (id, payload) => async (
   const res = await Activity.completeQuestionnaire(id, payload, accessToken);
   if (res.success) {
     dispatch(getTreatmentPlanRequest());
-    dispatch(getTodayActivitySummaryRequest());
     dispatch(mutation.completeQuestionnaireSuccess());
     return true;
   } else {
@@ -73,7 +76,6 @@ export const completeGoal = (payload) => async (dispatch, getState) => {
   const res = await Activity.completeGoal(payload, accessToken);
   if (res.success) {
     dispatch(getTreatmentPlanRequest());
-    dispatch(getTodayActivitySummaryRequest());
     dispatch(mutation.completeGoalSuccess());
     return true;
   } else {
