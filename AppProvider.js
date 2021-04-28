@@ -14,6 +14,7 @@ import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
 import {initialChatSocket, loadHistoryInRoom} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
+import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import {
   clearChatData,
   getChatRooms,
@@ -89,6 +90,7 @@ const AppProvider = ({children}) => {
   useEffect(() => {
     if (chatAuth !== undefined) {
       dispatch(getChatRooms());
+      JitsiMeet.endCall();
     }
   }, [dispatch, chatAuth]);
 
