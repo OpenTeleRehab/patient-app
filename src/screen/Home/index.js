@@ -12,11 +12,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {getTranslate} from 'react-localize-redux';
 import {useIsDrawerOpen} from '@react-navigation/drawer';
-import {getTodayActivitySummaryRequest} from '../../store/activity/actions';
+import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import {getAppointmentsListRequest} from '../../store/appointment/actions';
 import AppointmentCard from '../Appointment/_Partials/AppointmentCard';
 import {getTherapistRequest} from '../../store/therapist/actions';
 import {getLanguageRequest} from '../../store/language/actions';
+import _ from 'lodash';
+import settings from '../../../config/settings';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -25,10 +27,14 @@ const Home = ({navigation}) => {
   const {profile} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
-  const {todaySummary, isLoading} = useSelector((state) => state.activity);
+  const {treatmentPlan, isLoading} = useSelector((state) => state.activity);
   const isDrawerOpen = useIsDrawerOpen();
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [upComingAppointment, setUpComingAppointment] = useState();
+  const [todaySummary, setTodaySummary] = useState({
+    all: 0,
+    completed: 0,
+  });
 
   useEffect(() => {
     if (languages.length) {
@@ -48,14 +54,25 @@ const Home = ({navigation}) => {
   }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
-    dispatch(getTodayActivitySummaryRequest());
-  }, [dispatch, profile]);
+    dispatch(getTreatmentPlanRequest());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (todaySummary) {
-      setCompletedPercentage((todaySummary.completed * 100) / todaySummary.all);
+    if (!_.isEmpty(treatmentPlan)) {
+      const activities = treatmentPlan.activities.filter(
+        (a) =>
+          moment(a.date).format(settings.format.date) ===
+          moment().format(settings.format.date),
+      );
+
+      const countAll = activities.length;
+      if (countAll) {
+        const countCompleted = activities.filter((a) => a.completed).length;
+        setTodaySummary({all: countAll, completed: countCompleted});
+        setCompletedPercentage((countCompleted * 100) / countAll);
+      }
     }
-  }, [todaySummary]);
+  }, [treatmentPlan]);
 
   useEffect(() => {
     if (profile) {
@@ -111,7 +128,7 @@ const Home = ({navigation}) => {
               tintColor={colors.white}
               rotation={0}
               backgroundColor={colors.blueLight}
-              style={[styles.marginTopMd]}>
+              style={styles.marginTopMd}>
               {() => (
                 <>
                   <Text style={styles.leadText}>
