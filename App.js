@@ -10,6 +10,7 @@ import AppProvider from './AppProvider';
 import AppNavigation from './src/components/AppNavigation';
 import colors from './src/assets/styles/variables/colors';
 import store from './src/store';
+import VideoCall from './src/components/VideoCall';
 
 const theme = {
   colors,
@@ -47,6 +48,7 @@ const App: () => React$Node = () => {
   return (
     <Provider store={store}>
       <AppProvider>
+        <VideoCall />
         <LocalizeProvider store={store}>
           <ThemeProvider theme={theme}>
             <StatusBar barStyle="light-content" />
