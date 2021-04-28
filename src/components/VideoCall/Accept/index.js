@@ -19,30 +19,32 @@ const AcceptCall = ({
   onMute,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [jitsiOpacity, setJitsiOpacity] = useState(0);
+  const [jitsiVisible, setJitsiVisible] = useState(true);
 
   useEffect(() => {
-    const options = {
-      audioOnly: !onVideoOn,
-      audioMuted: onMute,
-      videoMuted: onMute,
-      subject,
-    };
-    const meetFeatureFlags = {
-      'meeting-name.enabled': true,
-      'chat.enabled': false,
-      'ios.recording.enabled': false,
-      'live-streaming.enabled': false,
-      'meeting-password.enabled': false,
-      'pip.enabled': false,
-      'raise-hand.enabled': false,
-      'recording.enabled': false,
-      'welcomepage.enabled': false,
-      'invite.enabled': false,
-    };
-    const roomURL = `${settings.jitsiBaseURL}/${roomId}`;
-    const userInfo = {displayName, email: '', avatar: ''};
-    JitsiMeet.call(roomURL, userInfo, options, meetFeatureFlags);
+    setTimeout(() => {
+      const options = {
+        audioOnly: !onVideoOn,
+        audioMuted: onMute,
+        videoMuted: onMute,
+        subject,
+      };
+      const meetFeatureFlags = {
+        'meeting-name.enabled': true,
+        'chat.enabled': false,
+        'ios.recording.enabled': false,
+        'live-streaming.enabled': false,
+        'meeting-password.enabled': false,
+        'pip.enabled': false,
+        'raise-hand.enabled': false,
+        'recording.enabled': false,
+        'welcomepage.enabled': false,
+        'invite.enabled': false,
+      };
+      const roomURL = `${settings.jitsiBaseURL}/${roomId}`;
+      const userInfo = {displayName, email: '', avatar: ''};
+      JitsiMeet.call(roomURL, userInfo, options, meetFeatureFlags);
+    }, 1000);
 
     return () => {
       JitsiMeet.endCall();
@@ -56,10 +58,11 @@ const AcceptCall = ({
   };
 
   const onConferenceJoined = (event) => {
-    setJitsiOpacity(1);
+    setJitsiVisible(false);
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+      setJitsiVisible(true);
+    }, 100);
   };
 
   const onConferenceWillJoin = (event) => {};
@@ -72,12 +75,14 @@ const AcceptCall = ({
         textStyle={styles.textLight}
         overlayColor={theme.colors.platform.android.primary}
       />
-      <JitsiMeetView
-        onConferenceTerminated={(e) => onConferenceTerminated(e)}
-        onConferenceJoined={(e) => onConferenceJoined(e)}
-        onConferenceWillJoin={(e) => onConferenceWillJoin(e)}
-        style={styles.videoMeetingWrapper(jitsiOpacity)}
-      />
+      {jitsiVisible && (
+        <JitsiMeetView
+          onConferenceTerminated={onConferenceTerminated}
+          onConferenceJoined={onConferenceJoined}
+          onConferenceWillJoin={onConferenceWillJoin}
+          style={styles.videoMeetingWrapper}
+        />
+      )}
     </>
   );
 };

@@ -50,10 +50,9 @@ export default {
     fontSize: variables.fontSizeMd,
     fontWeight: 'bold',
   },
-  videoMeetingWrapper: (opacity = 0) => ({
+  videoMeetingWrapper: {
     flex: 1,
     height: '100%',
     width: '100%',
-    opacity: opacity,
-  }),
+  },
 };

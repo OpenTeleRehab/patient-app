@@ -6,7 +6,6 @@ import {Image} from 'react-native';
 import {Header, Text, Button, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
-import VideoCall from '../../VideoCall';
 import {useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
 
@@ -98,7 +97,6 @@ const HeaderBar = (props) => {
             : styles.noneBorderBottom
         }
       />
-      <VideoCall />
     </>
   );
 };
