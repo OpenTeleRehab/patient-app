@@ -21,8 +21,13 @@
     src: release-key.keystore.vault
     dest: '{{ workspace }}/{{ android_build_path }}/app/release-key.keystore'
 
+- name: Delete build directory
+  shell: 'JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64 ./gradlew clean'
+  args:
+    chdir: '{{ workspace }}/{{ android_build_path }}'
+
 - name: Build Android apk release app
-  shell: 'JAVA_HOME=/usr/lib/jvm/java-10-openjdk-amd64 ./gradlew assembleRelease'
+  shell: 'JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64 ./gradlew assembleRelease'
   args:
     chdir: '{{ workspace }}/{{ android_build_path }}'
 
