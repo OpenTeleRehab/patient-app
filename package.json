@@ -78,5 +78,7 @@
       "pre-commit": "yarn run lint"
     }
   },
-  "eslintIgnore": ["config/settings.js"]
+  "eslintIgnore": [
+    "config/settings.js"
+  ]
 }
