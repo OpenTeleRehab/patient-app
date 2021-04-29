@@ -13,6 +13,7 @@ import {country} from './country/reducers';
 import {language} from './language/reducers';
 import {translation} from './translation/reducers';
 import {aboutPage} from './aboutPage/reducers';
+import {partnerLogo} from './partnerLogo/reducers';
 import {rocketchat} from './rocketchat/reducers';
 import {therapist} from './therapist/reducers';
 import {profession} from './profession/reducers';
@@ -32,6 +33,7 @@ const rootReducers = {
   rocketchat,
   therapist,
   profession,
+  partnerLogo,
 };
 
 const middlewares = [thunk];
