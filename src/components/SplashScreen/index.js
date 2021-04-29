@@ -12,9 +12,13 @@ import settings from '../../../config/settings';
 import hiLogo from '../../assets/images/hi-logo.png';
 import {getLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY} from '../../variables/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {getPartnerLogoRequest} from '../../store/partnerLogo/actions';
 
 const SplashScreen = () => {
   const [translate, setTranslate] = useState(null);
+  const dispatch = useDispatch();
+  const {partnerLogo} = useSelector((state) => state.partnerLogo);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.TRANSLATE, true);
@@ -26,6 +30,10 @@ const SplashScreen = () => {
   useEffect(() => {
     fetchLocalData();
   }, [fetchLocalData]);
+
+  useEffect(() => {
+    dispatch(getPartnerLogoRequest());
+  }, [dispatch]);
 
   return (
     <View style={styles.flexColumn}>
@@ -52,7 +60,14 @@ const SplashScreen = () => {
         <Text style={[styles.fontWeightBold, styles.textPrimary]}>
           {translate ? translate.supported_by : 'Supported by'}
         </Text>
-        <Image style={styles.splashScreenSponsorLogos} source={partnerLogos} />
+        <Image
+          style={styles.splashScreenSponsorLogos}
+          source={
+            partnerLogo
+              ? {uri: settings.adminApiBaseURL + '/file/' + partnerLogo.id}
+              : partnerLogos
+          }
+        />
       </View>
     </View>
   );

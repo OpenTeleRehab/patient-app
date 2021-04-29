@@ -32,5 +32,7 @@ export default {
   },
   splashScreenSponsorLogos: {
     marginVertical: 10,
+    width: 300,
+    height: 48,
   },
 };
