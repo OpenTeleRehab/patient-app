@@ -99,7 +99,7 @@ export const initialChatSocket = (
       if (collection === 'stream-room-messages') {
         // trigger change in chat room
         const {_id, msg} = fields.args[0];
-        if (msg !== '' && msg.includes('jitsi_call_')) {
+        if (msg !== '' && msg.includes('jitsi_call')) {
           dispatch(updateVideoCallStatus({_id, status: msg}));
         }
         const newMessage = getChatMessage(fields.args[0], userId, authToken);

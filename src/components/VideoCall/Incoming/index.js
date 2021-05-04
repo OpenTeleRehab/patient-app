@@ -1,10 +1,12 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Icon, Text} from 'react-native-elements';
 import {TouchableOpacity, View} from 'react-native';
 import styles from '../../../assets/styles';
+import {useSelector} from 'react-redux';
+import {CALL_STATUS} from '../../../variables/constants';
 
 const IncomingCall = ({
   onAcceptCall,
@@ -16,9 +18,17 @@ const IncomingCall = ({
   theme,
   callName,
 }) => {
-  const [isVideoOn, setIsVideoOn] = useState(true);
+  const {videoCall} = useSelector((state) => state.rocketchat);
+
+  const [isVideoOn, setIsVideoOn] = useState(
+    videoCall.status === CALL_STATUS.VIDEO_STARTED,
+  );
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
   const [isMute, setIsMute] = useState(true);
+
+  useEffect(() => {
+    onVideoOn(videoCall.status === CALL_STATUS.VIDEO_STARTED);
+  }, [onVideoOn, videoCall]);
 
   const handleVideoOnOff = () => {
     setIsVideoOn(!isVideoOn);
