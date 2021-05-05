@@ -47,10 +47,13 @@ export const CHAT_USER_STATUS = {
 };
 
 export const CALL_STATUS = {
-  STARTED: 'jitsi_call_started',
+  AUDIO_STARTED: 'jitsi_call_audio_started',
+  AUDIO_MISSED: 'jitsi_call_audio_missed',
+  AUDIO_ENDED: 'jitsi_call_audio_ended',
+  VIDEO_STARTED: 'jitsi_call_video_started',
+  VIDEO_MISSED: 'jitsi_call_video_missed',
+  VIDEO_ENDED: 'jitsi_call_video_ended',
   ACCEPTED: 'jitsi_call_accepted',
-  MISSED: 'jitsi_call_missed', // missed and declined
-  ENDED: 'jitsi_call_ended',
 };
 
 export const APPOINTMENT_STATUS = {

@@ -19,7 +19,7 @@ const VideoCall = ({theme}) => {
   const patient = useSelector((state) => state.user.profile);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(false);
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +28,11 @@ const VideoCall = ({theme}) => {
   useEffect(() => {
     if (
       chatRoom.rid &&
-      [CALL_STATUS.STARTED, CALL_STATUS.ACCEPTED].includes(videoCall.status)
+      [
+        CALL_STATUS.VIDEO_STARTED,
+        CALL_STATUS.AUDIO_STARTED,
+        CALL_STATUS.ACCEPTED,
+      ].includes(videoCall.status)
     ) {
       setShowModal(true);
     } else {
@@ -42,11 +46,19 @@ const VideoCall = ({theme}) => {
   };
 
   const onEndCall = () => {
-    handleUpdateMessage(CALL_STATUS.ENDED);
+    handleUpdateMessage(
+      videoCall.status === CALL_STATUS.VIDEO_ENDED
+        ? CALL_STATUS.VIDEO_ENDED
+        : CALL_STATUS.AUDIO_ENDED,
+    );
   };
 
   const onDeclineCall = () => {
-    handleUpdateMessage(CALL_STATUS.MISSED);
+    handleUpdateMessage(
+      videoCall.status === CALL_STATUS.VIDEO_MISSED
+        ? CALL_STATUS.VIDEO_MISSED
+        : CALL_STATUS.AUDIO_MISSED,
+    );
   };
 
   const handleUpdateMessage = (msg) => {
@@ -72,7 +84,8 @@ const VideoCall = ({theme}) => {
           subject={chatRoom.name}
           displayName={`${patient.last_name} ${patient.first_name}`}
         />
-      ) : videoCall.status === CALL_STATUS.STARTED ? (
+      ) : videoCall.status === CALL_STATUS.AUDIO_STARTED ||
+        videoCall.status === CALL_STATUS.VIDEO_STARTED ? (
         <IncomingCall
           onAcceptCall={onAcceptCall}
           onDeclineCall={onDeclineCall}

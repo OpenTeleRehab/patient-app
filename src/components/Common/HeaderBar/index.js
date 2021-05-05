@@ -92,7 +92,9 @@ const HeaderBar = (props) => {
         centerContainerStyle={styles.textLight}
         rightContainerStyle={styles.noneFlex}
         containerStyle={
-          videoCall && videoCall.status === CALL_STATUS.ENDED
+          videoCall &&
+          (videoCall.status === CALL_STATUS.AUDIO_ENDED ||
+            videoCall.status === CALL_STATUS.VIDEO_ENDED)
             ? styles.headerWorkAround
             : styles.noneBorderBottom
         }
