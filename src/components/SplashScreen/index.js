@@ -7,19 +7,13 @@ import styles from '../../assets/styles';
 import {Text} from 'react-native-elements';
 
 import logoWhite from '../../assets/images/logo-white.png';
-import partnerLogos from '../../assets/images/partner-logos.png';
 import settings from '../../../config/settings';
 import hiLogo from '../../assets/images/hi-logo.png';
 import {getLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY} from '../../variables/constants';
-import {useDispatch, useSelector} from 'react-redux';
-import {getPartnerLogoRequest} from '../../store/partnerLogo/actions';
 
 const SplashScreen = () => {
   const [translate, setTranslate] = useState(null);
-  const dispatch = useDispatch();
-  const {partnerLogo} = useSelector((state) => state.partnerLogo);
-
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.TRANSLATE, true);
     if (data) {
@@ -30,10 +24,6 @@ const SplashScreen = () => {
   useEffect(() => {
     fetchLocalData();
   }, [fetchLocalData]);
-
-  useEffect(() => {
-    dispatch(getPartnerLogoRequest());
-  }, [dispatch]);
 
   return (
     <View style={styles.flexColumn}>
@@ -62,11 +52,9 @@ const SplashScreen = () => {
         </Text>
         <Image
           style={styles.splashScreenSponsorLogos}
-          source={
-            partnerLogo
-              ? {uri: settings.adminApiBaseURL + '/file/' + partnerLogo.id}
-              : partnerLogos
-          }
+          source={{
+            uri: settings.adminApiBaseURL + '/partnerLogo?time=' + new Date(),
+          }}
         />
       </View>
     </View>
