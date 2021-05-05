@@ -79,7 +79,6 @@ const fetchApi = async (endpoint, headers, body = null, method = 'get') => {
   }
 
   const response = await fetch(url, configs).catch((error) => {
-    console.error('Call Api', error);
     return false;
   });
 

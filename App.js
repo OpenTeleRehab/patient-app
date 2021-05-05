@@ -9,8 +9,9 @@ import {Provider} from 'react-redux';
 import AppProvider from './AppProvider';
 import AppNavigation from './src/components/AppNavigation';
 import colors from './src/assets/styles/variables/colors';
-import store from './src/store';
 import VideoCall from './src/components/VideoCall';
+import {PersistGate} from 'redux-persist/integration/react';
+import store, {persistor} from './src/store';
 
 const theme = {
   colors,
@@ -47,15 +48,17 @@ const theme = {
 const App: () => React$Node = () => {
   return (
     <Provider store={store}>
-      <AppProvider>
-        <VideoCall />
-        <LocalizeProvider store={store}>
-          <ThemeProvider theme={theme}>
-            <StatusBar barStyle="light-content" />
-            <AppNavigation />
-          </ThemeProvider>
-        </LocalizeProvider>
-      </AppProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <AppProvider>
+          <VideoCall />
+          <LocalizeProvider store={store}>
+            <ThemeProvider theme={theme}>
+              <StatusBar barStyle="light-content" />
+              <AppNavigation />
+            </ThemeProvider>
+          </LocalizeProvider>
+        </AppProvider>
+      </PersistGate>
     </Provider>
   );
 };
