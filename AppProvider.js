@@ -23,6 +23,8 @@ import {
   setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage} from 'react-localize-redux';
+import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
+import {Alert} from 'react-native';
 
 let chatSocket = null;
 
@@ -48,8 +50,9 @@ const AppProvider = ({children}) => {
   }, []);
 
   useEffect(() => {
+    dispatch(getPartnerLogoRequest());
     fetchLocalData();
-  }, [fetchLocalData]);
+  }, [fetchLocalData, dispatch]);
 
   useEffect(() => {
     dispatch(clearChatData());
@@ -63,12 +66,19 @@ const AppProvider = ({children}) => {
   }, [timespan, dispatch]);
 
   useEffect(() => {
+    dispatch(addTranslationForLanguage(messages, 'en'));
+  }, [messages, dispatch]);
+
+  useEffect(() => {
     if (loading && language !== undefined) {
       dispatch(getTranslations(language)).then((res) => {
-        if (res) {
-          setLoading(false);
-        } else if (messages) {
-          dispatch(addTranslationForLanguage(messages, 'en'));
+        // If it is fresh installed and not connection
+        if (!res && messages.local) {
+          Alert.alert(
+            messages['error.connection.alert_title'],
+            messages['error.connection.alert_content'],
+          );
+        } else {
           setLoading(false);
         }
       });

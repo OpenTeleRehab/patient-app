@@ -49,15 +49,15 @@ const App: () => React$Node = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AppProvider>
-          <VideoCall />
-          <LocalizeProvider store={store}>
+        <LocalizeProvider store={store}>
+          <AppProvider>
             <ThemeProvider theme={theme}>
               <StatusBar barStyle="light-content" />
               <AppNavigation />
+              <VideoCall />
             </ThemeProvider>
-          </LocalizeProvider>
-        </AppProvider>
+          </AppProvider>
+        </LocalizeProvider>
       </PersistGate>
     </Provider>
   );

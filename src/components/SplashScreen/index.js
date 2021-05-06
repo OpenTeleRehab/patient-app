@@ -1,39 +1,19 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {View, Image, ActivityIndicator} from 'react-native';
 import styles from '../../assets/styles';
 import {Text} from 'react-native-elements';
 
 import logoWhite from '../../assets/images/logo-white.png';
-import partnerLogos from '../../assets/images/partner-logos.png';
 import settings from '../../../config/settings';
 import hiLogo from '../../assets/images/hi-logo.png';
-import {getLocalData} from '../../utils/local_storage';
-import {STORAGE_KEY} from '../../variables/constants';
-import {useDispatch, useSelector} from 'react-redux';
-import {getPartnerLogoRequest} from '../../store/partnerLogo/actions';
+import {useSelector} from 'react-redux';
+import {Translate} from 'react-localize-redux';
 
 const SplashScreen = () => {
-  const [translate, setTranslate] = useState(null);
-  const dispatch = useDispatch();
   const {partnerLogo} = useSelector((state) => state.partnerLogo);
-
-  const fetchLocalData = useCallback(async () => {
-    const data = await getLocalData(STORAGE_KEY.TRANSLATE, true);
-    if (data) {
-      setTranslate(data);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchLocalData();
-  }, [fetchLocalData]);
-
-  useEffect(() => {
-    dispatch(getPartnerLogoRequest());
-  }, [dispatch]);
 
   return (
     <View style={styles.flexColumn}>
@@ -49,26 +29,24 @@ const SplashScreen = () => {
         <View style={styles.splashScreenPoweredByContainer}>
           <View style={styles.splashScreenPoweredByWrapper}>
             <Text style={[styles.fontWeightBold, styles.textLight]}>
-              {translate ? translate.powered_by : 'Powered by'}
+              <Translate id="common.powered_by" />
             </Text>
             <Image source={hiLogo} style={styles.splashScreenPoweredByLogo} />
           </View>
           <Text style={[styles.textLight]}>{settings.appVersion}</Text>
         </View>
       </View>
-      <View style={styles.splashScreenSponsorsContainer}>
-        <Text style={[styles.fontWeightBold, styles.textPrimary]}>
-          {translate ? translate.supported_by : 'Supported by'}
-        </Text>
-        <Image
-          style={styles.splashScreenSponsorLogos}
-          source={
-            partnerLogo
-              ? {uri: settings.adminApiBaseURL + '/file/' + partnerLogo.id}
-              : partnerLogos
-          }
-        />
-      </View>
+      {partnerLogo && (
+        <View style={styles.splashScreenSponsorsContainer}>
+          <Text style={[styles.fontWeightBold, styles.textPrimary]}>
+            <Translate id="common.supported_by" />
+          </Text>
+          <Image
+            style={styles.splashScreenSponsorLogos}
+            source={{uri: settings.adminApiBaseURL + '/file/' + partnerLogo.id}}
+          />
+        </View>
+      )}
     </View>
   );
 };
