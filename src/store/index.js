@@ -18,6 +18,8 @@ import {rocketchat} from './rocketchat/reducers';
 import {therapist} from './therapist/reducers';
 import {profession} from './profession/reducers';
 import settings from '../../config/settings';
+import {persistReducer, persistStore} from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -35,6 +37,16 @@ const rootReducers = {
   profession,
   partnerLogo,
 };
+
+const persistConfig = {
+  key: 'OrgHiOpenRehab',
+  storage: AsyncStorage,
+};
+
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers(rootReducers),
+);
 
 const middlewares = [thunk];
 
@@ -57,11 +69,7 @@ const languages = [{name: 'English', code: 'en'}];
 const defaultLanguage = 'en';
 const onMissingTranslation = ({translationId}) => translationId;
 
-const store = createStore(
-  combineReducers(rootReducers),
-  applyMiddleware(...middlewares),
-);
-
+const store = createStore(persistedReducer, applyMiddleware(...middlewares));
 store.dispatch(
   initialize({
     languages,
@@ -74,3 +82,4 @@ store.dispatch(
 );
 
 export default store;
+export const persistor = persistStore(store);

@@ -22,12 +22,14 @@ import {
   getLastMessages,
   setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
+import {addTranslationForLanguage} from 'react-localize-redux';
 
 let chatSocket = null;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
   const {accessToken, profile} = useSelector((state) => state.user);
+  const {messages} = useSelector((state) => state.translation);
   const {chatAuth, chatRooms, selectedRoom} = useSelector(
     (state) => state.rocketchat,
   );
@@ -65,10 +67,13 @@ const AppProvider = ({children}) => {
       dispatch(getTranslations(language)).then((res) => {
         if (res) {
           setLoading(false);
+        } else if (messages) {
+          dispatch(addTranslationForLanguage(messages, 'en'));
+          setLoading(false);
         }
       });
     }
-  }, [loading, language, dispatch]);
+  }, [loading, language, messages, dispatch]);
 
   useEffect(() => {
     if (!loading && accessToken && profile.chat_user_id && profile.chat_rooms) {
