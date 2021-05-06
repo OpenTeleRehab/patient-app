@@ -2,18 +2,24 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {Image} from 'react-native';
+import {Image, View} from 'react-native';
 import {Header, Text, Button, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import {useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
+import colors from '../../../assets/styles/variables/colors';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {getTranslate} from 'react-localize-redux';
 
 const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
   const {theme, title, onGoBack, leftContent, rightContent} = props;
   const {videoCall} = useSelector((state) => state.rocketchat);
+  const netInfo = useNetInfo();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const renderLeftComponent = () => {
     if (onGoBack) {
@@ -84,6 +90,13 @@ const HeaderBar = (props) => {
 
   return (
     <>
+      {netInfo.isConnected === false && (
+        <View style={[styles.bgLight]}>
+          <Text style={[styles.textCenter, {color: colors.orangeDark}]}>
+            {translate('common.offline')}
+          </Text>
+        </View>
+      )}
       <Header
         leftComponent={renderLeftComponent()}
         centerComponent={renderCenterComponent()}
