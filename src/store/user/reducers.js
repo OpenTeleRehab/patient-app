@@ -38,12 +38,13 @@ export const user = (state = initialState, action) => {
         phone: action.phone,
         initialRouteName: ROUTES.LOGIN,
         isLoading: false,
+        pin: action.pin,
       });
     }
-    case 'USER_LOGOUT_SUCCEED': {
+    case 'USER_LOGOUT_SUCCEED':
+    case 'CLEAR_ACCESS_TOKEN_SUCCEED': {
       return Object.assign({}, state, {
         accessToken: '',
-        profile: {},
         initialRouteName: ROUTES.LOGIN,
       });
     }
@@ -73,7 +74,12 @@ export const user = (state = initialState, action) => {
         isLoading: false,
       });
     }
-    case 'USER_SETUP_PIN_NUMBER_SUCCEED':
+    case 'USER_SETUP_PIN_NUMBER_SUCCEED': {
+      return Object.assign({}, state, {
+        pin: action.pin,
+        isLoading: false,
+      });
+    }
     case 'USER_COMPARE_PIN_NUMBER_SUCCEED':
     case 'USER_REGISTER_FAILED':
     case 'USER_VERIFY_PHONE_NUMBER_FAILED':
@@ -84,6 +90,11 @@ export const user = (state = initialState, action) => {
     case 'ACCEPT_TERM_OF_SERVICE_FAILED': {
       return Object.assign({}, state, {
         isLoading: false,
+      });
+    }
+    case 'GENERATE_FAKE_ACCESS_TOKEN_SUCCESS': {
+      return Object.assign({}, state, {
+        accessToken: 'FAKE_ACCESS_TOKEN',
       });
     }
     default:

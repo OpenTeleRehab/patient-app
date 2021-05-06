@@ -18,8 +18,9 @@ import {rocketchat} from './rocketchat/reducers';
 import {therapist} from './therapist/reducers';
 import {profession} from './profession/reducers';
 import settings from '../../config/settings';
-import {persistReducer, persistStore} from 'redux-persist';
+import {persistReducer, persistStore, createTransform} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import _ from 'lodash';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -38,9 +39,19 @@ const rootReducers = {
   partnerLogo,
 };
 
+const blacklistTransform = createTransform((inboundState, key) => {
+  if (key === 'user') {
+    return _.omit(inboundState, ['accessToken']);
+  } else {
+    return inboundState;
+  }
+});
+
 const persistConfig = {
   key: 'OrgHiOpenRehab',
   storage: AsyncStorage,
+  blacklist: ['rocketchat'],
+  transforms: [blacklistTransform],
 };
 
 const persistedReducer = persistReducer(

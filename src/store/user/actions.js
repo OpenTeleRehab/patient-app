@@ -63,7 +63,7 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
       },
       true,
     );
-    dispatch(mutation.userSetupPinNumberSuccess());
+    dispatch(mutation.userSetupPinNumberSuccess(pin));
     await storeLocalData(STORAGE_KEY.LANGUAGE, language);
     return {success: true, data: data.data};
   } else {
@@ -88,7 +88,7 @@ export const loginRequest = (phone, pin, country) => async (
       data.data.token = '';
       acceptedTermOfService = false;
     }
-    dispatch(mutation.userLoginSuccess(data.data, phone));
+    dispatch(mutation.userLoginSuccess(data.data, phone, pin));
     return {success: true, acceptedTermOfService};
   } else {
     dispatch(mutation.userLoginFailure());
@@ -97,14 +97,7 @@ export const loginRequest = (phone, pin, country) => async (
 };
 
 export const logoutRequest = (accessToken) => async (dispatch) => {
-  const data = await User.logout(accessToken);
-  if (data.success) {
-    dispatch(mutation.userLogoutSuccess());
-    return true;
-  } else {
-    dispatch(mutation.userLogoutFailure());
-    return false;
-  }
+  dispatch(mutation.userLogoutSuccess());
 };
 
 export const comparePinNumberRequest = (pin, accessToken) => async (
@@ -206,4 +199,8 @@ export const acceptTermOfServiceRequest = (id) => async (
     dispatch(mutation.acceptTermOfServiceFailure());
     return false;
   }
+};
+
+export const generateFakeAccessToken = () => async (dispatch) => {
+  dispatch(mutation.generateFakeAccessTokenSuccess());
 };
