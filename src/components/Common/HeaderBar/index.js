@@ -8,12 +8,18 @@ import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import {useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
+import colors from '../../../assets/styles/variables/colors';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {getTranslate} from 'react-localize-redux';
 
 const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
   const {theme, title, onGoBack, leftContent, rightContent} = props;
   const {videoCall} = useSelector((state) => state.rocketchat);
+  const netInfo = useNetInfo();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const renderLeftComponent = () => {
     if (onGoBack) {
@@ -84,6 +90,17 @@ const HeaderBar = (props) => {
 
   return (
     <>
+      {netInfo.isConnected === false && (
+        <Text
+          style={[
+            styles.textCenter,
+            styles.bgLight,
+            styles.marginTopLg,
+            {color: colors.orangeDark},
+          ]}>
+          {translate('common.offline')}
+        </Text>
+      )}
       <Header
         leftComponent={renderLeftComponent()}
         centerComponent={renderCenterComponent()}
@@ -91,13 +108,14 @@ const HeaderBar = (props) => {
         leftContainerStyle={[styles.noneFlex, leftContainerMaxWidth]}
         centerContainerStyle={styles.textLight}
         rightContainerStyle={styles.noneFlex}
-        containerStyle={
+        containerStyle={[
           videoCall &&
           (videoCall.status === CALL_STATUS.AUDIO_ENDED ||
             videoCall.status === CALL_STATUS.VIDEO_ENDED)
             ? styles.headerWorkAround
-            : styles.noneBorderBottom
-        }
+            : styles.noneBorderBottom,
+          netInfo.isConnected === false && styles.headerWorkAround,
+        ]}
       />
     </>
   );
