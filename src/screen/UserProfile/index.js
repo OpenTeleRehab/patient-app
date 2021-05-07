@@ -27,6 +27,7 @@ import {ageCalculation} from '../../utils/age';
 import settings from '../../../config/settings';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useNetInfo} from '@react-native-community/netinfo';
+import RNLocalize from 'react-native-localize';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -76,7 +77,10 @@ const UserProfile = ({navigation}) => {
 
     setDownloading(true);
     RNFS.downloadFile({
-      fromUrl: settings.apiBaseURL + '/patient/profile/export',
+      fromUrl:
+        settings.apiBaseURL +
+        '/patient/profile/export?timezone=' +
+        RNLocalize.getTimeZone(),
       toFile: `${location}/patient_data.zip`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
