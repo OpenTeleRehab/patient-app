@@ -7,8 +7,7 @@ import {Text, withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
-import {useDispatch, useSelector} from 'react-redux';
-import {getTreatmentPlanRequest} from '../../store/activity/actions';
+import {useSelector} from 'react-redux';
 import {Dimensions} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import _ from 'lodash';
@@ -71,9 +70,7 @@ const containerPaddingStyle = {
 };
 
 const Goal = ({theme}) => {
-  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const {language} = useSelector((state) => state.translation);
   const translate = getTranslate(localize);
   const {treatmentPlan} = useSelector((state) => state.activity);
   const [selectedGoal, setSelectedGoal] = useState(0);
@@ -88,10 +85,6 @@ const Goal = ({theme}) => {
       },
     ],
   });
-
-  useEffect(() => {
-    dispatch(getTreatmentPlanRequest());
-  }, [language, dispatch]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {

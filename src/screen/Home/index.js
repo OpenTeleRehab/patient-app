@@ -84,7 +84,7 @@ const Home = ({navigation}) => {
   }, [profile, dispatch]);
 
   useEffect(() => {
-    dispatch(getAppointmentsListRequest({page_size: 1}));
+    dispatch(getAppointmentsListRequest({page_size: 10}));
   }, [dispatch]);
 
   useEffect(() => {
