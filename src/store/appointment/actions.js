@@ -12,12 +12,14 @@ export const getAppointmentsListRequest = (payload) => async (
   dispatch(mutation.appointmentFetchRequest());
   const now = moment.utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
   const {accessToken} = getState().user;
-  const data = await Appointment.getAppointments(
-    {...payload, now},
-    accessToken,
-  );
-  if (data.success) {
-    dispatch(mutation.appointmentFetchSuccess(data.data, data.info));
+  const res = await Appointment.getAppointments({...payload, now}, accessToken);
+  if (res.success) {
+    let data = res.data;
+    if (payload.page > 1) {
+      const {appointments} = getState().appointment;
+      data = [...appointments, ...data];
+    }
+    dispatch(mutation.appointmentFetchSuccess(data, res.info));
   } else {
     dispatch(mutation.appointmentFetchFailure());
   }

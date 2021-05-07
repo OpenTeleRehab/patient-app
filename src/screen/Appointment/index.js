@@ -54,25 +54,11 @@ const Appointment = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(
-      getAppointmentsListRequest({
-        page_size: pageSize,
-        page: currentPage,
-      }),
-    );
-  }, [dispatch, currentPage]);
-
-  useEffect(() => {
     if (appointments.length) {
-      if (currentPage === 1) {
-        setAppointmentObjs(appointments);
-      } else {
-        setAppointmentObjs([...appointmentObjs, ...appointments]);
-      }
+      setAppointmentObjs(appointments);
+      setCurrentPage(listInfo.current_page);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appointments]);
+  }, [appointments, listInfo]);
 
   useEffect(() => {
     if (appointmentObjs.length) {
@@ -108,7 +94,12 @@ const Appointment = () => {
 
   const showMore = () => {
     if (listInfo.last_page > currentPage) {
-      setCurrentPage(currentPage + 1);
+      dispatch(
+        getAppointmentsListRequest({
+          page_size: pageSize,
+          page: currentPage + 1,
+        }),
+      );
     }
   };
 
@@ -281,6 +272,7 @@ const Appointment = () => {
             </Text>
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
+                {/* TODO: Disable swipe if it is offline */}
                 <Swipeable
                   ref={(ref) => (swipeableRef[appointment.id] = ref)}
                   renderRightActions={(progress, dragX) =>
@@ -303,6 +295,7 @@ const Appointment = () => {
           {!loading &&
             pageSize < listInfo.total_count &&
             currentPage < listInfo.last_page && (
+              // TODO: Disable button if it is offline
               <TouchableOpacity
                 style={styles.appointmentShowMoreButton}
                 onPress={() => showMore()}>

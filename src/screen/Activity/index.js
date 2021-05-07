@@ -14,12 +14,11 @@ import {Button, Text, Icon, withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import CalendarStrip from '@webessentials/react-native-calendar-strip';
 import moment from 'moment';
 import settings from '../../../config/settings';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import _ from 'lodash';
 import RenderExerciseCard from './_Partials/RenderExerciseCard';
 import RenderEducationMaterialCard from './_Partials/RenderEducationMaterialCard';
@@ -65,10 +64,8 @@ const renderPaginateDots = (activities, activeIndex, theme) =>
   ));
 
 const Activity = ({theme, navigation}) => {
-  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const {treatmentPlan} = useSelector((state) => state.activity);
-  const {language} = useSelector((state) => state.translation);
   const {accessToken} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
@@ -100,10 +97,6 @@ const Activity = ({theme, navigation}) => {
       dateContainerStyle: styles.dateContainer,
     };
   };
-
-  useEffect(() => {
-    dispatch(getTreatmentPlanRequest());
-  }, [language, dispatch]);
 
   const handleTodayPress = () => {
     calendarRef.setSelectedDate(moment());
