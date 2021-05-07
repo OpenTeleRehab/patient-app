@@ -206,12 +206,6 @@ const generateFakeAccessTokenSuccess = () => {
   };
 };
 
-const clearAccessTokenSuccess = () => {
-  return {
-    type: 'CLEAR_ACCESS_TOKEN_SUCCEED',
-  };
-};
-
 export const mutation = {
   userRegisterRequest,
   userRegisterSuccess,
@@ -245,5 +239,4 @@ export const mutation = {
   acceptTermOfServiceSuccess,
   acceptTermOfServiceFailure,
   generateFakeAccessTokenSuccess,
-  clearAccessTokenSuccess,
 };

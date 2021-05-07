@@ -22,22 +22,30 @@ import {
   getLastMessages,
   setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
-import {addTranslationForLanguage} from 'react-localize-redux';
+import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
 import {Alert} from 'react-native';
+import {useNetInfo} from '@react-native-community/netinfo';
+import store from './src/store';
+import {forceLogout} from './src/store/auth/actions';
 
 let chatSocket = null;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
-  const {accessToken, profile} = useSelector((state) => state.user);
+  const {accessToken, profile, isDataUpToDate} = useSelector(
+    (state) => state.user,
+  );
   const {messages} = useSelector((state) => state.translation);
   const {chatAuth, chatRooms, selectedRoom} = useSelector(
     (state) => state.rocketchat,
   );
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
   const [language, setLanguage] = useState(undefined);
+  const isOnline = useNetInfo().isConnected;
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
@@ -134,6 +142,13 @@ const AppProvider = ({children}) => {
       loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
     }
   }, [selectedRoom, profile]);
+
+  useEffect(() => {
+    if (isOnline && isDataUpToDate === false) {
+      store.dispatch(forceLogout());
+      Alert.alert(translate('user.session'), translate('user.session_expired'));
+    }
+  }, [isOnline, isDataUpToDate, translate]);
 
   return loading ? (
     <SplashScreen />

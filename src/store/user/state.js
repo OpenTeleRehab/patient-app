@@ -11,4 +11,5 @@ export const initialState = {
   countryCode: '',
   pin: '',
   isNewRegister: false,
+  isDataUpToDate: true,
 };
