@@ -26,6 +26,7 @@ import RNFS from 'react-native-fs';
 import {ageCalculation} from '../../utils/age';
 import settings from '../../../config/settings';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const UserProfile = ({navigation}) => {
   const dob = isValidDateFormat(profile.date_of_birth)
     ? profile.date_of_birth
     : formatDate(profile.date_of_birth);
+  const netInfo = useNetInfo();
 
   const userInfo = [
     {
@@ -157,7 +159,9 @@ const UserProfile = ({navigation}) => {
         title={translate('preferences')}
         rightContent={{
           label: translate('common.edit'),
-          onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
+          onPress: () =>
+            netInfo.isConnected &&
+            navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
       <ScrollView>
@@ -169,6 +173,7 @@ const UserProfile = ({navigation}) => {
             <ListItem.Content>
               <ListItem.Title>
                 <TouchableOpacity
+                  disabled={!netInfo.isConnected}
                   onPress={() => navigation.navigate(ROUTES.CONFIRM_PIN)}>
                   <Text style={[styles.listStyle, styles.textPrimary]}>
                     {translate('pin.change')}
@@ -182,11 +187,13 @@ const UserProfile = ({navigation}) => {
             title={translate('user.download_my_data')}
             containerStyle={styles.marginTopMd}
             onPress={handleExport}
+            disabled={!netInfo.isConnected}
           />
           <Button
             title={translate('user.delete')}
             buttonStyle={styles.bgGrey}
             onPress={handleDelete}
+            disabled={!netInfo.isConnected}
           />
         </View>
       </ScrollView>
