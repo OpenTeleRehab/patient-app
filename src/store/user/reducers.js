@@ -28,6 +28,7 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         otpCode: action.data.code,
         isLoading: false,
+        isNewRegister: true,
       });
     }
     case 'USER_CHANGE_PIN_NUMBER_SUCCEED':
@@ -39,6 +40,7 @@ export const user = (state = initialState, action) => {
         initialRouteName: ROUTES.LOGIN,
         isLoading: false,
         pin: action.pin,
+        isNewRegister: false,
       });
     }
     case 'USER_LOGOUT_SUCCEED':

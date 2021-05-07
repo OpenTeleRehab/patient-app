@@ -25,7 +25,7 @@ const TermOfService = ({theme, navigation}) => {
   const [acceptAgreement, setAcceptAgreement] = useState(false);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const profile = useSelector((state) => state.user.profile);
+  const {profile, isNewRegister} = useSelector((state) => state.user);
   const termContent = useSelector((state) => state.user.termOfService);
   const isLoading = useSelector((state) => state.user.isLoading);
 
@@ -34,7 +34,7 @@ const TermOfService = ({theme, navigation}) => {
   }, [dispatch]);
 
   const onSubmit = () => {
-    if (profile.id) {
+    if (profile.id && !isNewRegister) {
       dispatch(acceptTermOfServiceRequest(termContent.id));
     } else {
       navigation.navigate(ROUTES.SETUP_PIN);
