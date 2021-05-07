@@ -15,6 +15,7 @@ import {Button, Text} from 'react-native-elements';
 import {
   loginRequest,
   fetchTermOfServiceRequest,
+  generateFakeAccessToken,
 } from '../../../store/user/actions';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
@@ -37,6 +38,7 @@ const Login = ({navigation}) => {
   const isLoading = useSelector((state) => state.user.isLoading);
   const {isChatConnected} = useSelector((state) => state.indicator);
   const {subscribeIds} = useSelector((state) => state.rocketchat);
+  const {pin} = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getCountryRequest());
@@ -65,12 +67,16 @@ const Login = ({navigation}) => {
           navigation.navigate(ROUTES.TERM_OF_SERVICE);
         }
       } else {
-        Alert.alert(
-          translate('common.login.fail'),
-          translate('wrong.pin'),
-          [{text: translate('common.ok'), onPress: () => reset()}],
-          {cancelable: false},
-        );
+        if (code === pin) {
+          dispatch(generateFakeAccessToken());
+        } else {
+          Alert.alert(
+            translate('common.login.fail'),
+            translate('wrong.pin'),
+            [{text: translate('common.ok'), onPress: () => reset()}],
+            {cancelable: false},
+          );
+        }
       }
     });
   };

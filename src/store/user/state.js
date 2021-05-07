@@ -9,4 +9,5 @@ export const initialState = {
   termOfService: {},
   phone: '',
   countryCode: '',
+  pin: '',
 };

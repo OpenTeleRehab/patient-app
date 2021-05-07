@@ -46,9 +46,10 @@ const userSetupPinNumberRequest = () => {
   };
 };
 
-const userSetupPinNumberSuccess = () => {
+const userSetupPinNumberSuccess = (pin) => {
   return {
     type: 'USER_SETUP_PIN_NUMBER_SUCCEED',
+    pin,
   };
 };
 
@@ -64,11 +65,12 @@ const userLoginRequest = () => {
   };
 };
 
-const userLoginSuccess = (data, phone) => {
+const userLoginSuccess = (data, phone, pin) => {
   return {
     type: 'USER_LOGIN_SUCCEED',
     data,
     phone,
+    pin,
   };
 };
 
@@ -198,6 +200,18 @@ const acceptTermOfServiceFailure = () => {
   };
 };
 
+const generateFakeAccessTokenSuccess = () => {
+  return {
+    type: 'GENERATE_FAKE_ACCESS_TOKEN_SUCCESS',
+  };
+};
+
+const clearAccessTokenSuccess = () => {
+  return {
+    type: 'CLEAR_ACCESS_TOKEN_SUCCEED',
+  };
+};
+
 export const mutation = {
   userRegisterRequest,
   userRegisterSuccess,
@@ -230,4 +244,6 @@ export const mutation = {
   acceptTermOfServiceRequest,
   acceptTermOfServiceSuccess,
   acceptTermOfServiceFailure,
+  generateFakeAccessTokenSuccess,
+  clearAccessTokenSuccess,
 };
