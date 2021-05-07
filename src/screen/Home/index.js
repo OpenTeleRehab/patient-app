@@ -88,10 +88,14 @@ const Home = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!upComingAppointment && appointments.length) {
-      setUpComingAppointment(appointments[0]);
+    // Filter up-coming appointments for offline data reason
+    const upComingAppointments = appointments.filter(
+      (a) => moment.utc(a.end_date) > moment.utc(),
+    );
+    if (upComingAppointments.length) {
+      setUpComingAppointment(upComingAppointments[0]);
     }
-  }, [upComingAppointment, appointments]);
+  }, [appointments]);
 
   return (
     <>
