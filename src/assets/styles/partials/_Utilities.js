@@ -19,6 +19,9 @@ export default {
   textLight: {
     color: variables.white,
   },
+  textLightGrey: {
+    color: variables.grey4,
+  },
   textDefaultBold: {
     color: variables.black,
     fontWeight: 'bold',

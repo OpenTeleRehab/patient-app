@@ -18,6 +18,7 @@ import RNFS from 'react-native-fs';
 import {completeActive} from '../../../store/activity/actions';
 import settings from '../../../../config/settings';
 import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const {id, activityNumber} = route.params;
   const {treatmentPlan} = useSelector((state) => state.activity);
   const [material, setMaterial] = useState(undefined);
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (id && treatmentPlan.activities.length) {
@@ -138,16 +140,23 @@ const MaterialDetail = ({theme, route, navigation}) => {
           </View>
           {material.file && (
             <TouchableOpacity
+              disabled={!netInfo.isConnected}
               onPress={handleDownload}
               style={styles.educationMaterialDownloadWrapper}>
               <Text
                 numberOfLines={1}
-                style={[styles.hyperlink, styles.educationMaterialFileName]}>
+                style={[
+                  styles.hyperlink,
+                  styles.educationMaterialFileName,
+                  netInfo.isConnected === false && {color: theme.colors.grey},
+                ]}>
                 {material.file.fileName}
               </Text>
               <Icon
                 name="download"
-                color={theme.colors.primary}
+                color={
+                  netInfo.isConnected ? theme.colors.primary : theme.colors.grey
+                }
                 size={25}
                 type="font-awesome-5"
               />

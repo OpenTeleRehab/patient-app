@@ -30,6 +30,7 @@ import {APPOINTMENT_STATUS} from '../../variables/constants';
 import SelectPicker from '../../components/Common/SelectPicker';
 import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const Appointment = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const Appointment = () => {
   const [therapistId, setTherapistId] = useState('');
   const pageSize = 10;
   const swipeableRef = [];
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     dispatch(getProfessionRequest());
@@ -189,6 +191,7 @@ const Appointment = () => {
         rightContent={{
           label: translate('appointment.request_appointment'),
           onPress: () => setShowOverlay(true),
+          disabled: !netInfo.isConnected,
         }}
       />
       <Overlay
@@ -272,21 +275,24 @@ const Appointment = () => {
             </Text>
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
-                {/* TODO: Disable swipe if it is offline */}
-                <Swipeable
-                  ref={(ref) => (swipeableRef[appointment.id] = ref)}
-                  renderRightActions={(progress, dragX) =>
-                    appointment.status ===
-                    APPOINTMENT_STATUS.REQUEST_CANCELLATION
-                      ? null
-                      : renderRightActions(progress, dragX, appointment.id)
-                  }
-                  containerStyle={styles.borderRightRadius}>
-                  <AppointmentCard
-                    appointment={appointment}
-                    style={styles.noBorderTopRightRadius}
-                  />
-                </Swipeable>
+                {netInfo.isConnected ? (
+                  <Swipeable
+                    ref={(ref) => (swipeableRef[appointment.id] = ref)}
+                    renderRightActions={(progress, dragX) =>
+                      appointment.status ===
+                      APPOINTMENT_STATUS.REQUEST_CANCELLATION
+                        ? null
+                        : renderRightActions(progress, dragX, appointment.id)
+                    }
+                    containerStyle={styles.borderRightRadius}>
+                    <AppointmentCard
+                      appointment={appointment}
+                      style={styles.noBorderTopRightRadius}
+                    />
+                  </Swipeable>
+                ) : (
+                  <AppointmentCard appointment={appointment} />
+                )}
               </View>
             ))}
           </View>
@@ -295,16 +301,26 @@ const Appointment = () => {
           {!loading &&
             pageSize < listInfo.total_count &&
             currentPage < listInfo.last_page && (
-              // TODO: Disable button if it is offline
               <TouchableOpacity
+                disabled={!netInfo.isConnected}
                 style={styles.appointmentShowMoreButton}
                 onPress={() => showMore()}>
-                <Text style={[styles.textLight, styles.fontWeightBold]}>
+                <Text
+                  style={[
+                    netInfo.type !== 'unknown' && netInfo.isConnected === false
+                      ? styles.textLightGrey
+                      : styles.textLight,
+                    styles.fontWeightBold,
+                  ]}>
                   {translate('appointment.show_more', {
                     number: listInfo.total_count - currentPage * pageSize,
                   })}
                 </Text>
-                <Icon name="chevron-down" type="font-awesome" color="white" />
+                <Icon
+                  name="chevron-down"
+                  type="font-awesome"
+                  color={netInfo.isConnected ? 'white' : 'darkgrey'}
+                />
               </TouchableOpacity>
             )}
           {loading && <ActivityIndicator size={30} color="white" />}
