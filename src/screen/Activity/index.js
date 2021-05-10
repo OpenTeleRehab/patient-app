@@ -27,6 +27,7 @@ import RenderGoalCard from './_Partials/RenderGoalCard';
 import {ACTIVITY_TYPES} from '../../variables/constants';
 import RNFS from 'react-native-fs';
 import {getDownloadDirectoryPath} from '../../utils/fileSystem';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const calendarHeaderStyle = {
   ...styles.textLight,
@@ -75,6 +76,7 @@ const Activity = ({theme, navigation}) => {
   const [activities, setActivities] = useState([]);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [downloading, setDownloading] = useState(false);
+  const netInfo = useNetInfo();
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -197,7 +199,7 @@ const Activity = ({theme, navigation}) => {
                 icon: 'download',
                 iconType: 'font-awesome-5',
                 onPress: () => handleDownload(treatmentPlan),
-                disabled: downloading,
+                disabled: downloading || !netInfo.isConnected,
               }
         }
       />
