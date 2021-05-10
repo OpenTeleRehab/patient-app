@@ -5,6 +5,7 @@ import {Activity} from '../../services/activity';
 import {mutation} from './mutations';
 import moment from 'moment';
 import settings from '../../../config/settings';
+import _ from 'lodash';
 
 export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
   dispatch(mutation.treatmentPlanFetchRequest());
@@ -59,8 +60,15 @@ export const completeQuestionnaire = (id, payload) => async (
 ) => {
   dispatch(mutation.completeQuestionnaireRequest());
   const {accessToken} = getState().user;
+  let offlineQuestionnaireAnswers = _.cloneDeep(
+    getState().activity.offlineQuestionnaireAnswers,
+  );
+  _.remove(offlineQuestionnaireAnswers, {id});
   const res = await Activity.completeQuestionnaire(id, payload, accessToken);
   if (res.success) {
+    dispatch(
+      mutation.completeQuestionnaireOfflineSuccess(offlineQuestionnaireAnswers),
+    );
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeQuestionnaireSuccess());
     return true;

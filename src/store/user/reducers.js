@@ -49,6 +49,7 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         accessToken: '',
         initialRouteName: ROUTES.LOGIN,
+        isDataUpToDate: true,
       });
     }
     case 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED': {
