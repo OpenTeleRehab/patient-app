@@ -5,4 +5,5 @@ export const initialState = {
   todaySummary: [],
   isLoading: false,
   treatmentPlan: {},
+  offlineQuestionnaireAnswers: [],
 };

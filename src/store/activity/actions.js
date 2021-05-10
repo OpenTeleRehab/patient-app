@@ -70,6 +70,10 @@ export const completeQuestionnaire = (id, payload) => async (
   }
 };
 
+export const completeQuestionnaireOffline = (data) => async (dispatch) => {
+  dispatch(mutation.completeQuestionnaireOfflineSuccess(data));
+};
+
 export const completeGoal = (payload) => async (dispatch, getState) => {
   dispatch(mutation.completeGoalRequest());
   const {accessToken} = getState().user;
