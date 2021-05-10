@@ -41,7 +41,11 @@ const rootReducers = {
 
 const blacklistTransform = createTransform((inboundState, key) => {
   if (key === 'user') {
-    return _.omit(inboundState, ['accessToken']);
+    return _.omit(inboundState, [
+      'accessToken',
+      'isNewRegister',
+      'isDataUpToDate',
+    ]);
   } else {
     return inboundState;
   }

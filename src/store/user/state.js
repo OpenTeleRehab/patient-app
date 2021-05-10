@@ -10,4 +10,6 @@ export const initialState = {
   phone: '',
   countryCode: '',
   pin: '',
+  isNewRegister: false,
+  isDataUpToDate: true,
 };

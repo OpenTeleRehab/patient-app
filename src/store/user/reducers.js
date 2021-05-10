@@ -28,6 +28,8 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         otpCode: action.data.code,
         isLoading: false,
+        isNewRegister: true,
+        isDataUpToDate: true,
       });
     }
     case 'USER_CHANGE_PIN_NUMBER_SUCCEED':
@@ -39,10 +41,11 @@ export const user = (state = initialState, action) => {
         initialRouteName: ROUTES.LOGIN,
         isLoading: false,
         pin: action.pin,
+        isNewRegister: false,
+        isDataUpToDate: true,
       });
     }
-    case 'USER_LOGOUT_SUCCEED':
-    case 'CLEAR_ACCESS_TOKEN_SUCCEED': {
+    case 'USER_LOGOUT_SUCCEED': {
       return Object.assign({}, state, {
         accessToken: '',
         initialRouteName: ROUTES.LOGIN,
@@ -95,6 +98,7 @@ export const user = (state = initialState, action) => {
     case 'GENERATE_FAKE_ACCESS_TOKEN_SUCCESS': {
       return Object.assign({}, state, {
         accessToken: 'FAKE_ACCESS_TOKEN',
+        isDataUpToDate: false,
       });
     }
     default:
