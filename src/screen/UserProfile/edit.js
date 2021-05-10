@@ -18,6 +18,7 @@ import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
 import SelectPicker from '../../components/Common/SelectPicker';
 import _ from 'lodash';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
@@ -39,6 +40,7 @@ const UserProfileEdit = ({navigation}) => {
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [originUserInfo, setOrginUserInfo] = useState(null);
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (profile) {
@@ -289,7 +291,9 @@ const UserProfileEdit = ({navigation}) => {
             title={translate('common.save')}
             onPress={handleSave}
             containerStyle={styles.marginTopMd}
-            disabled={_.isEqual(userInfo, originUserInfo)}
+            disabled={
+              !netInfo.isConnected || _.isEqual(userInfo, originUserInfo)
+            }
           />
         </View>
       </ScrollView>

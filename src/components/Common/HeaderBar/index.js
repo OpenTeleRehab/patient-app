@@ -8,7 +8,6 @@ import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import {useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
-import colors from '../../../assets/styles/variables/colors';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getTranslate} from 'react-localize-redux';
 
@@ -90,16 +89,8 @@ const HeaderBar = (props) => {
 
   return (
     <>
-      {netInfo.isConnected === false && (
-        <Text
-          style={[
-            styles.textCenter,
-            styles.bgLight,
-            styles.marginTopLg,
-            {color: colors.orangeDark},
-          ]}>
-          {translate('common.offline')}
-        </Text>
+      {netInfo.type !== 'unknown' && netInfo.isConnected === false && (
+        <Text style={styles.offlineText}>{translate('common.offline')}</Text>
       )}
       <Header
         leftComponent={renderLeftComponent()}
@@ -114,7 +105,9 @@ const HeaderBar = (props) => {
             videoCall.status === CALL_STATUS.VIDEO_ENDED)
             ? styles.headerWorkAround
             : styles.noneBorderBottom,
-          netInfo.isConnected === false && styles.headerWorkAround,
+          netInfo.type !== 'unknown' &&
+            netInfo.isConnected === false &&
+            styles.headerWorkAround,
         ]}
       />
     </>
