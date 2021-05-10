@@ -28,4 +28,11 @@ export default {
     color: variables.white,
     fontSize: 17,
   },
+  offlineText: {
+    textAlign: 'center',
+    backgroundColor: variables.white,
+    color: variables.warning,
+    paddingTop: 26,
+    paddingBottom: 3,
+  },
 };
