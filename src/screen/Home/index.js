@@ -19,6 +19,7 @@ import {getTherapistRequest} from '../../store/therapist/actions';
 import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import settings from '../../../config/settings';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -27,7 +28,9 @@ const Home = ({navigation}) => {
   const {profile} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
-  const {treatmentPlan, isLoading} = useSelector((state) => state.activity);
+  const {treatmentPlan, isLoading, offlineQuestionnaireAnswers} = useSelector(
+    (state) => state.activity,
+  );
   const isDrawerOpen = useIsDrawerOpen();
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [upComingAppointment, setUpComingAppointment] = useState();
@@ -35,6 +38,7 @@ const Home = ({navigation}) => {
     all: 0,
     completed: 0,
   });
+  const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
     if (languages.length) {
@@ -54,8 +58,11 @@ const Home = ({navigation}) => {
   }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
-    dispatch(getTreatmentPlanRequest());
-  }, [dispatch]);
+    if (isOnline) {
+      dispatch(getAppointmentsListRequest({page_size: 10}));
+      dispatch(getTreatmentPlanRequest());
+    }
+  }, [dispatch, isOnline, offlineQuestionnaireAnswers]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
@@ -68,11 +75,17 @@ const Home = ({navigation}) => {
       const countAll = activities.length;
       if (countAll) {
         const countCompleted = activities.filter((a) => a.completed).length;
-        setTodaySummary({all: countAll, completed: countCompleted});
-        setCompletedPercentage((countCompleted * 100) / countAll);
+        const countOfflineCompleted = _.intersectionBy(
+          activities,
+          offlineQuestionnaireAnswers,
+          'id',
+        ).length;
+        const totalCompletedCount = countOfflineCompleted + countCompleted;
+        setTodaySummary({all: countAll, completed: totalCompletedCount});
+        setCompletedPercentage((totalCompletedCount * 100) / countAll);
       }
     }
-  }, [treatmentPlan]);
+  }, [treatmentPlan, offlineQuestionnaireAnswers]);
 
   useEffect(() => {
     if (profile) {
@@ -82,10 +95,6 @@ const Home = ({navigation}) => {
       dispatch(getLanguageRequest());
     }
   }, [profile, dispatch]);
-
-  useEffect(() => {
-    dispatch(getAppointmentsListRequest({page_size: 10}));
-  }, [dispatch]);
 
   useEffect(() => {
     // Filter up-coming appointments for offline data reason

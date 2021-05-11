@@ -45,28 +45,50 @@ const containerPaddingBottom = {
   paddingBottom: 100,
 };
 
-const renderPaginateDots = (activities, activeIndex, theme) =>
-  activities.map((activity, i) => (
-    <View style={styles.activityPaginationView} key={i}>
-      <View style={styles.activityPaginationIconContainer}>
-        {i === activeIndex && (
-          <Icon
-            name="caret-down"
-            color={theme.colors.orangeDark}
-            type="font-awesome-5"
-          />
-        )}
+const renderPaginateDots = (
+  activities,
+  activeIndex,
+  theme,
+  offlineQuestionnaireAnswers,
+) =>
+  activities.map((activity, i) => {
+    let isCompletedOffline = false;
+    if (!activity.completed) {
+      const offlineQuestionnaireAnswer = offlineQuestionnaireAnswers.find(
+        (item) => {
+          return activity.id === parseInt(item.id, 10);
+        },
+      );
+
+      if (offlineQuestionnaireAnswer) {
+        isCompletedOffline = true;
+      }
+    }
+
+    return (
+      <View style={styles.activityPaginationView} key={i}>
+        <View style={styles.activityPaginationIconContainer}>
+          {i === activeIndex && (
+            <Icon
+              name="caret-down"
+              color={theme.colors.orangeDark}
+              type="font-awesome-5"
+            />
+          )}
+        </View>
+        <Button
+          type={activity.completed || isCompletedOffline ? 'solid' : 'outline'}
+          buttonStyle={styles.activityPaginationButton}
+        />
       </View>
-      <Button
-        type={activity.completed ? 'solid' : 'outline'}
-        buttonStyle={styles.activityPaginationButton}
-      />
-    </View>
-  ));
+    );
+  });
 
 const Activity = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
-  const {treatmentPlan} = useSelector((state) => state.activity);
+  const {treatmentPlan, offlineQuestionnaireAnswers} = useSelector(
+    (state) => state.activity,
+  );
   const {accessToken} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
@@ -241,12 +263,22 @@ const Activity = ({theme, navigation}) => {
               inactiveDotOpacity={0.4}
               inactiveDotScale={0.6}
               renderDots={(activeIndex) =>
-                renderPaginateDots(activities, activeIndex, theme)
+                renderPaginateDots(
+                  activities,
+                  activeIndex,
+                  theme,
+                  offlineQuestionnaireAnswers,
+                )
               }
             />
             {activities.length === 1 && (
               <View style={styles.activityPaginationContainer}>
-                {renderPaginateDots(activities, 0, theme)}
+                {renderPaginateDots(
+                  activities,
+                  0,
+                  theme,
+                  offlineQuestionnaireAnswers,
+                )}
               </View>
             )}
             <View style={styles.activityTotalNumberContainer}>
@@ -282,11 +314,15 @@ const Activity = ({theme, navigation}) => {
                     translate,
                   );
                 } else if (props.item.type === ACTIVITY_TYPES.QUESTIONNAIRE) {
-                  return RenderQuestionnaireCard(
-                    props,
-                    theme,
-                    navigation,
-                    translate,
+                  return (
+                    <RenderQuestionnaireCard
+                      item={props.item}
+                      index={props.index}
+                      theme={theme}
+                      navigation={navigation}
+                      translate={translate}
+                      offlineQuestionnaireAnswers={offlineQuestionnaireAnswers}
+                    />
                   );
                 } else if (props.item.type === ACTIVITY_TYPES.GOAL) {
                   return RenderGoalCard(props, theme, navigation, translate);

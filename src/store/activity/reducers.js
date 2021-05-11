@@ -33,6 +33,11 @@ export const activity = (state = initialState, action) => {
       return Object.assign({}, state, {
         isLoading: false,
       });
+    case 'COMPLETE_QUESTIONNAIRE_OFFLINE_SUCCEED': {
+      return Object.assign({}, state, {
+        offlineQuestionnaireAnswers: action.data,
+      });
+    }
     default:
       return state;
   }

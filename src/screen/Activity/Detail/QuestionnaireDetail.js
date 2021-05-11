@@ -9,7 +9,11 @@ import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 import RenderQuestion from '../_Partials/RenderQuestion';
-import {completeQuestionnaire} from '../../../store/activity/actions';
+import {
+  completeQuestionnaire,
+  completeQuestionnaireOffline,
+} from '../../../store/activity/actions';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   questions.map((question, i) => (
@@ -40,12 +44,15 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {id} = route.params;
-  const {treatmentPlan} = useSelector((state) => state.activity);
-  const {isLoading} = useSelector((state) => state.activity);
+  const {treatmentPlan, isLoading, offlineQuestionnaireAnswers} = useSelector(
+    (state) => state.activity,
+  );
   const [questionnaire, setQuestionnaire] = useState(undefined);
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [question, setQuestion] = useState(undefined);
   const [patientAnswers, setPatientAnswers] = useState([]);
+  const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -67,15 +74,27 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   }, [id, treatmentPlan]);
 
   useEffect(() => {
-    if (questionnaire && questionnaire.completed) {
+    if (questionnaire) {
       let answers = [];
-      questionnaire.answers.map((item) => {
-        answers[item.question_id] = item.answer;
-      });
+      if (questionnaire.completed) {
+        questionnaire.answers.map((item) => {
+          answers[item.question_id] = item.answer;
+        });
 
-      setPatientAnswers(answers);
+        setPatientAnswers(answers);
+      } else {
+        const offlineQuestionnaireAnswer = offlineQuestionnaireAnswers.find(
+          (item) => {
+            return item.id === parseInt(id, 10);
+          },
+        );
+        if (offlineQuestionnaireAnswer) {
+          setPatientAnswers(offlineQuestionnaireAnswer.answers);
+          setIsCompletedOffline(true);
+        }
+      }
     }
-  }, [questionnaire]);
+  }, [questionnaire, id, offlineQuestionnaireAnswers]);
 
   useEffect(() => {
     if (questionnaire?.questions.length) {
@@ -96,14 +115,23 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   };
 
   const handleCompleteTask = () => {
-    const data = {
-      answers: patientAnswers,
-    };
-    dispatch(completeQuestionnaire(id, data)).then((res) => {
-      if (res) {
-        navigation.navigate(ROUTES.ACTIVITY);
-      }
-    });
+    if (isOnline) {
+      const data = {
+        answers: patientAnswers,
+      };
+      dispatch(completeQuestionnaire(id, data)).then((res) => {
+        if (res) {
+          navigation.navigate(ROUTES.ACTIVITY);
+        }
+      });
+    } else {
+      let offlineQuestionnaireAnswersObj = _.cloneDeep(
+        offlineQuestionnaireAnswers,
+      );
+      offlineQuestionnaireAnswersObj.push({id, answers: patientAnswers});
+      dispatch(completeQuestionnaireOffline(offlineQuestionnaireAnswersObj));
+      navigation.navigate(ROUTES.ACTIVITY);
+    }
   };
 
   if (!questionnaire) {
@@ -256,7 +284,9 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               titleStyle={[styles.textUpperCase]}
               iconRight={true}
               onPress={handleCompleteTask}
-              disabled={isLoading || !!questionnaire.completed}
+              disabled={
+                isLoading || !!questionnaire.completed || isCompletedOffline
+              }
             />
           )}
         </View>

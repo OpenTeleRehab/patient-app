@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Image, TouchableOpacity, View} from 'react-native';
@@ -8,12 +8,29 @@ import {SvgUri} from 'react-native-svg';
 
 const uri = Image.resolveAssetSource(questionIcon).uri;
 
-const RenderQuestionnaireCard = (
-  {item, index},
+const RenderQuestionnaireCard = ({
+  item,
+  index,
   theme,
   navigation,
   translate,
-) => {
+  offlineQuestionnaireAnswers,
+}) => {
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+
+  useEffect(() => {
+    if (item) {
+      const offlineQuestionnaireAnswer = offlineQuestionnaireAnswers.find(
+        (offlineItem) => {
+          return item.id === parseInt(offlineItem.id, 10);
+        },
+      );
+      if (offlineQuestionnaireAnswer) {
+        setIsCompletedOffline(true);
+      }
+    }
+  }, [item, offlineQuestionnaireAnswers]);
+
   return (
     <TouchableOpacity
       key={index}
@@ -26,10 +43,12 @@ const RenderQuestionnaireCard = (
         <View
           style={[
             styles.cardWithIconHeader,
-            item.completed ? styles.bgDark : styles.bgBlueDark,
+            item.completed || isCompletedOffline
+              ? styles.bgDark
+              : styles.bgBlueDark,
           ]}>
           <View style={styles.cardWithIconWrapper}>
-            {item.completed ? (
+            {item.completed || isCompletedOffline ? (
               <SvgUri width="100" height="100" uri={uri} fillOpacity={0.3} />
             ) : (
               <SvgUri width="100" height="100" uri={uri} />
@@ -37,7 +56,9 @@ const RenderQuestionnaireCard = (
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed ? styles.textDefault : styles.textLight,
+                item.completed || isCompletedOffline
+                  ? styles.textDefault
+                  : styles.textLight,
               ]}
               numberOfLines={1}>
               {translate('activity.questionnaire')}
@@ -55,7 +76,7 @@ const RenderQuestionnaireCard = (
             {translate('activity.questions')}
           </Text>
         </View>
-        {item.completed ? (
+        {item.completed || isCompletedOffline ? (
           <View style={styles.activityCardFooterContainer}>
             <Icon
               name="done"
