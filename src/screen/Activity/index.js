@@ -50,6 +50,7 @@ const renderPaginateDots = (
   activeIndex,
   theme,
   offlineQuestionnaireAnswers,
+  offlineActivities,
 ) =>
   activities.map((activity, i) => {
     let isCompletedOffline = false;
@@ -59,8 +60,11 @@ const renderPaginateDots = (
           return activity.id === parseInt(item.id, 10);
         },
       );
+      const offlineActivity = offlineActivities.find((item) => {
+        return activity.id === parseInt(item.id, 10);
+      });
 
-      if (offlineQuestionnaireAnswer) {
+      if (offlineQuestionnaireAnswer || offlineActivity) {
         isCompletedOffline = true;
       }
     }
@@ -86,9 +90,11 @@ const renderPaginateDots = (
 
 const Activity = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
-  const {treatmentPlan, offlineQuestionnaireAnswers} = useSelector(
-    (state) => state.activity,
-  );
+  const {
+    treatmentPlan,
+    offlineQuestionnaireAnswers,
+    offlineActivities,
+  } = useSelector((state) => state.activity);
   const {accessToken} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
@@ -268,6 +274,7 @@ const Activity = ({theme, navigation}) => {
                   activeIndex,
                   theme,
                   offlineQuestionnaireAnswers,
+                  offlineActivities,
                 )
               }
             />
@@ -278,6 +285,7 @@ const Activity = ({theme, navigation}) => {
                   0,
                   theme,
                   offlineQuestionnaireAnswers,
+                  offlineActivities,
                 )}
               </View>
             )}
@@ -300,18 +308,26 @@ const Activity = ({theme, navigation}) => {
               data={activities}
               renderItem={(props) => {
                 if (props.item.type === ACTIVITY_TYPES.MATERIAL) {
-                  return RenderEducationMaterialCard(
-                    props,
-                    theme,
-                    navigation,
-                    translate,
+                  return (
+                    <RenderEducationMaterialCard
+                      item={props.item}
+                      index={props.index}
+                      theme={theme}
+                      navigation={navigation}
+                      translate={translate}
+                      offlineActivities={offlineActivities}
+                    />
                   );
                 } else if (props.item.type === ACTIVITY_TYPES.EXERCISE) {
-                  return RenderExerciseCard(
-                    props,
-                    theme,
-                    navigation,
-                    translate,
+                  return (
+                    <RenderExerciseCard
+                      item={props.item}
+                      index={props.index}
+                      theme={theme}
+                      navigation={navigation}
+                      translate={translate}
+                      offlineActivities={offlineActivities}
+                    />
                   );
                 } else if (props.item.type === ACTIVITY_TYPES.QUESTIONNAIRE) {
                   return (

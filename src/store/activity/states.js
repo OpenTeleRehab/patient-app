@@ -6,4 +6,6 @@ export const initialState = {
   isLoading: false,
   treatmentPlan: {},
   offlineQuestionnaireAnswers: [],
+  offlineGoals: [],
+  offlineActivities: [],
 };

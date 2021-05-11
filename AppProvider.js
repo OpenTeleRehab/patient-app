@@ -28,7 +28,10 @@ import {Alert} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import store from './src/store';
 import {forceLogout} from './src/store/auth/actions';
-import {completeQuestionnaire} from './src/store/activity/actions';
+import {
+  completeActive,
+  completeQuestionnaire,
+} from './src/store/activity/actions';
 
 let chatSocket = null;
 
@@ -42,7 +45,9 @@ const AppProvider = ({children}) => {
     (state) => state.rocketchat,
   );
   const localize = useSelector((state) => state.localize);
-  const {offlineQuestionnaireAnswers} = useSelector((state) => state.activity);
+  const {offlineQuestionnaireAnswers, offlineActivities} = useSelector(
+    (state) => state.activity,
+  );
   const translate = getTranslate(localize);
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
@@ -153,12 +158,29 @@ const AppProvider = ({children}) => {
   }, [isOnline, isDataUpToDate, translate]);
 
   useEffect(() => {
-    if (isOnline && accessToken && offlineQuestionnaireAnswers.length) {
-      offlineQuestionnaireAnswers.map((item) => {
-        dispatch(completeQuestionnaire(item.id, {answers: item.answers}));
-      });
+    if (isOnline && accessToken) {
+      if (offlineQuestionnaireAnswers.length) {
+        offlineQuestionnaireAnswers.map((item) => {
+          dispatch(completeQuestionnaire(item.id, {answers: item.answers}));
+        });
+      }
+      if (offlineActivities.length) {
+        offlineActivities.map((item) => {
+          if (item.activityObj) {
+            dispatch(completeActive(item.id, item.activityObj));
+          } else {
+            dispatch(completeActive(item.id));
+          }
+        });
+      }
     }
-  }, [dispatch, accessToken, isOnline, offlineQuestionnaireAnswers]);
+  }, [
+    dispatch,
+    accessToken,
+    isOnline,
+    offlineQuestionnaireAnswers,
+    offlineActivities,
+  ]);
 
   return loading ? (
     <SplashScreen />

@@ -16,8 +16,13 @@ import {ROUTES} from '../../../variables/constants';
 import MediaView from './MediaView';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import settings from '../../../../config/settings';
-import {completeActive} from '../../../store/activity/actions';
+import {
+  completeActive,
+  completeActivityOffline,
+} from '../../../store/activity/actions';
 import musicUrl from '../../../assets/images/music.png';
+import {useNetInfo} from '@react-native-community/netinfo';
+import _ from 'lodash';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
@@ -52,22 +57,37 @@ const RenderMediaItem = ({item, index}, setShowMedia) => {
   );
 };
 
-const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
+const TaskDetail = ({
+  theme,
+  activity,
+  activityNumber,
+  navigation,
+  isCompletedOffline,
+}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {offlineActivities} = useSelector((state) => state.activity);
 
   const {isLoading} = useSelector((state) => state.activity);
   const [showMedia, setShowMedia] = useState(undefined);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
+  const netInfo = useNetInfo();
 
   const handleCompleteTask = () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
-      dispatch(completeActive(activity.id)).then((res) => {
-        if (res) {
-          navigation.navigate(ROUTES.ACTIVITY);
-        }
-      });
+      if (netInfo.isConnected) {
+        dispatch(completeActive(activity.id)).then((res) => {
+          if (res) {
+            navigation.navigate(ROUTES.ACTIVITY);
+          }
+        });
+      } else {
+        let offlineActivityObj = _.cloneDeep(offlineActivities);
+        offlineActivityObj.push({id: activity.id});
+        dispatch(completeActivityOffline(offlineActivityObj));
+        navigation.navigate(ROUTES.ACTIVITY);
+      }
     } else {
       navigation.navigate(ROUTES.COMPLETE_EXERCISE, {
         id: activity.id,
@@ -142,7 +162,7 @@ const TaskDetail = ({theme, activity, activityNumber, navigation}) => {
         )}
         titleStyle={styles.textUpperCase}
         onPress={handleCompleteTask}
-        disabled={isLoading || !!activity.completed}
+        disabled={isLoading || !!activity.completed || isCompletedOffline}
       />
     </>
   );

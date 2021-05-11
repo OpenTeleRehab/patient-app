@@ -43,8 +43,11 @@ export const getTodayActivitySummaryRequest = () => async (
 export const completeActive = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.completeActivityRequest());
   const {accessToken} = getState().user;
+  let offlineActivities = _.cloneDeep(getState().activity.offlineActivities);
+  _.remove(offlineActivities, {id});
   const res = await Activity.completeActivity(id, payload, accessToken);
   if (res.success) {
+    dispatch(mutation.completeActivityOfflineSuccess(offlineActivities));
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeActivitySuccess());
     return true;
@@ -94,4 +97,12 @@ export const completeGoal = (payload) => async (dispatch, getState) => {
     dispatch(mutation.completeGoalFailure());
     return false;
   }
+};
+
+export const completeGoalOffline = (data) => async (dispatch) => {
+  dispatch(mutation.completeGoalOfflineSuccess(data));
+};
+
+export const completeActivityOffline = (data) => async (dispatch) => {
+  dispatch(mutation.completeActivityOfflineSuccess(data));
 };

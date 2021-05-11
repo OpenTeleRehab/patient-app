@@ -15,6 +15,14 @@ export const activity = (state = initialState, action) => {
         todaySummary: action.data,
         isLoading: false,
       });
+    case 'COMPLETE_GOAL_OFFLINE_SUCCEED':
+      return Object.assign({}, state, {
+        offlineGoals: action.data,
+      });
+    case 'COMPLETE_ACTIVITY_OFFLINE_SUCCEED':
+      return Object.assign({}, state, {
+        offlineActivities: action.data,
+      });
     case 'TODAY_ACTIVITY_SUMMARY_REQUEST':
     case 'TREATMENT_PLAN_FETCH_REQUESTED':
     case 'COMPLETE_ACTIVITY_REQUEST':
