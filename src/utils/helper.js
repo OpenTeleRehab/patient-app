@@ -41,7 +41,7 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     text = attachments[0].description;
     let baseUrl = settings.chatBaseURL;
     let authParams = `?rc_uid=${userId}&rc_token=${authToken}`;
-    if (file.type === 'video/mp4') {
+    if (file.type.includes('video/')) {
       video = encodeURI(`${baseUrl}${attachments[0].video_url}${authParams}`);
     } else {
       image = encodeURI(`${baseUrl}${attachments[0].image_url}${authParams}`);

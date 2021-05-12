@@ -9,35 +9,57 @@ import ChatTypeVideo from './ChatTypeVideo';
 import styles from '../../../assets/styles';
 import settings from '../../../../config/settings';
 
-const ChatContainer = ({chatData, theme, translate}) => {
+const ChatContainer = ({
+  chatData,
+  onShowMediaSlider,
+  onCurrentAttachment,
+  isVideoAttachment,
+  theme,
+  translate,
+}) => {
   return (
-    <Message
-      {...chatData}
-      renderBubble={() => (
-        <Bubble
-          {...chatData}
-          wrapperStyle={{
-            left: styles.chatBubbleLeft,
-            right: styles.chatBubbleRight,
-          }}
-          renderMessageText={() => (
-            <ChatTypeText chatData={chatData} translate={translate} />
-          )}
-          renderMessageImage={() => (
-            <ChatTypeImage chatData={chatData} theme={theme} />
-          )}
-          renderMessageVideo={() => <ChatTypeVideo chatData={chatData} />}
-        />
-      )}
-      renderDay={() => (
-        <Day
-          {...chatData}
-          textStyle={styles.chatDay}
-          dateFormat={settings.format.date}
-        />
-      )}
-      renderAvatar={null}
-    />
+    <>
+      <Message
+        {...chatData}
+        renderBubble={() => (
+          <Bubble
+            {...chatData}
+            wrapperStyle={{
+              left: styles.chatBubbleLeft,
+              right: styles.chatBubbleRight,
+            }}
+            renderMessageText={() => (
+              <ChatTypeText chatData={chatData} translate={translate} />
+            )}
+            renderMessageImage={() => (
+              <ChatTypeImage
+                chatData={chatData}
+                onShowMediaSlider={onShowMediaSlider}
+                onCurrentAttachment={onCurrentAttachment}
+                isVideoAttachment={isVideoAttachment}
+                theme={theme}
+              />
+            )}
+            renderMessageVideo={() => (
+              <ChatTypeVideo
+                chatData={chatData}
+                onShowMediaSlider={onShowMediaSlider}
+                onCurrentAttachment={onCurrentAttachment}
+                isVideoAttachment={isVideoAttachment}
+              />
+            )}
+          />
+        )}
+        renderDay={() => (
+          <Day
+            {...chatData}
+            textStyle={styles.chatDay}
+            dateFormat={settings.format.date}
+          />
+        )}
+        renderAvatar={null}
+      />
+    </>
   );
 };
 

@@ -19,3 +19,7 @@ export const getDownloadDirectoryPath = async () => {
   }
   return location;
 };
+
+export const getRocketChatAttachmentFilename = (attachment_url) => {
+  return attachment_url.split('/').pop().split('?')[0];
+};
