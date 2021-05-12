@@ -5,6 +5,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Text, withTheme} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useIsFocused} from '@react-navigation/native';
+import {useNetInfo} from '@react-native-community/netinfo';
 import styles from '../../assets/styles';
 import HeaderBar from '../../components/Common/HeaderBar';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,7 +18,10 @@ import RocketchatContext from '../../context/RocketchatContext';
 import {sendNewMessage} from '../../utils/rocketchat';
 import {updateIndicatorList} from '../../store/indicator/actions';
 import MediaPicker from '../../components/MediaPicker';
-import {postAttachmentMessage} from '../../store/rocketchat/actions';
+import {
+  postAttachmentMessage,
+  prependNewMessage,
+} from '../../store/rocketchat/actions';
 import ChatContainer from './_Partials/ChatContainer';
 import ChatToolbar from './_Partials/ChatToolbar';
 import ChatMediaSlider from './_Partials/ChatMediaSlider';
@@ -40,6 +44,7 @@ const ChatOrCall = ({navigation, theme}) => {
   const [videoAttachments, setVideoAttachments] = useState(undefined);
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
+  const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
     navigation.setOptions({tabBarVisible: false});
@@ -70,12 +75,15 @@ const ChatOrCall = ({navigation, theme}) => {
       GiftedChat.append(previousMessages, newMessage),
     );
     newMessage[0].rid = selectedRoom.rid;
-    sendNewMessage(chatSocket, newMessage[0], profile.id);
+    isOnline
+      ? sendNewMessage(chatSocket, newMessage[0], profile.id)
+      : dispatch(prependNewMessage(newMessage[0]));
   };
 
   const onSendAttachment = (caption, file, type) => {
     const newMessage = {
       _id: generateHash(),
+      rid: selectedRoom.rid,
       createdAt: new Date(),
       pending: true,
       text: caption,
@@ -101,7 +109,10 @@ const ChatOrCall = ({navigation, theme}) => {
         name: file.uri.replace(/^.*[\\/]/, ''),
       },
     };
-    dispatch(postAttachmentMessage(selectedRoom.rid, attachment));
+    newMessage.attachment = attachment;
+    isOnline
+      ? dispatch(postAttachmentMessage(selectedRoom.rid, attachment))
+      : dispatch(prependNewMessage(newMessage));
   };
 
   const renderMessage = (chatProps) => {

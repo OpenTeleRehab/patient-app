@@ -54,7 +54,7 @@ const blacklistTransform = createTransform((inboundState, key) => {
 const persistConfig = {
   key: 'OrgHiOpenRehab',
   storage: AsyncStorage,
-  blacklist: ['rocketchat'],
+  blacklist: ['indicator'],
   transforms: [blacklistTransform],
 };
 

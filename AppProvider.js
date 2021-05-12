@@ -12,7 +12,11 @@ import {getLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
-import {initialChatSocket, loadHistoryInRoom} from './src/utils/rocketchat';
+import {
+  initialChatSocket,
+  loadHistoryInRoom,
+  sendNewMessage,
+} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
 import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import {
@@ -21,6 +25,7 @@ import {
   getChatUsersStatus,
   getLastMessages,
   setChatSubscribeIds,
+  postAttachmentMessage,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
@@ -41,9 +46,12 @@ const AppProvider = ({children}) => {
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
-  const {chatAuth, chatRooms, selectedRoom} = useSelector(
-    (state) => state.rocketchat,
-  );
+  const {
+    messages: chatMessages,
+    chatAuth,
+    chatRooms,
+    selectedRoom,
+  } = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const {offlineQuestionnaireAnswers, offlineActivities} = useSelector(
     (state) => state.activity,
@@ -104,7 +112,13 @@ const AppProvider = ({children}) => {
   }, [loading, language, messages, dispatch]);
 
   useEffect(() => {
-    if (!loading && accessToken && profile.chat_user_id && profile.chat_rooms) {
+    if (
+      isOnline &&
+      !loading &&
+      accessToken &&
+      profile.chat_user_id &&
+      profile.chat_rooms
+    ) {
       const subscribeIds = {
         loginId: getUniqueId(profile.id),
         roomMessageId: getUniqueId(profile.id),
@@ -118,7 +132,7 @@ const AppProvider = ({children}) => {
         profile.chat_password,
       );
     }
-  }, [dispatch, loading, accessToken, profile]);
+  }, [isOnline, dispatch, loading, accessToken, profile]);
 
   useEffect(() => {
     if (chatAuth !== undefined) {
@@ -141,6 +155,25 @@ const AppProvider = ({children}) => {
       }
     }
   }, [dispatch, chatRooms, chatAuth]);
+
+  useEffect(() => {
+    if (
+      isOnline &&
+      chatSocket !== null &&
+      chatSocket.readyState === chatSocket.OPEN &&
+      selectedRoom
+    ) {
+      const pendingChatMessages = chatMessages
+        .filter((item) => item.pending)
+        .reverse();
+
+      pendingChatMessages.map((item) => {
+        item.attachment !== undefined
+          ? dispatch(postAttachmentMessage(selectedRoom.rid, item.attachment))
+          : sendNewMessage(chatSocket, item, profile.id);
+      });
+    }
+  }, [dispatch, isOnline, chatMessages, profile, selectedRoom]);
 
   useEffect(() => {
     if (
