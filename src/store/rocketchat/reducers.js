@@ -36,9 +36,7 @@ export const rocketchat = (state = initialState, action) => {
         videoCall: action.data,
       });
     }
-    case 'CLEAR_CHAT_DATA_SUCCEED': {
-      return initialState;
-    }
+    case 'CLEAR_CHAT_DATA_SUCCEED':
     default:
       return state;
   }

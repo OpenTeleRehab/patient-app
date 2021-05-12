@@ -82,7 +82,7 @@ const AuthStackNavigator = () => {
 };
 
 const AppTabNavigator = (props) => {
-  const {theme, enabledChat} = props;
+  const {theme} = props;
   const indicator = useSelector((state) => state.indicator);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -107,9 +107,6 @@ const AppTabNavigator = (props) => {
         safeAreaInsets: {bottom: 5},
       }}>
       {tabs.map((route, index) => {
-        if (route.name === ROUTES.MESSAGE && !enabledChat) {
-          return null;
-        }
         return (
           <AppTab.Screen
             key={index}
@@ -132,8 +129,6 @@ const AppTabNavigator = (props) => {
 
 const AppNavigation = (props) => {
   const {accessToken} = useSelector((state) => state.user);
-  const {isChatConnected} = useSelector((state) => state.indicator);
-  const {chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
 
   // check required permission(s) on android
   const checkAndroidPermission = useCallback(async () => {
@@ -154,17 +149,9 @@ const AppNavigation = (props) => {
     }
   }, [checkAndroidPermission]);
 
-  const isChatEnabled = () => {
-    return isChatConnected && chatAuth && chatRooms.length > 0;
-  };
-
   return (
     <NavigationContainer>
-      {accessToken ? (
-        <AppTabNavigator {...props} enabledChat={isChatEnabled()} />
-      ) : (
-        <AuthStackNavigator />
-      )}
+      {accessToken ? <AppTabNavigator {...props} /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 };
