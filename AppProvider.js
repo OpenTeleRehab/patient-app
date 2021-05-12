@@ -89,7 +89,10 @@ const AppProvider = ({children}) => {
             messages['error.connection.alert_content'],
           );
         } else {
-          setLoading(false);
+          // Delay of the splash screen so that partner logo is visible
+          setTimeout(() => {
+            setLoading(false);
+          }, 3000);
         }
       });
     }
