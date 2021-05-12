@@ -103,6 +103,20 @@ const completeQuestionnaireOfflineSuccess = (data) => {
   };
 };
 
+const completeGoalOfflineSuccess = (data) => {
+  return {
+    type: 'COMPLETE_GOAL_OFFLINE_SUCCEED',
+    data,
+  };
+};
+
+const completeActivityOfflineSuccess = (data) => {
+  return {
+    type: 'COMPLETE_ACTIVITY_OFFLINE_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   treatmentPlanFetchRequest,
   treatmentPlanFetchSuccess,
@@ -120,4 +134,6 @@ export const mutation = {
   completeGoalSuccess,
   completeGoalFailure,
   completeQuestionnaireOfflineSuccess,
+  completeActivityOfflineSuccess,
+  completeGoalOfflineSuccess,
 };

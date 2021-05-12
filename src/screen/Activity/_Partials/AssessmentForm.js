@@ -10,8 +10,13 @@ import {Button, Slider, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import NumericInput from '../../../components/Common/NumericInput';
 
-import {completeActive} from '../../../store/activity/actions';
+import {
+  completeActive,
+  completeActivityOffline,
+} from '../../../store/activity/actions';
 import {ROUTES} from '../../../variables/constants';
+import {useNetInfo} from '@react-native-community/netinfo';
+import _ from 'lodash';
 
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
@@ -21,32 +26,62 @@ const AssessmentForm = ({activity, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {offlineActivities} = useSelector((state) => state.activity);
 
   const {isLoading} = useSelector((state) => state.activity);
   const [painLevel, setPainLevel] = useState(1);
   const [numberOfSets, setNumberOfSets] = useState(0);
   const [numberOfReps, setNumberOfReps] = useState(0);
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const netInfo = useNetInfo();
 
   useEffect(() => {
-    if (activity && activity.completed) {
-      setPainLevel(activity.pain_level);
-      setNumberOfSets(activity.completed_sets);
-      setNumberOfReps(activity.completed_reps);
+    if (activity) {
+      if (activity.completed) {
+        setPainLevel(activity.pain_level);
+        setNumberOfSets(activity.completed_sets);
+        setNumberOfReps(activity.completed_reps);
+      } else {
+        const offlineActivity = offlineActivities.find((item) => {
+          return item.id === activity.id;
+        });
+        if (offlineActivity && offlineActivity.activityObj) {
+          const activityObj = offlineActivity.activityObj;
+          setPainLevel(activityObj.pain_level);
+          setNumberOfSets(activityObj.completed_sets);
+          setNumberOfReps(activityObj.completed_reps);
+          setIsCompletedOffline(true);
+        }
+      }
     }
-  }, [activity]);
+  }, [activity, offlineActivities]);
 
   const handleSubmit = () => {
-    dispatch(
-      completeActive(activity.id, {
-        pain_level: activity.get_pain_level ? painLevel : null,
-        sets: activity.include_feedback ? numberOfSets : null,
-        reps: activity.include_feedback ? numberOfReps : null,
-      }),
-    ).then((res) => {
-      if (res) {
-        navigation.navigate(ROUTES.ACTIVITY);
-      }
-    });
+    if (netInfo.isConnected) {
+      dispatch(
+        completeActive(activity.id, {
+          pain_level: activity.get_pain_level ? painLevel : null,
+          sets: activity.include_feedback ? numberOfSets : null,
+          reps: activity.include_feedback ? numberOfReps : null,
+        }),
+      ).then((res) => {
+        if (res) {
+          navigation.navigate(ROUTES.ACTIVITY);
+        }
+      });
+    } else {
+      let offlineActivitiesObj = _.cloneDeep(offlineActivities);
+      offlineActivitiesObj.push({
+        id: activity.id,
+        activityObj: {
+          pain_level: activity.get_pain_level ? painLevel : null,
+          sets: activity.include_feedback ? numberOfSets : null,
+          reps: activity.include_feedback ? numberOfReps : null,
+        },
+      });
+      dispatch(completeActivityOffline(offlineActivitiesObj));
+      navigation.navigate(ROUTES.ACTIVITY);
+    }
     navigation.navigate(ROUTES.ACTIVITY);
   };
 
@@ -69,7 +104,7 @@ const AssessmentForm = ({activity, navigation}) => {
             minimumValue={1}
             maximumValue={10}
             step={1}
-            disabled={!!activity?.completed}
+            disabled={!!activity?.completed || isCompletedOffline}
           />
         </View>
       )}
@@ -87,7 +122,7 @@ const AssessmentForm = ({activity, navigation}) => {
                 value={numberOfSets}
                 onChange={(num) => setNumberOfSets(num)}
                 onLongPress={(num) => setNumberOfSets(num)}
-                disabled={!!activity?.completed}
+                disabled={!!activity?.completed || isCompletedOffline}
               />
               <Text style={styles.fontSizeMd}>(recommend {activity.sets})</Text>
             </View>
@@ -97,14 +132,14 @@ const AssessmentForm = ({activity, navigation}) => {
                 value={numberOfReps}
                 onChange={(num) => setNumberOfReps(num)}
                 onLongPress={(num) => setNumberOfReps(num)}
-                disabled={!!activity?.completed}
+                disabled={!!activity?.completed || isCompletedOffline}
               />
               <Text style={styles.fontSizeMd}>(recommend {activity.reps})</Text>
             </View>
           </View>
         </View>
       )}
-      {!activity?.completed && (
+      {!activity?.completed && !isCompletedOffline && (
         <View style={styles.marginTopLg}>
           <Button
             title={translate('common.submit')}

@@ -1,15 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 
-const RenderEducationMaterialCard = (
-  {item, index},
+const RenderEducationMaterialCard = ({
+  item,
+  index,
   theme,
   navigation,
   translate,
-) => {
+  offlineActivities,
+}) => {
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+
+  useEffect(() => {
+    if (item) {
+      const offlineActivity = offlineActivities.find((offlineItem) => {
+        return item.id === parseInt(offlineItem.id, 10);
+      });
+      if (offlineActivity) {
+        setIsCompletedOffline(true);
+      }
+    }
+  }, [item, offlineActivities]);
+
   return (
     <TouchableOpacity
       key={index}
@@ -23,19 +38,27 @@ const RenderEducationMaterialCard = (
         <View
           style={[
             styles.cardWithIconHeader,
-            item.completed ? styles.bgGrey : styles.bgPrimary,
+            item.completed || isCompletedOffline
+              ? styles.bgGrey
+              : styles.bgPrimary,
           ]}>
           <View style={styles.cardWithIconWrapper}>
             <Icon
               name="description"
-              color={item.completed ? theme.colors.black : theme.colors.white}
+              color={
+                item.completed || isCompletedOffline
+                  ? theme.colors.black
+                  : theme.colors.white
+              }
               size={100}
               type="material"
             />
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed ? styles.textDefault : styles.textLight,
+                item.completed || isCompletedOffline
+                  ? styles.textDefault
+                  : styles.textLight,
               ]}
               numberOfLines={1}>
               {translate('activity.material')}
@@ -45,7 +68,9 @@ const RenderEducationMaterialCard = (
             style={[
               styles.marginLeft,
               styles.marginY,
-              item.completed ? styles.textDefault : styles.textLight,
+              item.completed || isCompletedOffline
+                ? styles.textDefault
+                : styles.textLight,
             ]}>
             {item.file ? translate(item.file.fileGroupType) : ''}
           </Text>
@@ -57,7 +82,7 @@ const RenderEducationMaterialCard = (
             {item.title}
           </Text>
         </View>
-        {item.completed ? (
+        {item.completed || isCompletedOffline ? (
           <View style={styles.activityCardFooterContainer}>
             <Icon
               name="done"

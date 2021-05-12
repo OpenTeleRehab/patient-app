@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text, Image} from 'react-native-elements';
@@ -32,7 +32,27 @@ const ImageCard = ({files, grayscale}) => {
   return <Card.Image source={{uri}} style={[styles.activityCardImage]} />;
 };
 
-const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
+const RenderExerciseCard = ({
+  item,
+  index,
+  theme,
+  navigation,
+  translate,
+  offlineActivities,
+}) => {
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+
+  useEffect(() => {
+    if (item) {
+      const offlineActivity = offlineActivities.find((offlineItem) => {
+        return item.id === parseInt(offlineItem.id, 10);
+      });
+      if (offlineActivity) {
+        setIsCompletedOffline(true);
+      }
+    }
+  }, [item, offlineActivities]);
+
   return (
     <TouchableOpacity
       key={index}
@@ -43,7 +63,10 @@ const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
         })
       }>
       <Card containerStyle={styles.activityCardContainer}>
-        <ImageCard files={item.files} grayscale={item.completed} />
+        <ImageCard
+          files={item.files}
+          grayscale={item.completed || isCompletedOffline}
+        />
         <View style={styles.activityCardInfoWrapper}>
           <Text
             style={[styles.activityCardTitle, styles.textDefaultBold]}
@@ -61,7 +84,7 @@ const RenderExerciseCard = ({item, index}, theme, navigation, translate) => {
             )}
           </Text>
         </View>
-        {item.completed ? (
+        {item.completed || isCompletedOffline ? (
           <View style={styles.activityCardFooterContainer}>
             <Icon
               name="done"
