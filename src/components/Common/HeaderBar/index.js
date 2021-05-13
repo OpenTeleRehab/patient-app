@@ -1,24 +1,36 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image} from 'react-native';
 import {Header, Text, Button, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import {useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
-import {useNetInfo} from '@react-native-community/netinfo';
 import {getTranslate} from 'react-localize-redux';
+import NetInfo from '@react-native-community/netinfo';
+
+let currentConnectionStatus = null;
+NetInfo.fetch().then((state) => {
+  currentConnectionStatus = state.isConnected;
+});
 
 const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
   const {theme, title, onGoBack, leftContent, rightContent} = props;
   const {videoCall} = useSelector((state) => state.rocketchat);
-  const netInfo = useNetInfo();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const [isOnline, setIsOnline] = useState(currentConnectionStatus);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsOnline(state.isConnected);
+    });
+    unsubscribe();
+  });
 
   const renderLeftComponent = () => {
     if (onGoBack) {
@@ -89,7 +101,7 @@ const HeaderBar = (props) => {
 
   return (
     <>
-      {netInfo.type !== 'unknown' && netInfo.isConnected === false && (
+      {!isOnline && (
         <Text style={styles.offlineText}>{translate('common.offline')}</Text>
       )}
       <Header
@@ -105,9 +117,7 @@ const HeaderBar = (props) => {
             videoCall.status === CALL_STATUS.VIDEO_ENDED)
             ? styles.headerWorkAround
             : styles.noneBorderBottom,
-          netInfo.type !== 'unknown' &&
-            netInfo.isConnected === false &&
-            styles.headerWorkAround,
+          !isOnline && styles.headerWorkAround,
         ]}
       />
     </>

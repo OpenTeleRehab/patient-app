@@ -51,6 +51,7 @@ const renderPaginateDots = (
   theme,
   offlineQuestionnaireAnswers,
   offlineActivities,
+  offlineGoals,
 ) =>
   activities.map((activity, i) => {
     let isCompletedOffline = false;
@@ -64,7 +65,15 @@ const renderPaginateDots = (
         return activity.id === parseInt(item.id, 10);
       });
 
-      if (offlineQuestionnaireAnswer || offlineActivity) {
+      const offlineGoal = offlineGoals.find((item) => {
+        return (
+          activity.activity_id === parseInt(item.goal_id, 10) &&
+          activity.day === item.day &&
+          activity.week === item.week
+        );
+      });
+
+      if (offlineQuestionnaireAnswer || offlineActivity || offlineGoal) {
         isCompletedOffline = true;
       }
     }
@@ -94,6 +103,7 @@ const Activity = ({theme, navigation}) => {
     treatmentPlan,
     offlineQuestionnaireAnswers,
     offlineActivities,
+    offlineGoals,
   } = useSelector((state) => state.activity);
   const {accessToken} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
@@ -275,6 +285,7 @@ const Activity = ({theme, navigation}) => {
                   theme,
                   offlineQuestionnaireAnswers,
                   offlineActivities,
+                  offlineGoals,
                 )
               }
             />
@@ -286,6 +297,7 @@ const Activity = ({theme, navigation}) => {
                   theme,
                   offlineQuestionnaireAnswers,
                   offlineActivities,
+                  offlineGoals,
                 )}
               </View>
             )}
@@ -341,7 +353,16 @@ const Activity = ({theme, navigation}) => {
                     />
                   );
                 } else if (props.item.type === ACTIVITY_TYPES.GOAL) {
-                  return RenderGoalCard(props, theme, navigation, translate);
+                  return (
+                    <RenderGoalCard
+                      item={props.item}
+                      index={props.index}
+                      theme={theme}
+                      navigation={navigation}
+                      translate={translate}
+                      offlineGoals={offlineGoals}
+                    />
+                  );
                 }
               }}
               sliderWidth={SLIDER_WIDTH}

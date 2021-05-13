@@ -72,7 +72,7 @@ const containerPaddingStyle = {
 const Goal = ({theme}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {treatmentPlan} = useSelector((state) => state.activity);
+  const {treatmentPlan, offlineGoals} = useSelector((state) => state.activity);
   const [selectedGoal, setSelectedGoal] = useState(0);
   const [goal, setGoal] = useState(undefined);
   const [activities, setActivities] = useState([]);
@@ -108,7 +108,17 @@ const Goal = ({theme}) => {
         if (goal.frequency === 'weekly') {
           labels.push(`W${w}`);
           const activity = _.find(activities, {activity_id: goal.id, week: w});
-          data.push(activity ? activity.satisfaction || 0 : 0);
+          const offlineGoal = _.find(offlineGoals, {
+            activity_id: goal.id,
+            week: w,
+          });
+          data.push(
+            activity
+              ? activity.satisfaction || 0
+              : offlineGoal
+              ? offlineGoal.satisfaction || 0
+              : 0,
+          );
         } else {
           for (let d = 1; d <= 7; d++) {
             labels.push(`D${(w - 1) * 7 + d}`);
@@ -117,7 +127,18 @@ const Goal = ({theme}) => {
               week: w,
               day: d,
             });
-            data.push(activity ? activity.satisfaction || 0 : 0);
+            const offlineGoal = _.find(offlineGoals, {
+              activity_id: goal.id,
+              week: w,
+              day: d,
+            });
+            data.push(
+              activity
+                ? activity.satisfaction || 0
+                : offlineGoal
+                ? offlineGoal.satisfaction || 0
+                : 0,
+            );
           }
         }
       }
@@ -132,7 +153,7 @@ const Goal = ({theme}) => {
         ],
       });
     }
-  }, [goal, numberOfWeeks, activities]);
+  }, [goal, numberOfWeeks, activities, offlineGoals]);
 
   return (
     <>

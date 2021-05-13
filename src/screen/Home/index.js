@@ -33,6 +33,7 @@ const Home = ({navigation}) => {
     isLoading,
     offlineQuestionnaireAnswers,
     offlineActivities,
+    offlineGoals,
   } = useSelector((state) => state.activity);
   const isDrawerOpen = useIsDrawerOpen();
   const [completedPercentage, setCompletedPercentage] = useState(0);
@@ -88,15 +89,30 @@ const Home = ({navigation}) => {
           offlineActivities,
           'id',
         ).length;
+        const countOfflineGoalsCompleted = _.intersectionWith(
+          activities,
+          offlineGoals,
+          (a, o) =>
+            a.activity_id === o.activity_id &&
+            a.day === o.day &&
+            a.week === o.week,
+        ).length;
+
         const totalCompletedCount =
           countOfflineCompleted +
           countCompleted +
-          countOfflineActivitiesCompleted;
+          countOfflineActivitiesCompleted +
+          countOfflineGoalsCompleted;
         setTodaySummary({all: countAll, completed: totalCompletedCount});
         setCompletedPercentage((totalCompletedCount * 100) / countAll);
       }
     }
-  }, [treatmentPlan, offlineQuestionnaireAnswers, offlineActivities]);
+  }, [
+    treatmentPlan,
+    offlineQuestionnaireAnswers,
+    offlineActivities,
+    offlineGoals,
+  ]);
 
   useEffect(() => {
     if (profile) {

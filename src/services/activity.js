@@ -34,7 +34,7 @@ const completeGoal = async (payload, accessToken) => {
   return await callApi(
     '/treatment-plan/complete_goal',
     accessToken,
-    {...payload},
+    JSON.stringify(Array.isArray(payload) ? payload : [payload]),
     'post',
   );
 };

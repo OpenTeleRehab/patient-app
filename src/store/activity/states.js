@@ -7,5 +7,6 @@ export const initialState = {
   treatmentPlan: {},
   offlineQuestionnaireAnswers: [],
   offlineGoals: [],
+  // offlineActivities: offline exercises and education materials
   offlineActivities: [],
 };

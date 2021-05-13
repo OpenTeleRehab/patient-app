@@ -1,10 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
 
-const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
+const RenderGoalCard = ({
+  item,
+  index,
+  theme,
+  navigation,
+  translate,
+  offlineGoals,
+}) => {
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+
+  useEffect(() => {
+    if (item) {
+      const offlineGoal = offlineGoals.find((offlineItem) => {
+        return (
+          item.activity_id === parseInt(offlineItem.goal_id, 10) &&
+          item.day === offlineItem.day &&
+          item.week === offlineItem.week
+        );
+      });
+
+      if (offlineGoal) {
+        setIsCompletedOffline(true);
+      } else {
+        setIsCompletedOffline(false);
+      }
+    }
+  }, [item, offlineGoals]);
+
   return (
     <TouchableOpacity
       key={index}
@@ -20,7 +47,7 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
         <View
           style={[
             styles.cardWithIconHeader,
-            item.completed
+            item.completed || isCompletedOffline
               ? styles.bgDark
               : {backgroundColor: theme.colors.blueLight3},
           ]}>
@@ -28,7 +55,9 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
             <Icon
               name="trending-up"
               color={
-                item.completed ? theme.colors.black : theme.colors.blueDark
+                item.completed || isCompletedOffline
+                  ? theme.colors.black
+                  : theme.colors.blueDark
               }
               size={100}
               type="material"
@@ -36,7 +65,7 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
             <Text
               style={[
                 styles.cardWithIconHeaderTitle,
-                item.completed
+                item.completed || isCompletedOffline
                   ? styles.textDefault
                   : {color: theme.colors.blueDark},
               ]}
@@ -55,7 +84,7 @@ const RenderGoalCard = ({item, index}, theme, navigation, translate) => {
             {translate('activity.goal.' + item.frequency)}
           </Text>
         </View>
-        {item.completed ? (
+        {item.completed || isCompletedOffline ? (
           <View style={styles.activityCardFooterContainer}>
             <Icon
               name="done"

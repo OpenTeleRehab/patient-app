@@ -17,10 +17,14 @@ import {
 
 import styles from '../../../assets/styles';
 
-import {completeGoal} from '../../../store/activity/actions';
+import {
+  completeGoal,
+  completeGoalOffline,
+} from '../../../store/activity/actions';
 import {ACTIVITY_TYPES, ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
 import HeaderBar from '../../../components/Common/HeaderBar';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const styleButtonContainer = {
   position: 'absolute',
@@ -33,9 +37,11 @@ const AssessmentForm = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {activity_id, activityNumber, day, week} = route.params;
-  const {treatmentPlan} = useSelector((state) => state.activity);
+  const {treatmentPlan, offlineGoals} = useSelector((state) => state.activity);
   const [goal, setGoal] = useState(undefined);
   const [satisfactionLevel, setSatisfactionLevel] = useState(5);
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const netInfo = useNetInfo();
   const type = ACTIVITY_TYPES.GOAL;
 
   useEffect(() => {
@@ -54,25 +60,53 @@ const AssessmentForm = ({theme, route, navigation}) => {
   }, [activity_id, treatmentPlan, type, day, week]);
 
   useEffect(() => {
-    if (goal && goal.completed) {
-      setSatisfactionLevel(goal.satisfaction);
+    if (goal) {
+      if (goal.completed) {
+        setSatisfactionLevel(goal.satisfaction);
+      } else {
+        const offlineGoal = offlineGoals.find((item) => {
+          return (
+            item.goal_id === goal.activity_id &&
+            item.day === day &&
+            item.week === week
+          );
+        });
+        if (offlineGoal) {
+          setSatisfactionLevel(offlineGoal.satisfaction);
+          setIsCompletedOffline(true);
+        }
+      }
     }
-  }, [goal]);
+  }, [goal, day, week, offlineGoals]);
 
   const handleSubmit = () => {
-    dispatch(
-      completeGoal({
+    if (netInfo.isConnected) {
+      dispatch(
+        completeGoal({
+          satisfaction: satisfactionLevel,
+          week: goal.week,
+          day: goal.day,
+          goal_id: goal.activity_id,
+          treatment_plan_id: goal.treatment_plan_id,
+        }),
+      ).then((res) => {
+        if (res) {
+          navigation.navigate(ROUTES.ACTIVITY);
+        }
+      });
+    } else {
+      let offlineGoalsObj = _.cloneDeep(offlineGoals);
+      offlineGoalsObj.push({
         satisfaction: satisfactionLevel,
         week: goal.week,
         day: goal.day,
         goal_id: goal.activity_id,
         treatment_plan_id: goal.treatment_plan_id,
-      }),
-    ).then((res) => {
-      if (res) {
-        navigation.navigate(ROUTES.ACTIVITY);
-      }
-    });
+        activity_id: goal.activity_id,
+      });
+      dispatch(completeGoalOffline(offlineGoalsObj));
+      navigation.navigate(ROUTES.ACTIVITY);
+    }
     navigation.navigate(ROUTES.ACTIVITY);
   };
 
@@ -82,7 +116,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
         leftContent={
           <Text numberOfLines={1} h4 style={styles.textLight}>
             {goal && goal.title}
-            {goal && !!goal.completed && (
+            {goal && (!!goal.completed || isCompletedOffline) && (
               <Icon
                 name="check"
                 type="font-awesome-5"
@@ -173,7 +207,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
           minimumValue={1}
           maximumValue={10}
           step={1}
-          disabled={goal && !!goal.completed}
+          disabled={goal && (!!goal.completed || isCompletedOffline)}
         />
       </View>
       <View style={styleButtonContainer}>
@@ -187,7 +221,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
               color: theme.colors.white,
             }}
             title={translate(
-              goal && goal.completed
+              goal && (goal.completed || isCompletedOffline)
                 ? 'activity.completed_task_number'
                 : 'activity.complete_task_number',
               {
@@ -196,7 +230,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
             )}
             titleStyle={styles.textUpperCase}
             onPress={handleSubmit}
-            disabled={goal && !!goal.completed}
+            disabled={goal && (!!goal.completed || isCompletedOffline)}
           />
         </View>
       </View>
