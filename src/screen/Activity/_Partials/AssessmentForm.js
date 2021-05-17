@@ -45,11 +45,10 @@ const AssessmentForm = ({activity, navigation}) => {
         const offlineActivity = offlineActivities.find((item) => {
           return item.id === activity.id;
         });
-        if (offlineActivity && offlineActivity.activityObj) {
-          const activityObj = offlineActivity.activityObj;
-          setPainLevel(activityObj.pain_level);
-          setNumberOfSets(activityObj.sets);
-          setNumberOfReps(activityObj.reps);
+        if (offlineActivity) {
+          setPainLevel(offlineActivity.pain_level);
+          setNumberOfSets(offlineActivity.sets);
+          setNumberOfReps(offlineActivity.reps);
           setIsCompletedOffline(true);
         }
       }
@@ -59,7 +58,8 @@ const AssessmentForm = ({activity, navigation}) => {
   const handleSubmit = () => {
     if (netInfo.isConnected) {
       dispatch(
-        completeActive(activity.id, {
+        completeActive({
+          id: activity.id,
           pain_level: activity.get_pain_level ? painLevel : null,
           sets: activity.include_feedback ? numberOfSets : null,
           reps: activity.include_feedback ? numberOfReps : null,
@@ -73,11 +73,9 @@ const AssessmentForm = ({activity, navigation}) => {
       let offlineActivitiesObj = _.cloneDeep(offlineActivities);
       offlineActivitiesObj.push({
         id: activity.id,
-        activityObj: {
-          pain_level: activity.get_pain_level ? painLevel : null,
-          sets: activity.include_feedback ? numberOfSets : null,
-          reps: activity.include_feedback ? numberOfReps : null,
-        },
+        pain_level: activity.get_pain_level ? painLevel : null,
+        sets: activity.include_feedback ? numberOfSets : null,
+        reps: activity.include_feedback ? numberOfReps : null,
       });
       dispatch(completeActivityOffline(offlineActivitiesObj));
       navigation.navigate(ROUTES.ACTIVITY);

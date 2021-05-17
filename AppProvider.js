@@ -197,29 +197,16 @@ const AppProvider = ({children}) => {
   }, [isOnline, isDataUpToDate, translate]);
 
   useEffect(() => {
-    if (isOnline && accessToken) {
-      if (offlineQuestionnaireAnswers.length) {
-        offlineQuestionnaireAnswers.map((item) => {
-          dispatch(completeQuestionnaire(item.id, {answers: item.answers}));
-        });
-      }
-      if (offlineActivities.length) {
-        offlineActivities.map((item) => {
-          if (item.activityObj) {
-            dispatch(completeActive(item.id, item.activityObj));
-          } else {
-            dispatch(completeActive(item.id));
-          }
-        });
-      }
+    if (isOnline && accessToken && offlineQuestionnaireAnswers.length) {
+      dispatch(completeQuestionnaire(offlineQuestionnaireAnswers));
     }
-  }, [
-    dispatch,
-    accessToken,
-    isOnline,
-    offlineQuestionnaireAnswers,
-    offlineActivities,
-  ]);
+  }, [dispatch, accessToken, isOnline, offlineQuestionnaireAnswers]);
+
+  useEffect(() => {
+    if (isOnline && accessToken && offlineActivities.length) {
+      dispatch(completeActive(offlineActivities));
+    }
+  }, [dispatch, accessToken, isOnline, offlineActivities]);
 
   useEffect(() => {
     if (isOnline && accessToken && offlineGoals.length) {
