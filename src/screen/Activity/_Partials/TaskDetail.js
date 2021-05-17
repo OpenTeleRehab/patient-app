@@ -153,7 +153,7 @@ const TaskDetail = ({
           color: theme.colors.white,
         }}
         title={translate(
-          activity.completed
+          activity.completed || isCompletedOffline
             ? 'activity.completed_task_number'
             : 'activity.complete_task_number',
           {

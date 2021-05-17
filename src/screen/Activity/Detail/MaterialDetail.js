@@ -15,7 +15,10 @@ import {
 } from 'react-native';
 import {getTranslate} from 'react-localize-redux';
 import RNFS from 'react-native-fs';
-import {completeActive} from '../../../store/activity/actions';
+import {
+  completeActive,
+  completeActivityOffline,
+} from '../../../store/activity/actions';
 import settings from '../../../../config/settings';
 import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -25,8 +28,11 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {id, activityNumber} = route.params;
-  const {treatmentPlan} = useSelector((state) => state.activity);
+  const {treatmentPlan, offlineActivities} = useSelector(
+    (state) => state.activity,
+  );
   const [material, setMaterial] = useState(undefined);
+  const [isCompletedOffline, setIsCompletedOffline] = useState(false);
   const netInfo = useNetInfo();
 
   useEffect(() => {
@@ -41,12 +47,32 @@ const MaterialDetail = ({theme, route, navigation}) => {
     }
   }, [id, treatmentPlan]);
 
-  const handleCompleteTask = () => {
-    dispatch(completeActive(material.id)).then((res) => {
-      if (res) {
-        navigation.navigate(ROUTES.ACTIVITY);
+  useEffect(() => {
+    if (material) {
+      if (!material.completed) {
+        const offlineActivity = offlineActivities.find((item) => {
+          return item.id === material.id;
+        });
+        if (offlineActivity) {
+          setIsCompletedOffline(true);
+        }
       }
-    });
+    }
+  }, [material, offlineActivities]);
+
+  const handleCompleteTask = () => {
+    if (netInfo.isConnected) {
+      dispatch(completeActive(material.id)).then((res) => {
+        if (res) {
+          navigation.navigate(ROUTES.ACTIVITY);
+        }
+      });
+    } else {
+      let offlineActivityObj = _.cloneDeep(offlineActivities);
+      offlineActivityObj.push({id: material.id});
+      dispatch(completeActivityOffline(offlineActivityObj));
+      navigation.navigate(ROUTES.ACTIVITY);
+    }
   };
 
   const handleDownload = async () => {
@@ -91,7 +117,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
         leftContent={
           <Text numberOfLines={1} h4 style={styles.textLight}>
             {material.title}
-            {!!material.completed && (
+            {(!!material.completed || isCompletedOffline) && (
               <Icon
                 name="check"
                 type="font-awesome-5"
@@ -170,7 +196,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
             color: theme.colors.white,
           }}
           title={translate(
-            material.completed
+            material.completed || isCompletedOffline
               ? 'activity.completed_task_number'
               : 'activity.complete_task_number',
             {
@@ -179,7 +205,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
           )}
           titleStyle={styles.textUpperCase}
           onPress={handleCompleteTask}
-          disabled={!!material.completed}
+          disabled={!!material.completed || isCompletedOffline}
         />
       </View>
     </>

@@ -32,7 +32,7 @@ export default {
     textAlign: 'center',
     backgroundColor: variables.white,
     color: variables.warning,
-    paddingTop: 26,
-    paddingBottom: 3,
+    paddingTop: '7%',
+    paddingBottom: '0.6%',
   },
 };

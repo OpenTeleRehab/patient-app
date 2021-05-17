@@ -48,8 +48,8 @@ const AssessmentForm = ({activity, navigation}) => {
         if (offlineActivity && offlineActivity.activityObj) {
           const activityObj = offlineActivity.activityObj;
           setPainLevel(activityObj.pain_level);
-          setNumberOfSets(activityObj.completed_sets);
-          setNumberOfReps(activityObj.completed_reps);
+          setNumberOfSets(activityObj.sets);
+          setNumberOfReps(activityObj.reps);
           setIsCompletedOffline(true);
         }
       }

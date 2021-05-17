@@ -35,6 +35,7 @@ import store from './src/store';
 import {forceLogout} from './src/store/auth/actions';
 import {
   completeActive,
+  completeGoal,
   completeQuestionnaire,
 } from './src/store/activity/actions';
 
@@ -53,9 +54,11 @@ const AppProvider = ({children}) => {
     selectedRoom,
   } = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
-  const {offlineQuestionnaireAnswers, offlineActivities} = useSelector(
-    (state) => state.activity,
-  );
+  const {
+    offlineQuestionnaireAnswers,
+    offlineActivities,
+    offlineGoals,
+  } = useSelector((state) => state.activity);
   const translate = getTranslate(localize);
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
@@ -217,6 +220,12 @@ const AppProvider = ({children}) => {
     offlineQuestionnaireAnswers,
     offlineActivities,
   ]);
+
+  useEffect(() => {
+    if (isOnline && accessToken && offlineGoals.length) {
+      dispatch(completeGoal(offlineGoals));
+    }
+  }, [dispatch, accessToken, isOnline, offlineGoals]);
 
   return loading ? (
     <SplashScreen />

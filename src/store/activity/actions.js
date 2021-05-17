@@ -90,6 +90,8 @@ export const completeGoal = (payload) => async (dispatch, getState) => {
   const {accessToken} = getState().user;
   const res = await Activity.completeGoal(payload, accessToken);
   if (res.success) {
+    const offlineGoals = [];
+    dispatch(mutation.completeGoalOfflineSuccess(offlineGoals));
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeGoalSuccess());
     return true;
