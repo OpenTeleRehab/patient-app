@@ -32,6 +32,10 @@ import GoalScreen from '../screen/Goal';
 // Appointment group
 import AppointmentScreen from '../screen/Appointment';
 
+// Message group
+import ChatRoomListScreen from '../screen/ChatOrCall/ChatRoomList';
+import ChatPanelScreen from '../screen/ChatOrCall/ChatPanel';
+
 export const auths = [
   {
     name: ROUTES.REGISTER,
@@ -128,5 +132,16 @@ export const appointments = [
   {
     name: ROUTES.APPOINTMENT,
     screen: AppointmentScreen,
+  },
+];
+
+export const messages = [
+  {
+    name: ROUTES.CHAT_ROOM_LIST,
+    screen: ChatRoomListScreen,
+  },
+  {
+    name: ROUTES.CHAT_PANEL,
+    screen: ChatPanelScreen,
   },
 ];

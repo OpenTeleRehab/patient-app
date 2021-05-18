@@ -5,38 +5,45 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Text, withTheme} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useIsFocused} from '@react-navigation/native';
-import {useNetInfo} from '@react-native-community/netinfo';
-import styles from '../../assets/styles';
-import HeaderBar from '../../components/Common/HeaderBar';
+import styles from '../../../assets/styles';
+import HeaderBar from '../../../components/Common/HeaderBar';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import settings from '../../../config/settings';
-import {generateHash} from '../../utils/helper';
+import settings from '../../../../config/settings';
+import {generateHash} from '../../../utils/helper';
 import {Platform, View} from 'react-native';
-import {CHAT_USER_STATUS} from '../../variables/constants';
-import RocketchatContext from '../../context/RocketchatContext';
-import {sendNewMessage} from '../../utils/rocketchat';
-import {updateIndicatorList} from '../../store/indicator/actions';
-import MediaPicker from '../../components/MediaPicker';
+import {CHAT_USER_STATUS} from '../../../variables/constants';
+import RocketchatContext from '../../../context/RocketchatContext';
+import {sendNewMessage} from '../../../utils/rocketchat';
+import {updateIndicatorList} from '../../../store/indicator/actions';
+import MediaPicker from '../../../components/MediaPicker';
 import {
   postAttachmentMessage,
   prependNewMessage,
-} from '../../store/rocketchat/actions';
-import ChatContainer from './_Partials/ChatContainer';
-import ChatToolbar from './_Partials/ChatToolbar';
-import ChatMediaSlider from './_Partials/ChatMediaSlider';
+} from '../../../store/rocketchat/actions';
+import ChatContainer from '../_Partials/ChatContainer';
+import ChatToolbar from '../_Partials/ChatToolbar';
+import ChatMediaSlider from '../_Partials/ChatMediaSlider';
+import {mutation} from '../../../store/rocketchat/mutations';
 
-const ChatOrCall = ({navigation, theme}) => {
+const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
   const localize = useSelector((state) => state.localize);
-  const {messages, selectedRoom} = useSelector((state) => state.rocketchat);
-  const {isOnChatScreen, hasUnreadMessage} = useSelector(
+  const {
+    chatAuth,
+    messages,
+    selectedRoom,
+    chatRooms,
+    offlineMessages,
+  } = useSelector((state) => state.rocketchat);
+  const {token, userId} = chatAuth || {};
+  const {isOnlineMode, isOnChatScreen, hasUnreadMessage} = useSelector(
     (state) => state.indicator,
   );
   const profile = useSelector((state) => state.user.profile);
   const translate = getTranslate(localize);
-  const [allMessages, setAllMessages] = useState(messages);
+  const [allMessages, setAllMessages] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
   const isFocused = useIsFocused();
   const [showMediaSlider, setShowMediaSlider] = useState(false);
@@ -44,30 +51,63 @@ const ChatOrCall = ({navigation, theme}) => {
   const [videoAttachments, setVideoAttachments] = useState(undefined);
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
-  const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
-    navigation.setOptions({tabBarVisible: false});
-    setAllMessages(messages);
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
     return () => {
-      navigation.setOptions({tabBarVisible: true});
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
     };
-  }, [dispatch, navigation, messages]);
+  }, [navigation]);
 
   useEffect(() => {
-    setVideoAttachments(messages.filter((item) => item.video !== '').reverse());
-    setImageAttachments(messages.filter((item) => item.image !== '').reverse());
-  }, [messages, currentAttachment, isVideoAttachment]);
+    if (isOnlineMode) {
+      setAllMessages(messages);
+    } else {
+      const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
+      if (fIndex !== -1) {
+        setAllMessages(chatRooms[fIndex].messages);
+      }
+    }
+  }, [dispatch, chatRooms, selectedRoom, messages, isOnlineMode]);
+
+  useEffect(() => {
+    const hasUnreadMessages = chatRooms.filter((item) => item.unreads > 0);
+    if (hasUnreadMessages.length === 0 && isOnlineMode) {
+      dispatch(updateIndicatorList({hasUnreadMessage: false}));
+    }
+  }, [dispatch, chatRooms, selectedRoom, isOnlineMode]);
+
+  useEffect(() => {
+    const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
+    if (fIndex !== -1) {
+      setVideoAttachments(
+        chatRooms[fIndex].messages
+          .filter((item) => item.video !== '')
+          .reverse(),
+      );
+      setImageAttachments(
+        chatRooms[fIndex].messages
+          .filter((item) => item.image !== '')
+          .reverse(),
+      );
+    }
+  }, [messages, currentAttachment, isVideoAttachment, chatRooms, selectedRoom]);
 
   useEffect(() => {
     if (isOnChatScreen !== isFocused) {
       dispatch(updateIndicatorList({isOnChatScreen: isFocused}));
     }
-    if (isFocused && hasUnreadMessage) {
-      // markMessagesAsRead(chatSocket, selectedRoom.rid, profile.id);
-      dispatch(updateIndicatorList({hasUnreadMessage: false}));
-    }
-  }, [dispatch, isFocused, isOnChatScreen, hasUnreadMessage]);
+  }, [
+    dispatch,
+    isFocused,
+    isOnChatScreen,
+    hasUnreadMessage,
+    chatSocket,
+    selectedRoom,
+    profile,
+    userId,
+    token,
+  ]);
 
   const onSend = (newMessage = []) => {
     newMessage[0].pending = true;
@@ -75,9 +115,16 @@ const ChatOrCall = ({navigation, theme}) => {
       GiftedChat.append(previousMessages, newMessage),
     );
     newMessage[0].rid = selectedRoom.rid;
-    isOnline
-      ? sendNewMessage(chatSocket, newMessage[0], profile.id)
-      : dispatch(prependNewMessage(newMessage[0]));
+    if (isOnlineMode) {
+      sendNewMessage(chatSocket, newMessage[0], profile.id);
+    } else {
+      dispatch(
+        mutation.setOfflineMessagesSuccess(
+          offlineMessages.concat([newMessage[0]]),
+        ),
+      );
+      dispatch(prependNewMessage(newMessage[0]));
+    }
   };
 
   const onSendAttachment = (caption, file, type) => {
@@ -110,9 +157,16 @@ const ChatOrCall = ({navigation, theme}) => {
       },
     };
     newMessage.attachment = attachment;
-    isOnline
-      ? dispatch(postAttachmentMessage(selectedRoom.rid, attachment))
-      : dispatch(prependNewMessage(newMessage));
+    if (isOnlineMode) {
+      dispatch(postAttachmentMessage(selectedRoom.rid, attachment));
+    } else {
+      dispatch(
+        mutation.setOfflineMessagesSuccess(
+          offlineMessages.concat([newMessage]),
+        ),
+      );
+      dispatch(prependNewMessage(newMessage));
+    }
   };
 
   const renderMessage = (chatProps) => {
@@ -201,4 +255,4 @@ const ChatOrCall = ({navigation, theme}) => {
   );
 };
 
-export default withTheme(ChatOrCall);
+export default withTheme(ChatPanel);

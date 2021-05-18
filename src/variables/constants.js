@@ -12,7 +12,6 @@ export const ROUTES = {
   QUESTIONNAIRE_DETAIL: 'QuestionnaireDetail',
   GOAL: 'Goal',
   APPOINTMENT: 'Appointment',
-  MESSAGE: 'ChatOrCall',
   USER_PROFILE: 'UserProfile',
   USER_PROFILE_EDIT: 'UserProfileEdit',
   ABOUT: 'About',
@@ -22,6 +21,8 @@ export const ROUTES = {
   SETUP_PIN: 'SetupPIN',
   CONFIRM_PIN: 'ConfirmPin',
   GOAl_DETAIL: 'GoalDetail',
+  CHAT_ROOM_LIST: 'ChatRoomList',
+  CHAT_PANEL: 'ChatPanel',
 };
 
 export const STORAGE_KEY = {

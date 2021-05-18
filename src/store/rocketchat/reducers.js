@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
+import _ from 'lodash';
 import {initialState} from './states';
 
 export const rocketchat = (state = initialState, action) => {
@@ -22,13 +23,30 @@ export const rocketchat = (state = initialState, action) => {
     }
     case 'SELECT_ROOM_SUCCEED': {
       return Object.assign({}, state, {
-        selectedRoom: action.data,
+        selectedRoom: _.pick(action.data, [
+          'enabled',
+          'name',
+          'rid',
+          'u',
+          'totalMessages',
+          'unreads',
+        ]),
       });
     }
     case 'PREPEND_NEW_MESSAGE_SUCCEED':
     case 'GET_MESSAGES_IN_ROOM_SUCCEED': {
       return Object.assign({}, state, {
         messages: action.data,
+      });
+    }
+    case 'SET_OFFLINE_MESSAGES_SUCCEED': {
+      return Object.assign({}, state, {
+        offlineMessages: action.data,
+      });
+    }
+    case 'CLEAR_OFFLINE_MESSAGES_SUCCEED': {
+      return Object.assign({}, state, {
+        offlineMessages: [],
       });
     }
     case 'UPDATE_VIDEO_CALL_STATUS_SUCCEED': {
