@@ -5,7 +5,6 @@ import {Activity} from '../../services/activity';
 import {mutation} from './mutations';
 import moment from 'moment';
 import settings from '../../../config/settings';
-import _ from 'lodash';
 
 export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
   dispatch(mutation.treatmentPlanFetchRequest());
@@ -40,13 +39,12 @@ export const getTodayActivitySummaryRequest = () => async (
   }
 };
 
-export const completeActive = (id, payload) => async (dispatch, getState) => {
+export const completeActive = (payload) => async (dispatch, getState) => {
   dispatch(mutation.completeActivityRequest());
   const {accessToken} = getState().user;
-  let offlineActivities = _.cloneDeep(getState().activity.offlineActivities);
-  _.remove(offlineActivities, {id});
-  const res = await Activity.completeActivity(id, payload, accessToken);
+  const res = await Activity.completeActivity(payload, accessToken);
   if (res.success) {
+    const offlineActivities = [];
     dispatch(mutation.completeActivityOfflineSuccess(offlineActivities));
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeActivitySuccess());
@@ -57,18 +55,15 @@ export const completeActive = (id, payload) => async (dispatch, getState) => {
   }
 };
 
-export const completeQuestionnaire = (id, payload) => async (
+export const completeQuestionnaire = (payload) => async (
   dispatch,
   getState,
 ) => {
   dispatch(mutation.completeQuestionnaireRequest());
   const {accessToken} = getState().user;
-  let offlineQuestionnaireAnswers = _.cloneDeep(
-    getState().activity.offlineQuestionnaireAnswers,
-  );
-  _.remove(offlineQuestionnaireAnswers, {id});
-  const res = await Activity.completeQuestionnaire(id, payload, accessToken);
+  const res = await Activity.completeQuestionnaire(payload, accessToken);
   if (res.success) {
+    const offlineQuestionnaireAnswers = [];
     dispatch(
       mutation.completeQuestionnaireOfflineSuccess(offlineQuestionnaireAnswers),
     );

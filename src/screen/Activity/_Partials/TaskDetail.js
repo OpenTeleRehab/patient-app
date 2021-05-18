@@ -77,7 +77,7 @@ const TaskDetail = ({
   const handleCompleteTask = () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
       if (netInfo.isConnected) {
-        dispatch(completeActive(activity.id)).then((res) => {
+        dispatch(completeActive({id: activity.id})).then((res) => {
           if (res) {
             navigation.navigate(ROUTES.ACTIVITY);
           }

@@ -117,9 +117,10 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const handleCompleteTask = () => {
     if (isOnline) {
       const data = {
+        id: id,
         answers: patientAnswers,
       };
-      dispatch(completeQuestionnaire(id, data)).then((res) => {
+      dispatch(completeQuestionnaire(data)).then((res) => {
         if (res) {
           navigation.navigate(ROUTES.ACTIVITY);
         }
@@ -128,7 +129,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
       let offlineQuestionnaireAnswersObj = _.cloneDeep(
         offlineQuestionnaireAnswers,
       );
-      offlineQuestionnaireAnswersObj.push({id, answers: patientAnswers});
+      offlineQuestionnaireAnswersObj.push({id: id, answers: patientAnswers});
       dispatch(completeQuestionnaireOffline(offlineQuestionnaireAnswersObj));
       navigation.navigate(ROUTES.ACTIVITY);
     }

@@ -62,7 +62,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
 
   const handleCompleteTask = () => {
     if (netInfo.isConnected) {
-      dispatch(completeActive(material.id)).then((res) => {
+      dispatch(completeActive({id: material.id})).then((res) => {
         if (res) {
           navigation.navigate(ROUTES.ACTIVITY);
         }

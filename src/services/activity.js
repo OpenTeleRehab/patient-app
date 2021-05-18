@@ -12,20 +12,20 @@ const getTodayActivitySummary = async (today, accessToken) => {
   return await callApi('/treatment-plan/get-summary', accessToken, {today});
 };
 
-const completeActivity = async (id, payload, accessToken) => {
+const completeActivity = async (payload, accessToken) => {
   return await callApi(
-    `/treatment-plan/complete_activity/${id}`,
+    '/treatment-plan/complete_activity',
     accessToken,
-    {...payload},
+    JSON.stringify(Array.isArray(payload) ? payload : [payload]),
     'post',
   );
 };
 
-const completeQuestionnaire = async (id, payload, accessToken) => {
+const completeQuestionnaire = async (payload, accessToken) => {
   return await callApi(
-    `/treatment-plan/complete_questionnaire/${id}`,
+    `/treatment-plan/complete_questionnaire`,
     accessToken,
-    {...payload},
+    JSON.stringify(Array.isArray(payload) ? payload : [payload]),
     'post',
   );
 };
