@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -23,34 +23,21 @@ import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {getLocalData} from '../../../utils/local_storage';
 import {ROUTES, STORAGE_KEY} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
-import {chatLogout, unSubscribeEvent} from '../../../utils/rocketchat';
-import RocketchatContext from '../../../context/RocketchatContext';
 import {getCountryRequest} from '../../../store/country/actions';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
-  const chatSocket = useContext(RocketchatContext);
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [country, setCountry] = useState('');
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
-  const {isChatConnected} = useSelector((state) => state.indicator);
-  const {subscribeIds} = useSelector((state) => state.rocketchat);
   const {pin} = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getCountryRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isChatConnected && chatSocket !== null) {
-      unSubscribeEvent(chatSocket, subscribeIds.roomMessageId);
-      unSubscribeEvent(chatSocket, subscribeIds.notifyLoggedId);
-      chatLogout(chatSocket, subscribeIds.loginId);
-    }
-  }, [chatSocket, dispatch, isChatConnected, subscribeIds]);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
