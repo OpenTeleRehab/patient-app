@@ -23,7 +23,7 @@ const completeActivity = async (payload, accessToken) => {
 
 const completeQuestionnaire = async (payload, accessToken) => {
   return await callApi(
-    `/treatment-plan/complete_questionnaire`,
+    '/treatment-plan/complete_questionnaire',
     accessToken,
     JSON.stringify(Array.isArray(payload) ? payload : [payload]),
     'post',
