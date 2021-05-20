@@ -39,6 +39,13 @@ const AssessmentForm = ({theme, route, navigation}) => {
   const type = ACTIVITY_TYPES.GOAL;
 
   useEffect(() => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    return () => {
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    };
+  }, [navigation]);
+
+  useEffect(() => {
     if (activity_id && treatmentPlan.activities.length) {
       const selectedGoal = _.find(treatmentPlan.activities, {
         activity_id,

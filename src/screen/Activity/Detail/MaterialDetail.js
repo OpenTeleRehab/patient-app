@@ -43,6 +43,13 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const netInfo = useNetInfo();
 
   useEffect(() => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    return () => {
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    };
+  }, [navigation]);
+
+  useEffect(() => {
     if (id && treatmentPlan.activities.length) {
       const selectedMaterial = _.find(treatmentPlan.activities, {
         id,

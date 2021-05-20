@@ -26,6 +26,13 @@ const ExerciseDetail = ({theme, route, navigation}) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
 
   useEffect(() => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    return () => {
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    };
+  }, [navigation]);
+
+  useEffect(() => {
     if (id && treatmentPlan.activities.length) {
       const selectedActivity = _.find(treatmentPlan.activities, {
         id,
