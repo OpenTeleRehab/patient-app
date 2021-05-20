@@ -2,7 +2,6 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
 import {ButtonGroup, Icon, Text, withTheme} from 'react-native-elements';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
@@ -91,33 +90,30 @@ const ExerciseDetail = ({theme, route, navigation}) => {
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),
         }}
       />
-      <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
-        <View style={styles.mainContainerLight}>
-          {(!!activity.completed || isCompletedOffline) &&
-            (activity.include_feedback || activity.get_pain_level) && (
-              <ButtonGroup
-                onPress={(index) => setTabIndex(index)}
-                buttons={[
-                  translate('activity.task_detail'),
-                  translate('activity.results'),
-                ]}
-                selectedIndex={tabIndex}
-              />
-            )}
 
-          {tabIndex === 0 && (
-            <TaskDetail
-              activity={activity}
-              activityNumber={activityNumber}
-              navigation={navigation}
-              isCompletedOffline={isCompletedOffline}
-            />
-          )}
-          {tabIndex === 1 && (
-            <AssessmentForm activity={activity} navigation={navigation} />
-          )}
-        </View>
-      </ScrollView>
+      {(!!activity.completed || isCompletedOffline) &&
+        (activity.include_feedback || activity.get_pain_level) && (
+          <ButtonGroup
+            onPress={(index) => setTabIndex(index)}
+            buttons={[
+              translate('activity.task_detail'),
+              translate('activity.results'),
+            ]}
+            selectedIndex={tabIndex}
+          />
+        )}
+
+      {tabIndex === 0 && (
+        <TaskDetail
+          activity={activity}
+          activityNumber={activityNumber}
+          navigation={navigation}
+          isCompletedOffline={isCompletedOffline}
+        />
+      )}
+      {tabIndex === 1 && (
+        <AssessmentForm activity={activity} navigation={navigation} />
+      )}
     </>
   );
 };

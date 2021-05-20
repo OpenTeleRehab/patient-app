@@ -239,6 +239,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
             />
           )}
         </ScrollView>
+
         <Divider />
         <View style={styles.stickyButtonWrapper}>
           {activePaginationIndex > 0 && questionnaire.questions.length > 1 && (
