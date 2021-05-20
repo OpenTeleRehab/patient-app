@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -20,6 +20,7 @@ import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import settings from '../../../config/settings';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {ROUTES} from '../../variables/constants';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -160,30 +161,36 @@ const Home = ({navigation}) => {
             <Text h4 style={[styles.textLight, styles.marginTop]}>
               {translate('home.activities.today')}
             </Text>
-            <AnimatedCircularProgress
-              size={250}
-              width={20}
-              fill={completedPercentage}
-              lineCap="round"
-              tintColor={colors.white}
-              rotation={0}
-              backgroundColor={colors.blueLight}
-              style={styles.marginTopMd}>
-              {() => (
-                <>
-                  <Text style={styles.leadText}>
-                    {translate('common.completed')}
-                  </Text>
-                  <Text style={styles.progressTextStyle}>
-                    <Text
-                      style={[styles.progressTextStyle, styles.fontWeightBold]}>
-                      {todaySummary.completed}
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
+              <AnimatedCircularProgress
+                size={250}
+                width={20}
+                fill={completedPercentage}
+                lineCap="round"
+                tintColor={colors.white}
+                rotation={0}
+                backgroundColor={colors.blueLight}
+                style={styles.marginTopMd}>
+                {() => (
+                  <>
+                    <Text style={styles.leadText}>
+                      {translate('common.completed')}
                     </Text>
-                    /{todaySummary.all}
-                  </Text>
-                </>
-              )}
-            </AnimatedCircularProgress>
+                    <Text style={styles.progressTextStyle}>
+                      <Text
+                        style={[
+                          styles.progressTextStyle,
+                          styles.fontWeightBold,
+                        ]}>
+                        {todaySummary.completed}
+                      </Text>
+                      /{todaySummary.all}
+                    </Text>
+                  </>
+                )}
+              </AnimatedCircularProgress>
+            </TouchableOpacity>
           </>
         ) : (
           <>
