@@ -85,7 +85,7 @@ const AssessmentForm = ({activity, navigation}) => {
 
   return (
     <>
-      <ScrollView>
+      <ScrollView style={styles.margin}>
         {activity?.get_pain_level && (
           <View style={styles.marginTopLg}>
             <View style={[styles.flexCenter, styles.marginBottomMd]}>
