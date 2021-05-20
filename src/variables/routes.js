@@ -26,9 +26,6 @@ import MaterialDetailScreen from '../screen/Activity/Detail/MaterialDetail';
 import QuestionnaireDetailScreen from '../screen/Activity/Detail/QuestionnaireDetail';
 import GoalDetailScreen from '../screen/Activity/Detail/GoalDetail';
 
-// Goal group
-import GoalScreen from '../screen/Goal';
-
 // Appointment group
 import AppointmentScreen from '../screen/Appointment';
 
@@ -114,13 +111,6 @@ export const activities = [
   {
     name: ROUTES.GOAl_DETAIL,
     screen: GoalDetailScreen,
-  },
-];
-
-export const goals = [
-  {
-    name: ROUTES.GOAL,
-    screen: GoalScreen,
   },
 ];
 
