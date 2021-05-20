@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Icon, Text, withTheme} from 'react-native-elements';
+import {
+  Button,
+  Card,
+  Divider,
+  Icon,
+  Text,
+  withTheme,
+} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
 import HeaderBar from '../../../components/Common/HeaderBar';
@@ -189,24 +196,29 @@ const MaterialDetail = ({theme, route, navigation}) => {
             </TouchableOpacity>
           )}
         </ScrollView>
-        <Button
-          icon={{
-            name: 'check',
-            type: 'font-awesome-5',
-            color: theme.colors.white,
-          }}
-          title={translate(
-            material.completed || isCompletedOffline
-              ? 'activity.completed_task_number'
-              : 'activity.complete_task_number',
-            {
-              number: activityNumber,
-            },
-          )}
-          titleStyle={styles.textUpperCase}
-          onPress={handleCompleteTask}
-          disabled={!!material.completed || isCompletedOffline}
-        />
+
+        <Divider />
+        <View style={styles.stickyButtonWrapper}>
+          <Button
+            containerStyle={styles.stickyButtonContainer}
+            icon={{
+              name: 'check',
+              type: 'font-awesome-5',
+              color: theme.colors.white,
+            }}
+            title={translate(
+              material.completed || isCompletedOffline
+                ? 'activity.completed_task_number'
+                : 'activity.complete_task_number',
+              {
+                number: activityNumber,
+              },
+            )}
+            titleStyle={styles.textUpperCase}
+            onPress={handleCompleteTask}
+            disabled={!!material.completed || isCompletedOffline}
+          />
+        </View>
       </View>
     </>
   );

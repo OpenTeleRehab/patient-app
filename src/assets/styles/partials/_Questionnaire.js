@@ -1,13 +1,4 @@
 export default {
-  questionnaireButtonWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 10,
-  },
-  questionnaireButtonContainer: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
   questionImage: {
     width: '100%',
     height: 200,

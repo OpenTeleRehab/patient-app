@@ -240,10 +240,10 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           )}
         </ScrollView>
         <Divider />
-        <View style={[styles.questionnaireButtonWrapper]}>
+        <View style={styles.stickyButtonWrapper}>
           {activePaginationIndex > 0 && questionnaire.questions.length > 1 && (
             <Button
-              containerStyle={[styles.questionnaireButtonContainer]}
+              containerStyle={styles.stickyButtonContainer}
               icon={{
                 name: 'angle-left',
                 type: 'font-awesome',
@@ -258,7 +258,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           {activePaginationIndex < questionnaire.questions.length - 1 &&
             questionnaire.questions.length > 1 && (
               <Button
-                containerStyle={[styles.questionnaireButtonContainer]}
+                containerStyle={styles.stickyButtonContainer}
                 icon={{
                   name: 'angle-right',
                   type: 'font-awesome',
@@ -273,7 +273,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
             )}
           {activePaginationIndex === questionnaire.questions.length - 1 && (
             <Button
-              containerStyle={[styles.questionnaireButtonContainer]}
+              containerStyle={styles.stickyButtonContainer}
               icon={{
                 name: 'angle-right',
                 type: 'font-awesome',
