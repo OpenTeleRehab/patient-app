@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {
@@ -26,12 +26,6 @@ import _ from 'lodash';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useNetInfo} from '@react-native-community/netinfo';
 
-const styleButtonContainer = {
-  position: 'absolute',
-  bottom: 0,
-  width: '100%',
-};
-
 const AssessmentForm = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -43,6 +37,13 @@ const AssessmentForm = ({theme, route, navigation}) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
   const netInfo = useNetInfo();
   const type = ACTIVITY_TYPES.GOAL;
+
+  useEffect(() => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    return () => {
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    };
+  }, [navigation]);
 
   useEffect(() => {
     if (activity_id && treatmentPlan.activities.length) {
@@ -143,7 +144,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
           {translate('activity.goal.detail.question')}
         </Text>
       </View>
-      <View>
+      <ScrollView>
         <Card containerStyle={styles.activityCardContainer}>
           <View
             style={[
@@ -176,63 +177,63 @@ const AssessmentForm = ({theme, route, navigation}) => {
             </Text>
           </View>
         </Card>
-      </View>
-      <View
-        style={[styles.marginTopLg, styles.paddingXMd, styles.marginBottom]}>
-        <View style={[styles.marginBottomMd]}>
-          <Text h4 numberOfLines={3}>
-            {goal ? goal.title : ''}
-          </Text>
-        </View>
+
         <View
-          style={[
-            styles.flexRow,
-            styles.justifyContentSpaceBetween,
-            styles.marginBottomMd,
-          ]}>
-          <View>
-            <Text h5 style={styles.textPrimary}>
-              {translate('activity.satisfaction_level.no_satisfaction')}
+          style={[styles.marginTopLg, styles.paddingXMd, styles.marginBottom]}>
+          <View style={[styles.marginBottomMd]}>
+            <Text h4 numberOfLines={3}>
+              {goal ? goal.title : ''}
             </Text>
           </View>
-          <View>
-            <Text h5 style={styles.textPrimary}>
-              {translate('activity.satisfaction_level.extreme_satisfaction')}
-            </Text>
+          <View
+            style={[
+              styles.flexRow,
+              styles.justifyContentSpaceBetween,
+              styles.marginBottomMd,
+            ]}>
+            <View>
+              <Text h5 style={styles.textPrimary}>
+                {translate('activity.satisfaction_level.no_satisfaction')}
+              </Text>
+            </View>
+            <View>
+              <Text h5 style={styles.textPrimary}>
+                {translate('activity.satisfaction_level.extreme_satisfaction')}
+              </Text>
+            </View>
           </View>
-        </View>
-        <Slider
-          value={satisfactionLevel}
-          onValueChange={(value) => setSatisfactionLevel(value)}
-          minimumValue={1}
-          maximumValue={10}
-          step={1}
-          disabled={goal && (!!goal.completed || isCompletedOffline)}
-        />
-      </View>
-      <View style={styleButtonContainer}>
-        <Divider />
-        <View style={[styles.questionnaireButtonWrapper]}>
-          <Button
-            containerStyle={[styles.questionnaireButtonContainer]}
-            icon={{
-              name: 'check',
-              type: 'font-awesome-5',
-              color: theme.colors.white,
-            }}
-            title={translate(
-              goal && (goal.completed || isCompletedOffline)
-                ? 'activity.completed_task_number'
-                : 'activity.complete_task_number',
-              {
-                number: activityNumber,
-              },
-            )}
-            titleStyle={styles.textUpperCase}
-            onPress={handleSubmit}
+          <Slider
+            value={satisfactionLevel}
+            onValueChange={(value) => setSatisfactionLevel(value)}
+            minimumValue={1}
+            maximumValue={10}
+            step={1}
             disabled={goal && (!!goal.completed || isCompletedOffline)}
           />
         </View>
+      </ScrollView>
+
+      <Divider />
+      <View style={styles.stickyButtonWrapper}>
+        <Button
+          containerStyle={styles.stickyButtonContainer}
+          icon={{
+            name: 'check',
+            type: 'font-awesome-5',
+            color: theme.colors.white,
+          }}
+          title={translate(
+            goal && (goal.completed || isCompletedOffline)
+              ? 'activity.completed_task_number'
+              : 'activity.complete_task_number',
+            {
+              number: activityNumber,
+            },
+          )}
+          titleStyle={styles.textUpperCase}
+          onPress={handleSubmit}
+          disabled={goal && (!!goal.completed || isCompletedOffline)}
+        />
       </View>
     </>
   );

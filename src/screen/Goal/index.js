@@ -76,7 +76,7 @@ const Goal = ({theme}) => {
   const [selectedGoal, setSelectedGoal] = useState(0);
   const [goal, setGoal] = useState(undefined);
   const [activities, setActivities] = useState([]);
-  const [numberOfWeeks, setNumberOfWeeks] = useState([]);
+  const [numberOfWeeks, setNumberOfWeeks] = useState(1);
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [

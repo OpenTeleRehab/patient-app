@@ -5,10 +5,11 @@ import React, {useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
+  ScrollView,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, Image, Text, withTheme} from 'react-native-elements';
+import {Button, Divider, Image, Text, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
@@ -25,7 +26,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import _ from 'lodash';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
-const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.9);
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH);
 const styleMedia = {width: '95%', height: 300};
 
 const stylePaginationDot = {
@@ -98,72 +99,78 @@ const TaskDetail = ({
 
   return (
     <>
-      {showMedia !== undefined && (
-        <MediaView
-          activity={activity}
-          showMedia={showMedia}
-          onClose={() => setShowMedia(undefined)}
-        />
-      )}
-
-      <View>
-        <Carousel
-          data={activity.files}
-          renderItem={(props) => RenderMediaItem(props, setShowMedia)}
-          sliderWidth={SLIDER_WIDTH}
-          itemWidth={ITEM_WIDTH}
-          inactiveSlideScale={1}
-          onSnapToItem={(index) => setActivePaginationIndex(index)}
-        />
-        <Pagination
-          dotsLength={activity.files.length}
-          activeDotIndex={activePaginationIndex}
-          dotStyle={stylePaginationDot}
-          dotColor={theme.colors.primary}
-          inactiveDotColor={theme.colors.black}
-          inactiveDotScale={1}
-          containerStyle={styles.paddingY}
-        />
-      </View>
-      <View style={[styles.flexCenter, styles.marginY]}>
-        <Text h4>{activity.title}</Text>
-        {activity.sets > 0 && (
-          <Text>
-            {translate('activity.number_of_sets_and_reps', {
-              sets: activity.sets,
-              reps: activity.reps,
-            })}
-          </Text>
+      <ScrollView style={styles.margin}>
+        {showMedia !== undefined && (
+          <MediaView
+            activity={activity}
+            showMedia={showMedia}
+            onClose={() => setShowMedia(undefined)}
+          />
         )}
-      </View>
 
-      {activity.additional_fields?.map((additionalField, index) => (
-        <View key={index} style={styles.marginBottomMd}>
-          <Text h4 style={styles.underlineHeader}>
-            {additionalField.field}
-          </Text>
-          <Text>{additionalField.value}</Text>
+        <View>
+          <Carousel
+            data={activity.files}
+            renderItem={(props) => RenderMediaItem(props, setShowMedia)}
+            sliderWidth={SLIDER_WIDTH}
+            itemWidth={ITEM_WIDTH}
+            inactiveSlideScale={1}
+            onSnapToItem={(index) => setActivePaginationIndex(index)}
+          />
+          <Pagination
+            dotsLength={activity.files.length}
+            activeDotIndex={activePaginationIndex}
+            dotStyle={stylePaginationDot}
+            dotColor={theme.colors.primary}
+            inactiveDotColor={theme.colors.black}
+            inactiveDotScale={1}
+            containerStyle={styles.paddingY}
+          />
         </View>
-      ))}
+        <View style={[styles.flexCenter, styles.marginY]}>
+          <Text h4>{activity.title}</Text>
+          {activity.sets > 0 && (
+            <Text>
+              {translate('activity.number_of_sets_and_reps', {
+                sets: activity.sets,
+                reps: activity.reps,
+              })}
+            </Text>
+          )}
+        </View>
 
-      <Button
-        icon={{
-          name: 'check',
-          type: 'font-awesome-5',
-          color: theme.colors.white,
-        }}
-        title={translate(
-          activity.completed || isCompletedOffline
-            ? 'activity.completed_task_number'
-            : 'activity.complete_task_number',
-          {
-            number: activityNumber,
-          },
-        )}
-        titleStyle={styles.textUpperCase}
-        onPress={handleCompleteTask}
-        disabled={isLoading || !!activity.completed || isCompletedOffline}
-      />
+        {activity.additional_fields?.map((additionalField, index) => (
+          <View key={index} style={styles.marginBottomMd}>
+            <Text h4 style={styles.underlineHeader}>
+              {additionalField.field}
+            </Text>
+            <Text>{additionalField.value}</Text>
+          </View>
+        ))}
+      </ScrollView>
+
+      <Divider />
+      <View style={styles.stickyButtonWrapper}>
+        <Button
+          containerStyle={styles.stickyButtonContainer}
+          icon={{
+            name: 'check',
+            type: 'font-awesome-5',
+            color: theme.colors.white,
+          }}
+          title={translate(
+            activity.completed || isCompletedOffline
+              ? 'activity.completed_task_number'
+              : 'activity.complete_task_number',
+            {
+              number: activityNumber,
+            },
+          )}
+          titleStyle={styles.textUpperCase}
+          onPress={handleCompleteTask}
+          disabled={isLoading || !!activity.completed || isCompletedOffline}
+        />
+      </View>
     </>
   );
 };

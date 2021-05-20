@@ -2,10 +2,10 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Button, Slider, Text} from 'react-native-elements';
+import {Button, Divider, Slider, Text} from 'react-native-elements';
 
 import styles from '../../../assets/styles';
 import NumericInput from '../../../components/Common/NumericInput';
@@ -85,67 +85,78 @@ const AssessmentForm = ({activity, navigation}) => {
 
   return (
     <>
-      {activity?.get_pain_level && (
-        <View style={styles.marginTopLg}>
-          <View style={[styles.flexCenter, styles.marginBottomMd]}>
-            <Text h3 style={styles.textPrimary}>
-              {translate('activity.pain_level.question')}
-            </Text>
-          </View>
-          <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-            <Text h4>{translate('activity.pain_level.no_paint')}</Text>
-            <Text h4>{translate('activity.pain_level.worst_paint')}</Text>
-          </View>
-          <Slider
-            value={painLevel}
-            onValueChange={(value) => setPainLevel(value)}
-            minimumValue={1}
-            maximumValue={10}
-            step={1}
-            disabled={!!activity?.completed || isCompletedOffline}
-          />
-        </View>
-      )}
-      {activity?.include_feedback && (
-        <View style={styleSetsAndRapsContainer}>
-          <View style={[styles.flexCenter, styles.marginBottomMd]}>
-            <Text h3 style={styles.textPrimary}>
-              {translate('activity.sets_reps.completed_label')}
-            </Text>
-          </View>
-          <View style={[styles.flexRow, styles.justifyContentSpaceAround]}>
-            <View>
-              <Text h4>{translate('activity.sets')}</Text>
-              <NumericInput
-                value={numberOfSets}
-                onChange={(num) => setNumberOfSets(num)}
-                onLongPress={(num) => setNumberOfSets(num)}
-                disabled={!!activity?.completed || isCompletedOffline}
-              />
-              <Text style={styles.fontSizeMd}>(recommend {activity.sets})</Text>
+      <ScrollView>
+        {activity?.get_pain_level && (
+          <View style={styles.marginTopLg}>
+            <View style={[styles.flexCenter, styles.marginBottomMd]}>
+              <Text h3 style={styles.textPrimary}>
+                {translate('activity.pain_level.question')}
+              </Text>
             </View>
-            <View>
-              <Text h4>{translate('activity.reps')}</Text>
-              <NumericInput
-                value={numberOfReps}
-                onChange={(num) => setNumberOfReps(num)}
-                onLongPress={(num) => setNumberOfReps(num)}
-                disabled={!!activity?.completed || isCompletedOffline}
-              />
-              <Text style={styles.fontSizeMd}>(recommend {activity.reps})</Text>
+            <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
+              <Text h4>{translate('activity.pain_level.no_paint')}</Text>
+              <Text h4>{translate('activity.pain_level.worst_paint')}</Text>
+            </View>
+            <Slider
+              value={painLevel}
+              onValueChange={(value) => setPainLevel(value)}
+              minimumValue={1}
+              maximumValue={10}
+              step={1}
+              disabled={!!activity?.completed || isCompletedOffline}
+            />
+          </View>
+        )}
+        {activity?.include_feedback && (
+          <View style={styleSetsAndRapsContainer}>
+            <View style={[styles.flexCenter, styles.marginBottomMd]}>
+              <Text h3 style={styles.textPrimary}>
+                {translate('activity.sets_reps.completed_label')}
+              </Text>
+            </View>
+            <View style={[styles.flexRow, styles.justifyContentSpaceAround]}>
+              <View>
+                <Text h4>{translate('activity.sets')}</Text>
+                <NumericInput
+                  value={numberOfSets}
+                  onChange={(num) => setNumberOfSets(num)}
+                  onLongPress={(num) => setNumberOfSets(num)}
+                  disabled={!!activity?.completed || isCompletedOffline}
+                />
+                <Text style={styles.fontSizeMd}>
+                  (recommend {activity.sets})
+                </Text>
+              </View>
+              <View>
+                <Text h4>{translate('activity.reps')}</Text>
+                <NumericInput
+                  value={numberOfReps}
+                  onChange={(num) => setNumberOfReps(num)}
+                  onLongPress={(num) => setNumberOfReps(num)}
+                  disabled={!!activity?.completed || isCompletedOffline}
+                />
+                <Text style={styles.fontSizeMd}>
+                  (recommend {activity.reps})
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-      )}
+        )}
+      </ScrollView>
+
       {!activity?.completed && !isCompletedOffline && (
-        <View style={styles.marginTopLg}>
-          <Button
-            title={translate('common.submit')}
-            titleStyle={styles.textUpperCase}
-            onPress={handleSubmit}
-            disabled={isLoading}
-          />
-        </View>
+        <>
+          <Divider />
+          <View style={styles.stickyButtonWrapper}>
+            <Button
+              containerStyle={styles.stickyButtonContainer}
+              title={translate('common.submit')}
+              titleStyle={styles.textUpperCase}
+              onPress={handleSubmit}
+              disabled={isLoading}
+            />
+          </View>
+        </>
       )}
     </>
   );

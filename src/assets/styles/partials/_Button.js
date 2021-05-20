@@ -26,4 +26,13 @@ export default {
     ...btnLightOutlineStyles,
     borderRadius: 50,
   },
+  stickyButtonWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 10,
+  },
+  stickyButtonContainer: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
 };
