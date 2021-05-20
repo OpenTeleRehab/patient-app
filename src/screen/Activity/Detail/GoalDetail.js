@@ -25,8 +25,9 @@ import {ACTIVITY_TYPES, ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useNetInfo} from '@react-native-community/netinfo';
+import GoalChart from '../_Partials/GoalChart';
 
-const AssessmentForm = ({theme, route, navigation}) => {
+const GoalDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -210,6 +211,7 @@ const AssessmentForm = ({theme, route, navigation}) => {
             step={1}
             disabled={goal && (!!goal.completed || isCompletedOffline)}
           />
+          {goal && <GoalChart goal={goal} />}
         </View>
       </ScrollView>
 
@@ -239,4 +241,4 @@ const AssessmentForm = ({theme, route, navigation}) => {
   );
 };
 
-export default withTheme(AssessmentForm);
+export default withTheme(GoalDetail);

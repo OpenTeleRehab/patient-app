@@ -10,7 +10,6 @@ export const ROUTES = {
   COMPLETE_EXERCISE: 'CompleteExercise',
   MATERIAL_DETAIL: 'MaterialDetail',
   QUESTIONNAIRE_DETAIL: 'QuestionnaireDetail',
-  GOAL: 'Goal',
   APPOINTMENT: 'Appointment',
   MESSAGE: 'ChatOrCall',
   USER_PROFILE: 'UserProfile',

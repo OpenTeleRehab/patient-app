@@ -12,7 +12,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import HomeTab from './Tab/HomeTab';
 import ActivityTab from './Tab/ActivityTab';
-import GoalTab from './Tab/GoalTab';
 import AppointmentTab from './Tab/AppointmentTab';
 import MessageTab from '../../screen/ChatOrCall';
 import {ROUTES} from '../../variables/constants';
@@ -36,13 +35,6 @@ const tabs = [
     label: 'tab.activities',
     icon: 'handball',
     badge: 'hasActivity',
-  },
-  {
-    name: ROUTES.GOAL,
-    screen: GoalTab,
-    label: 'tab.goals',
-    icon: 'bullseye-arrow',
-    badge: 'hasGoal',
   },
   {
     name: ROUTES.APPOINTMENT,
