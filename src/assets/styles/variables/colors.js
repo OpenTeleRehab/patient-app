@@ -12,7 +12,6 @@ export default {
   blueLight3: '#B3D6EF',
   orangeDark: '#c95508',
   orangeLight: '#EDC8A3',
-  red: '#FF3B2F',
   grey: '#777777',
   grey1: '#575757',
   grey2: '#858585',
@@ -24,7 +23,7 @@ export default {
   primary: '#0077C8',
   success: '#00933B',
   warning: '#E35205',
-  error: '#CF2A2A',
+  danger: '#E35205',
   disabled: '#EBEBEB',
   platform: {
     android: {

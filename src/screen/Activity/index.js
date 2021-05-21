@@ -133,6 +133,16 @@ const Activity = ({theme, navigation}) => {
       };
     }
 
+    if (
+      date.format(settings.format.date) ===
+      moment().format(settings.format.date)
+    ) {
+      // Mark today when not selected
+      return {
+        dateContainerStyle: styles.dateContainerWeekend,
+      };
+    }
+
     return {
       dateContainerStyle: styles.dateContainer,
     };
