@@ -45,7 +45,7 @@ export default {
     borderBottomRightRadius: 0,
   },
   appointmentCancelButtonWrapper: {
-    backgroundColor: variables.error,
+    backgroundColor: variables.danger,
     justifyContent: 'center',
   },
   appointmentCancelButtonText: {

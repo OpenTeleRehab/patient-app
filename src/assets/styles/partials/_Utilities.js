@@ -11,7 +11,7 @@ export default {
     color: variables.primary,
   },
   textDanger: {
-    color: variables.error,
+    color: variables.danger,
   },
   textWarning: {
     color: variables.warning,
@@ -49,7 +49,7 @@ export default {
     backgroundColor: variables.black,
   },
   bgDanger: {
-    backgroundColor: variables.error,
+    backgroundColor: variables.danger,
   },
   bgPrimary: {
     backgroundColor: variables.primary,

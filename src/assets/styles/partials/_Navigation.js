@@ -13,8 +13,8 @@ export default {
     fontSize: 11,
   },
   navTabBadge: {
-    color: variables.error,
-    backgroundColor: variables.error,
+    color: variables.danger,
+    backgroundColor: variables.danger,
     maxWidth: 12,
     maxHeight: 12,
   },

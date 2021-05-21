@@ -4,8 +4,11 @@
 import variables from '../variables';
 
 export default {
+  dateContainerToday: {
+    backgroundColor: variables.grey4,
+  },
   dateContainerWeekend: {
-    backgroundColor: variables.error,
+    backgroundColor: variables.danger,
     borderRadius: 0,
     width: '100%',
   },
