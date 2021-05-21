@@ -20,6 +20,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
+import formatPhoneNumber from '../../../utils/phoneNumber';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -30,6 +31,7 @@ const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const formattedNumber = useSelector((state) => state.user.phone);
+  const dialCode = useSelector((state) => state.user.dial_code);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
@@ -65,7 +67,7 @@ const VerifyPhone = ({navigation}) => {
   };
 
   const onResent = () => {
-    dispatch(registerRequest(formattedNumber, hash));
+    dispatch(registerRequest(dialCode, formattedNumber, hash));
   };
 
   const reset = () => {
@@ -102,9 +104,9 @@ const VerifyPhone = ({navigation}) => {
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <Text>{translate('phone.verify.description')}</Text>
           <Text style={styles.marginY}>
-            {translate('phone.send.to')}
+            {translate('phone.send.to')}{' '}
             <Text style={styles.textDefaultBold}>
-              &nbsp; +{formattedNumber}
+              &nbsp; {formatPhoneNumber(dialCode, formattedNumber)}
             </Text>
           </Text>
           <SmoothPinCodeInput

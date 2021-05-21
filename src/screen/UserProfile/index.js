@@ -28,6 +28,7 @@ import settings from '../../../config/settings';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useNetInfo} from '@react-native-community/netinfo';
 import RNLocalize from 'react-native-localize';
+import formatPhoneNumber from '../../utils/phoneNumber';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const UserProfile = ({navigation}) => {
     },
     {
       label: 'phone.number',
-      value: `+${profile.phone}`,
+      value: formatPhoneNumber(profile.dial_code, profile.phone),
     },
     {
       label: 'common.language',

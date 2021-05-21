@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -20,32 +20,24 @@ import {
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
-import {getLocalData} from '../../../utils/local_storage';
-import {ROUTES, STORAGE_KEY} from '../../../variables/constants';
+import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import {getCountryRequest} from '../../../store/country/actions';
+import formatPhoneNumber from '../../../utils/phoneNumber';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
-  const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
-  const [country, setCountry] = useState('');
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const isLoading = useSelector((state) => state.user.isLoading);
+  const {phone, country, dial_code, isLoading} = useSelector(
+    (state) => state.user,
+  );
   const {pin} = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getCountryRequest());
   }, [dispatch]);
-
-  const fetchLocalData = useCallback(async () => {
-    const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
-    if (data) {
-      setPhone(data.phone);
-      setCountry(data.country);
-    }
-  }, []);
 
   const handleLogin = () => {
     dispatch(loginRequest(phone, code, country)).then((result) => {
@@ -73,10 +65,6 @@ const Login = ({navigation}) => {
   };
 
   useEffect(() => {
-    fetchLocalData();
-  }, [fetchLocalData]);
-
-  useEffect(() => {
     dispatch(fetchTermOfServiceRequest());
   }, [dispatch]);
 
@@ -91,7 +79,9 @@ const Login = ({navigation}) => {
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
             <Text style={styles.formLabel}>{translate('phone.number')}</Text>
-            <Text style={[styles.leadText, styles.textDefault]}>+{phone}</Text>
+            <Text style={[styles.leadText, styles.textDefault]}>
+              {formatPhoneNumber(dial_code, phone)}
+            </Text>
             <TouchableOpacity
               style={styles.marginY}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>

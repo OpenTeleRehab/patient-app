@@ -7,6 +7,7 @@ export const initialState = {
   initialRouteName: '',
   isLoading: false,
   termOfService: {},
+  dial_code: undefined,
   phone: '',
   countryCode: '',
   pin: '',
