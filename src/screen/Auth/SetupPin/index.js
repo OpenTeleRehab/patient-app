@@ -116,7 +116,9 @@ const SetupPin = ({navigation, route}) => {
             : null
         }
       />
-      <ScrollView style={styles.mainContainerLight}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
             <Text style={styles.formLabel}>{translate('pin.new.number')}</Text>

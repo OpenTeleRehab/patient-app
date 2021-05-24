@@ -125,7 +125,9 @@ const Register = ({theme, navigation}) => {
       <View style={styles.authBanner}>
         <Image source={logoWhite} style={styles.authLogoWhite} />
       </View>
-      <ScrollView style={styles.mainContainerLight}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <Text style={styles.formLabel}>{translate('common.phone')}</Text>
           <View style={styles.flexRow}>

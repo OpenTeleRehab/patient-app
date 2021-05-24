@@ -190,7 +190,7 @@ const UserProfileEdit = ({navigation}) => {
         onGoBack={() => handleGoBack()}
         title={translate('edit.profile.title')}
       />
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.mainContainerLight}>
           <View style={styles.formGroup}>
             <Input
