@@ -96,7 +96,9 @@ const VerifyPhone = ({navigation}) => {
         title={translate('phone.verify')}
         onGoBack={() => navigation.goBack()}
       />
-      <ScrollView style={styles.mainContainerLight}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <Text>{translate('phone.verify.description')}</Text>
           <Text style={styles.marginY}>
