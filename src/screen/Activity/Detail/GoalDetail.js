@@ -150,14 +150,14 @@ const GoalDetail = ({theme, route, navigation}) => {
           <View
             style={[
               styles.cardWithIconHeader,
-              {backgroundColor: theme.colors.blueLight3},
+              {backgroundColor: theme.colors.blueLight4},
             ]}>
             <View style={styles.cardWithIconWrapper}>
               <Icon
-                name="trending-up"
+                name="bullseye-arrow"
                 color={theme.colors.blueDark}
                 size={100}
-                type="material"
+                type="material-community"
               />
               <Text
                 style={[

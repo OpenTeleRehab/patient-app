@@ -49,18 +49,18 @@ const RenderGoalCard = ({
             styles.cardWithIconHeader,
             item.completed || isCompletedOffline
               ? styles.bgDark
-              : {backgroundColor: theme.colors.blueLight3},
+              : {backgroundColor: theme.colors.blueLight4},
           ]}>
           <View style={styles.cardWithIconWrapper}>
             <Icon
-              name="trending-up"
+              name="bullseye-arrow"
               color={
                 item.completed || isCompletedOffline
                   ? theme.colors.black
                   : theme.colors.blueDark
               }
               size={100}
-              type="material"
+              type="material-community"
             />
             <Text
               style={[
