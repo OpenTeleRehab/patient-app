@@ -147,6 +147,16 @@ const TaskDetail = ({
             <Text>{additionalField.value}</Text>
           </View>
         ))}
+
+        {activity.additional_information &&
+          activity.additional_information.trim() !== '' && (
+            <View style={styles.marginBottomMd}>
+              <Text h4 style={styles.underlineHeader}>
+                {translate('activity.additional_information')}
+              </Text>
+              <Text>{activity.additional_information}</Text>
+            </View>
+          )}
       </ScrollView>
 
       <Divider />
