@@ -145,7 +145,7 @@ const GoalDetail = ({theme, route, navigation}) => {
           {translate('activity.goal.detail.question')}
         </Text>
       </View>
-      <ScrollView>
+      <ScrollView style={styles.bgLight}>
         <Card containerStyle={styles.activityCardContainer}>
           <View
             style={[

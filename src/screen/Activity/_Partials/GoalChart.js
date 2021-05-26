@@ -13,18 +13,6 @@ import _ from 'lodash';
 
 const screenWidth = Dimensions.get('window').width;
 
-const chartConfig = {
-  backgroundGradientFrom: '#FFFFFF',
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: '#FFFFFF',
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => 'rgba(82, 77, 75, 1)',
-  barPercentage: 1,
-  useShadowColorFromDataset: false, // optional
-  fillShadowGradient: '#FF8747',
-  fillShadowGradientOpacity: 1,
-};
-
 const chartStyle = {
   paddingBottom: -50,
 };
@@ -45,6 +33,24 @@ const GoalChart = ({theme, goal}) => {
     ],
   });
 
+  const chartConfig = {
+    backgroundGradientFrom: theme.colors.white,
+    backgroundGradientTo: theme.colors.white,
+    backgroundGradientFromOpacity: 1,
+    backgroundGradientToOpacity: 1,
+    color: (opacity = 1) => theme.colors.greyOutline,
+    labelColor: (opacity = 1) => theme.colors.dark,
+    barPercentage: 1,
+    decimalPlaces: 0,
+    useShadowColorFromDataset: false, // optional
+    fillShadowGradient: theme.colors.orange,
+    fillShadowGradientOpacity: 1,
+    propsForBackgroundLines: {
+      strokeDasharray: '',
+      strokeWidth: 1,
+    },
+  };
+
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
       setActivities(
@@ -62,7 +68,7 @@ const GoalChart = ({theme, goal}) => {
       const labels = [];
       for (let w = 1; w <= numberOfWeeks; w++) {
         if (goal.frequency === 'weekly') {
-          labels.push(`W${w}`);
+          labels.push(w);
           const activity = _.find(activities, {
             activity_id: goal.activity_id,
             week: w,
@@ -87,7 +93,7 @@ const GoalChart = ({theme, goal}) => {
           );
         } else {
           for (let d = 1; d <= 7; d++) {
-            labels.push(`D${(w - 1) * 7 + d}`);
+            labels.push((w - 1) * 7 + d);
             const activity = _.find(activities, {
               activity_id: goal.activity_id,
               week: w,
@@ -119,14 +125,26 @@ const GoalChart = ({theme, goal}) => {
         labels: labels,
         datasets: [
           {
+            data: [10],
+            color: (opacity = 1) => 'rgba(255, 255, 255, 0)', // optional
+          },
+          {
             data: data,
-            color: (opacity = 1) => `rgba(227, 82, 5, ${opacity})`, // optional
+            color: (opacity = 1) => theme.colors.orangeDark1, // optional
             strokeWidth: 3, // optional
           },
         ],
       });
     }
-  }, [goal, numberOfWeeks, activities, offlineGoals, showChart]);
+  }, [
+    goal,
+    numberOfWeeks,
+    activities,
+    offlineGoals,
+    showChart,
+    theme,
+    translate,
+  ]);
 
   if (!showChart) {
     return null;
@@ -139,15 +157,21 @@ const GoalChart = ({theme, goal}) => {
       </Text>
       <ScrollView horizontal>
         <LineChart
+          segments={5}
           data={chartData}
           width={(screenWidth - 40) * Math.max(1, chartData.labels.length / 10)}
           height={400}
           chartConfig={chartConfig}
-          withHorizontalLabels={true}
+          withHorizontalLines={false}
           bezier
           style={chartStyle}
         />
       </ScrollView>
+
+      <Text h6 style={styles.textCenter}>
+        {goal ? translate('activity.goal.' + goal.frequency) : ''}
+      </Text>
+
       <Text h5 style={{color: theme.colors.orangeDark}}>
         {translate('activity.satisfaction_level.no_satisfaction')}
       </Text>
