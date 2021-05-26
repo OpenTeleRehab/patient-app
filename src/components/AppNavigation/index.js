@@ -13,7 +13,7 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import HomeTab from './Tab/HomeTab';
 import ActivityTab from './Tab/ActivityTab';
 import AppointmentTab from './Tab/AppointmentTab';
-import MessageTab from '../../screen/ChatOrCall';
+import MessageTab from './Tab/MessageTab';
 import {ROUTES} from '../../variables/constants';
 import {auths} from '../../variables/routes';
 import styles from '../../assets/styles';
@@ -44,7 +44,7 @@ const tabs = [
     badge: 'hasAppointment',
   },
   {
-    name: ROUTES.MESSAGE,
+    name: ROUTES.CHAT_ROOM_LIST,
     screen: MessageTab,
     label: 'tab.messages',
     icon: 'message-text-outline',

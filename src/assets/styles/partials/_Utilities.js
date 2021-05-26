@@ -54,6 +54,9 @@ export default {
   bgPrimary: {
     backgroundColor: variables.primary,
   },
+  bgSuccess: {
+    backgroundColor: variables.success,
+  },
   bgGrey: {
     backgroundColor: variables.grey,
   },

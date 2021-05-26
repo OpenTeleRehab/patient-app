@@ -20,12 +20,10 @@ import {
 import {getUniqueId} from './src/utils/helper';
 import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import {
-  clearChatData,
   getChatRooms,
-  getChatUsersStatus,
-  getLastMessages,
   setChatSubscribeIds,
   postAttachmentMessage,
+  clearOfflineMessages,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
@@ -38,6 +36,7 @@ import {
   completeGoal,
   completeQuestionnaire,
 } from './src/store/activity/actions';
+import {updateIndicatorList} from './src/store/indicator/actions';
 
 let chatSocket = null;
 
@@ -52,6 +51,7 @@ const AppProvider = ({children}) => {
     chatAuth,
     chatRooms,
     selectedRoom,
+    offlineMessages,
   } = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const {
@@ -76,12 +76,15 @@ const AppProvider = ({children}) => {
   }, []);
 
   useEffect(() => {
+    dispatch(updateIndicatorList({isOnlineMode: isOnline}));
+  }, [dispatch, isOnline]);
+
+  useEffect(() => {
     dispatch(getPartnerLogoRequest());
     fetchLocalData();
   }, [fetchLocalData, dispatch]);
 
   useEffect(() => {
-    dispatch(clearChatData());
     if (timespan) {
       if (moment().diff(moment(timespan, settings.format.date), 'days') > 0) {
         dispatch(setInitialRouteName(ROUTES.REGISTER));
@@ -145,38 +148,29 @@ const AppProvider = ({children}) => {
   }, [dispatch, chatAuth]);
 
   useEffect(() => {
-    if (chatAuth !== undefined && chatRooms.length) {
-      const activeRoomIds = [];
-      chatRooms.forEach((cr) => {
-        if (cr.enabled) {
-          activeRoomIds.push(cr.rid);
-        }
-      });
-      if (activeRoomIds.length) {
-        dispatch(getChatUsersStatus());
-        dispatch(getLastMessages(activeRoomIds));
-      }
-    }
-  }, [dispatch, chatRooms, chatAuth]);
-
-  useEffect(() => {
     if (
       isOnline &&
       chatSocket !== null &&
       chatSocket.readyState === chatSocket.OPEN &&
       selectedRoom
     ) {
-      const pendingChatMessages = chatMessages
-        .filter((item) => item.pending)
-        .reverse();
-
-      pendingChatMessages.map((item) => {
-        item.attachment !== undefined
-          ? dispatch(postAttachmentMessage(selectedRoom.rid, item.attachment))
-          : sendNewMessage(chatSocket, item, profile.id);
-      });
+      if (offlineMessages.length) {
+        offlineMessages.map((item) => {
+          item.attachment !== undefined
+            ? dispatch(postAttachmentMessage(item.rid, item.attachment))
+            : sendNewMessage(chatSocket, item, profile.id);
+        });
+        dispatch(clearOfflineMessages());
+      }
     }
-  }, [dispatch, isOnline, chatMessages, profile, selectedRoom]);
+  }, [
+    dispatch,
+    isOnline,
+    chatMessages,
+    profile,
+    selectedRoom,
+    offlineMessages,
+  ]);
 
   useEffect(() => {
     if (
@@ -185,9 +179,11 @@ const AppProvider = ({children}) => {
       profile.id &&
       selectedRoom
     ) {
-      loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
+      chatRooms.map((item) => {
+        loadHistoryInRoom(chatSocket, item.rid, profile.id);
+      });
     }
-  }, [selectedRoom, profile]);
+  }, [selectedRoom, profile, chatRooms]);
 
   useEffect(() => {
     if (isOnline && isDataUpToDate === false) {

@@ -8,4 +8,5 @@ export const initialState = {
   subscribeIds: undefined,
   selectedRoom: undefined,
   videoCall: {status: '', _id: ''},
+  offlineMessages: [],
 };

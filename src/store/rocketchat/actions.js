@@ -1,7 +1,7 @@
 import {Rocketchat} from '../../services/rocketchat';
 import {Therapist} from '../../services/therapist';
 import {mutation} from './mutations';
-import {getChatMessage} from '../../utils/helper';
+import {updateIndicatorList} from '../indicator/actions';
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
   dispatch(mutation.setChatSubscribeIdsSuccess(payload));
@@ -21,8 +21,11 @@ export const updateVideoCallStatus = (payload) => (dispatch) => {
 
 export const getChatRooms = () => async (dispatch, getState) => {
   const {profile} = getState().user;
+  const {selectedRoom} = getState().rocketchat;
+  const primaryTherapistIds = [profile.therapist_id];
+  const secondaryTherapistIds = profile.secondary_therapists;
   const data = await Therapist.getTherapists({
-    ids: JSON.stringify([profile.therapist_id]),
+    ids: JSON.stringify(primaryTherapistIds.concat(secondaryTherapistIds)),
   });
   if (data.success) {
     const roomIds = profile.chat_rooms;
@@ -36,12 +39,13 @@ export const getChatRooms = () => async (dispatch, getState) => {
             rid: roomIds[fIndex],
             name: `${therapist.last_name} ${therapist.first_name}`,
             enabled: therapist.enabled,
-            unread: 0,
+            unreads: 0,
             u: {
               _id: userId,
               username: therapist.identity,
               status: 'offline',
             },
+            messages: [],
             lastMessage: {},
             totalMessages: 0,
           });
@@ -49,9 +53,11 @@ export const getChatRooms = () => async (dispatch, getState) => {
       }
     });
     dispatch(mutation.getChatRoomsSuccess(chatRooms));
-    if (chatRooms.length === 1) {
+
+    if (selectedRoom === undefined) {
       dispatch(mutation.selectRoomSuccess(chatRooms[0]));
     }
+
     return true;
   } else {
     dispatch(mutation.getChatRoomsFailure());
@@ -85,51 +91,66 @@ export const getChatUsersStatus = () => async (dispatch, getState) => {
   }
 };
 
-export const getLastMessages = (roomIds) => async (dispatch, getState) => {
+export const getMessagesInRoom = (payload) => async (dispatch, getState) => {
+  const {chatAuth, chatRooms, selectedRoom} = getState().rocketchat;
+  const {token, userId} = chatAuth || {};
+  const fIndex = chatRooms.findIndex((cr) => cr.rid === payload[0].rid);
+  const counters = await Rocketchat.getMessageCounters(
+    chatRooms[fIndex].rid,
+    userId,
+    token,
+  );
+  const userStatus = await Rocketchat.getUserStatus(
+    [chatRooms[fIndex].u._id],
+    userId,
+    token,
+  );
+  chatRooms[fIndex].lastMessage = payload[0];
+  chatRooms[fIndex].messages = payload;
+  chatRooms[fIndex].totalMessages = payload.length;
+  chatRooms[fIndex].u.status = userStatus.success
+    ? userStatus.users[0].status
+    : 'offline';
+  chatRooms[fIndex].unreads = counters.success
+    ? counters.unreads
+    : chatRooms[fIndex].unreads;
+
+  if (chatRooms[fIndex].unreads > 0) {
+    dispatch(updateIndicatorList({hasUnreadMessage: true}));
+  }
+
+  dispatch(mutation.getChatRoomsSuccess(chatRooms));
+
+  if (payload[0].rid === selectedRoom.rid) {
+    dispatch(mutation.getMessagesInRoomSuccess(payload));
+  }
+};
+
+export const clearOfflineMessages = () => async (dispatch) => {
+  dispatch(mutation.clearOfflineMessagesSuccess());
+};
+
+export const selectRoom = (payload) => async (dispatch, getState) => {
   const {chatAuth, chatRooms} = getState().rocketchat;
   const {token, userId} = chatAuth || {};
-  const data = await Rocketchat.getLastMessages(roomIds, userId, token);
-  if (data.success) {
-    data.ims.forEach((message) => {
-      if (message.lastMessage) {
-        const {rid} = message.lastMessage;
-        const fIndex = chatRooms.findIndex((cr) => cr.rid === rid);
-        if (fIndex > -1) {
-          chatRooms[fIndex].lastMessage = getChatMessage(message.lastMessage);
-          chatRooms[fIndex].totalMessages = message.msgs;
-        }
-      }
-    });
-    dispatch(mutation.getLastMessagesSuccess(chatRooms));
-    return true;
-  } else {
-    dispatch(mutation.getLastMessagesFailure());
-    return false;
+  const fIndex = chatRooms.findIndex((cr) => cr.rid === payload.rid);
+  const markMessagesAsRead = await Rocketchat.markMessagesAsRead(
+    payload.rid,
+    userId,
+    token,
+  );
+  if (markMessagesAsRead.success) {
+    chatRooms[fIndex].unreads = 0;
+    dispatch(mutation.selectRoomSuccess(payload));
+    dispatch(mutation.getChatRoomsSuccess(chatRooms));
   }
 };
 
-export const getMessagesInRoom = (payload) => async (dispatch) => {
-  dispatch(mutation.getMessagesInRoomSuccess(payload));
-};
-
-export const selectRoom = (payload) => (dispatch, getState) => {
-  dispatch(mutation.selectRoomSuccess(payload));
-  const {chatRooms} = getState().rocketchat;
-  if (chatRooms.enabled) {
-    const fIndex = chatRooms.findIndex((cr) => cr.rid === payload.rid);
-    if (chatRooms[fIndex].unread > 0) {
-      chatRooms[fIndex].unread = 0;
-      dispatch(mutation.updateUnreadSuccess(chatRooms));
-    }
-  }
-};
-
-export const prependNewMessage = (payload) => (dispatch, getState) => {
+export const prependNewMessage = (payload) => async (dispatch, getState) => {
+  const {isOnChatScreen} = getState().indicator;
   const {chatRooms, selectedRoom} = getState().rocketchat;
   let messages = getState().rocketchat.messages;
-  let currentRoom = false;
   if (selectedRoom !== undefined && selectedRoom.rid === payload.rid) {
-    currentRoom = true;
     const fIndex = messages.findIndex((msg) => msg._id === payload._id);
     if (fIndex === -1) {
       messages = [payload].concat(messages);
@@ -140,11 +161,14 @@ export const prependNewMessage = (payload) => (dispatch, getState) => {
   }
   const fIndex = chatRooms.findIndex((cr) => cr.rid === payload.rid);
   if (fIndex > -1) {
-    if (!currentRoom) {
-      chatRooms[fIndex].unread += 1;
+    if (isOnChatScreen) {
+      chatRooms[fIndex].unreads = 0;
+    } else {
+      chatRooms[fIndex].unreads += 1;
     }
     chatRooms[fIndex].totalMessages += 1;
     chatRooms[fIndex].lastMessage = payload;
+    chatRooms[fIndex].messages = [payload].concat(chatRooms[fIndex].messages);
     dispatch(mutation.updateLastMessageSuccess(chatRooms));
   }
 };
@@ -154,7 +178,7 @@ export const updateChatUserStatus = (payload) => (dispatch, getState) => {
   const fIndex = chatRooms.findIndex((cr) => cr.u._id === payload._id);
   if (fIndex > -1) {
     chatRooms[fIndex].u.status = payload.status;
-    dispatch(mutation.updateChatUserStatusSuccess(chatRooms));
+    dispatch(mutation.getChatRoomsSuccess(chatRooms));
   }
 };
 

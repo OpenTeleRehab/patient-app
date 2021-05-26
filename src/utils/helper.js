@@ -1,9 +1,13 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
+import React from 'react';
+import {Text} from 'react-native-elements';
 import moment from 'moment';
 import _ from 'lodash';
 import settings from '../../config/settings';
+import {CALL_STATUS} from '../variables/constants';
+import styles from '../assets/styles';
 
 export const formatDate = (date) => {
   return date ? moment(date).format(settings.format.date) : '';
@@ -33,7 +37,7 @@ export const getUniqueId = (userId = 0) => {
 };
 
 export const getChatMessage = (message, userId = '', authToken = '') => {
-  const {_id, rid, msg, _updatedAt, u, unread, attachments, file} = message;
+  const {_id, rid, msg, _updatedAt, u, attachments, file} = message;
   let text = msg;
   let image = '';
   let video = '';
@@ -58,7 +62,6 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     user: {_id: u._id},
     received: true,
     pending: false,
-    unread: !!unread,
     isVideoCall: msg !== '' && msg.includes('jitsi_call'),
   };
 };
@@ -74,9 +77,6 @@ export const isValidFileSize = (fileSize, maxFileSize = 0) => {
   }
   return fileSize <= defaultMaxSize;
 };
-
-export const arrayObjectIndexOf = (array, property, value) =>
-  array.map((o) => o[property]).indexOf(value);
 
 export const nEveryRow = (data, n) => {
   const result = [];
@@ -98,4 +98,37 @@ export const nEveryRow = (data, n) => {
   }
 
   return result;
+};
+
+export const renderMsgText = (msg, translate) => {
+  const text = msg.text;
+
+  if (msg.isVideoCall) {
+    if (
+      text === CALL_STATUS.AUDIO_MISSED ||
+      text === CALL_STATUS.VIDEO_MISSED
+    ) {
+      return <Text style={styles.textDanger}>{translate(text)}</Text>;
+    } else if (
+      [
+        CALL_STATUS.AUDIO_STARTED,
+        CALL_STATUS.VIDEO_STARTED,
+        CALL_STATUS.ACCEPTED,
+        CALL_STATUS.AUDIO_ENDED,
+        CALL_STATUS.VIDEO_ENDED,
+      ].includes(text)
+    ) {
+      return <Text>{translate(text)}</Text>;
+    }
+  }
+
+  if ((msg.video && msg.video !== '') || (msg.image && msg.image !== '')) {
+    return (
+      <Text style={styles.textPrimary}>
+        {translate('chat_attachment.title')}
+      </Text>
+    );
+  }
+
+  return <Text>{text}</Text>;
 };

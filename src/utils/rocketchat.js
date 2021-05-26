@@ -126,23 +126,12 @@ export const initialChatSocket = (
   return socket;
 };
 
-// TODO set specific iterm per page on first load with infinite scroll
 export const loadHistoryInRoom = (socket, roomId, patientId) => {
   const options = {
     msg: 'method',
     method: 'loadHistory',
     id: getUniqueId(patientId),
     params: [roomId, null, 999999, {$date: new Date().getTime()}],
-  };
-  socket.send(JSON.stringify(options));
-};
-
-export const markMessagesAsRead = (socket, roomId, patientId) => {
-  const options = {
-    msg: 'method',
-    method: 'readMessages',
-    id: getUniqueId(patientId),
-    params: [roomId],
   };
   socket.send(JSON.stringify(options));
 };

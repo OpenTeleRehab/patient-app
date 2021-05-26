@@ -17,6 +17,22 @@ const getLastMessages = async (chatRooms, userId, authToken) => {
   return await callChatApi('/im.list', userId, authToken, body);
 };
 
+const getMessageCounters = async (roomId, userId, authToken) => {
+  return await callChatApi(`/im.counters?roomId=${roomId}`, userId, authToken);
+};
+
+const markMessagesAsRead = async (roomId, userId, authToken) => {
+  const method = 'post';
+  const body = JSON.stringify({rid: roomId});
+  return await callChatApi(
+    '/subscriptions.read',
+    userId,
+    authToken,
+    body,
+    method,
+  );
+};
+
 const sendAttachmentMessage = async (roomId, userId, authToken, attachment) => {
   const formData = new FormData();
   formData.append('description', attachment.caption);
@@ -34,5 +50,7 @@ const sendAttachmentMessage = async (roomId, userId, authToken, attachment) => {
 export const Rocketchat = {
   getUserStatus,
   getLastMessages,
+  getMessageCounters,
+  markMessagesAsRead,
   sendAttachmentMessage,
 };

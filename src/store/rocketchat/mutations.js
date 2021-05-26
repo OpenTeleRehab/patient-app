@@ -85,6 +85,15 @@ const updateVideoCallStatusSuccess = (data) => ({
   data,
 });
 
+const setOfflineMessagesSuccess = (data) => ({
+  type: 'SET_OFFLINE_MESSAGES_SUCCEED',
+  data,
+});
+
+const clearOfflineMessagesSuccess = () => ({
+  type: 'CLEAR_OFFLINE_MESSAGES_SUCCEED',
+});
+
 export const mutation = {
   setChatSubscribeIdsSuccess,
   chatUserLoginSuccess,
@@ -104,4 +113,6 @@ export const mutation = {
   sendAttachmentMessagesSuccess,
   sendAttachmentMessagesFailure,
   updateVideoCallStatusSuccess,
+  setOfflineMessagesSuccess,
+  clearOfflineMessagesSuccess,
 };
