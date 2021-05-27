@@ -30,6 +30,9 @@ export default {
   alignSelfCenter: {
     alignSelf: 'center',
   },
+  alignSelfEnd: {
+    alignSelf: 'flex-end',
+  },
   justifyContentCenter: {
     justifyContent: 'center',
   },

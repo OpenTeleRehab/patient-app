@@ -11,6 +11,7 @@ export const ROUTES = {
   MATERIAL_DETAIL: 'MaterialDetail',
   QUESTIONNAIRE_DETAIL: 'QuestionnaireDetail',
   APPOINTMENT: 'Appointment',
+  APPOINTMENT_DETAIL: 'AppointmentDetail',
   USER_PROFILE: 'UserProfile',
   USER_PROFILE_EDIT: 'UserProfileEdit',
   ABOUT: 'About',

@@ -26,13 +26,13 @@ import {
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import moment from 'moment/min/moment-with-locales';
-import {APPOINTMENT_STATUS} from '../../variables/constants';
+import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 import SelectPicker from '../../components/Common/SelectPicker';
 import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 
-const Appointment = () => {
+const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -285,13 +285,27 @@ const Appointment = () => {
                         : renderRightActions(progress, dragX, appointment.id)
                     }
                     containerStyle={styles.borderRightRadius}>
-                    <AppointmentCard
-                      appointment={appointment}
-                      style={styles.noBorderTopRightRadius}
-                    />
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
+                          appointment,
+                        })
+                      }>
+                      <AppointmentCard
+                        appointment={appointment}
+                        style={styles.noBorderTopRightRadius}
+                      />
+                    </TouchableOpacity>
                   </Swipeable>
                 ) : (
-                  <AppointmentCard appointment={appointment} />
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
+                        appointment,
+                      })
+                    }>
+                    <AppointmentCard appointment={appointment} />
+                  </TouchableOpacity>
                 )}
               </View>
             ))}

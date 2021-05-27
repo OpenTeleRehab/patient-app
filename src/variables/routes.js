@@ -28,6 +28,7 @@ import GoalDetailScreen from '../screen/Activity/Detail/GoalDetail';
 
 // Appointment group
 import AppointmentScreen from '../screen/Appointment';
+import AppointmentDetailScreen from '../screen/Appointment/detail';
 
 // Message group
 import ChatRoomListScreen from '../screen/ChatOrCall/ChatRoomList';
@@ -122,6 +123,10 @@ export const appointments = [
   {
     name: ROUTES.APPOINTMENT,
     screen: AppointmentScreen,
+  },
+  {
+    name: ROUTES.APPOINTMENT_DETAIL,
+    screen: AppointmentDetailScreen,
   },
 ];
 
