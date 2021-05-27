@@ -4,7 +4,7 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Divider, ListItem, Text} from 'react-native-elements';
+import {Divider, Icon, ListItem, Text} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 
 import {View} from 'react-native';
@@ -47,6 +47,11 @@ const AppointmentCard = ({appointment, style}) => {
             </Text>
           )}
         </View>
+        {appointment.note && appointment.note.trim() !== '' && (
+          <View style={[styles.alignSelfEnd, styles.marginRight]}>
+            <Icon name="event-note" size={22} />
+          </View>
+        )}
       </ListItem.Content>
     </ListItem>
   );
