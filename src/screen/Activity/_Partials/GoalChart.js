@@ -133,6 +133,10 @@ const GoalChart = ({theme, goal}) => {
             color: (opacity = 1) => theme.colors.orangeDark1, // optional
             strokeWidth: 3, // optional
           },
+          {
+            data: [0],
+            color: (opacity = 1) => 'rgba(255, 255, 255, 0)', // optional
+          },
         ],
       });
     }
