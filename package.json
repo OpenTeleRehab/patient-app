@@ -24,6 +24,7 @@
     "@webessentials/react-native-calendar-strip": "webessentials/react-native-calendar-strip#master",
     "@webessentials/react-native-jitsi-meet": "webessentials/react-native-jitsi-meet#master",
     "@webessentials/react-native-otp-verify": "webessentials/react-native-otp-verify#2.0.0",
+    "@webessentials/react-native-picker-scrollview": "webessentials/react-native-picker-scrollview#master",
     "add": "^2.0.6",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",

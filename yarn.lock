@@ -1437,6 +1437,10 @@
   version "2.0.0"
   resolved "https://codeload.github.com/webessentials/react-native-otp-verify/tar.gz/4ac9c354e080f08d4034144f61b7839c194a0808"
 
+"@webessentials/react-native-picker-scrollview@webessentials/react-native-picker-scrollview#master":
+  version "1.0.1"
+  resolved "https://codeload.github.com/webessentials/react-native-picker-scrollview/tar.gz/fe95111a1cacf7c9ad3d2953ed7ceb38ea670d79"
+
 abab@^2.0.0:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
