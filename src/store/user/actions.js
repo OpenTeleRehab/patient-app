@@ -182,8 +182,9 @@ export const deleteProfileRequest = () => async (dispatch, getState) => {
   }
 };
 
-export const fetchTermOfServiceRequest = () => async (dispatch) => {
-  let res = await User.getTermOfService();
+export const fetchTermOfServiceRequest = () => async (dispatch, getState) => {
+  const {language} = getState().translation;
+  let res = await User.getTermOfService(language);
   if (res && res.data) {
     dispatch(mutation.fetchTermOfServiceSuccess(res.data));
     return true;
@@ -193,8 +194,9 @@ export const fetchTermOfServiceRequest = () => async (dispatch) => {
   }
 };
 
-export const fetchPrivacyPolicyRequest = () => async (dispatch) => {
-  let res = await User.getPrivacyPolicy();
+export const fetchPrivacyPolicyRequest = () => async (dispatch, getState) => {
+  const {language} = getState().translation;
+  let res = await User.getPrivacyPolicy(language);
   if (res && res.data) {
     dispatch(mutation.fetchPrivacyPolicySuccess(res.data));
     return true;

@@ -45,6 +45,8 @@ const blacklistTransform = createTransform((inboundState, key) => {
       'accessToken',
       'isNewRegister',
       'isDataUpToDate',
+      'privacyPolicy',
+      'termOfService',
     ]);
   } else {
     return inboundState;

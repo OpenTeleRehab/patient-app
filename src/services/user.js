@@ -64,12 +64,12 @@ const deleteProfile = async (accessToken) => {
   return await callApi('/patient/profile/delete', accessToken, null, 'delete');
 };
 
-const getTermOfService = async () => {
-  return await callAdminApi('/user-term-condition');
+const getTermOfService = async (lang) => {
+  return await callAdminApi('/user-term-condition', {lang: lang});
 };
 
-const getPrivacyPolicy = async () => {
-  return await callAdminApi('/user-privacy-policy');
+const getPrivacyPolicy = async (lang) => {
+  return await callAdminApi('/user-privacy-policy', {lang: lang});
 };
 
 const acceptTermOfService = async (id, accessToken) => {
