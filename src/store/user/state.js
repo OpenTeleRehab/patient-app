@@ -13,4 +13,5 @@ export const initialState = {
   pin: '',
   isNewRegister: false,
   isDataUpToDate: true,
+  privacyPolicy: {},
 };

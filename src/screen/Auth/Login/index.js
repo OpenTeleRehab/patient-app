@@ -16,6 +16,7 @@ import {
   loginRequest,
   fetchTermOfServiceRequest,
   generateFakeAccessToken,
+  fetchPrivacyPolicyRequest,
 } from '../../../store/user/actions';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
@@ -42,7 +43,7 @@ const Login = ({navigation}) => {
   const handleLogin = () => {
     dispatch(loginRequest(phone, code, country)).then((result) => {
       if (result.success) {
-        if (!result.acceptedTermOfService) {
+        if (!result.acceptedTermOfService || !result.acceptedPrivacyPolicy) {
           navigation.navigate(ROUTES.TERM_OF_SERVICE);
         }
       } else {
@@ -66,6 +67,7 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     dispatch(fetchTermOfServiceRequest());
+    dispatch(fetchPrivacyPolicyRequest());
   }, [dispatch]);
 
   return (

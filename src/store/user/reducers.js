@@ -73,7 +73,18 @@ export const user = (state = initialState, action) => {
         termOfService: action.data,
       });
     }
+    case 'FETCH_PRIVACY_POLICY_SUCCEED': {
+      return Object.assign({}, state, {
+        privacyPolicy: action.data,
+      });
+    }
     case 'ACCEPT_TERM_OF_SERVICE_SUCCEED': {
+      return Object.assign({}, state, {
+        accessToken: action.data.token,
+        isLoading: false,
+      });
+    }
+    case 'ACCEPT_PRIVACY_POLICY_SUCCEED': {
       return Object.assign({}, state, {
         accessToken: action.data.token,
         isLoading: false,

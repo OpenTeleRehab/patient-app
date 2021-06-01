@@ -23,6 +23,7 @@ const setupPinNumber = async (
   phone,
   otp_code,
   termOfServiceId,
+  privacyPolicyId,
   language,
 ) => {
   const body = {
@@ -31,6 +32,7 @@ const setupPinNumber = async (
     otp_code,
     language,
     term_and_condition_id: termOfServiceId,
+    privacy_and_policy_id: privacyPolicyId,
   };
   return await callApi('/auth/add-new-pin', '', body, 'post', false, {
     country: getCountryCodeFromStore(),
@@ -66,11 +68,24 @@ const getTermOfService = async () => {
   return await callAdminApi('/user-term-condition');
 };
 
+const getPrivacyPolicy = async () => {
+  return await callAdminApi('/user-privacy-policy');
+};
+
 const acceptTermOfService = async (id, accessToken) => {
   return await callApi(
     '/auth/accept-term-condition',
     accessToken,
     {term_and_condition_id: id},
+    'post',
+  );
+};
+
+const acceptPrivacyPolicy = async (id, accessToken) => {
+  return await callApi(
+    '/auth/accept-privacy-policy',
+    accessToken,
+    {privacy_and_policy_id: id},
     'post',
   );
 };
@@ -87,4 +102,6 @@ export const User = {
   deleteProfile,
   getTermOfService,
   acceptTermOfService,
+  getPrivacyPolicy,
+  acceptPrivacyPolicy,
 };
