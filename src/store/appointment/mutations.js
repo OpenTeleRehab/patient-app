@@ -39,21 +39,21 @@ const appointmentRequestFailure = () => {
   };
 };
 
-const appointmentRequestToCancelRequest = () => {
+const updateStatusRequest = () => {
   return {
-    type: 'APPOINTMENT_REQUEST_TO_CANCEL_REQUESTED',
+    type: 'UPDATE_STATUS_REQUESTED',
   };
 };
 
-const appointmentRequestToCancelSuccess = () => {
+const updateStatusSuccess = () => {
   return {
-    type: 'APPOINTMENT_REQUEST_TO_CANCEL_SUCCEED',
+    type: 'UPDATE_STATUS_SUCCEED',
   };
 };
 
-const appointmentRequestToCancelFailure = () => {
+const updateStatusFailure = () => {
   return {
-    type: 'APPOINTMENT_REQUEST_TO_CANCEL_FAILED',
+    type: 'UPDATE_STATUS_FAILED',
   };
 };
 
@@ -64,7 +64,7 @@ export const mutation = {
   appointmentRequestRequest,
   appointmentRequestSuccess,
   appointmentRequestFailure,
-  appointmentRequestToCancelRequest,
-  appointmentRequestToCancelSuccess,
-  appointmentRequestToCancelFailure,
+  updateStatusRequest,
+  updateStatusSuccess,
+  updateStatusFailure,
 };

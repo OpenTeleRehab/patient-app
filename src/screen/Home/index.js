@@ -20,7 +20,7 @@ import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import settings from '../../../config/settings';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {ROUTES} from '../../variables/constants';
+import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -133,7 +133,11 @@ const Home = ({navigation}) => {
   useEffect(() => {
     // Filter up-coming appointments for offline data reason
     const upComingAppointments = appointments.filter(
-      (a) => moment.utc(a.end_date) > moment.utc(),
+      (a) =>
+        moment.utc(a.end_date) > moment.utc() &&
+        ![a.therapist_status, a.patient_status].includes(
+          APPOINTMENT_STATUS.REJECTED,
+        ),
     );
     if (upComingAppointments.length) {
       setUpComingAppointment(upComingAppointments[0]);

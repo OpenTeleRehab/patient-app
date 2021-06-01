@@ -20,9 +20,9 @@ const requestAppointment = async (payload, accessToken) => {
   );
 };
 
-const requestToCancelAppointment = async (id, payload, accessToken) => {
+const updateStatus = async (id, payload, accessToken) => {
   return await callApi(
-    `/appointment/updateStatus/${id}`,
+    `/appointment/update-patient-status/${id}`,
     accessToken,
     {...payload},
     'post',
@@ -32,5 +32,5 @@ const requestToCancelAppointment = async (id, payload, accessToken) => {
 export const Appointment = {
   getAppointments,
   requestAppointment,
-  requestToCancelAppointment,
+  updateStatus,
 };

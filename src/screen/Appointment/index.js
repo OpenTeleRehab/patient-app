@@ -18,7 +18,7 @@ import {RectButton} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {
   getAppointmentsListRequest,
-  cancelRequestToCancelAppointment,
+  updateStatus,
 } from '../../store/appointment/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
@@ -68,6 +68,26 @@ const Appointment = ({navigation}) => {
     }
   }, [appointmentObjs]);
 
+  const renderLeftActions = (progress, dragX, id) => {
+    const trans = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [0.7, 0],
+    });
+    return (
+      <RectButton
+        style={styles.appointmentAcceptButtonWrapper}
+        onPress={() => handleAcceptPress(id)}>
+        <Animated.Text
+          style={[
+            styles.appointmentActionButtonText,
+            {transform: [{translateX: trans}]},
+          ]}>
+          {translate('appointment.invitation.accept')}
+        </Animated.Text>
+      </RectButton>
+    );
+  };
+
   const renderRightActions = (progress, dragX, id) => {
     const trans = dragX.interpolate({
       inputRange: [-100, 0],
@@ -75,14 +95,14 @@ const Appointment = ({navigation}) => {
     });
     return (
       <RectButton
-        style={styles.appointmentCancelButtonWrapper}
-        onPress={() => handleRequestCancelPress(id)}>
+        style={styles.appointmentRejectButtonWrapper}
+        onPress={() => handleRejectPress(id)}>
         <Animated.Text
           style={[
-            styles.appointmentCancelButtonText,
+            styles.appointmentActionButtonText,
             {transform: [{translateX: trans}]},
           ]}>
-          {translate('appointment.request_cancel')}
+          {translate('appointment.invitation.reject')}
         </Animated.Text>
       </RectButton>
     );
@@ -99,32 +119,46 @@ const Appointment = ({navigation}) => {
     }
   };
 
-  const handleRequestCancelPress = (id) => {
+  const handleAcceptPress = (id) => {
     Alert.alert(
-      translate('appointment.request_to_cancel'),
-      translate('appointment.are_you_sure_to_request_for_cancellation'),
+      translate('appointment.invitation.accept_title'),
+      translate('appointment.are_you_sure_to_accept_invitation'),
       [
-        {text: translate('common.ok'), onPress: () => handleConfirm(id)},
+        {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
         {text: translate('common.cancel'), onPress: () => handleClose(id)},
       ],
       {cancelable: false},
     );
   };
 
-  const handleConfirm = (id) => {
+  const handleRejectPress = (id) => {
+    Alert.alert(
+      translate('appointment.invitation.reject_title'),
+      translate('appointment.are_you_sure_to_reject_invitation'),
+      [
+        {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
+        {text: translate('common.cancel'), onPress: () => handleClose(id)},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleAcceptConfirm = (id) => {
     swipeableRef[id].close();
     dispatch(
-      cancelRequestToCancelAppointment(id, {
-        status: APPOINTMENT_STATUS.REQUEST_CANCELLATION,
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.ACCEPTED,
       }),
-    ).then((result) => {
-      if (result) {
-        const newAppointmentObjs = [...appointmentObjs];
-        newAppointmentObjs.find((appointment) => appointment.id === id).status =
-          APPOINTMENT_STATUS.REQUEST_CANCELLATION;
-        setAppointmentObjs(newAppointmentObjs);
-      }
-    });
+    );
+  };
+
+  const handleRejectConfirm = (id) => {
+    swipeableRef[id].close();
+    dispatch(
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.REJECTED,
+      }),
+    );
   };
 
   const handleClose = (id) => {
@@ -176,16 +210,17 @@ const Appointment = ({navigation}) => {
             </Text>
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
-                {netInfo.isConnected ? (
+                {netInfo.isConnected &&
+                appointment.patient_status === APPOINTMENT_STATUS.INVITED ? (
                   <Swipeable
                     ref={(ref) => (swipeableRef[appointment.id] = ref)}
-                    renderRightActions={(progress, dragX) =>
-                      appointment.status ===
-                      APPOINTMENT_STATUS.REQUEST_CANCELLATION
-                        ? null
-                        : renderRightActions(progress, dragX, appointment.id)
+                    renderLeftActions={(progress, dragX) =>
+                      renderLeftActions(progress, dragX, appointment.id)
                     }
-                    containerStyle={styles.borderRightRadius}>
+                    renderRightActions={(progress, dragX) =>
+                      renderRightActions(progress, dragX, appointment.id)
+                    }
+                    containerStyle={styles.borderRadius}>
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
@@ -194,7 +229,7 @@ const Appointment = ({navigation}) => {
                       }>
                       <AppointmentCard
                         appointment={appointment}
-                        style={styles.noBorderTopRightRadius}
+                        style={styles.noBorderRadius}
                       />
                     </TouchableOpacity>
                   </Swipeable>
