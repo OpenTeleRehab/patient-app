@@ -27,6 +27,10 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import {useNetInfo} from '@react-native-community/netinfo';
 import GoalChart from '../_Partials/GoalChart';
 
+const sliderThumbStyle = {
+  width: 15,
+};
+
 const GoalDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -209,7 +213,11 @@ const GoalDetail = ({theme, route, navigation}) => {
             minimumValue={1}
             maximumValue={10}
             step={1}
+            thumbStyle={sliderThumbStyle}
             disabled={goal && (!!goal.completed || isCompletedOffline)}
+            allowTouchTrack={
+              !(goal && (!!goal.completed || isCompletedOffline))
+            }
           />
           {goal && <GoalChart goal={goal} />}
         </View>

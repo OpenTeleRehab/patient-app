@@ -21,6 +21,9 @@ import ScrollPicker from '@webessentials/react-native-picker-scrollview';
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
 };
+const sliderThumbStyle = {
+  width: 15,
+};
 
 const AssessmentForm = ({theme, activity, navigation}) => {
   const dispatch = useDispatch();
@@ -50,6 +53,9 @@ const AssessmentForm = ({theme, activity, navigation}) => {
           setNumberOfSets(offlineActivity.sets);
           setNumberOfReps(offlineActivity.reps);
           setIsCompletedOffline(true);
+        } else {
+          setNumberOfSets(activity.sets);
+          setNumberOfReps(activity.reps);
         }
       }
     }
@@ -103,7 +109,9 @@ const AssessmentForm = ({theme, activity, navigation}) => {
               minimumValue={1}
               maximumValue={10}
               step={1}
+              thumbStyle={sliderThumbStyle}
               disabled={!!activity?.completed || isCompletedOffline}
+              allowTouchTrack={!(!!activity?.completed || isCompletedOffline)}
             />
           </View>
         )}
