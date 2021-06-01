@@ -181,6 +181,19 @@ const fetchTermOfServiceFailure = () => {
   };
 };
 
+const fetchPrivacyPolicySuccess = (data) => {
+  return {
+    type: 'FETCH_PRIVACY_POLICY_SUCCEED',
+    data,
+  };
+};
+
+const fetchPrivacyPolicyFailure = () => {
+  return {
+    type: 'FETCH_PRIVACY_POLICY_FAILED',
+  };
+};
+
 const acceptTermOfServiceRequest = () => {
   return {
     type: 'ACCEPT_TERM_OF_SERVICE_REQUESTED',
@@ -195,6 +208,25 @@ const acceptTermOfServiceSuccess = (data) => {
 };
 
 const acceptTermOfServiceFailure = () => {
+  return {
+    type: 'ACCEPT_TERM_OF_SERVICE_FAILED',
+  };
+};
+
+const acceptPrivacyPolicyRequest = () => {
+  return {
+    type: 'ACCEPT_TERM_OF_SERVICE_REQUESTED',
+  };
+};
+
+const acceptPrivacyPolicySuccess = (data) => {
+  return {
+    type: 'ACCEPT_TERM_OF_SERVICE_SUCCEED',
+    data,
+  };
+};
+
+const acceptPrivacyPolicyFailure = () => {
   return {
     type: 'ACCEPT_TERM_OF_SERVICE_FAILED',
   };
@@ -239,4 +271,9 @@ export const mutation = {
   acceptTermOfServiceSuccess,
   acceptTermOfServiceFailure,
   generateFakeAccessTokenSuccess,
+  fetchPrivacyPolicySuccess,
+  fetchPrivacyPolicyFailure,
+  acceptPrivacyPolicySuccess,
+  acceptPrivacyPolicyFailure,
+  acceptPrivacyPolicyRequest,
 };

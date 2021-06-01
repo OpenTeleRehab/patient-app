@@ -8,6 +8,7 @@ import LoginScreen from '../screen/Auth/Login';
 import RegisterScreen from '../screen/Auth/Register';
 import TermOfServiceScreen from '../screen/Auth/TermOfService';
 import TermOfServiceDetailScreen from '../screen/Auth/TermOfService/detail';
+import PrivacyPolicyDetailScreen from '../screen/Auth/TermOfService/PrivacyDetail';
 import VerifyPhoneScreen from '../screen/Auth/VerifyPhone';
 import SetupPinScreen from '../screen/Auth/SetupPin';
 
@@ -46,6 +47,10 @@ export const auths = [
   {
     name: ROUTES.TERM_OF_SERVICE_DETAIL,
     screen: TermOfServiceDetailScreen,
+  },
+  {
+    name: ROUTES.PRIVACY_POLICY_DETAIL,
+    screen: PrivacyPolicyDetailScreen,
   },
   {
     name: ROUTES.LOGIN,

@@ -18,6 +18,7 @@ export const ROUTES = {
   REGISTER: 'Register',
   TERM_OF_SERVICE: 'TermOfService',
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
+  PRIVACY_POLICY_DETAIL: 'PrivacyPolicyDetail',
   SETUP_PIN: 'SetupPIN',
   CONFIRM_PIN: 'ConfirmPin',
   GOAl_DETAIL: 'GoalDetail',

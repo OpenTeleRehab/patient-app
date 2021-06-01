@@ -48,6 +48,7 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
     phone,
     otp_code,
     getState().user.termOfService.id,
+    getState().user.privacyPolicy.id,
     language,
     countryCode,
   );
@@ -82,16 +83,20 @@ export const loginRequest = (phone, pin, country) => async (
   let data = await User.login(phone, pin, country);
   if (data.success) {
     let acceptedTermOfService = true;
+    let acceptedPrivacyPolicy = true;
     if (
       data.data.profile.term_and_condition_id !==
-      getState().user.termOfService.id
+        getState().user.termOfService.id ||
+      data.data.profile.privacy_and_policy_id !==
+        getState().user.privacyPolicy.id
     ) {
       data.data.profile.token = data.data.token;
       data.data.token = '';
       acceptedTermOfService = false;
+      acceptedPrivacyPolicy = false;
     }
     dispatch(mutation.userLoginSuccess(data.data, phone, pin));
-    return {success: true, acceptedTermOfService};
+    return {success: true, acceptedTermOfService, acceptedPrivacyPolicy};
   } else {
     dispatch(mutation.userLoginFailure());
     return {success: false};
@@ -188,6 +193,17 @@ export const fetchTermOfServiceRequest = () => async (dispatch) => {
   }
 };
 
+export const fetchPrivacyPolicyRequest = () => async (dispatch) => {
+  let res = await User.getPrivacyPolicy();
+  if (res && res.data) {
+    dispatch(mutation.fetchPrivacyPolicySuccess(res.data));
+    return true;
+  } else {
+    dispatch(mutation.fetchPrivacyPolicyFailure());
+    return false;
+  }
+};
+
 export const acceptTermOfServiceRequest = (id) => async (
   dispatch,
   getState,
@@ -199,6 +215,21 @@ export const acceptTermOfServiceRequest = (id) => async (
     return true;
   } else {
     dispatch(mutation.acceptTermOfServiceFailure());
+    return false;
+  }
+};
+
+export const acceptPrivacyPolicyRequest = (id) => async (
+  dispatch,
+  getState,
+) => {
+  dispatch(mutation.acceptPrivacyPolicyRequest());
+  let data = await User.acceptPrivacyPolicy(id, getState().user.profile.token);
+  if (data.success) {
+    dispatch(mutation.acceptPrivacyPolicySuccess(data.data));
+    return true;
+  } else {
+    dispatch(mutation.acceptPrivacyPolicyFailure());
     return false;
   }
 };
