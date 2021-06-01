@@ -5,10 +5,9 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Button, Divider, Slider, Text} from 'react-native-elements';
+import {Button, Divider, Slider, Text, withTheme} from 'react-native-elements';
 
 import styles from '../../../assets/styles';
-import NumericInput from '../../../components/Common/NumericInput';
 
 import {
   completeActive,
@@ -17,12 +16,13 @@ import {
 import {ROUTES} from '../../../variables/constants';
 import {useNetInfo} from '@react-native-community/netinfo';
 import _ from 'lodash';
+import ScrollPicker from '@webessentials/react-native-picker-scrollview';
 
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
 };
 
-const AssessmentForm = ({activity, navigation}) => {
+const AssessmentForm = ({theme, activity, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -85,7 +85,7 @@ const AssessmentForm = ({activity, navigation}) => {
 
   return (
     <>
-      <ScrollView style={styles.margin}>
+      <ScrollView style={styles.mainContainerLight}>
         {activity?.get_pain_level && (
           <View style={styles.marginTopLg}>
             <View style={[styles.flexCenter, styles.marginBottomMd]}>
@@ -117,10 +117,12 @@ const AssessmentForm = ({activity, navigation}) => {
             <View style={[styles.flexRow, styles.justifyContentSpaceAround]}>
               <View>
                 <Text h4>{translate('activity.sets')}</Text>
-                <NumericInput
-                  value={numberOfSets}
-                  onChange={(num) => setNumberOfSets(num)}
-                  onLongPress={(num) => setNumberOfSets(num)}
+                <ScrollPicker
+                  dataSource={Array.from({length: 101}, (v, i) => i)}
+                  itemHeight={40}
+                  wrapperColor={theme.colors.white}
+                  selectedIndex={numberOfSets}
+                  onValueChange={(data) => setNumberOfSets(data)}
                   disabled={!!activity?.completed || isCompletedOffline}
                 />
                 <Text style={styles.fontSizeMd}>
@@ -129,10 +131,12 @@ const AssessmentForm = ({activity, navigation}) => {
               </View>
               <View>
                 <Text h4>{translate('activity.reps')}</Text>
-                <NumericInput
-                  value={numberOfReps}
-                  onChange={(num) => setNumberOfReps(num)}
-                  onLongPress={(num) => setNumberOfReps(num)}
+                <ScrollPicker
+                  dataSource={Array.from({length: 101}, (v, i) => i)}
+                  itemHeight={40}
+                  wrapperColor={theme.colors.white}
+                  selectedIndex={numberOfReps}
+                  onValueChange={(data) => setNumberOfReps(data)}
                   disabled={!!activity?.completed || isCompletedOffline}
                 />
                 <Text style={styles.fontSizeMd}>
@@ -162,4 +166,4 @@ const AssessmentForm = ({activity, navigation}) => {
   );
 };
 
-export default AssessmentForm;
+export default withTheme(AssessmentForm);
