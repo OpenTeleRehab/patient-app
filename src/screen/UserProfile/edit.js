@@ -19,6 +19,7 @@ import {storeLocalData} from '../../utils/local_storage';
 import SelectPicker from '../../components/Common/SelectPicker';
 import _ from 'lodash';
 import {useNetInfo} from '@react-native-community/netinfo';
+import formatPhoneNumber from '../../utils/phoneNumber';
 
 const UserProfileEdit = ({navigation}) => {
   const profile = useSelector((state) => state.user.profile);
@@ -284,7 +285,9 @@ const UserProfileEdit = ({navigation}) => {
             <Text style={[styles.formLabel, styles.textSmall]}>
               {translate('phone.number')}
             </Text>
-            <Text style={styles.textFormDisabled}>{profile.phone}</Text>
+            <Text style={styles.textFormDisabled}>
+              {formatPhoneNumber(profile.dial_code, profile.phone)}
+            </Text>
             <Divider style={styles.marginTop} />
           </View>
           <Button
