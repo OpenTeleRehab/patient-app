@@ -120,6 +120,12 @@ const SetupPin = ({navigation, route}) => {
         keyboardShouldPersistTaps="handled"
         style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
+          <View
+            style={[styles.paddingY, styles.marginTopMd, styles.marginBottom]}>
+            <Text style={[styles.formLabel, styles.textCenter]}>
+              {translate('pin.setup.title')}
+            </Text>
+          </View>
           <View>
             <Text style={styles.formLabel}>{translate('pin.new.number')}</Text>
             <SmoothPinCodeInput

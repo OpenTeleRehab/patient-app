@@ -14,7 +14,7 @@ import {comparePinNumberRequest} from '../../../store/user/actions';
 
 const customStyles = {
   paddingTopXXL: {
-    paddingTop: 60,
+    paddingTop: 45,
   },
   marginTopXXL: {
     marginTop: 60,
@@ -76,6 +76,9 @@ const ConfirmPin = ({navigation}) => {
         style={[styles.mainContainerLight, customStyles.paddingTopXXL]}>
         <View style={styles.flexCenter}>
           <>
+            <Text style={[styles.formLabel, styles.paddingY]}>
+              {translate('pin.confirmation.title')}
+            </Text>
             <Text style={styles.formLabel}>
               {translate('pin.enter.number')}
             </Text>
