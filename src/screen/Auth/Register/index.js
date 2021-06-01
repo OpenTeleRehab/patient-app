@@ -109,15 +109,15 @@ const Register = ({theme, navigation}) => {
     setErrorPhoneNumber(false);
     const mobileNumber = phoneNumber.replace(countryPhoneCode, '');
     const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
-    dispatch(registerRequest(formattedNumber, hash, countryCode)).then(
-      (result) => {
-        if (result) {
-          navigation.navigate(ROUTES.VERIFY_PHONE);
-        } else {
-          setErrorPhoneNumber(true);
-        }
-      },
-    );
+    dispatch(
+      registerRequest(countryPhoneCode, formattedNumber, hash, countryCode),
+    ).then((result) => {
+      if (result) {
+        navigation.navigate(ROUTES.VERIFY_PHONE);
+      } else {
+        setErrorPhoneNumber(true);
+      }
+    });
   };
 
   return (

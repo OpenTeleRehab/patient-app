@@ -8,11 +8,13 @@ import moment from 'moment';
 import {storeLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY} from '../../variables/constants';
 
-export const registerRequest = (to, hash, country) => async (dispatch) => {
+export const registerRequest = (dialCode, to, hash, country) => async (
+  dispatch,
+) => {
   dispatch(mutation.userRegisterRequest());
   const data = await User.register(to, hash, country);
   if (data.success) {
-    dispatch(mutation.userRegisterSuccess({to, country}));
+    dispatch(mutation.userRegisterSuccess({dialCode, to, country}));
     return true;
   } else {
     dispatch(mutation.userRegisterFailure());

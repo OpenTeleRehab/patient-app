@@ -20,7 +20,7 @@ export const ageCalculation = (value, translate) => {
       month === 1
         ? month + ' ' + translate('age.single_month')
         : month + ' ' + translate('age.plural_month');
-  } else {
+  } else if (day > 0) {
     totalAge =
       day === 1
         ? day + ' ' + translate('age.single_day')
