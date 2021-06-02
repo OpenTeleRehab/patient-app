@@ -16,6 +16,7 @@ import SetupPinScreen from '../screen/Auth/SetupPin';
 import HomeScreen from '../screen/Home';
 import UserProfileEditScreen from '../screen/UserProfile/edit';
 import AboutScreen from '../screen/About';
+import FaqScreen from '../screen/Faq';
 import UserProfileScreen from '../screen/UserProfile';
 import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
 
@@ -76,6 +77,12 @@ export const homes = [
     screen: UserProfileScreen,
     label: 'menu.user.profile',
     icon: 'user',
+  },
+  {
+    name: ROUTES.FAQ,
+    screen: FaqScreen,
+    label: 'menu.faq',
+    icon: 'help-circle',
   },
   {
     name: ROUTES.ABOUT,

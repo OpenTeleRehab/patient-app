@@ -24,6 +24,7 @@ export const ROUTES = {
   GOAl_DETAIL: 'GoalDetail',
   CHAT_ROOM_LIST: 'ChatRoomList',
   CHAT_PANEL: 'ChatPanel',
+  FAQ: 'Faq',
 };
 
 export const STORAGE_KEY = {

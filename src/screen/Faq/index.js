@@ -3,7 +3,7 @@
  */
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAboutPageRequest} from '../../store/staticPage/actions';
+import {getFaqPageRequest} from '../../store/staticPage/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import {Dimensions, ScrollView, Text, View} from 'react-native';
 import {Image} from 'react-native-elements';
@@ -44,41 +44,34 @@ const ulStyle = {
   fontSize: 30,
 };
 
-const footerStyle = {
-  position: 'absolute',
-  bottom: 0,
-  left: '30%',
-  paddingBottom: 5,
-};
-
 const contentStyle = {
   paddingBottom: 50,
 };
 
-const About = ({navigation}) => {
+const Faq = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const {aboutPage} = useSelector((state) => state.staticPage);
+  const {faqPage} = useSelector((state) => state.staticPage);
   const {language} = useSelector((state) => state.translation);
   const translate = getTranslate(localize);
-  const uri = aboutPage.file
-    ? settings.adminApiBaseURL + '/file/' + aboutPage.file.id
+  const uri = faqPage.file
+    ? settings.adminApiBaseURL + '/file/' + faqPage.file.id
     : '';
 
   useEffect(() => {
-    dispatch(getAboutPageRequest());
+    dispatch(getFaqPageRequest());
   }, [language, dispatch]);
   return (
     <>
       <HeaderBar onGoBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={containerStyle}>
-        {!_.isEmpty(aboutPage) && (
+        {!_.isEmpty(faqPage) && (
           <>
-            {aboutPage.file ? (
+            {faqPage.file ? (
               <View>
                 <Image source={{uri}} style={imageStyle} />
                 <Text style={[titleStyle, styles.textLight, styles.fontSizeMd]}>
-                  {aboutPage.title}
+                  {faqPage.title}
                 </Text>
               </View>
             ) : (
@@ -87,9 +80,9 @@ const About = ({navigation}) => {
                   style={[
                     styles.fontSizeMd,
                     styles.paddingMd,
-                    {backgroundColor: aboutPage.background_color},
+                    {backgroundColor: faqPage.background_color},
                   ]}>
-                  {aboutPage.title}
+                  {faqPage.title}
                 </Text>
               </View>
             )}
@@ -99,23 +92,23 @@ const About = ({navigation}) => {
                 styles.flexColumn,
                 contentStyle,
                 {
-                  backgroundColor: aboutPage.background_color,
+                  backgroundColor: faqPage.background_color,
                 },
               ]}>
               <View>
                 <HTML
-                  source={{html: aboutPage.content}}
+                  source={{html: faqPage.content}}
                   contentWidth={contentWidth}
                   tagsStyles={{
-                    p: {color: aboutPage.text_color},
-                    ul: {color: aboutPage.text_color},
-                    ol: {color: aboutPage.text_color},
-                    h1: {color: aboutPage.text_color},
-                    h2: {color: aboutPage.text_color},
-                    h3: {color: aboutPage.text_color},
-                    h4: {color: aboutPage.text_color},
-                    h5: {color: aboutPage.text_color},
-                    h6: {color: aboutPage.text_color},
+                    p: {color: faqPage.text_color},
+                    ul: {color: faqPage.text_color},
+                    ol: {color: faqPage.text_color},
+                    h1: {color: faqPage.text_color},
+                    h2: {color: faqPage.text_color},
+                    h3: {color: faqPage.text_color},
+                    h4: {color: faqPage.text_color},
+                    h5: {color: faqPage.text_color},
+                    h6: {color: faqPage.text_color},
                   }}
                   listsPrefixesRenderers={{
                     ol: (
@@ -130,7 +123,7 @@ const About = ({navigation}) => {
                             olStyle,
                             listStyle,
                             {
-                              color: aboutPage.text_color,
+                              color: faqPage.text_color,
                             },
                           ]}>
                           {passProps.index + 1}.
@@ -149,7 +142,7 @@ const About = ({navigation}) => {
                             ulStyle,
                             listStyle,
                             {
-                              color: aboutPage.text_color,
+                              color: faqPage.text_color,
                             },
                           ]}>
                           .
@@ -159,16 +152,6 @@ const About = ({navigation}) => {
                   }}
                 />
               </View>
-              <View style={footerStyle}>
-                <Text
-                  style={[
-                    styles.fontWeightBold,
-                    styles.fontSizeMd,
-                    {color: aboutPage.text_color},
-                  ]}>
-                  {translate('app.version') + ' ' + settings.appVersion}
-                </Text>
-              </View>
             </View>
           </>
         )}
@@ -177,4 +160,4 @@ const About = ({navigation}) => {
   );
 };
 
-export default About;
+export default Faq;

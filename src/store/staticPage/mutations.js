@@ -19,8 +19,29 @@ const aboutPageFetchFailure = () => {
   };
 };
 
+const faqPageFetchRequest = () => {
+  return {
+    type: 'FAQ_PAGE_FETCH_REQUESTED',
+  };
+};
+const faqPageFetchSuccess = (data) => {
+  return {
+    type: 'FAQ_PAGE_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const faqPageFetchFailure = () => {
+  return {
+    type: 'FAQ_PAGE_FETCH_FAILED',
+  };
+};
+
 export const mutation = {
   aboutPageFetchRequest,
   aboutPageFetchSuccess,
   aboutPageFetchFailure,
+  faqPageFetchFailure,
+  faqPageFetchSuccess,
+  faqPageFetchRequest,
 };
