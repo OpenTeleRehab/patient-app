@@ -3,11 +3,15 @@
  */
 import {initialState} from './states';
 
-export const aboutPage = (state = initialState, action) => {
+export const staticPage = (state = initialState, action) => {
   switch (action.type) {
     case 'ABOUT_PAGE_FETCH_SUCCEED':
       return Object.assign({}, state, {
         aboutPage: action.data,
+      });
+    case 'FAQ_PAGE_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        faqPage: action.data,
       });
     default:
       return state;
