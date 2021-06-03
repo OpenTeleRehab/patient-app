@@ -14,6 +14,7 @@ import {
   completeQuestionnaireOffline,
 } from '../../../store/activity/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
+import TTSButton from '../../../components/TTSButton';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   questions.map((question, i) => (
@@ -229,6 +230,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
             questionnaire.description.trim() !== '' && (
               <Text style={[styles.marginBottom, styles.paddingXMd]}>
                 {questionnaire.description}
+                <TTSButton textsToSpeech={[questionnaire.description]} />
               </Text>
             )}
           {question && (
