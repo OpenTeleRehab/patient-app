@@ -4,15 +4,15 @@
 import {callApi, callAdminApi} from '../utils/request';
 import {getCountryCodeFromStore} from '../utils/country';
 
-const register = async (to, hash, country) => {
-  const body = {to, hash};
+const register = async (to, hash, country, email) => {
+  const body = {to, hash, email};
   return await callApi('/register/send-code', '', body, 'post', false, {
     country,
   });
 };
 
-const verifyPhoneNumber = async (to, code) => {
-  const body = {to, code};
+const verifyPhoneNumber = async (to, code, email) => {
+  const body = {to, code, email};
   return await callApi('/register/verify-code', '', body, 'post', false, {
     country: getCountryCodeFromStore(),
   });

@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {Button, Text} from 'react-native-elements';
+import {Button, Input, Text} from 'react-native-elements';
 import {
   ScrollView,
   TouchableOpacity,
@@ -21,6 +21,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
 import formatPhoneNumber from '../../../utils/phoneNumber';
+import useInterval from '../../../hook/useInterval';
+import validateEmail from '../../../utils/validateEmail';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -36,6 +38,19 @@ const VerifyPhone = ({navigation}) => {
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
   const [hash, setHash] = useState('');
+  const [count, setCount] = useState(30);
+  const [resentCount, setResentCount] = useState(0);
+  const [showEmail, setShowEmail] = useState(false);
+  const [email, setEmail] = useState('');
+  const [errorEmail, setErrorEmail] = useState(false);
+
+  useInterval(() => {
+    if (count > 0) {
+      setCount(count - 1);
+    } else if (!showEmail && resentCount >= 5) {
+      setShowEmail(true);
+    }
+  }, 1000);
 
   useEffect(() => {
     if (RNOtpVerify && hash === '') {
@@ -49,25 +64,35 @@ const VerifyPhone = ({navigation}) => {
   }, [hash]);
 
   const onConfirm = () => {
-    dispatch(verifyPhoneNumberRequest(formattedNumber, code)).then((result) => {
-      if (result) {
-        if (RNOtpVerify) {
-          RNOtpVerify.removeListener();
+    dispatch(verifyPhoneNumberRequest(formattedNumber, code, email)).then(
+      (result) => {
+        if (result) {
+          if (RNOtpVerify) {
+            RNOtpVerify.removeListener();
+          }
+          navigation.navigate(ROUTES.TERM_OF_SERVICE);
+        } else {
+          Alert.alert(
+            translate('error.message.incorrect.code').toString(),
+            translate('prompt.enter.code').toString(),
+            [{text: translate('common.ok').toString(), onPress: () => reset()}],
+            {cancelable: false},
+          );
         }
-        navigation.navigate(ROUTES.TERM_OF_SERVICE);
-      } else {
-        Alert.alert(
-          translate('error.message.incorrect.code').toString(),
-          translate('prompt.enter.code').toString(),
-          [{text: translate('common.ok').toString(), onPress: () => reset()}],
-          {cancelable: false},
-        );
-      }
-    });
+      },
+    );
   };
 
   const onResent = () => {
-    dispatch(registerRequest(dialCode, formattedNumber, hash));
+    if (showEmail && (email === '' || !validateEmail(email))) {
+      setErrorEmail(true);
+      return false;
+    }
+
+    setErrorEmail(false);
+    setCount(30);
+    setResentCount(resentCount + 1);
+    dispatch(registerRequest(dialCode, formattedNumber, hash, null, email));
   };
 
   const reset = () => {
@@ -116,18 +141,40 @@ const VerifyPhone = ({navigation}) => {
             animated={false}
             cellSpacing={10}
             textStyle={styles.formPinText}
-            containerStyle={styles.formPinContainer}
+            containerStyle={[styles.formPinContainer, styles.marginBottom]}
             cellStyle={styles.formPinCell}
             cellStyleFocused={styles.formPinCellFocused}
             cellStyleFilled={styles.formPinCellFilled}
           />
-          <View style={[styles.flexRow, styles.marginTop]}>
+          {showEmail && (
+            <>
+              <Input
+                label={translate('common.email')}
+                placeholder={translate('placeholder.email')}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={(value) => setEmail(value)}
+                containerStyle={styles.marginBottom}
+                disabled={count > 0}
+                renderErrorMessage={errorEmail}
+                errorMessage={
+                  errorEmail ? translate('error.message.email') : null
+                }
+              />
+            </>
+          )}
+          <View style={[styles.flexRow, styles.marginY]}>
             <Text>{translate('phone.dont.receive.code')} &nbsp;</Text>
-            <TouchableOpacity onPress={onResent} disabled={isLoading}>
-              <Text style={styles.hyperlink}>
-                {translate('phone.resend.code')}
-              </Text>
-            </TouchableOpacity>
+            {count > 0 ? (
+              <Text>{count}</Text>
+            ) : (
+              <TouchableOpacity onPress={onResent} disabled={isLoading}>
+                <Text style={styles.hyperlink}>
+                  {translate('phone.resend.code')}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
           <Button
             containerStyle={[styles.marginTopMd, styles.alignSelfStretch]}

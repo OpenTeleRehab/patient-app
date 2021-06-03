@@ -10,7 +10,6 @@ import {Image} from 'react-native-elements';
 import settings from '../../../config/settings';
 import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
-import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 
 const contentWidth = Dimensions.get('window').width;
@@ -50,10 +49,8 @@ const contentStyle = {
 
 const Faq = ({navigation}) => {
   const dispatch = useDispatch();
-  const localize = useSelector((state) => state.localize);
   const {faqPage} = useSelector((state) => state.staticPage);
   const {language} = useSelector((state) => state.translation);
-  const translate = getTranslate(localize);
   const uri = faqPage.file
     ? settings.adminApiBaseURL + '/file/' + faqPage.file.id
     : '';
