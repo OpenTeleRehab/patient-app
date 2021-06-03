@@ -92,6 +92,9 @@ export const getChatUsersStatus = () => async (dispatch, getState) => {
 };
 
 export const getMessagesInRoom = (payload) => async (dispatch, getState) => {
+  if (!payload.length) {
+    return false;
+  }
   const {chatAuth, chatRooms, selectedRoom} = getState().rocketchat;
   const {token, userId} = chatAuth || {};
   const fIndex = chatRooms.findIndex((cr) => cr.rid === payload[0].rid);
