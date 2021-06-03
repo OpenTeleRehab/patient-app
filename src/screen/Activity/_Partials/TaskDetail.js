@@ -24,6 +24,7 @@ import {
 import musicUrl from '../../../assets/images/music.png';
 import {useNetInfo} from '@react-native-community/netinfo';
 import _ from 'lodash';
+import TTSButton from '../../../components/TTSButton';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH);
@@ -69,7 +70,6 @@ const TaskDetail = ({
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {offlineActivities} = useSelector((state) => state.activity);
-
   const {isLoading} = useSelector((state) => state.activity);
   const [showMedia, setShowMedia] = useState(undefined);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
@@ -95,6 +95,32 @@ const TaskDetail = ({
         activityNumber: activityNumber,
       });
     }
+  };
+
+  const getTextsToSpeech = () => {
+    const texts = [activity.title];
+
+    if (activity.sets > 0) {
+      const setReps = translate('activity.number_of_sets_and_reps', {
+        sets: activity.sets,
+        reps: activity.reps,
+      });
+      texts.push(setReps.toString());
+    }
+    if (activity.additional_fields.length) {
+      activity.additional_fields.forEach((af) => {
+        texts.push(af.field);
+        texts.push(af.value);
+      });
+    }
+    if (
+      activity.additional_information &&
+      activity.additional_information.trim() !== ''
+    ) {
+      texts.push(activity.additional_information);
+    }
+
+    return texts;
   };
 
   return (
@@ -128,7 +154,10 @@ const TaskDetail = ({
           />
         </View>
         <View style={[styles.flexCenter, styles.marginY]}>
-          <Text h4>{activity.title}</Text>
+          <View style={[styles.marginXMd, styles.flexRow]}>
+            <Text h4>{activity.title}</Text>
+            <TTSButton textsToSpeech={getTextsToSpeech()} />
+          </View>
           {activity.sets > 0 && (
             <Text>
               {translate('activity.number_of_sets_and_reps', {

@@ -64,3 +64,8 @@ export const APPOINTMENT_STATUS = {
   ACCEPTED: 'accepted',
   REJECTED: 'rejected',
 };
+
+export const TTS = {
+  DEFAULT_SPEECH_RATE: 0.5,
+  DEFAULT_SPEECH_PITCH: 1,
+};

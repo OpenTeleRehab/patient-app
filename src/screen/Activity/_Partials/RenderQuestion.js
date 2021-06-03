@@ -5,6 +5,7 @@ import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
 import {View} from 'react-native';
 import styles from '../../../assets/styles';
+import TTSButton from '../../../components/TTSButton';
 
 const containerStyle = {
   borderWidth: 1,
@@ -42,6 +43,20 @@ const RenderQuestion = ({
     setPatientAnswers({...patientAnswers, [question.id]: value});
   };
 
+  const getTextsToSpeech = () => {
+    const texts = [question.title];
+
+    if (['multiple', 'checkbox'].includes(question.type)) {
+      question.answers.forEach((answer) => {
+        texts.push(answer.description);
+      });
+    } else {
+      texts.push(patientAnswers[question.id] || '');
+    }
+
+    return texts;
+  };
+
   return (
     <>
       {question.file && (
@@ -52,9 +67,12 @@ const RenderQuestion = ({
         />
       )}
       <View style={[styles.marginTopMd, styles.paddingXMd]}>
-        <Text style={styles.marginBottom} h4>
-          {question.title}
-        </Text>
+        <View style={styles.flexRow}>
+          <Text style={styles.marginBottom} h4>
+            {question.title}
+          </Text>
+          <TTSButton textsToSpeech={getTextsToSpeech()} />
+        </View>
         {question.type === 'multiple' && (
           <>
             {question.answers.map((answer) => {

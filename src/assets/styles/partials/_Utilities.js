@@ -99,6 +99,9 @@ export default {
   marginTop: {
     marginTop: variables.spacingBase,
   },
+  marginTopSm: {
+    marginTop: variables.spacingBase - 5,
+  },
   marginTopMd: {
     marginTop: variables.spacingMd,
   },
@@ -107,6 +110,9 @@ export default {
   },
   marginY: {
     marginVertical: variables.spacingBase,
+  },
+  marginXMd: {
+    marginHorizontal: variables.spacingMd,
   },
   marginBottom: {
     marginBottom: variables.spacingBase,
