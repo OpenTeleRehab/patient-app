@@ -38,22 +38,16 @@ export const requestAppointment = (payload) => async (dispatch, getState) => {
   }
 };
 
-export const cancelRequestToCancelAppointment = (id, payload) => async (
-  dispatch,
-  getState,
-) => {
-  dispatch(mutation.appointmentRequestToCancelRequest());
+export const updateStatus = (id, payload) => async (dispatch, getState) => {
+  dispatch(mutation.updateStatusRequest());
   const {accessToken} = getState().user;
-  const data = await Appointment.requestToCancelAppointment(
-    id,
-    payload,
-    accessToken,
-  );
+  const data = await Appointment.updateStatus(id, payload, accessToken);
   if (data.success) {
-    dispatch(mutation.appointmentRequestToCancelSuccess());
+    dispatch(mutation.updateStatusSuccess());
+    dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
     return true;
   } else {
-    dispatch(mutation.appointmentRequestToCancelFailure());
+    dispatch(mutation.updateStatusFailure());
     return false;
   }
 };

@@ -9,35 +9,30 @@ import {
   TouchableOpacity,
   View,
   Alert,
-  Platform,
-  ToastAndroid,
 } from 'react-native';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {Divider, Icon, Text, Overlay, Button} from 'react-native-elements';
+import {Icon, Text} from 'react-native-elements';
 import {RectButton} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {
   getAppointmentsListRequest,
-  requestAppointment,
-  cancelRequestToCancelAppointment,
+  updateStatus,
 } from '../../store/appointment/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import moment from 'moment/min/moment-with-locales';
 import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
-import SelectPicker from '../../components/Common/SelectPicker';
 import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
+import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {therapists} = useSelector((state) => state.therapist);
-  const {professions} = useSelector((state) => state.profession);
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
@@ -45,8 +40,7 @@ const Appointment = ({navigation}) => {
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showOverlay, setShowOverlay] = useState(false);
-  const [therapistId, setTherapistId] = useState('');
+  const [showRequestOverlay, setShowRequestOverlay] = useState(false);
   const pageSize = 10;
   const swipeableRef = [];
   const netInfo = useNetInfo();
@@ -74,6 +68,26 @@ const Appointment = ({navigation}) => {
     }
   }, [appointmentObjs]);
 
+  const renderLeftActions = (progress, dragX, id) => {
+    const trans = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [0.7, 0],
+    });
+    return (
+      <RectButton
+        style={styles.appointmentAcceptButtonWrapper}
+        onPress={() => handleAcceptPress(id)}>
+        <Animated.Text
+          style={[
+            styles.appointmentActionButtonText,
+            {transform: [{translateX: trans}]},
+          ]}>
+          {translate('appointment.invitation.accept')}
+        </Animated.Text>
+      </RectButton>
+    );
+  };
+
   const renderRightActions = (progress, dragX, id) => {
     const trans = dragX.interpolate({
       inputRange: [-100, 0],
@@ -81,14 +95,14 @@ const Appointment = ({navigation}) => {
     });
     return (
       <RectButton
-        style={styles.appointmentCancelButtonWrapper}
-        onPress={() => handleRequestCancelPress(id)}>
+        style={styles.appointmentRejectButtonWrapper}
+        onPress={() => handleRejectPress(id)}>
         <Animated.Text
           style={[
-            styles.appointmentCancelButtonText,
+            styles.appointmentActionButtonText,
             {transform: [{translateX: trans}]},
           ]}>
-          {translate('appointment.request_cancel')}
+          {translate('appointment.invitation.reject')}
         </Animated.Text>
       </RectButton>
     );
@@ -105,83 +119,50 @@ const Appointment = ({navigation}) => {
     }
   };
 
-  const getProfession = (id) => {
-    const profession = professions.find((item) => item.id === id);
-
-    return profession ? ' - ' + profession.name : '';
-  };
-
-  const handleRequestCancelPress = (id) => {
+  const handleAcceptPress = (id) => {
     Alert.alert(
-      translate('appointment.request_to_cancel'),
-      translate('appointment.are_you_sure_to_request_for_cancellation'),
+      translate('appointment.invitation.accept_title'),
+      translate('appointment.are_you_sure_to_accept_invitation'),
       [
-        {text: translate('common.ok'), onPress: () => handleConfirm(id)},
+        {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
         {text: translate('common.cancel'), onPress: () => handleClose(id)},
       ],
       {cancelable: false},
     );
   };
 
-  const handleConfirm = (id) => {
+  const handleRejectPress = (id) => {
+    Alert.alert(
+      translate('appointment.invitation.reject_title'),
+      translate('appointment.are_you_sure_to_reject_invitation'),
+      [
+        {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
+        {text: translate('common.cancel'), onPress: () => handleClose(id)},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleAcceptConfirm = (id) => {
     swipeableRef[id].close();
     dispatch(
-      cancelRequestToCancelAppointment(id, {
-        status: APPOINTMENT_STATUS.REQUEST_CANCELLATION,
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.ACCEPTED,
       }),
-    ).then((result) => {
-      if (result) {
-        const newAppointmentObjs = [...appointmentObjs];
-        newAppointmentObjs.find((appointment) => appointment.id === id).status =
-          APPOINTMENT_STATUS.REQUEST_CANCELLATION;
-        setAppointmentObjs(newAppointmentObjs);
-      }
-    });
+    );
+  };
+
+  const handleRejectConfirm = (id) => {
+    swipeableRef[id].close();
+    dispatch(
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.REJECTED,
+      }),
+    );
   };
 
   const handleClose = (id) => {
     swipeableRef[id].close();
-  };
-
-  const handleCloseOverlay = () => {
-    setShowOverlay(false);
-    setTherapistId('');
-  };
-
-  const handleRequestAppoint = () => {
-    if (therapistId) {
-      dispatch(
-        requestAppointment({
-          therapist_id: therapistId,
-        }),
-      ).then((result) => {
-        if (result) {
-          handleCloseOverlay();
-          if (Platform.OS === 'ios') {
-            Alert.alert(
-              translate('appointment'),
-              translate('appointment.request_has_been_submitted_successfully'),
-            );
-          } else {
-            ToastAndroid.show(
-              translate('appointment.request_has_been_submitted_successfully'),
-              ToastAndroid.SHORT,
-            );
-          }
-        }
-      });
-    } else {
-      Alert.alert(
-        translate('appointment').toString(),
-        translate('error.message.therapist').toString(),
-        [
-          {
-            text: translate('common.ok').toString(),
-          },
-        ],
-        {cancelable: false},
-      );
-    }
   };
 
   return (
@@ -190,61 +171,15 @@ const Appointment = ({navigation}) => {
         leftContent={{label: translate('tab.appointments')}}
         rightContent={{
           label: translate('appointment.request_appointment'),
-          onPress: () => setShowOverlay(true),
+          onPress: () => setShowRequestOverlay(true),
           disabled: !netInfo.isConnected,
         }}
       />
-      <Overlay
-        isVisible={showOverlay}
-        overlayStyle={styles.appointmentOverlayContainer}>
-        <>
-          <Text
-            style={[
-              styles.fontWeightBold,
-              styles.leadText,
-              styles.textDefault,
-              styles.marginBottomMd,
-            ]}>
-            {translate('appointment.request_appointment')}
-          </Text>
-          <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
-              {translate('appointment.choose_therapist')}
-            </Text>
-            <SelectPicker
-              placeholder={{
-                label: translate('appointment.choose_therapist'),
-                value: null,
-              }}
-              items={therapists.map((therapist) => ({
-                label:
-                  therapist.last_name +
-                  ' ' +
-                  therapist.first_name +
-                  getProfession(therapist.profession_id),
-                value: therapist.id,
-              }))}
-              value={therapistId}
-              onValueChange={(value) => setTherapistId(value)}
-            />
-            <Divider style={styles.marginBottomMd} />
-            <View style={styles.appointmentOverlayButtonsWrapper}>
-              <Button
-                title={translate('common.submit')}
-                titleStyle={[styles.textUpperCase]}
-                containerStyle={styles.appointmentOverlayLeftButtonContainer}
-                onPress={() => handleRequestAppoint()}
-              />
-              <Button
-                title={translate('common.cancel')}
-                titleStyle={[styles.textUpperCase]}
-                containerStyle={styles.appointmentOverlayRightButtonContainer}
-                onPress={() => handleCloseOverlay()}
-              />
-            </View>
-          </View>
-        </>
-      </Overlay>
+
+      {showRequestOverlay && (
+        <SubmitRequestOverlay visible={setShowRequestOverlay} />
+      )}
+
       <ScrollView
         style={styles.mainContainerPrimary}
         contentContainerStyle={
@@ -275,16 +210,17 @@ const Appointment = ({navigation}) => {
             </Text>
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
-                {netInfo.isConnected ? (
+                {netInfo.isConnected &&
+                appointment.patient_status === APPOINTMENT_STATUS.INVITED ? (
                   <Swipeable
                     ref={(ref) => (swipeableRef[appointment.id] = ref)}
-                    renderRightActions={(progress, dragX) =>
-                      appointment.status ===
-                      APPOINTMENT_STATUS.REQUEST_CANCELLATION
-                        ? null
-                        : renderRightActions(progress, dragX, appointment.id)
+                    renderLeftActions={(progress, dragX) =>
+                      renderLeftActions(progress, dragX, appointment.id)
                     }
-                    containerStyle={styles.borderRightRadius}>
+                    renderRightActions={(progress, dragX) =>
+                      renderRightActions(progress, dragX, appointment.id)
+                    }
+                    containerStyle={styles.borderRadius}>
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
@@ -293,7 +229,7 @@ const Appointment = ({navigation}) => {
                       }>
                       <AppointmentCard
                         appointment={appointment}
-                        style={styles.noBorderTopRightRadius}
+                        style={styles.noBorderRadius}
                       />
                     </TouchableOpacity>
                   </Swipeable>

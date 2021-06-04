@@ -7,11 +7,11 @@ export const initialState = {
   initialRouteName: '',
   isLoading: false,
   termOfService: {},
+  privacyPolicy: {},
   dial_code: undefined,
   phone: '',
   countryCode: '',
   pin: '',
   isNewRegister: false,
   isDataUpToDate: true,
-  privacyPolicy: {},
 };

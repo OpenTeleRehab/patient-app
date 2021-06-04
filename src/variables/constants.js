@@ -60,5 +60,7 @@ export const CALL_STATUS = {
 };
 
 export const APPOINTMENT_STATUS = {
-  REQUEST_CANCELLATION: 'request_cancellation',
+  INVITED: 'invited',
+  ACCEPTED: 'accepted',
+  REJECTED: 'rejected',
 };

@@ -36,6 +36,12 @@ export default {
     width: '100%',
     paddingRight: 30,
   },
+  borderRadius: {
+    borderRadius: 10,
+  },
+  noBorderRadius: {
+    borderRadius: 0,
+  },
   borderRightRadius: {
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
@@ -44,11 +50,19 @@ export default {
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
   },
-  appointmentCancelButtonWrapper: {
+  appointmentAcceptButtonWrapper: {
+    backgroundColor: variables.success,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 200,
+  },
+  appointmentRejectButtonWrapper: {
     backgroundColor: variables.danger,
     justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 200,
   },
-  appointmentCancelButtonText: {
+  appointmentActionButtonText: {
     color: variables.white,
     paddingHorizontal: 10,
     fontWeight: 'bold',
@@ -62,8 +76,7 @@ export default {
     alignItems: 'center',
   },
   appointmentOverlayContainer: {
-    maxWidth: 500,
-    minWidth: 300,
+    minWidth: '80%',
   },
   appointmentOverlayButtonsWrapper: {
     display: 'flex',
