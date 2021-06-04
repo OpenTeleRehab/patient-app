@@ -47,6 +47,7 @@ const blacklistTransform = createTransform((inboundState, key) => {
       'isDataUpToDate',
       'privacyPolicy',
       'termOfService',
+      'isLoading',
     ]);
   } else {
     return inboundState;

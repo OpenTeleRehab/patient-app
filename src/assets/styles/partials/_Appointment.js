@@ -62,8 +62,7 @@ export default {
     alignItems: 'center',
   },
   appointmentOverlayContainer: {
-    maxWidth: 500,
-    minWidth: 300,
+    minWidth: '80%',
   },
   appointmentOverlayButtonsWrapper: {
     display: 'flex',

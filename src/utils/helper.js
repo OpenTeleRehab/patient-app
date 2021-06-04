@@ -13,6 +13,10 @@ export const formatDate = (date) => {
   return date ? moment(date).format(settings.format.date) : '';
 };
 
+export const formatTime = (time) => {
+  return time ? moment(time).format(settings.format.time) : '';
+};
+
 export const isValidDateFormat = (date) => {
   if (date) {
     return moment(date, settings.format.date, true).isValid();

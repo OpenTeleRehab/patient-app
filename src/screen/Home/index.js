@@ -117,8 +117,14 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     if (profile) {
+      const primaryTherapistIds = [profile.therapist_id];
+      const secondaryTherapistIds = profile.secondary_therapists;
       dispatch(
-        getTherapistRequest({ids: JSON.stringify([profile.therapist_id])}),
+        getTherapistRequest({
+          ids: JSON.stringify(
+            primaryTherapistIds.concat(secondaryTherapistIds),
+          ),
+        }),
       );
       dispatch(getLanguageRequest());
     }

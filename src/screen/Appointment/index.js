@@ -9,35 +9,30 @@ import {
   TouchableOpacity,
   View,
   Alert,
-  Platform,
-  ToastAndroid,
 } from 'react-native';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {Divider, Icon, Text, Overlay, Button} from 'react-native-elements';
+import {Icon, Text} from 'react-native-elements';
 import {RectButton} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {
   getAppointmentsListRequest,
-  requestAppointment,
   cancelRequestToCancelAppointment,
 } from '../../store/appointment/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import moment from 'moment/min/moment-with-locales';
 import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
-import SelectPicker from '../../components/Common/SelectPicker';
 import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
+import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {therapists} = useSelector((state) => state.therapist);
-  const {professions} = useSelector((state) => state.profession);
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
@@ -45,8 +40,7 @@ const Appointment = ({navigation}) => {
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showOverlay, setShowOverlay] = useState(false);
-  const [therapistId, setTherapistId] = useState('');
+  const [showRequestOverlay, setShowRequestOverlay] = useState(false);
   const pageSize = 10;
   const swipeableRef = [];
   const netInfo = useNetInfo();
@@ -105,12 +99,6 @@ const Appointment = ({navigation}) => {
     }
   };
 
-  const getProfession = (id) => {
-    const profession = professions.find((item) => item.id === id);
-
-    return profession ? ' - ' + profession.name : '';
-  };
-
   const handleRequestCancelPress = (id) => {
     Alert.alert(
       translate('appointment.request_to_cancel'),
@@ -143,108 +131,21 @@ const Appointment = ({navigation}) => {
     swipeableRef[id].close();
   };
 
-  const handleCloseOverlay = () => {
-    setShowOverlay(false);
-    setTherapistId('');
-  };
-
-  const handleRequestAppoint = () => {
-    if (therapistId) {
-      dispatch(
-        requestAppointment({
-          therapist_id: therapistId,
-        }),
-      ).then((result) => {
-        if (result) {
-          handleCloseOverlay();
-          if (Platform.OS === 'ios') {
-            Alert.alert(
-              translate('appointment'),
-              translate('appointment.request_has_been_submitted_successfully'),
-            );
-          } else {
-            ToastAndroid.show(
-              translate('appointment.request_has_been_submitted_successfully'),
-              ToastAndroid.SHORT,
-            );
-          }
-        }
-      });
-    } else {
-      Alert.alert(
-        translate('appointment').toString(),
-        translate('error.message.therapist').toString(),
-        [
-          {
-            text: translate('common.ok').toString(),
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-  };
-
   return (
     <>
       <HeaderBar
         leftContent={{label: translate('tab.appointments')}}
         rightContent={{
           label: translate('appointment.request_appointment'),
-          onPress: () => setShowOverlay(true),
+          onPress: () => setShowRequestOverlay(true),
           disabled: !netInfo.isConnected,
         }}
       />
-      <Overlay
-        isVisible={showOverlay}
-        overlayStyle={styles.appointmentOverlayContainer}>
-        <>
-          <Text
-            style={[
-              styles.fontWeightBold,
-              styles.leadText,
-              styles.textDefault,
-              styles.marginBottomMd,
-            ]}>
-            {translate('appointment.request_appointment')}
-          </Text>
-          <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
-              {translate('appointment.choose_therapist')}
-            </Text>
-            <SelectPicker
-              placeholder={{
-                label: translate('appointment.choose_therapist'),
-                value: null,
-              }}
-              items={therapists.map((therapist) => ({
-                label:
-                  therapist.last_name +
-                  ' ' +
-                  therapist.first_name +
-                  getProfession(therapist.profession_id),
-                value: therapist.id,
-              }))}
-              value={therapistId}
-              onValueChange={(value) => setTherapistId(value)}
-            />
-            <Divider style={styles.marginBottomMd} />
-            <View style={styles.appointmentOverlayButtonsWrapper}>
-              <Button
-                title={translate('common.submit')}
-                titleStyle={[styles.textUpperCase]}
-                containerStyle={styles.appointmentOverlayLeftButtonContainer}
-                onPress={() => handleRequestAppoint()}
-              />
-              <Button
-                title={translate('common.cancel')}
-                titleStyle={[styles.textUpperCase]}
-                containerStyle={styles.appointmentOverlayRightButtonContainer}
-                onPress={() => handleCloseOverlay()}
-              />
-            </View>
-          </View>
-        </>
-      </Overlay>
+
+      {showRequestOverlay && (
+        <SubmitRequestOverlay visible={setShowRequestOverlay} />
+      )}
+
       <ScrollView
         style={styles.mainContainerPrimary}
         contentContainerStyle={
