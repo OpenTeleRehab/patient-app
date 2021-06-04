@@ -11,7 +11,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import {formatDate, formatTime} from '../../../utils/helper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {requestAppointment} from '../../../store/appointment/actions';
+import {
+  getAppointmentsListRequest,
+  requestAppointment,
+} from '../../../store/appointment/actions';
 import settings from '../../../../config/settings';
 
 const SubmitRequestOverlay = ({visible}) => {
@@ -117,6 +120,7 @@ const SubmitRequestOverlay = ({visible}) => {
               ToastAndroid.SHORT,
             );
           }
+          dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
         }
       });
     }
