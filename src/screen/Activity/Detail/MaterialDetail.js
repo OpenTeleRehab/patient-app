@@ -29,6 +29,7 @@ import {
 import settings from '../../../../config/settings';
 import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
+import TTSButton from '../../../components/TTSButton';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
@@ -175,8 +176,15 @@ const MaterialDetail = ({theme, route, navigation}) => {
               </Text>
             </View>
           </Card>
-          <View style={[styles.paddingXMd, styles.alignSelfCenter]}>
+          <View
+            style={[
+              styles.marginY,
+              styles.marginXMd,
+              styles.flexRow,
+              styles.alignSelfCenter,
+            ]}>
             <Text h4>{material.title}</Text>
+            <TTSButton textsToSpeech={[material.title]} />
           </View>
           {material.file && (
             <TouchableOpacity
