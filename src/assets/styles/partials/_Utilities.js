@@ -100,7 +100,7 @@ export default {
     marginTop: variables.spacingBase,
   },
   marginTopSm: {
-    marginTop: variables.spacingBase - 5,
+    marginTop: variables.spacingBase - 8,
   },
   marginTopMd: {
     marginTop: variables.spacingMd,

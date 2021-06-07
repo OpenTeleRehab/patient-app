@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 import {View} from 'react-native';
 import styles from '../../../assets/styles';
 import TTSButton from '../../../components/TTSButton';
+import _ from 'lodash';
 
 const containerStyle = {
   borderWidth: 1,
@@ -20,6 +21,7 @@ const RenderQuestion = ({
   setPatientAnswers,
   patientAnswers,
   notEditable,
+  description,
 }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -45,13 +47,34 @@ const RenderQuestion = ({
 
   const getTextsToSpeech = () => {
     const texts = [question.title];
+    if (description) {
+      texts.unshift(description);
+    }
 
     if (['multiple', 'checkbox'].includes(question.type)) {
       question.answers.forEach((answer) => {
         texts.push(answer.description);
       });
-    } else {
-      texts.push(patientAnswers[question.id] || '');
+    }
+
+    // Answer
+    if (patientAnswers[question.id]) {
+      if (question.type === 'multiple') {
+        texts.push(translate('tts.question.selected'));
+        const answer = _.find(question.answers, {
+          id: patientAnswers[question.id],
+        });
+        texts.push(answer.description);
+      } else if (question.type === 'checkbox') {
+        texts.push(translate('tts.question.selected'));
+        patientAnswers[question.id].forEach((answerId) => {
+          const answer = _.find(question.answers, {id: answerId});
+          texts.push(answer.description);
+        });
+      } else if (patientAnswers[question.id].trim() !== '') {
+        texts.push(translate('tts.question.answered'));
+        texts.push(patientAnswers[question.id]);
+      }
     }
 
     return texts;
@@ -71,7 +94,10 @@ const RenderQuestion = ({
           <Text style={styles.marginBottom} h4>
             {question.title}
           </Text>
-          <TTSButton textsToSpeech={getTextsToSpeech()} />
+          <TTSButton
+            textsToSpeech={getTextsToSpeech()}
+            style={styles.marginLeft}
+          />
         </View>
         {question.type === 'multiple' && (
           <>

@@ -3,14 +3,14 @@
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import styles from '../../assets/styles';
-import {Icon, withTheme} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import {Alert, Platform, TouchableOpacity} from 'react-native';
 import Tts from 'react-native-tts';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {TTS} from '../../variables/constants';
 
-const TTSButton = ({theme, textsToSpeech}) => {
+const TTSButton = ({textsToSpeech, style}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
@@ -27,9 +27,14 @@ const TTSButton = ({theme, textsToSpeech}) => {
     Tts.addEventListener('tts-finish', () => {
       setTtsStatus('finished');
     });
+    Tts.addEventListener('tts-cancel', () => {
+      setTtsStatus('canceled');
+    });
     return () => {
       Tts.removeEventListener('tts-start', () => {});
       Tts.removeEventListener('tts-finish', () => {});
+      Tts.removeEventListener('tts-cancel', () => {});
+      Tts.stop();
     };
   }, []);
 
@@ -75,6 +80,12 @@ const TTSButton = ({theme, textsToSpeech}) => {
   }, [textsToSpeech, ttsIsInitialized, initTextToSpeech]);
 
   const handleReadTextToSpeech = async () => {
+    // Force stop when the second tapped
+    if (ttsStatus === 'started') {
+      Tts.stop();
+      setTtsStatus('');
+      return true;
+    }
     if (!ttsHasEngine && Platform.OS === 'android') {
       Alert.alert('', translate('tts_message.no_engine_installed'), [
         {
@@ -115,12 +126,9 @@ const TTSButton = ({theme, textsToSpeech}) => {
   };
 
   return (
-    <TouchableOpacity
-      style={styles.marginLeft}
-      onPress={handleReadTextToSpeech}>
+    <TouchableOpacity style={style} onPress={handleReadTextToSpeech}>
       <Icon
         name={ttsStatus === 'started' ? 'text-to-speech' : 'text-to-speech-off'}
-        color={theme.colors.grey}
         size={26}
         style={styles.marginTopSm}
         type="material-community"
@@ -129,4 +137,4 @@ const TTSButton = ({theme, textsToSpeech}) => {
   );
 };
 
-export default withTheme(TTSButton);
+export default TTSButton;

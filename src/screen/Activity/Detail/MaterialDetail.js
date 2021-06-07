@@ -184,7 +184,10 @@ const MaterialDetail = ({theme, route, navigation}) => {
               styles.alignSelfCenter,
             ]}>
             <Text h4>{material.title}</Text>
-            <TTSButton textsToSpeech={[material.title]} />
+            <TTSButton
+              textsToSpeech={[material.title]}
+              style={styles.marginLeft}
+            />
           </View>
           {material.file && (
             <TouchableOpacity
