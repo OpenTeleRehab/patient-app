@@ -156,7 +156,10 @@ const TaskDetail = ({
         <View style={[styles.flexCenter, styles.marginY]}>
           <View style={[styles.marginXMd, styles.flexRow]}>
             <Text h4>{activity.title}</Text>
-            <TTSButton textsToSpeech={getTextsToSpeech()} />
+            <TTSButton
+              textsToSpeech={getTextsToSpeech()}
+              style={styles.marginLeft}
+            />
           </View>
           {activity.sets > 0 && (
             <Text>

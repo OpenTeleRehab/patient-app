@@ -14,7 +14,7 @@ import {
   completeQuestionnaireOffline,
 } from '../../../store/activity/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
-import TTSButton from '../../../components/TTSButton';
+import Tts from 'react-native-tts';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   questions.map((question, i) => (
@@ -105,17 +105,20 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
 
   const handleNext = () => {
     if (activePaginationIndex < questionnaire.questions.length - 1) {
+      Tts.stop();
       setActivePaginationIndex(activePaginationIndex + 1);
     }
   };
 
   const handlePrevious = () => {
     if (activePaginationIndex > 0) {
+      Tts.stop();
       setActivePaginationIndex(activePaginationIndex - 1);
     }
   };
 
   const handleCompleteTask = () => {
+    Tts.stop();
     if (isOnline) {
       const data = {
         id: id,
@@ -230,7 +233,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
             questionnaire.description.trim() !== '' && (
               <Text style={[styles.marginBottom, styles.paddingXMd]}>
                 {questionnaire.description}
-                <TTSButton textsToSpeech={[questionnaire.description]} />
               </Text>
             )}
           {question && (
@@ -239,6 +241,9 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               patientAnswers={patientAnswers}
               setPatientAnswers={setPatientAnswers}
               notEditable={!!questionnaire.completed}
+              description={
+                activePaginationIndex === 0 ? questionnaire.description : null
+              }
             />
           )}
         </ScrollView>
