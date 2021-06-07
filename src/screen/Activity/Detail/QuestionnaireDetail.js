@@ -225,11 +225,12 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           </View>
         </View>
         <ScrollView contentContainerStyle={[styles.marginBottom]}>
-          {activePaginationIndex === 0 && questionnaire.description && (
-            <Text style={[styles.marginBottom, styles.paddingXMd]}>
-              {questionnaire.description}
-            </Text>
-          )}
+          {activePaginationIndex === 0 &&
+            questionnaire.description.trim() !== '' && (
+              <Text style={[styles.marginBottom, styles.paddingXMd]}>
+                {questionnaire.description}
+              </Text>
+            )}
           {question && (
             <RenderQuestion
               question={question}
