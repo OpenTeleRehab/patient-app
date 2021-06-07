@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Divider, Overlay, Text, Input} from 'react-native-elements';
 import {Alert, Platform, ToastAndroid, View} from 'react-native';
 import styles from '../../../assets/styles';
@@ -16,24 +16,36 @@ import {
   requestAppointment,
 } from '../../../store/appointment/actions';
 import settings from '../../../../config/settings';
+import {ROUTES} from '../../../variables/constants';
 
-const SubmitRequestOverlay = ({visible}) => {
+const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {therapists} = useSelector((state) => state.therapist);
   const {professions} = useSelector((state) => state.profession);
-  const [therapistId, setTherapistId] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showFromTimePicker, setShowFromTimePicker] = useState(false);
   const [showToTimePicker, setShowToTimePicker] = useState(false);
+  const [therapistId, setTherapistId] = useState(
+    appointment ? appointment.therapist_id : '',
+  );
   const [date, setDate] = useState(moment().toDate());
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
   const [errorTherapistId, setErrorTherapistId] = useState(false);
   const [errorFromTime, setErrorFromTime] = useState(false);
   const [errorToTime, setErrorToTime] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const toTimeIncreaseNum = 15;
+
+  useEffect(() => {
+    if (appointment) {
+      setDate(moment.utc(appointment.start_date).local().toDate());
+      setFromTime(moment.utc(appointment.start_date).local().toDate());
+      setToTime(moment.utc(appointment.end_date).local().toDate());
+    }
+  }, [appointment]);
 
   const getProfession = (id) => {
     const profession = professions.find((item) => item.id === id);
@@ -62,19 +74,40 @@ const SubmitRequestOverlay = ({visible}) => {
   };
 
   const handleRequestAppoint = () => {
+    const dateTimeFormat = settings.format.date + ' ' + 'H:mm:ss';
+    const now = moment().format(dateTimeFormat);
+
+    const fromTimeThen = moment(
+      formatDate(date) + ' ' + formatTime(fromTime),
+      settings.format.date + ' hh:mm A',
+    ).format(dateTimeFormat);
+
+    const toTimeThen = moment(
+      formatDate(date) + ' ' + formatTime(toTime),
+      settings.format.date + ' hh:mm A',
+    ).format(dateTimeFormat);
+
+    const fromTimeDuration = moment(fromTimeThen, dateTimeFormat).diff(
+      moment(now, dateTimeFormat),
+    );
+
+    const toTimeDuration = moment(toTimeThen, dateTimeFormat).diff(
+      moment(fromTimeThen, dateTimeFormat),
+    );
+
     if (therapistId === '' || therapistId === null) {
       setErrorTherapistId(true);
     } else {
       setErrorTherapistId(false);
     }
 
-    if (fromTime === '' || moment().diff(fromTime, 'minutes') > 0) {
+    if (fromTime === '' || fromTimeDuration < 0) {
       setErrorFromTime(true);
     } else {
       setErrorFromTime(false);
     }
 
-    if (toTime === '' || moment().diff(toTime, 'minutes') > 0) {
+    if (toTime === '' || toTimeDuration < 0) {
       setErrorToTime(true);
     } else {
       setErrorToTime(false);
@@ -84,45 +117,70 @@ const SubmitRequestOverlay = ({visible}) => {
       therapistId !== '' &&
       therapistId !== null &&
       fromTime !== '' &&
-      moment().diff(fromTime, 'minutes') < 0 &&
+      fromTimeDuration > 0 &&
       toTime !== '' &&
-      moment().diff(toTime, 'minutes') < 0
+      toTimeDuration > 0
     ) {
-      dispatch(
-        requestAppointment({
-          therapist_id: therapistId,
-          start_date: moment(
-            formatDate(date) + ' ' + formatTime(fromTime),
-            settings.format.date + ' hh:mm A',
-          )
-            .utc()
-            .locale('en')
-            .format('YYYY-MM-DD HH:mm:ss'),
-          end_date: moment(
-            formatDate(date) + ' ' + formatTime(toTime),
-            settings.format.date + ' hh:mm A',
-          )
-            .utc()
-            .locale('en')
-            .format('YYYY-MM-DD HH:mm:ss'),
-        }),
-      ).then((result) => {
-        if (result) {
-          handleCloseOverlay();
-          if (Platform.OS === 'ios') {
-            Alert.alert(
-              translate('appointment'),
-              translate('appointment.request_has_been_submitted_successfully'),
-            );
+      setIsLoading(true);
+
+      const data = {
+        id: appointment ? appointment.id : null,
+        therapist_id: therapistId,
+        start_date: moment(
+          formatDate(date) + ' ' + formatTime(fromTime),
+          settings.format.date + ' hh:mm A',
+        )
+          .utc()
+          .locale('en')
+          .format('YYYY-MM-DD HH:mm:ss'),
+        end_date: moment(
+          formatDate(date) + ' ' + formatTime(toTime),
+          settings.format.date + ' hh:mm A',
+        )
+          .utc()
+          .locale('en')
+          .format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      if (
+        moment.utc(appointment.start_date).local().format(dateTimeFormat) ===
+          moment(fromTime, dateTimeFormat).format(dateTimeFormat) &&
+        moment.utc(appointment.end_date).local().format(dateTimeFormat) ===
+          moment(toTime, dateTimeFormat).format(dateTimeFormat)
+      ) {
+        handleCloseOverlay();
+        setIsLoading(false);
+      } else {
+        dispatch(requestAppointment(data)).then((result) => {
+          setIsLoading(false);
+          if (result) {
+            if (appointment) {
+              navigation.navigate(ROUTES.APPOINTMENT);
+            } else {
+              handleCloseOverlay();
+            }
+            if (Platform.OS === 'ios') {
+              Alert.alert(
+                translate('appointment'),
+                translate(
+                  'appointment.request_has_been_submitted_successfully',
+                ),
+              );
+            } else {
+              ToastAndroid.show(
+                translate(
+                  'appointment.request_has_been_submitted_successfully',
+                ),
+                ToastAndroid.SHORT,
+              );
+            }
+            dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
           } else {
-            ToastAndroid.show(
-              translate('appointment.request_has_been_submitted_successfully'),
-              ToastAndroid.SHORT,
-            );
+            setErrorFromTime(true);
+            setErrorToTime(true);
           }
-          dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
-        }
-      });
+        });
+      }
     }
   };
 
@@ -160,7 +218,11 @@ const SubmitRequestOverlay = ({visible}) => {
             styles.textDefault,
             styles.marginBottomMd,
           ]}>
-          {translate('appointment.request_appointment')}
+          {translate(
+            appointment
+              ? 'appointment.edit_appointment'
+              : 'appointment.request_appointment',
+          )}
         </Text>
         <Divider style={styles.marginBottomMd} />
         <View style={styles.formGroup}>
@@ -181,6 +243,8 @@ const SubmitRequestOverlay = ({visible}) => {
               value: therapist.id,
             }))}
             value={therapistId}
+            itemKey={therapistId}
+            disabled={!!appointment}
             onValueChange={(value) => setTherapistId(value)}
           />
           {errorTherapistId && (
@@ -195,7 +259,6 @@ const SubmitRequestOverlay = ({visible}) => {
             ]}
           />
         </View>
-
         <View style={styles.formGroup}>
           <Input
             placeholder={translate('appointment.placeholder.date')}
@@ -225,7 +288,6 @@ const SubmitRequestOverlay = ({visible}) => {
             onChange={onSetDate}
           />
         )}
-
         <View style={styles.formGroup}>
           <Input
             placeholder={translate('appointment.placeholder.time')}
@@ -262,7 +324,6 @@ const SubmitRequestOverlay = ({visible}) => {
             onChange={onSetFromTime}
           />
         )}
-
         <View style={styles.formGroup}>
           <Input
             placeholder={translate('appointment.placeholder.time')}
@@ -300,7 +361,6 @@ const SubmitRequestOverlay = ({visible}) => {
             onChange={onSetToTime}
           />
         )}
-
         <View style={styles.formGroup}>
           <View
             style={[styles.marginTop, styles.appointmentOverlayButtonsWrapper]}>
@@ -309,6 +369,7 @@ const SubmitRequestOverlay = ({visible}) => {
               titleStyle={[styles.textUpperCase]}
               containerStyle={styles.appointmentOverlayLeftButtonContainer}
               onPress={() => handleRequestAppoint()}
+              disabled={isLoading}
             />
             <Button
               title={translate('common.cancel')}

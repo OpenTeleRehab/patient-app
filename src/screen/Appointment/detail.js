@@ -1,22 +1,31 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {getTranslate} from 'react-localize-redux';
-import {useSelector} from 'react-redux';
-import {Divider, Text} from 'react-native-elements';
+import {useDispatch, useSelector} from 'react-redux';
+import {Divider, Text, Button, Icon} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {ROUTES} from '../../variables/constants';
-import {ScrollView} from 'react-native';
+import {ScrollView, View, Alert} from 'react-native';
 import {getTherapistName} from '../../utils/therapist';
+import {
+  deleteAppointment,
+  getAppointmentsListRequest,
+} from '../../store/appointment/actions';
+import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const AppointmentDetail = ({route, navigation}) => {
+  const dispatch = useDispatch();
   const {appointment} = route.params;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {therapists} = useSelector((state) => state.therapist);
+  const [showRequestOverlay, setShowRequestOverlay] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -24,6 +33,32 @@ const AppointmentDetail = ({route, navigation}) => {
       navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
     };
   }, [navigation]);
+
+  const handleRemove = () => {
+    Alert.alert(
+      translate('appointment.alert.title'),
+      translate('appointment.alert.content'),
+      [
+        {
+          text: translate('common.cancel'),
+          style: 'cancel',
+        },
+        {
+          text: translate('common.ok'),
+          onPress: () => {
+            setIsLoading(true);
+            dispatch(deleteAppointment(appointment.id)).then((res) => {
+              setIsLoading(false);
+              if (res) {
+                dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
+                navigation.navigate(ROUTES.APPOINTMENT);
+              }
+            });
+          },
+        },
+      ],
+    );
+  };
 
   return (
     <>
@@ -58,6 +93,54 @@ const AppointmentDetail = ({route, navigation}) => {
             <Text>{appointment.note}</Text>
           </>
         )}
+        <Divider style={styles.marginY} />
+        {!appointment.created_by_therapist && (
+          <View style={[styles.flexRow]}>
+            <Button
+              icon={
+                <Icon
+                  name="edit"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
+              title={translate('common.edit')}
+              titleStyle={styles.marginLeftSm}
+              disabled={appointment.created_by_therapist}
+              onPress={() => setShowRequestOverlay(true)}
+            />
+            <Button
+              icon={
+                <Icon
+                  name="trash-alt"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
+              title={translate('common.delete')}
+              containerStyle={styles.marginLeft}
+              buttonStyle={styles.bgDanger}
+              titleStyle={styles.marginLeftSm}
+              onPress={handleRemove}
+            />
+          </View>
+        )}
+        {showRequestOverlay && (
+          <SubmitRequestOverlay
+            visible={setShowRequestOverlay}
+            appointment={appointment}
+            navigation={navigation}
+          />
+        )}
+
+        <Spinner
+          visible={isLoading}
+          textContent={translate('common.loading')}
+          overlayColor="rgba(0, 0, 0, 0.75)"
+          textStyle={styles.textLight}
+        />
       </ScrollView>
     </>
   );

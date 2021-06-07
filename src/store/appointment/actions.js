@@ -51,3 +51,16 @@ export const updateStatus = (id, payload) => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const deleteAppointment = (id) => async (dispatch, getState) => {
+  dispatch(mutation.deleteAppointmentRequest());
+  const {accessToken} = getState().user;
+  const data = await Appointment.deleteAppointment(id, accessToken);
+  if (data.success) {
+    dispatch(mutation.appointmentRequestSuccess());
+    return true;
+  } else {
+    dispatch(mutation.appointmentRequestFailure());
+    return false;
+  }
+};

@@ -29,8 +29,18 @@ const updateStatus = async (id, payload, accessToken) => {
   );
 };
 
+const updateAppointment = async (id, payload, accessToken) => {
+  return await callApi(`/appointment/${id}`, accessToken, {...payload}, 'put');
+};
+
+const deleteAppointment = async (id, accessToken) => {
+  return await callApi(`/appointment/${id}`, accessToken, null, 'delete');
+};
+
 export const Appointment = {
   getAppointments,
   requestAppointment,
   updateStatus,
+  updateAppointment,
+  deleteAppointment,
 };

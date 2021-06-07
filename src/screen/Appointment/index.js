@@ -50,22 +50,18 @@ const Appointment = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (appointments.length) {
-      setAppointmentObjs(appointments);
-      setCurrentPage(listInfo.current_page);
-    }
+    setAppointmentObjs(appointments);
+    setCurrentPage(listInfo.current_page);
   }, [appointments, listInfo]);
 
   useEffect(() => {
-    if (appointmentObjs.length) {
-      const groupedData = _.chain(appointmentObjs)
-        .groupBy((item) =>
-          moment.utc(item.start_date).local().format('MMMM YYYY'),
-        )
-        .map((value, key) => ({month: key, appointments: value}))
-        .value();
-      setGroupedAppointments(groupedData);
-    }
+    const groupedData = _.chain(appointmentObjs)
+      .groupBy((item) =>
+        moment.utc(item.start_date).local().format('MMMM YYYY'),
+      )
+      .map((value, key) => ({month: key, appointments: value}))
+      .value();
+    setGroupedAppointments(groupedData);
   }, [appointmentObjs]);
 
   const renderLeftActions = (progress, dragX, id) => {
@@ -161,6 +157,10 @@ const Appointment = ({navigation}) => {
     );
   };
 
+  const handleRequestAppointment = () => {
+    setShowRequestOverlay(true);
+  };
+
   const handleClose = (id) => {
     swipeableRef[id].close();
   };
@@ -171,13 +171,17 @@ const Appointment = ({navigation}) => {
         leftContent={{label: translate('tab.appointments')}}
         rightContent={{
           label: translate('appointment.request_appointment'),
-          onPress: () => setShowRequestOverlay(true),
+          onPress: handleRequestAppointment,
           disabled: !netInfo.isConnected,
         }}
       />
 
       {showRequestOverlay && (
-        <SubmitRequestOverlay visible={setShowRequestOverlay} />
+        <SubmitRequestOverlay
+          visible={setShowRequestOverlay}
+          appointment={''}
+          navigation={navigation}
+        />
       )}
 
       <ScrollView
