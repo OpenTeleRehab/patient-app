@@ -3,6 +3,6 @@
  */
 export const initialState = {
   appointments: [],
-  listInfo: [],
+  listInfo: {},
   loading: false,
 };

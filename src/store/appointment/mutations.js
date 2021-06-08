@@ -51,9 +51,21 @@ const updateStatusSuccess = () => {
   };
 };
 
+const updateAppointmentRequest = () => {
+  return {
+    type: 'UPDATE_APPOINTMENT_REQUEST',
+  };
+};
+
 const updateStatusFailure = () => {
   return {
     type: 'UPDATE_STATUS_FAILED',
+  };
+};
+
+const deleteAppointmentRequest = () => {
+  return {
+    type: 'DELETE_APPOINTMENT_REQUEST',
   };
 };
 
@@ -67,4 +79,6 @@ export const mutation = {
   updateStatusRequest,
   updateStatusSuccess,
   updateStatusFailure,
+  updateAppointmentRequest,
+  deleteAppointmentRequest,
 };

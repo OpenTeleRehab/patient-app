@@ -18,8 +18,6 @@ export const appointment = (state = initialState, action) => {
         loading: false,
       });
     case 'APPOINTMENT_FETCH_FAILED':
-    case 'APPOINTMENT_REQUEST_SUCCEED':
-    case 'APPOINTMENT_REQUEST_FAILED':
     case 'UPDATE_STATUS_SUCCEED':
     case 'UPDATE_STATUS_FAILED':
       return Object.assign({}, state, {
