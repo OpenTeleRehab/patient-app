@@ -27,14 +27,10 @@ const TTSButton = ({textsToSpeech, style}) => {
     Tts.addEventListener('tts-finish', () => {
       setTtsStatus('finished');
     });
-    Tts.addEventListener('tts-cancel', () => {
-      setTtsStatus('canceled');
-    });
     return () => {
+      Tts.stop();
       Tts.removeEventListener('tts-start', () => {});
       Tts.removeEventListener('tts-finish', () => {});
-      Tts.removeEventListener('tts-cancel', () => {});
-      Tts.stop();
     };
   }, []);
 

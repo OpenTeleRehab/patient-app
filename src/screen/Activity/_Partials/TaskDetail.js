@@ -117,6 +117,7 @@ const TaskDetail = ({
       activity.additional_information &&
       activity.additional_information.trim() !== ''
     ) {
+      texts.push(translate('activity.additional_information'));
       texts.push(activity.additional_information);
     }
 
