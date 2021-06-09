@@ -22,6 +22,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const profile = useSelector((state) => state.user.profile);
   const {therapists} = useSelector((state) => state.therapist);
   const {professions} = useSelector((state) => state.profession);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -125,6 +126,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
 
       const data = {
         id: appointment ? appointment.id : null,
+        patient_id: profile ? profile.id : null,
         therapist_id: therapistId,
         start_date: moment(
           formatDate(date) + ' ' + formatTime(fromTime),
@@ -144,16 +146,16 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
 
       if (
         moment.utc(appointment.start_date).local().format(dateTimeFormat) ===
-          moment(fromTime, dateTimeFormat).format(dateTimeFormat) &&
+          fromTimeThen &&
         moment.utc(appointment.end_date).local().format(dateTimeFormat) ===
-          moment(toTime, dateTimeFormat).format(dateTimeFormat)
+          toTimeThen
       ) {
         handleCloseOverlay();
         setIsLoading(false);
       } else {
         dispatch(requestAppointment(data)).then((result) => {
           setIsLoading(false);
-          if (result) {
+          if (result.success) {
             if (appointment) {
               navigation.navigate(ROUTES.APPOINTMENT);
             } else {
@@ -176,8 +178,17 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             }
             dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
           } else {
+            if (Platform.OS === 'ios') {
+              Alert.alert(translate('appointment'), translate(result.message));
+            } else {
+              ToastAndroid.show(
+                translate(translate(result.message)),
+                ToastAndroid.SHORT,
+              );
+            }
             setErrorFromTime(true);
             setErrorToTime(true);
+            dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
           }
         });
       }

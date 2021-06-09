@@ -31,10 +31,10 @@ export const requestAppointment = (payload) => async (dispatch, getState) => {
   const data = await Appointment.requestAppointment(payload, accessToken);
   if (data.success) {
     dispatch(mutation.appointmentRequestSuccess());
-    return true;
+    return {success: true};
   } else {
     dispatch(mutation.appointmentRequestFailure());
-    return false;
+    return {success: false, message: data.message};
   }
 };
 
