@@ -69,3 +69,7 @@ export const TTS = {
   DEFAULT_SPEECH_RATE: 0.5,
   DEFAULT_SPEECH_PITCH: 1,
 };
+
+export const MATERIAL_TYPE = {
+  image: 'common.type.image',
+};

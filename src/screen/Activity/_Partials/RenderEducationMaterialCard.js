@@ -1,8 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {ROUTES} from '../../../variables/constants';
+import {MATERIAL_TYPE, ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
+import settings from '../../../../config/settings';
+import {Grayscale} from 'react-native-color-matrix-image-filters';
+
+const ImageCard = ({file, grayscale}) => {
+  if (grayscale) {
+    return (
+      <Grayscale>
+        <ImageCard file={file} />
+      </Grayscale>
+    );
+  }
+
+  const uri = `${settings.adminApiBaseURL}/file/${file.id}?thumbnail=${file.hasThumbnail}`;
+  return <Card.Image source={{uri}} style={styles.activityCardImage} />;
+};
 
 const RenderEducationMaterialCard = ({
   item,
@@ -42,38 +57,49 @@ const RenderEducationMaterialCard = ({
               ? styles.bgGrey
               : styles.bgPrimary,
           ]}>
-          <View style={styles.cardWithIconWrapper}>
-            <Icon
-              name="description"
-              color={
-                item.completed || isCompletedOffline
-                  ? theme.colors.black
-                  : theme.colors.white
-              }
-              size={100}
-              type="material"
+          {item.file &&
+          (item.file.hasThumbnail ||
+            item.file.fileGroupType === MATERIAL_TYPE.image) ? (
+            <ImageCard
+              file={item.file}
+              grayscale={item.completed || isCompletedOffline}
             />
-            <Text
-              style={[
-                styles.cardWithIconHeaderTitle,
-                item.completed || isCompletedOffline
-                  ? styles.textDefault
-                  : styles.textLight,
-              ]}
-              numberOfLines={1}>
-              {translate('activity.material')}
-            </Text>
-          </View>
-          <Text
-            style={[
-              styles.marginLeft,
-              styles.marginY,
-              item.completed || isCompletedOffline
-                ? styles.textDefault
-                : styles.textLight,
-            ]}>
-            {item.file ? translate(item.file.fileGroupType) : ''}
-          </Text>
+          ) : (
+            <>
+              <View style={styles.cardWithIconWrapper}>
+                <Icon
+                  name="description"
+                  color={
+                    item.completed || isCompletedOffline
+                      ? theme.colors.black
+                      : theme.colors.white
+                  }
+                  size={100}
+                  type="material"
+                />
+                <Text
+                  style={[
+                    styles.cardWithIconHeaderTitle,
+                    item.completed || isCompletedOffline
+                      ? styles.textDefault
+                      : styles.textLight,
+                  ]}
+                  numberOfLines={1}>
+                  {translate('activity.material')}
+                </Text>
+              </View>
+              <Text
+                style={[
+                  styles.marginLeft,
+                  styles.marginY,
+                  item.completed || isCompletedOffline
+                    ? styles.textDefault
+                    : styles.textLight,
+                ]}>
+                {item.file ? translate(item.file.fileGroupType) : ''}
+              </Text>
+            </>
+          )}
         </View>
         <View style={styles.activityCardInfoWrapper}>
           <Text
