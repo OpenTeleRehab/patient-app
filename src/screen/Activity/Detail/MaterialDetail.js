@@ -8,7 +8,7 @@ import {
   withTheme,
 } from 'react-native-elements';
 import styles from '../../../assets/styles';
-import {ROUTES} from '../../../variables/constants';
+import {MATERIAL_TYPE, ROUTES} from '../../../variables/constants';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import _ from 'lodash';
 import {useDispatch, useSelector} from 'react-redux';
@@ -157,23 +157,42 @@ const MaterialDetail = ({theme, route, navigation}) => {
         <ScrollView contentContainerStyle={styles.marginBottom}>
           <Card containerStyle={styles.activityCardContainer}>
             <View style={[styles.cardWithIconHeader, styles.bgPrimary]}>
-              <View style={styles.cardWithIconWrapper}>
-                <Icon
-                  name="description"
-                  color={theme.colors.white}
-                  size={100}
-                  type="material"
+              {material.file &&
+              (material.file.hasThumbnail ||
+                material.file.fileGroupType === MATERIAL_TYPE.image) ? (
+                <Card.Image
+                  source={{
+                    uri: `${settings.adminApiBaseURL}/file/${material.file.id}?thumbnail=${material.file.hasThumbnail}`,
+                  }}
+                  style={styles.activityCardImage}
                 />
-                <Text
-                  style={[styles.cardWithIconHeaderTitle, styles.textLight]}
-                  numberOfLines={1}>
-                  {translate('activity.material')}
-                </Text>
-              </View>
-              <Text
-                style={[styles.marginLeft, styles.marginY, styles.textLight]}>
-                {material.file ? translate(material.file.fileGroupType) : ''}
-              </Text>
+              ) : (
+                <>
+                  <View style={styles.cardWithIconWrapper}>
+                    <Icon
+                      name="description"
+                      color={theme.colors.white}
+                      size={100}
+                      type="material"
+                    />
+                    <Text
+                      style={[styles.cardWithIconHeaderTitle, styles.textLight]}
+                      numberOfLines={1}>
+                      {translate('activity.material')}
+                    </Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.marginLeft,
+                      styles.marginY,
+                      styles.textLight,
+                    ]}>
+                    {material.file
+                      ? translate(material.file.fileGroupType)
+                      : ''}
+                  </Text>
+                </>
+              )}
             </View>
           </Card>
           <View
