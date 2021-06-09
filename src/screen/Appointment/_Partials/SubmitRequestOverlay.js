@@ -151,6 +151,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           toTimeThen
       ) {
         handleCloseOverlay();
+        navigation.navigate(ROUTES.APPOINTMENT);
         setIsLoading(false);
       } else {
         dispatch(requestAppointment(data)).then((result) => {
