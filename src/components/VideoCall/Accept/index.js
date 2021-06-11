@@ -6,6 +6,7 @@ import JitsiMeet, {JitsiMeetView} from '@webessentials/react-native-jitsi-meet';
 import Spinner from 'react-native-loading-spinner-overlay';
 import styles from '../../../assets/styles';
 import settings from '../../../../config/settings';
+import {Platform} from 'react-native';
 
 const AcceptCall = ({
   theme,
@@ -18,6 +19,7 @@ const AcceptCall = ({
   onSpeakerOn,
   onMute,
 }) => {
+  const platform = Platform.OS;
   const [isLoading, setIsLoading] = useState(true);
   const [jitsiVisible, setJitsiVisible] = useState(true);
 
@@ -58,11 +60,15 @@ const AcceptCall = ({
   };
 
   const onConferenceJoined = (event) => {
-    setJitsiVisible(false);
-    setTimeout(() => {
+    if (platform === 'ios') {
       setIsLoading(false);
-      setJitsiVisible(true);
-    }, 100);
+    } else {
+      setJitsiVisible(false);
+      setTimeout(() => {
+        setIsLoading(false);
+        setJitsiVisible(true);
+      }, 100);
+    }
   };
 
   const onConferenceWillJoin = (event) => {};

@@ -1431,7 +1431,7 @@
 
 "@webessentials/react-native-jitsi-meet@webessentials/react-native-jitsi-meet#master":
   version "2.6.0"
-  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/9f5b1b40774702449cbc34221de5d1135936630e"
+  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/02f1374de33355604d2b349310034c7cdfc721e3"
 
 "@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
   version "2.0.0"

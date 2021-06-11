@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '10.0'
+platform :ios, '11.0'
 
 target 'PatientApp' do
   config = use_native_modules!
@@ -23,13 +23,4 @@ target 'PatientApp' do
   #post_install do |installer|
   #  flipper_post_install(installer)
   #end
-end
-
-target 'PatientApp-tvOS' do
-  # Pods for PatientApp-tvOS
-
-  target 'PatientApp-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
 end
