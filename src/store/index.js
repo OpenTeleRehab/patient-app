@@ -49,6 +49,8 @@ const blacklistTransform = createTransform((inboundState, key) => {
       'termOfService',
       'isLoading',
     ]);
+  } else if (key === 'rocketchat') {
+    return {...inboundState, videoCall: {}};
   } else {
     return inboundState;
   }
