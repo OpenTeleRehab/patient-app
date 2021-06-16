@@ -15,6 +15,7 @@ import {
 } from '../../../store/activity/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Tts from 'react-native-tts';
+import moment from 'moment';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   questions.map((question, i) => (
@@ -295,7 +296,10 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               iconRight={true}
               onPress={handleCompleteTask}
               disabled={
-                isLoading || !!questionnaire.completed || isCompletedOffline
+                isLoading ||
+                !!questionnaire.completed ||
+                isCompletedOffline ||
+                moment().isBefore(questionnaire.date, 'day')
               }
             />
           )}
