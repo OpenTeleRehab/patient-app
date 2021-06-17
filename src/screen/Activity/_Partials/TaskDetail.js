@@ -25,6 +25,7 @@ import musicUrl from '../../../assets/images/music.png';
 import {useNetInfo} from '@react-native-community/netinfo';
 import _ from 'lodash';
 import TTSButton from '../../../components/TTSButton';
+import moment from 'moment';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH);
@@ -211,7 +212,12 @@ const TaskDetail = ({
           )}
           titleStyle={styles.textUpperCase}
           onPress={handleCompleteTask}
-          disabled={isLoading || !!activity.completed || isCompletedOffline}
+          disabled={
+            isLoading ||
+            !!activity.completed ||
+            isCompletedOffline ||
+            moment().isBefore(activity.date, 'day')
+          }
         />
       </View>
     </>

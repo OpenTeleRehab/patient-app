@@ -26,6 +26,7 @@ import _ from 'lodash';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useNetInfo} from '@react-native-community/netinfo';
 import GoalChart from '../_Partials/GoalChart';
+import moment from 'moment';
 
 const sliderThumbStyle = {
   width: 15,
@@ -242,7 +243,12 @@ const GoalDetail = ({theme, route, navigation}) => {
           )}
           titleStyle={styles.textUpperCase}
           onPress={handleSubmit}
-          disabled={goal && (!!goal.completed || isCompletedOffline)}
+          disabled={
+            goal &&
+            (!!goal.completed ||
+              isCompletedOffline ||
+              moment().isBefore(goal.date, 'day'))
+          }
         />
       </View>
     </>

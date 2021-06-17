@@ -30,6 +30,7 @@ import settings from '../../../../config/settings';
 import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 import TTSButton from '../../../components/TTSButton';
+import moment from 'moment';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
@@ -253,7 +254,11 @@ const MaterialDetail = ({theme, route, navigation}) => {
             )}
             titleStyle={styles.textUpperCase}
             onPress={handleCompleteTask}
-            disabled={!!material.completed || isCompletedOffline}
+            disabled={
+              !!material.completed ||
+              isCompletedOffline ||
+              moment().isBefore(material.date, 'day')
+            }
           />
         </View>
       </View>
