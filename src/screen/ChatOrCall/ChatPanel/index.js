@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import settings from '../../../../config/settings';
 import {generateHash} from '../../../utils/helper';
-import {Platform, View} from 'react-native';
+import {Platform, View, Keyboard} from 'react-native';
 import {CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {sendNewMessage} from '../../../utils/rocketchat';
@@ -206,12 +206,15 @@ const ChatPanel = ({navigation, theme}) => {
     );
   };
 
+  const handleGoBack = () => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    Keyboard.dismiss();
+    navigation.goBack();
+  };
+
   return (
     <>
-      <HeaderBar
-        onGoBack={() => navigation.goBack()}
-        title={selectedRoom.name}
-      />
+      <HeaderBar onGoBack={() => handleGoBack()} title={selectedRoom.name} />
       <GiftedChat
         isTyping={true}
         messages={allMessages}
