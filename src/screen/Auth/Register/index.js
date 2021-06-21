@@ -107,7 +107,13 @@ const Register = ({theme, navigation}) => {
 
   const handleRegister = () => {
     setErrorPhoneNumber(false);
-    const mobileNumber = phoneNumber.replace(countryPhoneCode, '');
+    let mobileNumber = '';
+    if (phoneNumber.startsWith(countryPhoneCode)) {
+      mobileNumber = phoneNumber.replace(countryPhoneCode, '');
+    } else {
+      mobileNumber = phoneNumber;
+    }
+
     const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
     dispatch(
       registerRequest(countryPhoneCode, formattedNumber, hash, countryCode),
