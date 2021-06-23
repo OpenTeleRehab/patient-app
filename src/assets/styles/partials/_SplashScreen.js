@@ -8,8 +8,8 @@ export default {
     backgroundColor: variables.primary,
   },
   splashScreenLogo: {
-    width: 250,
-    height: 107,
+    width: 305,
+    height: 82,
   },
   splashScreenLoading: {
     marginTop: 50,
