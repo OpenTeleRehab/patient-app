@@ -48,7 +48,7 @@ const RenderGoalCard = ({
           style={[
             styles.cardWithIconHeader,
             item.completed || isCompletedOffline
-              ? styles.bgDark
+              ? styles.bgGrey
               : {backgroundColor: theme.colors.blueLight4},
           ]}>
           <View style={styles.cardWithIconWrapper}>

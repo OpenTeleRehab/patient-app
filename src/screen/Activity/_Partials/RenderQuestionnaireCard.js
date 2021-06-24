@@ -3,10 +3,13 @@ import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
-import questionIcon from '../../../assets/images/questionnaire.svg';
-import {SvgUri} from 'react-native-svg';
+import questionIcon from '../../../assets/images/questionnaire.png';
+import questionIconBlack from '../../../assets/images/questionnaire-black.png';
 
-const uri = Image.resolveAssetSource(questionIcon).uri;
+const iconStyle = {
+  height: 100,
+  width: 100,
+};
 
 const RenderQuestionnaireCard = ({
   item,
@@ -44,14 +47,14 @@ const RenderQuestionnaireCard = ({
           style={[
             styles.cardWithIconHeader,
             item.completed || isCompletedOffline
-              ? styles.bgDark
+              ? styles.bgGrey
               : styles.bgBlueDark,
           ]}>
           <View style={styles.cardWithIconWrapper}>
             {item.completed || isCompletedOffline ? (
-              <SvgUri width="100" height="100" uri={uri} fillOpacity={0.3} />
+              <Image source={questionIconBlack} style={iconStyle} />
             ) : (
-              <SvgUri width="100" height="100" uri={uri} />
+              <Image style={iconStyle} source={questionIcon} />
             )}
             <Text
               style={[
