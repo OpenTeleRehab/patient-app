@@ -14,7 +14,7 @@ import {ROUTES} from '../../../variables/constants';
 
 import {registerRequest} from '../../../store/user/actions';
 import {getTranslate} from 'react-localize-redux';
-import {getCountryRequest} from '../../../store/country/actions';
+import {getDefinedCountries} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
@@ -41,7 +41,9 @@ const Register = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
-  const {countries, userCountryCode} = useSelector((state) => state.country);
+  const {definedCountries, userCountryCode} = useSelector(
+    (state) => state.country,
+  );
   const {languages} = useSelector((state) => state.language);
 
   const [hash, setHash] = useState('');
@@ -71,17 +73,19 @@ const Register = ({theme, navigation}) => {
   }, [hash]);
 
   useEffect(() => {
-    dispatch(getCountryRequest());
+    dispatch(getDefinedCountries());
     dispatch(getLanguageRequest());
   }, [dispatch]);
 
   // Set default selected phone code
   useEffect(() => {
-    if (countries.length) {
-      let defaultCountry = countries[0];
+    if (definedCountries.length) {
+      let defaultCountry = definedCountries[0];
 
       if (userCountryCode) {
-        const userCountry = _.find(countries, {iso_code: userCountryCode});
+        const userCountry = _.find(definedCountries, {
+          iso_code: userCountryCode,
+        });
         if (userCountry) {
           defaultCountry = userCountry;
         }
@@ -91,11 +95,11 @@ const Register = ({theme, navigation}) => {
       validateAndSetLanguage(defaultCountry.language_id);
       setCountryCode(defaultCountry.iso_code);
     }
-  }, [countries, userCountryCode, dispatch, validateAndSetLanguage]);
+  }, [definedCountries, userCountryCode, dispatch, validateAndSetLanguage]);
 
   const handlePhoneCodeChange = (phoneCode) => {
     setCountryPhoneCode(phoneCode);
-    const selectedCountry = _.find(countries, {phone_code: phoneCode});
+    const selectedCountry = _.find(definedCountries, {phone_code: phoneCode});
     validateAndSetLanguage(selectedCountry.language_id);
     setCountryCode(selectedCountry.iso_code);
   };
@@ -144,7 +148,7 @@ const Register = ({theme, navigation}) => {
                 onValueChange={handlePhoneCodeChange}
                 items={
                   countryPhoneCode
-                    ? countries.map((country) => ({
+                    ? definedCountries.map((country) => ({
                         label: `${country.name} (+${country.phone_code})`,
                         value: country.phone_code,
                         inputLabel: `+${country.phone_code}`,

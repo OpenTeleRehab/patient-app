@@ -13,3 +13,13 @@ export const getCountryRequest = () => async (dispatch) => {
     dispatch(mutation.countryFetchFailure());
   }
 };
+
+export const getDefinedCountries = () => async (dispatch) => {
+  dispatch(mutation.getDefinedCountriesRequest());
+  const data = await Country.getDefinedCountries();
+  if (data.success) {
+    dispatch(mutation.getDefinedCountriesSuccess(data.data));
+  } else {
+    dispatch(mutation.getDefinedCountriesFail());
+  }
+};

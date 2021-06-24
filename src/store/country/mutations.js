@@ -20,8 +20,24 @@ const countryFetchFailure = () => {
   };
 };
 
+const getDefinedCountriesRequest = () => ({
+  type: 'GET_DEFINED_COUNTRIES_REQUEST',
+});
+
+const getDefinedCountriesSuccess = (data) => ({
+  type: 'GET_DEFINED_COUNTRIES_SUCCESS',
+  data,
+});
+
+const getDefinedCountriesFail = () => ({
+  type: 'GET_DEFINED_COUNTRIES_FAIL',
+});
+
 export const mutation = {
   countryFetchRequest,
   countryFetchSuccess,
   countryFetchFailure,
+  getDefinedCountriesRequest,
+  getDefinedCountriesSuccess,
+  getDefinedCountriesFail,
 };

@@ -7,6 +7,11 @@ const getCountries = async () => {
   return await callAdminApi('/country');
 };
 
+const getDefinedCountries = async () => {
+  return await callAdminApi('/country/list/defined-country');
+};
+
 export const Country = {
   getCountries,
+  getDefinedCountries,
 };
