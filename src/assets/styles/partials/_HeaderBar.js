@@ -11,7 +11,7 @@ export default {
     borderBottomWidth: 0,
   },
   headerLogo: {
-    width: 94,
+    width: 150,
     height: 40,
   },
   headerBackButton: {

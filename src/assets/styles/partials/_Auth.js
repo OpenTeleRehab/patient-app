@@ -12,8 +12,8 @@ export default {
     marginBottom: variables.spacingLg,
   },
   authLogoWhite: {
-    width: 163,
-    height: 70,
+    width: 280,
+    height: 75,
     alignSelf: 'center',
     marginTop: variables.spacingMd,
     marginBottom: variables.spacingLg,
