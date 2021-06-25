@@ -3,7 +3,7 @@
  */
 import React, {useEffect, useState} from 'react';
 import {Button, Divider, Input, Text} from 'react-native-elements';
-import {Alert, ScrollView, View, Platform} from 'react-native';
+import {Alert, ScrollView, View, Platform, Keyboard} from 'react-native';
 import styles from '../../assets/styles';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
@@ -161,6 +161,7 @@ const UserProfileEdit = ({navigation}) => {
   };
 
   const handleGoBack = () => {
+    Keyboard.dismiss();
     if (_.isEqual(userInfo, originUserInfo)) {
       navigation.navigate(ROUTES.USER_PROFILE);
     } else {
