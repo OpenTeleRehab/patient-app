@@ -25,6 +25,8 @@ export const ROUTES = {
   CHAT_ROOM_LIST: 'ChatRoomList',
   CHAT_PANEL: 'ChatPanel',
   FAQ: 'Faq',
+  TC: 'TermCondition',
+  PP: 'PrivacyPolicy',
 };
 
 export const STORAGE_KEY = {

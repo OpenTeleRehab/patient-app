@@ -17,6 +17,8 @@ import HomeScreen from '../screen/Home';
 import UserProfileEditScreen from '../screen/UserProfile/edit';
 import AboutScreen from '../screen/About';
 import FaqScreen from '../screen/Faq';
+import TermConditionScreen from '../screen/TermCondition';
+import PrivacyPolicyScreen from '../screen/PrivacyPolicy';
 import UserProfileScreen from '../screen/UserProfile';
 import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
 
@@ -83,6 +85,18 @@ export const homes = [
     screen: FaqScreen,
     label: 'menu.faq',
     icon: 'help-circle',
+  },
+  {
+    name: ROUTES.TC,
+    screen: TermConditionScreen,
+    label: 'menu.tc',
+    icon: 'file-text',
+  },
+  {
+    name: ROUTES.PP,
+    screen: PrivacyPolicyScreen,
+    label: 'menu.pp',
+    icon: 'file-text',
   },
   {
     name: ROUTES.ABOUT,
