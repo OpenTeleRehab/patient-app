@@ -38,6 +38,7 @@ export const getChatRooms = () => async (dispatch, getState) => {
           chatRooms.push({
             rid: roomIds[fIndex],
             name: `${therapist.last_name} ${therapist.first_name}`,
+            professionId: therapist.profession_id,
             enabled: therapist.enabled,
             unreads: 0,
             u: {

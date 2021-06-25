@@ -19,12 +19,19 @@ const ChatRoomList = ({navigation}) => {
   const translate = getTranslate(localize);
   const {chatRooms} = useSelector((state) => state.rocketchat);
   const {isOnlineMode} = useSelector((state) => state.indicator);
+  const {professions} = useSelector((state) => state.profession);
 
   const handleSelectRoom = (item) => {
     isOnlineMode
       ? dispatch(selectRoom(item))
       : dispatch(mutation.selectRoomSuccess(item));
     navigation.navigate(ROUTES.CHAT_PANEL);
+  };
+
+  const getProfession = (id) => {
+    const profession = professions.find((item) => item.id === id);
+
+    return profession ? ' - ' + profession.name : '';
   };
 
   return (
@@ -39,7 +46,8 @@ const ChatRoomList = ({navigation}) => {
               onPress={() => handleSelectRoom(item)}>
               <ListItem.Content>
                 <ListItem.Title>
-                  {item.name}{' '}
+                  {item.name}
+                  {getProfession(item.professionId)}{' '}
                   <Badge
                     badgeStyle={
                       item.u.status === CHAT_USER_STATUS.ONLINE
