@@ -214,14 +214,21 @@ const Appointment = ({navigation}) => {
             </Text>
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
-                {netInfo.isConnected &&
-                appointment.patient_status === APPOINTMENT_STATUS.INVITED ? (
+                {netInfo.isConnected && appointment.created_by_therapist ? (
                   <Swipeable
                     ref={(ref) => (swipeableRef[appointment.id] = ref)}
                     renderLeftActions={(progress, dragX) =>
+                      (appointment.patient_status ===
+                        APPOINTMENT_STATUS.REJECTED ||
+                        appointment.patient_status ===
+                          APPOINTMENT_STATUS.INVITED) &&
                       renderLeftActions(progress, dragX, appointment.id)
                     }
                     renderRightActions={(progress, dragX) =>
+                      (appointment.patient_status ===
+                        APPOINTMENT_STATUS.ACCEPTED ||
+                        appointment.patient_status ===
+                          APPOINTMENT_STATUS.INVITED) &&
                       renderRightActions(progress, dragX, appointment.id)
                     }
                     containerStyle={styles.borderRadius}>

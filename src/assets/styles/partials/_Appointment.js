@@ -91,4 +91,9 @@ export default {
     flex: 1,
     marginLeft: 5,
   },
+  appointmentStatus: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 };

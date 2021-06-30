@@ -20,13 +20,19 @@ const AppointmentCard = ({appointment, style, theme}) => {
 
   let additionDateStyle = {};
   let additionTextStyle = {};
+  let statusTextStyle = {
+    color: theme.colors.primary,
+  };
+  let statusText = 'appointment.status.accept';
   if ([therapist_status, patient_status].includes(APPOINTMENT_STATUS.INVITED)) {
-    additionDateStyle = {backgroundColor: theme.colors.orangeLight};
+    statusTextStyle = {color: theme.colors.dark};
+    statusText = 'appointment.status.pending';
   } else if (
     [therapist_status, patient_status].includes(APPOINTMENT_STATUS.REJECTED)
   ) {
-    additionDateStyle = {backgroundColor: theme.colors.orange};
     additionTextStyle = {textDecorationLine: 'line-through'};
+    statusTextStyle = {color: theme.colors.orange};
+    statusText = 'appointment.status.cancel';
   }
 
   return (
@@ -60,6 +66,21 @@ const AppointmentCard = ({appointment, style, theme}) => {
           <Text style={[styles.fontWeightBold, additionTextStyle]}>
             {getTherapistName(appointment.therapist_id, therapists)}
           </Text>
+          <View style={[styles.paddingY, styles.appointmentStatus]}>
+            <Text style={[styles.fontWeightBold, statusTextStyle]}>
+              {translate(statusText)}
+            </Text>
+            {!appointment.created_by_therapist && (
+              <Text>
+                <Icon
+                  name="person"
+                  size={20}
+                  type="material"
+                  color={theme.colors.primary}
+                />
+              </Text>
+            )}
+          </View>
         </View>
         {appointment.note && appointment.note.trim() !== '' && (
           <View style={[styles.alignSelfEnd, styles.marginRight]}>
