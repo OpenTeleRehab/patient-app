@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ListItem, Badge} from 'react-native-elements';
 import {ScrollView, View} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
@@ -12,6 +12,7 @@ import {CHAT_USER_STATUS, ROUTES} from '../../../variables/constants';
 import {selectRoom} from '../../../store/rocketchat/actions';
 import {mutation} from '../../../store/rocketchat/mutations';
 import styles from '../../../assets/styles';
+import {getProfessionRequest} from '../../../store/profession/actions';
 
 const ChatRoomList = ({navigation}) => {
   const dispatch = useDispatch();
@@ -20,6 +21,10 @@ const ChatRoomList = ({navigation}) => {
   const {chatRooms} = useSelector((state) => state.rocketchat);
   const {isOnlineMode} = useSelector((state) => state.indicator);
   const {professions} = useSelector((state) => state.profession);
+
+  useEffect(() => {
+    dispatch(getProfessionRequest());
+  }, [dispatch]);
 
   const handleSelectRoom = (item) => {
     isOnlineMode
