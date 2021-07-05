@@ -107,6 +107,9 @@ const Home = ({navigation}) => {
         setTodaySummary({all: countAll, completed: totalCompletedCount});
         setCompletedPercentage((totalCompletedCount * 100) / countAll);
       }
+    } else {
+      setTodaySummary({all: 0, completed: 0});
+      setCompletedPercentage(0);
     }
   }, [
     treatmentPlan,
