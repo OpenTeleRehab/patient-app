@@ -15,7 +15,9 @@ import {updateMessage} from '../../utils/rocketchat';
 
 const VideoCall = ({theme}) => {
   const chatSocket = useContext(RocketchatContext);
-  const {videoCall, selectedRoom} = useSelector((state) => state.rocketchat);
+  const {videoCall, secondaryVideoCall} = useSelector(
+    (state) => state.rocketchat,
+  );
   const patient = useSelector((state) => state.user.profile);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -23,15 +25,15 @@ const VideoCall = ({theme}) => {
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const chatRoom = selectedRoom || {};
 
   useEffect(() => {
     if (
-      chatRoom.rid &&
+      videoCall.rid &&
       [
         CALL_STATUS.VIDEO_STARTED,
         CALL_STATUS.AUDIO_STARTED,
         CALL_STATUS.ACCEPTED,
+        CALL_STATUS.BUSY,
       ].includes(videoCall.status)
     ) {
       setShowModal(true);
@@ -39,7 +41,24 @@ const VideoCall = ({theme}) => {
       JitsiMeet.endCall();
       setShowModal(false);
     }
-  }, [videoCall, chatRoom]);
+  }, [videoCall]);
+
+  useEffect(() => {
+    if (
+      secondaryVideoCall.rid &&
+      [CALL_STATUS.VIDEO_STARTED, CALL_STATUS.AUDIO_STARTED].includes(
+        secondaryVideoCall.status,
+      )
+    ) {
+      const message = {
+        _id: secondaryVideoCall._id,
+        rid: secondaryVideoCall.rid,
+        msg: CALL_STATUS.BUSY,
+      };
+      updateMessage(chatSocket, message, patient.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondaryVideoCall]);
 
   const onAcceptCall = () => {
     handleUpdateMessage(CALL_STATUS.ACCEPTED);
@@ -64,7 +83,7 @@ const VideoCall = ({theme}) => {
   const handleUpdateMessage = (msg) => {
     const message = {
       _id: videoCall._id,
-      rid: chatRoom.rid,
+      rid: videoCall.rid,
       msg,
     };
     updateMessage(chatSocket, message, patient.id);
@@ -80,8 +99,8 @@ const VideoCall = ({theme}) => {
           onMute={isMute}
           theme={theme}
           loadingText={translate('common.loading')}
-          roomId={chatRoom.rid}
-          subject={chatRoom.name}
+          roomId={videoCall.rid}
+          subject={videoCall.u.name}
           displayName={`${patient.last_name} ${patient.first_name}`}
         />
       ) : videoCall.status === CALL_STATUS.AUDIO_STARTED ||
@@ -94,7 +113,7 @@ const VideoCall = ({theme}) => {
           onMute={setIsMute}
           translate={translate}
           theme={theme}
-          callName={chatRoom.name}
+          callName={videoCall.u.name}
         />
       ) : null}
     </Modal>

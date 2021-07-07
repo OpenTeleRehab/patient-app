@@ -7,6 +7,17 @@ export const initialState = {
   chatAuth: undefined,
   subscribeIds: undefined,
   selectedRoom: undefined,
-  videoCall: {status: '', _id: ''},
+  videoCall: {
+    _id: '',
+    rid: '',
+    status: '',
+    u: {},
+  },
+  secondaryVideoCall: {
+    _id: '',
+    rid: '',
+    status: '',
+    u: {},
+  },
   offlineMessages: [],
 };

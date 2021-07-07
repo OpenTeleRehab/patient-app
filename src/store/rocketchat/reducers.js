@@ -54,6 +54,11 @@ export const rocketchat = (state = initialState, action) => {
         videoCall: action.data,
       });
     }
+    case 'UPDATE_SECONDARY_VIDEO_CALL_STATUS_SUCCEED': {
+      return Object.assign({}, state, {
+        secondaryVideoCall: action.data,
+      });
+    }
     case 'CLEAR_CHAT_DATA_SUCCEED':
     default:
       return state;

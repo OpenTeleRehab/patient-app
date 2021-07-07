@@ -85,6 +85,11 @@ const updateVideoCallStatusSuccess = (data) => ({
   data,
 });
 
+const updateSecondaryVideoCallStatusSuccess = (data) => ({
+  type: 'UPDATE_SECONDARY_VIDEO_CALL_STATUS_SUCCEED',
+  data,
+});
+
 const setOfflineMessagesSuccess = (data) => ({
   type: 'SET_OFFLINE_MESSAGES_SUCCEED',
   data,
@@ -113,6 +118,7 @@ export const mutation = {
   sendAttachmentMessagesSuccess,
   sendAttachmentMessagesFailure,
   updateVideoCallStatusSuccess,
+  updateSecondaryVideoCallStatusSuccess,
   setOfflineMessagesSuccess,
   clearOfflineMessagesSuccess,
 };

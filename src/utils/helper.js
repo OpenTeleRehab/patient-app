@@ -110,7 +110,8 @@ export const renderMsgText = (msg, translate) => {
   if (msg.isVideoCall) {
     if (
       text === CALL_STATUS.AUDIO_MISSED ||
-      text === CALL_STATUS.VIDEO_MISSED
+      text === CALL_STATUS.VIDEO_MISSED ||
+      text === CALL_STATUS.BUSY
     ) {
       return <Text style={styles.textDanger}>{translate(text)}</Text>;
     } else if (
