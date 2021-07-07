@@ -13,7 +13,8 @@ const ChatTypeText = ({chatData, translate}) => {
   if (isVideoCall) {
     if (
       text === CALL_STATUS.AUDIO_MISSED ||
-      text === CALL_STATUS.VIDEO_MISSED
+      text === CALL_STATUS.VIDEO_MISSED ||
+      text === CALL_STATUS.BUSY
     ) {
       msgText = translate(text);
       textStyle = styles.textDanger;

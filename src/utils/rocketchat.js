@@ -5,12 +5,14 @@ import {
   updateChatUserStatus,
   clearChatData,
   updateVideoCallStatus,
+  clearVideoCallStatus,
+  clearSecondaryVideoCallStatus,
 } from '../store/rocketchat/actions';
 import {
   updateIndicatorList,
   updateUnreadMessageIndicator,
 } from '../store/indicator/actions';
-import {CHAT_USER_STATUS} from '../variables/constants';
+import {CALL_STATUS, CHAT_USER_STATUS} from '../variables/constants';
 import {getUniqueId, getChatMessage} from './helper';
 import settings from '../../config/settings';
 
@@ -98,9 +100,26 @@ export const initialChatSocket = (
     } else if (resMessage === 'changed') {
       if (collection === 'stream-room-messages') {
         // trigger change in chat room
-        const {_id, msg} = fields.args[0];
-        if (msg !== '' && msg.includes('jitsi_call')) {
-          dispatch(updateVideoCallStatus({_id, status: msg}));
+        const {_id, msg, rid, u} = fields.args[0];
+        if (msg !== '') {
+          if (
+            msg === CALL_STATUS.AUDIO_STARTED ||
+            msg === CALL_STATUS.VIDEO_STARTED ||
+            msg === CALL_STATUS.ACCEPTED
+          ) {
+            dispatch(updateVideoCallStatus({_id, rid, status: msg, u}));
+          }
+          if (
+            msg === CALL_STATUS.AUDIO_ENDED ||
+            msg === CALL_STATUS.VIDEO_ENDED ||
+            msg === CALL_STATUS.AUDIO_MISSED ||
+            msg === CALL_STATUS.VIDEO_MISSED
+          ) {
+            dispatch(clearVideoCallStatus());
+          }
+          if (msg === CALL_STATUS.BUSY) {
+            dispatch(clearSecondaryVideoCallStatus());
+          }
         }
         const newMessage = getChatMessage(fields.args[0], userId, authToken);
         dispatch(prependNewMessage(newMessage));

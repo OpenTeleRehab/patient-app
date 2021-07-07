@@ -24,6 +24,8 @@ import {
   setChatSubscribeIds,
   postAttachmentMessage,
   clearOfflineMessages,
+  clearVideoCallStatus,
+  clearSecondaryVideoCallStatus,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
@@ -130,6 +132,8 @@ const AppProvider = ({children}) => {
         roomMessageId: getUniqueId(profile.id),
         notifyLoggedId: getUniqueId(profile.id),
       };
+      dispatch(clearVideoCallStatus());
+      dispatch(clearSecondaryVideoCallStatus());
       dispatch(setChatSubscribeIds(subscribeIds));
       chatSocket = initialChatSocket(
         dispatch,

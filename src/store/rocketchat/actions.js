@@ -2,6 +2,7 @@ import {Rocketchat} from '../../services/rocketchat';
 import {Therapist} from '../../services/therapist';
 import {mutation} from './mutations';
 import {updateIndicatorList} from '../indicator/actions';
+import {CALL_STATUS} from '../../variables/constants';
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
   dispatch(mutation.setChatSubscribeIdsSuccess(payload));
@@ -15,8 +16,24 @@ export const clearChatData = () => (dispatch) => {
   dispatch(mutation.clearChatDataSuccess());
 };
 
-export const updateVideoCallStatus = (payload) => (dispatch) => {
-  dispatch(mutation.updateVideoCallStatusSuccess(payload));
+export const updateVideoCallStatus = (payload) => (dispatch, getState) => {
+  const {videoCall} = getState().rocketchat;
+  if (
+    Object.keys(videoCall).length === 0 ||
+    payload.status === CALL_STATUS.ACCEPTED
+  ) {
+    dispatch(mutation.updateVideoCallStatusSuccess(payload));
+  } else {
+    dispatch(mutation.updateSecondaryVideoCallStatusSuccess(payload));
+  }
+};
+
+export const clearVideoCallStatus = () => (dispatch) => {
+  dispatch(mutation.updateVideoCallStatusSuccess({}));
+};
+
+export const clearSecondaryVideoCallStatus = () => (dispatch) => {
+  dispatch(mutation.updateSecondaryVideoCallStatusSuccess({}));
 };
 
 export const getChatRooms = () => async (dispatch, getState) => {
