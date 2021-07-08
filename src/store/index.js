@@ -50,7 +50,12 @@ const blacklistTransform = createTransform((inboundState, key) => {
       'isLoading',
     ]);
   } else if (key === 'rocketchat') {
-    return {...inboundState, videoCall: {}, secondaryVideoCall: {}};
+    return {
+      ...inboundState,
+      videoCall: {},
+      secondaryVideoCall: {},
+      selectedRoom: {},
+    };
   } else {
     return inboundState;
   }
