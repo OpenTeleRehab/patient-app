@@ -38,7 +38,6 @@ export const clearSecondaryVideoCallStatus = () => (dispatch) => {
 
 export const getChatRooms = () => async (dispatch, getState) => {
   const {profile} = getState().user;
-  const {selectedRoom} = getState().rocketchat;
   const primaryTherapistIds = [profile.therapist_id];
   const secondaryTherapistIds = profile.secondary_therapists;
   const data = await Therapist.getTherapists({
@@ -71,11 +70,7 @@ export const getChatRooms = () => async (dispatch, getState) => {
       }
     });
     dispatch(mutation.getChatRoomsSuccess(chatRooms));
-
-    if (selectedRoom === undefined) {
-      dispatch(mutation.selectRoomSuccess(chatRooms[0]));
-    }
-
+    dispatch(mutation.selectRoomSuccess(chatRooms[0]));
     return true;
   } else {
     dispatch(mutation.getChatRoomsFailure());
