@@ -111,7 +111,29 @@ It is automated build on `Jenkins`, in which you can find the apk file(s) for ea
 It is manually build on `Mac`, in which you can find the ipa file(s) for each stage via: [Download IPA](https://packages.web-essentials.asia/ipa/hiv/)
 
 # Release Android app to Play Store [TODO]
-# Release iOS app to App Store [TODO]
+# Release iOS app to App Store
+* Navigate to
+    ```bash
+    cd ~/dev/docker-projects/hiv/patient-app/ios
+    ```
+* Run pod install
+    ```bash
+    arch -x86_64 pod install
+    ```
+  
+* Build the app in Xcode
+    * Now open project folder in Xcode and then navigate to ios directory and select the file which has extension .xcworkspace.
+    * Click on General tab and navigate to identity and update the version.
+    * It is time to archive the project so before an archive the project makes sure you have selected Generic iOS device in the top left corner of your window once you have done then navigate to `Product → Archive` once the app is successfully archived you will automatically get redirected to the Xcode Organizer window.
+    * Once the app is successfully archived you will see a list of apps with the version in Xcode Organizer select this app click on the Distribute App.
+    * You will see methods of distribution select `iOS App Store` and click on next.
+    * You will see two method `Upload` or `Export` as we are going to upload app so select upload and click to next.
+    * You will see two more options which are by default selected leave them as it is and click to next.
+    * Once you clicked next it will take little time to identify your certificates and after that, you will see little details of your app which we are going to upload on the app store.
+    * Now click `Upload` to upload your app on App Store, and it will take a little time to upload the app on app store. Once the app is an uploaded click on done and now it is time to login to App store.
+    * Once your app is uploaded on test flight after that login to your app store account and click `My Apps` and navigate to `Your app → Test Flight` and here you will see your app with processing tag.
+    * Once the processing is complete then you will see a warning icon like mentioned in image click on this icon and click again on `Provide Export Compliance Information`.
+    * Now a pop up will appear which will ask you about `Export Compliance Information` in our case we did not have any encryption features so select `No` and click on `Start Internal Testing` and the app is going to be available on testing mode. You can test the app with test flight app available on App store and to test this app you need to add testers for this particular app on your App store account after that you can test your app.
 
 # Code check styles `ESLint`
 
