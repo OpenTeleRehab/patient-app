@@ -4,6 +4,11 @@
 import variables from '../variables';
 
 export default {
+  mpContainer: {
+    backgroundColor: variables.white,
+    height: '100%',
+    width: '100%',
+  },
   mpHeader: {
     backgroundColor: variables.white,
     flexDirection: 'row',
@@ -16,12 +21,11 @@ export default {
   },
   mpMediaAlbum: {
     flexGrow: 1,
-    maxWidth: '75%',
+    maxWidth: '45%',
   },
   mpWrapper: {
     flexGrow: 1,
-    paddingVertical: variables.spacingSm,
-    paddingLeft: variables.spacingSm,
+    padding: variables.spacingBase,
   },
   mpCaptionContainer: {
     position: 'absolute',
@@ -51,5 +55,11 @@ export default {
     top: 5,
     right: 10,
     zIndex: 10,
+  },
+  pickerSelectInputIOS: {
+    top: 0,
+  },
+  pickerSelectInputAndroid: {
+    top: 18,
   },
 };

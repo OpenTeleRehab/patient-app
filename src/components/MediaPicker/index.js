@@ -11,10 +11,11 @@ import {
   PermissionsAndroid,
   Platform,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import {withTheme, Icon, Text, Input} from 'react-native-elements';
 import CameraRoll from '@react-native-community/cameraroll';
-import {Picker} from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
 import _ from 'lodash';
 import styles from '../../assets/styles';
 import GridItem from './GridItem';
@@ -29,7 +30,7 @@ const MediaPicker = (props) => {
     visible,
     onClose,
     onSend,
-    allMediaText,
+    allPhotoText,
     allVideoText,
     emptyText,
     captionPlaceholder,
@@ -186,68 +187,83 @@ const MediaPicker = (props) => {
       animationType="fade"
       onShow={() => loadAlbums()}
       onRequestClose={() => onClose(false)}>
-      <View style={styles.mpHeader}>
-        <TouchableOpacity onPress={() => onClose(false)}>
-          <Icon
-            name="arrowleft"
-            type="antdesign"
-            size={30}
-            color={theme.colors.black}
-          />
-        </TouchableOpacity>
-        <View style={styles.mpMediaAlbum}>
-          <Picker
-            selectedValue={selectedAlbum}
-            onValueChange={(value) => onChangeAlbum(value)}>
-            <Picker.Item label={allMediaText} value="" />
-            {albums.map((album, index) => {
-              return (
-                <Picker.Item
-                  label={album.label}
-                  value={album.value}
-                  key={index}
-                />
-              );
-            })}
-          </Picker>
-        </View>
-      </View>
-      <View style={styles.mpWrapper}>
-        {initialLoading ? (
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-        ) : data.length > 0 ? (
-          <FlatList
-            initialNumToRender={5}
-            data={data}
-            onEndReached={onEndReached}
-            renderItem={({item}) => renderMedia(item)}
-            keyExtractor={(item) => item[0].node.image.uri}
-          />
-        ) : (
-          <Text style={styles.textCenter}>{emptyText}</Text>
-        )}
-      </View>
-      {showInputCaption && (
-        <View style={styles.mpCaptionContainer}>
-          <Input
-            autoFocus
-            value={captionText}
-            onChangeText={(value) => setCaptionText(value)}
-            placeholder={captionPlaceholder}
-            containerStyle={styles.mpCaptionInput}
-            inputContainerStyle={styles.noneBorderBottom}
-            rightIcon={
+      <SafeAreaView>
+        <View style={styles.mpContainer}>
+          <View style={styles.mpHeader}>
+            <TouchableOpacity onPress={() => onClose(false)}>
               <Icon
-                name="send"
-                type="material"
-                color={theme.colors.primary}
-                size={28}
-                onPress={() => onSendAttachment()}
+                name="arrowleft"
+                type="antdesign"
+                size={30}
+                color={theme.colors.black}
               />
-            }
-          />
+            </TouchableOpacity>
+            <View style={styles.mpMediaAlbum}>
+              <RNPickerSelect
+                placeholder={{label: allPhotoText, value: ''}}
+                onValueChange={(value) => onChangeAlbum(value)}
+                items={albums}
+                style={{
+                  inputAndroid: {
+                    backgroundColor: 'transparent',
+                  },
+                  iconContainer:
+                    Platform.OS === 'ios'
+                      ? styles.pickerSelectInputIOS
+                      : styles.pickerSelectInputAndroid,
+                }}
+                useNativeAndroidPickerStyle={true}
+                Icon={() => {
+                  return (
+                    <Icon
+                      type="feather"
+                      name="chevron-down"
+                      color={theme.colors.black}
+                      size={22}
+                    />
+                  );
+                }}
+              />
+            </View>
+          </View>
+          <View style={styles.mpWrapper}>
+            {initialLoading ? (
+              <ActivityIndicator size="large" color={theme.colors.primary} />
+            ) : data.length > 0 ? (
+              <FlatList
+                initialNumToRender={5}
+                data={data}
+                onEndReached={onEndReached}
+                renderItem={({item}) => renderMedia(item)}
+                keyExtractor={(item) => item[0].node.image.uri}
+              />
+            ) : (
+              <Text style={styles.textCenter}>{emptyText}</Text>
+            )}
+          </View>
+          {showInputCaption && (
+            <View style={styles.mpCaptionContainer}>
+              <Input
+                autoFocus
+                value={captionText}
+                onChangeText={(value) => setCaptionText(value)}
+                placeholder={captionPlaceholder}
+                containerStyle={styles.mpCaptionInput}
+                inputContainerStyle={styles.noneBorderBottom}
+                rightIcon={
+                  <Icon
+                    name="send"
+                    type="material"
+                    color={theme.colors.primary}
+                    size={28}
+                    onPress={() => onSendAttachment()}
+                  />
+                }
+              />
+            </View>
+          )}
         </View>
-      )}
+      </SafeAreaView>
     </Modal>
   );
 };

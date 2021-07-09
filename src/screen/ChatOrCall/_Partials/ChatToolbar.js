@@ -10,7 +10,6 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
   return (
     <InputToolbar
       {...chatData}
-      containerStyle={styles.chatInputToolBar}
       renderComposer={() => (
         <Composer
           {...chatData}
@@ -24,7 +23,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
           icon={() => (
             <Icon
               name="paperclip"
-              size={28}
+              size={26}
               type="feather"
               color={theme.colors.grey3}
               onPress={() => onShowPicker(true)}
@@ -42,7 +41,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
               name="send"
               type="material"
               color={theme.colors.primary}
-              size={28}
+              size={26}
             />
           }
         />

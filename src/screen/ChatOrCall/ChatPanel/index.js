@@ -220,7 +220,6 @@ const ChatPanel = ({navigation, theme}) => {
         messages={allMessages}
         placeholder={translate('chat.type.message')}
         messagesContainerStyle={styles.chatMainContainer}
-        minComposerHeight={45}
         messageIdGenerator={() => generateHash()}
         textInputProps={{selectionColor: theme.colors.primary}}
         user={{_id: profile.chat_user_id}}
@@ -234,9 +233,9 @@ const ChatPanel = ({navigation, theme}) => {
           visible={showPicker}
           onClose={setShowPicker}
           onSend={onSendAttachment}
-          allMediaText={translate('all_medias')}
+          allPhotoText={translate('all_photos')}
           allVideoText={translate('all_videos')}
-          emptyText={translate('no_medias')}
+          emptyText={translate('no_photo')}
           captionPlaceholder={translate('add_a_caption')}
           sizeErrorText={translate('common.error_message_invalid_file_size', {
             size: settings.fileMaxUploadSize,
