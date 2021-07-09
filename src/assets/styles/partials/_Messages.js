@@ -7,7 +7,6 @@ export default {
   chatMainContainer: {
     backgroundColor: variables.greyOutline,
     padding: 0,
-    paddingBottom: variables.spacingMd,
   },
   chatDay: {
     color: variables.grey,
@@ -37,28 +36,19 @@ export default {
     height: 100,
     borderRadius: 15,
   },
-  chatInputToolBar: {
-    padding: variables.spacingBase,
-    paddingRight: 0,
-    paddingBottom: 7,
-    borderTopWidth: 0,
-    backgroundColor: '#FAFAFA',
-  },
   chatComposer: {
     borderRadius: variables.borderRadiusBase,
-    borderWidth: 1,
-    borderColor: variables.grey4,
-    padding: variables.spacingBase,
+    fontSize: variables.fontSizeSm,
     paddingRight: 45,
     marginRight: variables.spacingBase,
-    lineHeight: 20,
+    lineHeight: 18,
   },
   chatAttachment: {
-    marginLeft: 0,
+    height: 26,
   },
   chatSendButton: {
     position: 'absolute',
-    bottom: 12,
+    bottom: 9,
     right: 15,
     height: 28,
   },
