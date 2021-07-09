@@ -134,6 +134,8 @@ It is manually build on `Mac`, in which you can find the ipa file(s) for each st
     * Once your app is uploaded on test flight after that login to your app store account and click `My Apps` and navigate to `Your app → Test Flight` and here you will see your app with processing tag.
     * Once the processing is complete then you will see a warning icon like mentioned in image click on this icon and click again on `Provide Export Compliance Information`.
     * Now a pop up will appear which will ask you about `Export Compliance Information` in our case we did not have any encryption features so select `No` and click on `Start Internal Testing` and the app is going to be available on testing mode. You can test the app with test flight app available on App store and to test this app you need to add testers for this particular app on your App store account after that you can test your app.
+    
+> Note: Go to `config → setting.js` and switch settings based on stage release.
 
 # Code check styles `ESLint`
 
