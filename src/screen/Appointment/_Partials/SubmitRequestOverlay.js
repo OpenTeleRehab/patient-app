@@ -296,7 +296,6 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             minimumDate={moment().toDate()}
             mode="date"
             is24Hour={true}
-            display="default"
             onChange={onSetDate}
           />
         )}
@@ -332,7 +331,6 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             maximumDate={toTime}
             mode="time"
             is24Hour={false}
-            display="spinner"
             onChange={onSetFromTime}
           />
         )}
@@ -369,7 +367,6 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             }
             mode="time"
             is24Hour={false}
-            display="spinner"
             onChange={onSetToTime}
           />
         )}
