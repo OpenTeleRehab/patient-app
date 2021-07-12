@@ -19,11 +19,8 @@ const ChatTypeText = ({chatData, translate}) => {
       msgText = translate(text);
       textStyle = styles.textDanger;
     } else if (
-      [
-        CALL_STATUS.AUDIO_STARTED,
-        CALL_STATUS.VIDEO_STARTED,
-        CALL_STATUS.ACCEPTED,
-      ].includes(text)
+      text === CALL_STATUS.AUDIO_STARTED ||
+      text === CALL_STATUS.VIDEO_STARTED
     ) {
       msgText = translate(text);
     } else if (
