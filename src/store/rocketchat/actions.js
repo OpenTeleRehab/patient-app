@@ -159,6 +159,7 @@ export const selectRoom = (payload) => async (dispatch, getState) => {
     chatRooms[fIndex].unreads = 0;
     dispatch(mutation.selectRoomSuccess(payload));
     dispatch(mutation.getChatRoomsSuccess(chatRooms));
+    dispatch(mutation.getMessagesInRoomSuccess(payload.messages));
   }
 };
 
@@ -180,11 +181,21 @@ export const prependNewMessage = (payload) => async (dispatch, getState) => {
     if (isOnChatScreen) {
       chatRooms[fIndex].unreads = 0;
     } else {
-      chatRooms[fIndex].unreads += 1;
+      if (
+        payload.text !== CALL_STATUS.VIDEO_ENDED &&
+        payload.text !== CALL_STATUS.AUDIO_ENDED &&
+        payload.text !== CALL_STATUS.VIDEO_MISSED &&
+        payload.text !== CALL_STATUS.AUDIO_MISSED &&
+        payload.text !== CALL_STATUS.ACCEPTED
+      ) {
+        chatRooms[fIndex].unreads += 1;
+      }
     }
-    chatRooms[fIndex].totalMessages += 1;
-    chatRooms[fIndex].lastMessage = payload;
-    chatRooms[fIndex].messages = [payload].concat(chatRooms[fIndex].messages);
+    if (payload !== CALL_STATUS.ACCEPTED) {
+      chatRooms[fIndex].totalMessages += 1;
+      chatRooms[fIndex].lastMessage = payload;
+      chatRooms[fIndex].messages = [payload].concat(chatRooms[fIndex].messages);
+    }
     dispatch(mutation.updateLastMessageSuccess(chatRooms));
   }
 };

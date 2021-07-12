@@ -25,6 +25,7 @@ import ChatContainer from '../_Partials/ChatContainer';
 import ChatToolbar from '../_Partials/ChatToolbar';
 import ChatMediaSlider from '../_Partials/ChatMediaSlider';
 import {mutation} from '../../../store/rocketchat/mutations';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -46,11 +47,18 @@ const ChatPanel = ({navigation, theme}) => {
   const [allMessages, setAllMessages] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
   const isFocused = useIsFocused();
+  const [isLoading, setIsLoading] = useState(true);
   const [showMediaSlider, setShowMediaSlider] = useState(false);
   const [isVideoAttachment, setIsVideoAttachment] = useState(false);
   const [videoAttachments, setVideoAttachments] = useState(undefined);
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
+
+  useState(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  });
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -215,6 +223,12 @@ const ChatPanel = ({navigation, theme}) => {
   return (
     <>
       <HeaderBar onGoBack={() => handleGoBack()} title={selectedRoom.name} />
+      <Spinner
+        visible={isLoading}
+        textContent={translate('common.loading')}
+        textStyle={styles.textLight}
+        overlayColor={theme.colors.platform.android.primary}
+      />
       <GiftedChat
         isTyping={true}
         messages={allMessages}
@@ -243,7 +257,6 @@ const ChatPanel = ({navigation, theme}) => {
           buttonOKLabel={translate('common.ok')}
         />
       )}
-
       {showMediaSlider && (
         <ChatMediaSlider
           theme={theme}

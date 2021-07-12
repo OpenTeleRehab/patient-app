@@ -183,7 +183,7 @@ const AppProvider = ({children}) => {
       profile.id &&
       selectedRoom
     ) {
-      chatRooms.map((item) => {
+      chatRooms.forEach((item) => {
         loadHistoryInRoom(chatSocket, item.rid, profile.id);
       });
     }
