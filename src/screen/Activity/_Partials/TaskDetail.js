@@ -197,10 +197,17 @@ const TaskDetail = ({
       <View style={styles.stickyButtonWrapper}>
         <Button
           containerStyle={styles.stickyButtonContainer}
+          buttonStyle={styles.stickyButtonStyle}
           icon={{
             name: 'check',
             type: 'font-awesome-5',
-            color: theme.colors.white,
+            color:
+              isLoading ||
+              !!activity.completed ||
+              isCompletedOffline ||
+              moment().isBefore(activity.date, 'day')
+                ? theme.colors.grey1
+                : theme.colors.white,
           }}
           title={translate(
             activity.completed || isCompletedOffline
@@ -218,6 +225,7 @@ const TaskDetail = ({
             isCompletedOffline ||
             moment().isBefore(activity.date, 'day')
           }
+          disabledTitleStyle={styles.stickyDisabledTitleStyle}
         />
       </View>
     </>
