@@ -221,8 +221,11 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   };
 
   return (
-    <Overlay isVisible={true} overlayStyle={styles.appointmentOverlayContainer}>
-      <>
+    <Overlay
+      isVisible={true}
+      overlayStyle={styles.appointmentOverlayContainer}
+      onBackdropPress={handleCloseOverlay}>
+      <View>
         <Text
           style={[
             styles.fontWeightBold,
@@ -301,7 +304,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         )}
         <View style={styles.formGroup}>
           <Input
-            placeholder={translate('appointment.placeholder.time')}
+            placeholder={translate('appointment.placeholder.start')}
             label={translate('appointment.label.from')}
             labelStyle={[styles.formLabel, styles.textSmall]}
             disabled
@@ -336,7 +339,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         )}
         <View style={styles.formGroup}>
           <Input
-            placeholder={translate('appointment.placeholder.time')}
+            placeholder={translate('appointment.placeholder.end')}
             label={translate('appointment.label.to')}
             labelStyle={[styles.formLabel, styles.textSmall]}
             disabled
@@ -389,7 +392,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             />
           </View>
         </View>
-      </>
+      </View>
     </Overlay>
   );
 };

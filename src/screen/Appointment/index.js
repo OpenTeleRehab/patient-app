@@ -170,6 +170,7 @@ const Appointment = ({navigation}) => {
       <HeaderBar
         leftContent={{label: translate('tab.appointments')}}
         rightContent={{
+          title: translate('appointment.request_appointment'),
           label: translate('appointment.request_appointment'),
           onPress: handleRequestAppointment,
           disabled: !netInfo.isConnected,
