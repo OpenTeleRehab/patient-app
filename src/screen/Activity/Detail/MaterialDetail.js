@@ -242,7 +242,12 @@ const MaterialDetail = ({theme, route, navigation}) => {
             icon={{
               name: 'check',
               type: 'font-awesome-5',
-              color: theme.colors.white,
+              color:
+                !!material.completed ||
+                isCompletedOffline ||
+                moment().isBefore(material.date, 'day')
+                  ? theme.colors.grey1
+                  : theme.colors.white,
             }}
             title={translate(
               material.completed || isCompletedOffline
@@ -259,6 +264,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
               isCompletedOffline ||
               moment().isBefore(material.date, 'day')
             }
+            disabledTitleStyle={styles.stickyDisabledTitleStyle}
           />
         </View>
       </View>
