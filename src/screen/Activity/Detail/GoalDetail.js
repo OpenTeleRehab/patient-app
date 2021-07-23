@@ -231,7 +231,13 @@ const GoalDetail = ({theme, route, navigation}) => {
           icon={{
             name: 'check',
             type: 'font-awesome-5',
-            color: theme.colors.white,
+            color:
+              goal &&
+              (!!goal.completed ||
+                isCompletedOffline ||
+                moment().isBefore(goal.date, 'day'))
+                ? theme.colors.grey1
+                : theme.colors.white,
           }}
           title={translate(
             goal && (goal.completed || isCompletedOffline)
@@ -249,6 +255,7 @@ const GoalDetail = ({theme, route, navigation}) => {
               isCompletedOffline ||
               moment().isBefore(goal.date, 'day'))
           }
+          disabledTitleStyle={styles.stickyDisabledTitleStyle}
         />
       </View>
     </>
