@@ -287,7 +287,13 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               icon={{
                 name: 'angle-right',
                 type: 'font-awesome',
-                color: theme.colors.white,
+                color:
+                  isLoading ||
+                  !!questionnaire.completed ||
+                  isCompletedOffline ||
+                  moment().isBefore(questionnaire.date, 'day')
+                    ? theme.colors.grey1
+                    : theme.colors.white,
               }}
               title={translate(
                 questionnaire.completed ? 'common.submitted' : 'common.submit',
@@ -301,6 +307,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
                 isCompletedOffline ||
                 moment().isBefore(questionnaire.date, 'day')
               }
+              disabledTitleStyle={styles.stickyDisabledTitleStyle}
             />
           )}
         </View>
