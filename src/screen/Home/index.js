@@ -167,7 +167,7 @@ const Home = ({navigation}) => {
           styles.justifyContentCenter,
         ]}>
         <Text style={styles.textLightBold}>
-          {translate('common.hi')}, {profile.last_name}!
+          {translate('common.hi')}, {profile.first_name}!
         </Text>
         {todaySummary.all ? (
           <>
