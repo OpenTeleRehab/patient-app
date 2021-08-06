@@ -96,4 +96,7 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  appointmentStatusAdditionalSpace: {
+    paddingBottom: 30,
+  },
 };

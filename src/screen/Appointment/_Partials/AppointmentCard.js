@@ -66,7 +66,13 @@ const AppointmentCard = ({appointment, style, theme}) => {
           <Text style={[styles.fontWeightBold, additionTextStyle]}>
             {getTherapistName(appointment.therapist_id, therapists)}
           </Text>
-          <View style={[styles.paddingY, styles.appointmentStatus]}>
+          <View
+            style={[
+              styles.paddingY,
+              styles.appointmentStatus,
+              !(appointment.note && appointment.note.trim() !== '') &&
+                styles.appointmentStatusAdditionalSpace,
+            ]}>
             <Text style={[styles.fontWeightBold, statusTextStyle]}>
               {translate(statusText)}
             </Text>
