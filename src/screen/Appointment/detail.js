@@ -8,15 +8,17 @@ import {Divider, Text, Button, Icon} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
-import {ROUTES} from '../../variables/constants';
+import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 import {ScrollView, View, Alert} from 'react-native';
 import {getTherapistName} from '../../utils/therapist';
 import {
   deleteAppointment,
   getAppointmentsListRequest,
+  updateStatus,
 } from '../../store/appointment/actions';
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const AppointmentDetail = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -26,6 +28,7 @@ const AppointmentDetail = ({route, navigation}) => {
   const {therapists} = useSelector((state) => state.therapist);
   const [showRequestOverlay, setShowRequestOverlay] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -58,6 +61,56 @@ const AppointmentDetail = ({route, navigation}) => {
         },
       ],
     );
+  };
+
+  const handleAcceptPress = (id) => {
+    Alert.alert(
+      translate('appointment.invitation.accept_title'),
+      translate('appointment.are_you_sure_to_accept_invitation'),
+      [
+        {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
+        {text: translate('common.cancel'), style: 'cancel'},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleRejectPress = (id) => {
+    Alert.alert(
+      translate('appointment.invitation.reject_title'),
+      translate('appointment.are_you_sure_to_reject_invitation'),
+      [
+        {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
+        {text: translate('common.cancel'), style: 'cancel'},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleAcceptConfirm = (id) => {
+    dispatch(
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.ACCEPTED,
+      }),
+    ).then((res) => {
+      setIsLoading(false);
+      if (res) {
+        navigation.navigate(ROUTES.APPOINTMENT);
+      }
+    });
+  };
+
+  const handleRejectConfirm = (id) => {
+    dispatch(
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.REJECTED,
+      }),
+    ).then((res) => {
+      setIsLoading(false);
+      if (res) {
+        navigation.navigate(ROUTES.APPOINTMENT);
+      }
+    });
   };
 
   return (
@@ -124,6 +177,46 @@ const AppointmentDetail = ({route, navigation}) => {
               buttonStyle={styles.bgDanger}
               titleStyle={styles.marginLeftSm}
               onPress={handleRemove}
+            />
+          </View>
+        )}
+        {appointment.created_by_therapist && (
+          <View style={[styles.flexRow]}>
+            <Button
+              icon={
+                <Icon
+                  name="calendar-check"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
+              title={translate('appointment.invitation.accept')}
+              titleStyle={styles.marginLeftSm}
+              disabled={
+                !netInfo.isConnected ||
+                appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED
+              }
+              onPress={() => handleAcceptPress(appointment.id)}
+            />
+            <Button
+              icon={
+                <Icon
+                  name="calendar-times"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
+              title={translate('appointment.invitation.reject')}
+              containerStyle={styles.marginLeft}
+              buttonStyle={styles.bgDanger}
+              titleStyle={styles.marginLeftSm}
+              disabled={
+                !netInfo.isConnected ||
+                appointment.patient_status === APPOINTMENT_STATUS.REJECTED
+              }
+              onPress={() => handleRejectPress(appointment.id)}
             />
           </View>
         )}

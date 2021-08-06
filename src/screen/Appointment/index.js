@@ -4,26 +4,19 @@
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Animated,
   ScrollView,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import {Icon, Text} from 'react-native-elements';
-import {RectButton} from 'react-native-gesture-handler';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import {
-  getAppointmentsListRequest,
-  updateStatus,
-} from '../../store/appointment/actions';
+import {getAppointmentsListRequest} from '../../store/appointment/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import moment from 'moment/min/moment-with-locales';
-import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
+import {ROUTES} from '../../variables/constants';
 import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -42,7 +35,6 @@ const Appointment = ({navigation}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showRequestOverlay, setShowRequestOverlay] = useState(false);
   const pageSize = 10;
-  const swipeableRef = [];
   const netInfo = useNetInfo();
 
   useEffect(() => {
@@ -64,46 +56,6 @@ const Appointment = ({navigation}) => {
     setGroupedAppointments(groupedData);
   }, [appointmentObjs]);
 
-  const renderLeftActions = (progress, dragX, id) => {
-    const trans = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [0.7, 0],
-    });
-    return (
-      <RectButton
-        style={styles.appointmentAcceptButtonWrapper}
-        onPress={() => handleAcceptPress(id)}>
-        <Animated.Text
-          style={[
-            styles.appointmentActionButtonText,
-            {transform: [{translateX: trans}]},
-          ]}>
-          {translate('appointment.invitation.accept')}
-        </Animated.Text>
-      </RectButton>
-    );
-  };
-
-  const renderRightActions = (progress, dragX, id) => {
-    const trans = dragX.interpolate({
-      inputRange: [-100, 0],
-      outputRange: [0.7, 0],
-    });
-    return (
-      <RectButton
-        style={styles.appointmentRejectButtonWrapper}
-        onPress={() => handleRejectPress(id)}>
-        <Animated.Text
-          style={[
-            styles.appointmentActionButtonText,
-            {transform: [{translateX: trans}]},
-          ]}>
-          {translate('appointment.invitation.reject')}
-        </Animated.Text>
-      </RectButton>
-    );
-  };
-
   const showMore = () => {
     if (listInfo.last_page > currentPage) {
       dispatch(
@@ -115,54 +67,8 @@ const Appointment = ({navigation}) => {
     }
   };
 
-  const handleAcceptPress = (id) => {
-    Alert.alert(
-      translate('appointment.invitation.accept_title'),
-      translate('appointment.are_you_sure_to_accept_invitation'),
-      [
-        {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
-        {text: translate('common.cancel'), onPress: () => handleClose(id)},
-      ],
-      {cancelable: false},
-    );
-  };
-
-  const handleRejectPress = (id) => {
-    Alert.alert(
-      translate('appointment.invitation.reject_title'),
-      translate('appointment.are_you_sure_to_reject_invitation'),
-      [
-        {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
-        {text: translate('common.cancel'), onPress: () => handleClose(id)},
-      ],
-      {cancelable: false},
-    );
-  };
-
-  const handleAcceptConfirm = (id) => {
-    swipeableRef[id].close();
-    dispatch(
-      updateStatus(id, {
-        status: APPOINTMENT_STATUS.ACCEPTED,
-      }),
-    );
-  };
-
-  const handleRejectConfirm = (id) => {
-    swipeableRef[id].close();
-    dispatch(
-      updateStatus(id, {
-        status: APPOINTMENT_STATUS.REJECTED,
-      }),
-    );
-  };
-
   const handleRequestAppointment = () => {
     setShowRequestOverlay(true);
-  };
-
-  const handleClose = (id) => {
-    swipeableRef[id].close();
   };
 
   return (
@@ -215,46 +121,14 @@ const Appointment = ({navigation}) => {
             </Text>
             {group.appointments.map((appointment, i) => (
               <View key={i} style={styles.appointmentListWrapper}>
-                {netInfo.isConnected && appointment.created_by_therapist ? (
-                  <Swipeable
-                    ref={(ref) => (swipeableRef[appointment.id] = ref)}
-                    renderLeftActions={(progress, dragX) =>
-                      (appointment.patient_status ===
-                        APPOINTMENT_STATUS.REJECTED ||
-                        appointment.patient_status ===
-                          APPOINTMENT_STATUS.INVITED) &&
-                      renderLeftActions(progress, dragX, appointment.id)
-                    }
-                    renderRightActions={(progress, dragX) =>
-                      (appointment.patient_status ===
-                        APPOINTMENT_STATUS.ACCEPTED ||
-                        appointment.patient_status ===
-                          APPOINTMENT_STATUS.INVITED) &&
-                      renderRightActions(progress, dragX, appointment.id)
-                    }
-                    containerStyle={styles.borderRadius}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
-                          appointment,
-                        })
-                      }>
-                      <AppointmentCard
-                        appointment={appointment}
-                        style={styles.noBorderRadius}
-                      />
-                    </TouchableOpacity>
-                  </Swipeable>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
-                        appointment,
-                      })
-                    }>
-                    <AppointmentCard appointment={appointment} />
-                  </TouchableOpacity>
-                )}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
+                      appointment,
+                    })
+                  }>
+                  <AppointmentCard appointment={appointment} />
+                </TouchableOpacity>
               </View>
             ))}
           </View>
