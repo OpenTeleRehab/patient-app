@@ -75,12 +75,12 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
   }
 };
 
-export const loginRequest = (phone, pin, country) => async (
+export const loginRequest = (phone, pin, countryCode) => async (
   dispatch,
   getState,
 ) => {
   dispatch(mutation.userLoginRequest());
-  let data = await User.login(phone, pin, country);
+  let data = await User.login(phone, pin, countryCode);
   if (data.success) {
     let acceptedTermOfService = true;
     let acceptedPrivacyPolicy = true;

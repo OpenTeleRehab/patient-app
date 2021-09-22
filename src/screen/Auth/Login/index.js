@@ -34,7 +34,7 @@ const Login = ({navigation}) => {
   const [code, setCode] = useState('');
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {phone, country, dial_code, isLoading} = useSelector(
+  const {phone, countryCode, dial_code, isLoading} = useSelector(
     (state) => state.user,
   );
   const {isChatConnected} = useSelector((state) => state.indicator);
@@ -54,7 +54,7 @@ const Login = ({navigation}) => {
   }, [chatSocket, dispatch, isChatConnected, subscribeIds]);
 
   const handleLogin = () => {
-    dispatch(loginRequest(phone, code, country)).then((result) => {
+    dispatch(loginRequest(phone, code, countryCode)).then((result) => {
       if (result.success) {
         if (!result.acceptedTermOfService || !result.acceptedPrivacyPolicy) {
           navigation.navigate(ROUTES.TERM_OF_SERVICE);
