@@ -15,8 +15,8 @@ import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
+import moment from 'moment/min/moment-with-locales';
 import CalendarStrip from '@webessentials/react-native-calendar-strip';
-import moment from 'moment';
 import settings from '../../../config/settings';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import _ from 'lodash';
@@ -99,13 +99,14 @@ const renderPaginateDots = (
 
 const Activity = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
+  const {languages} = useSelector((state) => state.language);
   const {
     treatmentPlan,
     offlineQuestionnaireAnswers,
     offlineActivities,
     offlineGoals,
   } = useSelector((state) => state.activity);
-  const {accessToken} = useSelector((state) => state.user);
+  const {accessToken, profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   let calendarRef = useRef();
   let carouselRef = useRef();
@@ -194,6 +195,15 @@ const Activity = ({theme, navigation}) => {
       }
     });
   };
+
+  useEffect(() => {
+    if (languages.length) {
+      const languageIndex = _.findIndex(languages, {
+        id: profile.language_id,
+      });
+      moment.locale(languages[languageIndex].code);
+    }
+  }, [profile, languages]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
