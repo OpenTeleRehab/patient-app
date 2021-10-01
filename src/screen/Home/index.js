@@ -150,6 +150,7 @@ const Home = ({navigation}) => {
   return (
     <>
       <HeaderBar
+        backgroundPrimary={true}
         leftContent={{hasLogo: true}}
         rightContent={{
           icon: 'setting',

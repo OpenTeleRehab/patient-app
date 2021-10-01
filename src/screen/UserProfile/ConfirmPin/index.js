@@ -66,6 +66,7 @@ const ConfirmPin = ({navigation}) => {
   return (
     <>
       <HeaderBar
+        backgroundPrimary={true}
         title={translate('pin.confirmation')}
         rightContent={{
           label: translate('common.cancel'),

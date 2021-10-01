@@ -92,7 +92,7 @@ const Appointment = ({navigation}) => {
       )}
 
       <ScrollView
-        style={styles.mainContainerPrimary}
+        style={styles.mainContainerLight}
         contentContainerStyle={
           !groupedAppointments.length
             ? [styles.flexColumn, styles.justifyContentCenter]
@@ -103,7 +103,7 @@ const Appointment = ({navigation}) => {
             h4
             style={[
               styles.alignSelfCenter,
-              styles.textLight,
+              styles.textLightGrey,
               styles.fontWeightBold,
             ]}>
             {translate('appointment.no_appointment')}

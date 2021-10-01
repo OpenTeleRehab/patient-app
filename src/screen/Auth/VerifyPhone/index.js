@@ -120,6 +120,7 @@ const VerifyPhone = ({navigation}) => {
   return (
     <>
       <HeaderBar
+        backgroundPrimary={true}
         title={translate('phone.verify')}
         onGoBack={() => navigation.goBack()}
       />

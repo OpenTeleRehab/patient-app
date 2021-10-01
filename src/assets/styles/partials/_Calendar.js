@@ -5,7 +5,7 @@ import variables from '../variables';
 
 export default {
   dateContainerToday: {
-    backgroundColor: variables.grey4,
+    backgroundColor: variables.blueLight2,
   },
   dateContainerWeekend: {
     backgroundColor: variables.danger,
@@ -13,12 +13,12 @@ export default {
     width: '100%',
   },
   dateContainerSelected: {
-    backgroundColor: variables.white,
+    backgroundColor: variables.blueLight2,
     borderRadius: 0,
     width: '100%',
   },
   dateContainer: {
-    backgroundColor: variables.blueLight2,
+    backgroundColor: variables.grey7,
     borderRadius: 0,
     width: '100%',
   },
@@ -26,6 +26,6 @@ export default {
     position: 'absolute',
     zIndex: 1,
     top: 5,
-    left: 10,
+    right: 10,
   },
 };

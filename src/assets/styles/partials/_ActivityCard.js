@@ -50,13 +50,16 @@ export default {
   activityPaginationView: {
     flex: 1,
     justifyContent: 'center',
+    marginLeft: 5,
   },
   activityPaginationIconContainer: {
     height: 20,
   },
   activityPaginationButton: {
-    height: 7,
+    height: 5,
     padding: 0,
+    backgroundColor: variables.lightgreen,
+    borderColor: variables.lightgreen,
   },
   activityPaginationContainer: {
     paddingTop: 5,
@@ -68,6 +71,7 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 17,
   },
   activityTotalNumberText: {
     fontSize: 18,

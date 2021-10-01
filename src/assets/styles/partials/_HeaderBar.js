@@ -18,11 +18,11 @@ export default {
     paddingLeft: 0,
     marginLeft: -5,
   },
-  headerButton: (hasLabel) => ({
+  headerButton: (hasLabel, backgroundPrimary) => ({
     padding: hasLabel ? variables.spacingSm : 0,
-    borderRadius: 50,
-    backgroundColor: variables.primary,
-    borderColor: variables.white,
+    borderRadius: 5,
+    backgroundColor: backgroundPrimary ? variables.primary : variables.white,
+    borderColor: backgroundPrimary ? variables.white : variables.primary,
   }),
   headerTitle: {
     color: variables.white,
@@ -34,5 +34,11 @@ export default {
     color: variables.warning,
     paddingTop: '7%',
     paddingBottom: '0.6%',
+  },
+  backgroundPrimary: {
+    backgroundColor: variables.primary,
+  },
+  backgroundWhite: {
+    backgroundColor: variables.white,
   },
 };

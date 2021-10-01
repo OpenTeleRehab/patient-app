@@ -19,7 +19,14 @@ NetInfo.fetch().then((state) => {
 const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
-  const {theme, title, onGoBack, leftContent, rightContent} = props;
+  const {
+    theme,
+    title,
+    onGoBack,
+    leftContent,
+    rightContent,
+    backgroundPrimary,
+  } = props;
   const {videoCall} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -56,19 +63,38 @@ const HeaderBar = (props) => {
       }
       if (label) {
         return (
-          <Text h4 numberOfLines={1} style={styles.textLight}>
+          <Text
+            h4
+            numberOfLines={1}
+            style={backgroundPrimary ? styles.textLight : theme.colors.black}>
             {label}
           </Text>
         );
       }
       return leftContent;
     }
-    return <Text style={styles.textPrimary}>Empty</Text>;
+    return (
+      <Text style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
+        Empty
+      </Text>
+    );
   };
 
   const renderCenterComponent = () => {
     if (title) {
-      return <Text style={styles.headerTitle}>{title}</Text>;
+      return (
+        <Text
+          style={[
+            styles.headerTitle,
+            {
+              color: backgroundPrimary
+                ? theme.colors.white
+                : theme.colors.black,
+            },
+          ]}>
+          {title}
+        </Text>
+      );
     }
   };
 
@@ -83,20 +109,31 @@ const HeaderBar = (props) => {
               ? {
                   name: icon,
                   type: iconType,
-                  color: disabled ? theme.colors.disabled : theme.colors.white,
-                  size: iconSize || 20,
+                  color: disabled
+                    ? theme.colors.disabled
+                    : backgroundPrimary
+                    ? theme.colors.white
+                    : theme.colors.primary,
+                  size: iconSize || 15,
                 }
               : null
           }
           type={label ? 'outline' : 'clear'}
-          titleStyle={styles.textLight}
-          buttonStyle={styles.headerButton(label)}
+          titleStyle={[
+            backgroundPrimary ? styles.textLight : styles.textPrimary,
+            styles.paddingX,
+          ]}
+          buttonStyle={styles.headerButton(label, backgroundPrimary)}
           onPress={onPress}
           disabled={disabled}
         />
       );
     }
-    return <Text style={styles.textPrimary}>Empty</Text>;
+    return (
+      <Text style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
+        Empty
+      </Text>
+    );
   };
 
   return (
@@ -118,6 +155,7 @@ const HeaderBar = (props) => {
             ? styles.headerWorkAround
             : styles.noneBorderBottom,
           !isOnline && styles.headerWorkAround,
+          backgroundPrimary ? styles.backgroundPrimary : styles.backgroundWhite,
         ]}
       />
     </>

@@ -30,8 +30,14 @@ import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 
 const calendarHeaderStyle = {
-  ...styles.textLight,
   marginBottom: 10,
+  marginLeft: 10,
+  fontWeight: 'light',
+  fontSize: 18,
+};
+const calendarHeaderContainerStyle = {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
 };
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
@@ -213,8 +219,8 @@ const Activity = ({theme, navigation}) => {
           date: moment(day.date),
           dots: [
             {
-              color: 'white',
-              selectedColor: 'black',
+              color: 'black',
+              selectedColor: 'white',
             },
           ],
         });
@@ -254,18 +260,17 @@ const Activity = ({theme, navigation}) => {
             ? null
             : {
                 label: translate('common.download'),
-                icon: 'download',
                 iconType: 'font-awesome-5',
                 onPress: () => handleDownload(treatmentPlan),
                 disabled: downloading || !netInfo.isConnected,
               }
         }
       />
-      <View style={styles.bgPrimary}>
+      <View style={styles.backgroundWhite}>
         <Button
           type="outline"
           title={translate('common.today')}
-          titleStyle={styles.textLight}
+          titleStyle={[styles.textPrimary, styles.paddingX]}
           buttonStyle={styles.headerButton(true)}
           containerStyle={styles.todayButton}
           onPress={handleTodayPress}
@@ -275,14 +280,15 @@ const Activity = ({theme, navigation}) => {
           selectedDate={selectedDate}
           markedDates={markedDates}
           scrollable={true}
-          dateNumberStyle={styles.textLight}
-          dateNameStyle={styles.textLight}
+          dateNumberStyle={styles.textDefault}
+          dateNameStyle={styles.textDefault}
           weekendDateNameStyle={styles.textLight}
           weekendDateNumberStyle={styles.textLight}
-          highlightDateNumberStyle={styles.textDefault}
-          highlightDateNameStyle={styles.textDefault}
+          highlightDateNumberStyle={styles.textLight}
+          highlightDateNameStyle={styles.textLight}
           style={calendarContainer}
           calendarHeaderStyle={calendarHeaderStyle}
+          calendarHeaderContainerStyle={calendarHeaderContainerStyle}
           customDatesStyles={customDatesStylesFunc}
           leftSelector={[]}
           rightSelector={[]}
@@ -292,6 +298,20 @@ const Activity = ({theme, navigation}) => {
       {activities?.length ? (
         <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
           <View style={[styles.mainContainerLight, styles.noPadding]}>
+            <View style={styles.activityTotalNumberContainer}>
+              <Text
+                style={[
+                  {color: theme.colors.orangeDark},
+                  styles.activityTotalNumberText,
+                ]}>
+                {activePaginationIndex + 1}
+              </Text>
+              <Text style={styles.activityTotalNumberText}>
+                {translate('common.of_total_number', {
+                  number: activities.length,
+                })}
+              </Text>
+            </View>
             <Pagination
               dotsLength={activities.length}
               activeDotIndex={activePaginationIndex}
@@ -321,20 +341,6 @@ const Activity = ({theme, navigation}) => {
                 )}
               </View>
             )}
-            <View style={styles.activityTotalNumberContainer}>
-              <Text
-                style={[
-                  {color: theme.colors.orangeDark},
-                  styles.activityTotalNumberText,
-                ]}>
-                {activePaginationIndex + 1}
-              </Text>
-              <Text style={styles.activityTotalNumberText}>
-                {translate('common.of_total_number', {
-                  number: activities.length,
-                })}
-              </Text>
-            </View>
             <Carousel
               ref={(ref) => (carouselRef = ref)}
               data={activities}

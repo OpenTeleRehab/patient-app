@@ -105,6 +105,7 @@ const SetupPin = ({navigation, route}) => {
   return (
     <>
       <HeaderBar
+        backgroundPrimary={true}
         onGoBack={isPINChanged ? null : () => navigation.goBack()}
         title={translate('pin.setup.number')}
         rightContent={

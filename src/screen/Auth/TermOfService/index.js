@@ -53,7 +53,10 @@ const TermOfService = ({theme, navigation}) => {
 
   return (
     <>
-      <HeaderBar title={translate('term.of.service')} />
+      <HeaderBar
+        backgroundPrimary={true}
+        title={translate('term.of.service')}
+      />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <CheckBox

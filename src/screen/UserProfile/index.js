@@ -160,6 +160,7 @@ const UserProfile = ({navigation}) => {
   return (
     <>
       <HeaderBar
+        backgroundPrimary={true}
         onGoBack={() => navigation.navigate(ROUTES.HOME)}
         title={translate('preferences')}
         rightContent={{
