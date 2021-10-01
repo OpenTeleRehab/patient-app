@@ -114,6 +114,16 @@ export const user = (state = initialState, action) => {
         isDataUpToDate: false,
       });
     }
+    case 'ENABLE_KID_THEME_REQUESTED':
+    case 'ENABLE_KID_THEME_SUCCEED': {
+      if (action.data && action.data.profile) {
+        return Object.assign({}, state, {
+          profile: action.data.profile,
+        });
+      }
+      return state;
+    }
+    case 'ENABLE_KID_THEME_FAILED':
     default:
       return state;
   }

@@ -239,3 +239,15 @@ export const acceptPrivacyPolicyRequest = (id) => async (
 export const generateFakeAccessToken = () => async (dispatch) => {
   dispatch(mutation.generateFakeAccessTokenSuccess());
 };
+
+export const enableKidTheme = (accessToken, payload) => async (dispatch) => {
+  dispatch(mutation.enableKidThemeRequest());
+  let data = await User.enableKidTheme(accessToken, payload);
+  if (data.success) {
+    dispatch(mutation.enableKidThemeSuccess(data.data));
+    return true;
+  } else {
+    dispatch(mutation.enableKidThemeFailure());
+    return false;
+  }
+};

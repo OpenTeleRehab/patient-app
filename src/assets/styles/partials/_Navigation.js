@@ -20,9 +20,17 @@ export default {
   },
   navDrawerContainer: {
     flex: 1,
+    paddingTop: variables.spacingLg,
     paddingBottom: variables.spacingMd,
   },
   navDrawerBottom: {
     marginHorizontal: variables.spacingMd,
+  },
+  navKidThemeWrapper: {
+    backgroundColor: variables.grey6,
+    padding: variables.spacingMd,
+  },
+  navKidThemeLabel: {
+    width: '70%',
   },
 };
