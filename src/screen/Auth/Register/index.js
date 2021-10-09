@@ -3,13 +3,12 @@
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Image, Platform, ScrollView, SafeAreaView} from 'react-native';
-import {Button, Divider, Input, Text, withTheme} from 'react-native-elements';
+import {View, Platform, ScrollView, SafeAreaView} from 'react-native';
+import {Button, Input, Text, withTheme} from 'react-native-elements';
 import _ from 'lodash';
 
 import styles from '../../../assets/styles';
 
-import logoWhite from '../../../assets/images/logo-white.png';
 import {ROUTES} from '../../../variables/constants';
 
 import {registerRequest} from '../../../store/user/actions';
@@ -18,6 +17,7 @@ import {getDefinedCountries} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
+import HeaderBar from '../../../components/Common/HeaderBar';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -27,13 +27,19 @@ if (Platform.OS === 'android') {
 const phoneCodeContainerStyle = {
   width: '25%',
   marginRight: 5,
+  height: '60%',
 };
 const phoneContainerStyle = {
   width: '75%',
+  height: '60%',
 };
 
-const phoneCodeDividerStyle = {
-  height: 1,
+const inputPhoneContainerStyle = {
+  borderBottomWidth: 0,
+};
+
+const contentContainer = {
+  height: '100%',
 };
 
 const Register = ({theme, navigation}) => {
@@ -132,56 +138,27 @@ const Register = ({theme, navigation}) => {
 
   return (
     <SafeAreaView style={styles.bgPrimary}>
-      <View style={styles.authBanner}>
-        <Image source={logoWhite} style={styles.authLogoWhite} />
-      </View>
+      <HeaderBar
+        backgroundPrimary={true}
+        title={translate('common.register')}
+      />
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        style={styles.mainContainerLight}>
+        style={[styles.mainContainerLight, contentContainer]}>
         <View style={styles.paddingMd}>
-          <Text style={styles.formLabel}>{translate('common.phone')}</Text>
-          <View style={styles.flexRow}>
-            <View style={phoneCodeContainerStyle}>
-              <SelectPicker
-                placeholder={{}}
-                value={countryPhoneCode}
-                onValueChange={handlePhoneCodeChange}
-                items={
-                  countryPhoneCode
-                    ? definedCountries.map((country) => ({
-                        label: `${country.name} (+${country.phone_code})`,
-                        value: country.phone_code,
-                        inputLabel: `+${country.phone_code}`,
-                      }))
-                    : []
-                }
-              />
-              <Divider
-                style={[
-                  phoneCodeDividerStyle,
-                  {backgroundColor: theme.colors.grey3},
-                ]}
-              />
-            </View>
-            <View style={phoneContainerStyle}>
-              <Input
-                placeholder={translate('placeholder.phone')}
-                keyboardType="phone-pad"
-                value={phoneNumber}
-                onChangeText={(number) => setPhoneNumber(number)}
-              />
-            </View>
-          </View>
-          {errorPhoneNumber && (
-            <View style={styles.marginBottom}>
-              <Text style={styles.textDanger}>
-                {translate('error.message.phone.created')}
-              </Text>
-            </View>
-          )}
+          <Text style={[styles.marginBottomMd]}>
+            {translate('register.intro_text')}
+          </Text>
           <View>
-            <Text style={styles.formLabel}>{translate('common.language')}</Text>
-            <View style={styles.formControl}>
+            <Text style={[styles.formLabel, styles.fontWeightBold]}>
+              {translate('register.language.label')}
+            </Text>
+            <View
+              style={[
+                styles.formControl,
+                styles.bgGreyLight,
+                {borderColor: theme.colors.grey9},
+              ]}>
               <SelectPicker
                 placeholder={{}}
                 value={language}
@@ -197,12 +174,66 @@ const Register = ({theme, navigation}) => {
               />
             </View>
           </View>
+          <Text
+            style={[
+              styles.formLabel,
+              styles.marginTopMd,
+              styles.fontWeightBold,
+            ]}>
+            {translate('register.phone.label')}
+          </Text>
+          <View style={styles.flexRow}>
+            <View
+              style={[
+                phoneCodeContainerStyle,
+                styles.formControl,
+                styles.bgGreyLight,
+                {borderColor: theme.colors.grey9},
+              ]}>
+              <SelectPicker
+                placeholder={{}}
+                value={countryPhoneCode}
+                onValueChange={handlePhoneCodeChange}
+                items={
+                  countryPhoneCode
+                    ? definedCountries.map((country) => ({
+                        label: `${country.name} (+${country.phone_code})`,
+                        value: country.phone_code,
+                        inputLabel: `+${country.phone_code}`,
+                      }))
+                    : []
+                }
+              />
+            </View>
+            <View
+              style={[
+                phoneContainerStyle,
+                styles.bgGreyLight,
+                styles.formControl,
+                {borderColor: theme.colors.grey9},
+              ]}>
+              <Input
+                placeholder={translate('register.placeholder.phone')}
+                keyboardType="phone-pad"
+                value={phoneNumber}
+                onChangeText={(number) => setPhoneNumber(number)}
+                inputContainerStyle={inputPhoneContainerStyle}
+              />
+            </View>
+          </View>
+          {errorPhoneNumber && (
+            <View style={styles.marginBottom}>
+              <Text style={styles.textDanger}>
+                {translate('error.message.phone.created')}
+              </Text>
+            </View>
+          )}
           <Button
             onPress={handleRegister}
-            title={translate('common.register')}
+            title={translate('common.next')}
             containerStyle={styles.marginTopLg}
             titleStyle={styles.textUpperCase}
-            disabled={isLoading}
+            disabled={isLoading || !phoneNumber}
           />
         </View>
       </ScrollView>

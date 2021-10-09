@@ -11,7 +11,7 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import {Button, Text} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import {
   loginRequest,
   fetchTermOfServiceRequest,
@@ -20,6 +20,7 @@ import {
 } from '../../../store/user/actions';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
+import kidLogo from '../../../assets/images/quacker-pincode.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
@@ -28,11 +29,16 @@ import RocketchatContext from '../../../context/RocketchatContext';
 import {getCountryRequest} from '../../../store/country/actions';
 import formatPhoneNumber from '../../../utils/phoneNumber';
 
+const containerStyle = {
+  height: '100%',
+};
+
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
   const [code, setCode] = useState('');
   const localize = useSelector((state) => state.localize);
+  const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const {phone, countryCode, dial_code, isLoading} = useSelector(
     (state) => state.user,
@@ -40,6 +46,7 @@ const Login = ({navigation}) => {
   const {isChatConnected} = useSelector((state) => state.indicator);
   const {subscribeIds} = useSelector((state) => state.rocketchat);
   const {pin} = useSelector((state) => state.user);
+  const [errorCode, setErrorCode] = useState(false);
 
   useEffect(() => {
     dispatch(getCountryRequest());
@@ -53,14 +60,14 @@ const Login = ({navigation}) => {
     }
   }, [chatSocket, dispatch, isChatConnected, subscribeIds]);
 
-  const handleLogin = () => {
-    dispatch(loginRequest(phone, code, countryCode)).then((result) => {
+  const handleLogin = (passCode) => {
+    dispatch(loginRequest(phone, passCode, countryCode)).then((result) => {
       if (result.success) {
         if (!result.acceptedTermOfService || !result.acceptedPrivacyPolicy) {
           navigation.navigate(ROUTES.TERM_OF_SERVICE);
         }
       } else {
-        if (code === pin) {
+        if (passCode === pin) {
           dispatch(generateFakeAccessToken());
         } else {
           Alert.alert(
@@ -69,6 +76,7 @@ const Login = ({navigation}) => {
             [{text: translate('common.ok'), onPress: () => reset()}],
             {cancelable: false},
           );
+          setErrorCode(true);
         }
       }
     });
@@ -84,27 +92,26 @@ const Login = ({navigation}) => {
   }, [dispatch]);
 
   return (
-    <SafeAreaView style={styles.bgBlack}>
-      <View style={styles.authBanner}>
-        <Image source={logoWhite} style={styles.authLogoWhite} />
+    <SafeAreaView style={styles.bgLight}>
+      <View style={!(profile && profile.kid_theme) && styles.authBanner}>
+        {profile && profile.kid_theme ? (
+          <Image source={kidLogo} style={styles.authKidLogo} />
+        ) : (
+          <Image source={logoWhite} style={styles.authLogoWhite} />
+        )}
       </View>
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        style={styles.mainContainerLight}>
+        style={[styles.mainContainerLight, containerStyle]}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
-            <Text style={styles.formLabel}>{translate('phone.number')}</Text>
-            <Text style={[styles.leadText, styles.textDefault]}>
-              {formatPhoneNumber(dial_code, phone)}
-            </Text>
-            <TouchableOpacity
-              style={styles.marginY}
-              onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={styles.hyperlink}>
-                {translate('phone.login.other.number')}
-              </Text>
-            </TouchableOpacity>
-            <Text style={[styles.formLabel, styles.marginTopMd]}>
+            <Text
+              style={[
+                styles.formLabel,
+                styles.marginTopMd,
+                styles.textCenter,
+                styles.textDefaultBold,
+              ]}>
               {translate('pin.enter.number')}
             </Text>
             <SmoothPinCodeInput
@@ -112,28 +119,42 @@ const Login = ({navigation}) => {
               value={code}
               onTextChange={(value) => setCode(value)}
               textStyle={styles.formPinText}
-              cellStyleFocused={styles.formPinCellFocused}
+              cellStyleFocused={!errorCode && styles.formPinCellFocused}
               containerStyle={styles.formPinContainer}
               cellStyleFilled={styles.formPinCellFilled}
-              cellStyle={styles.formPinCell}
+              cellStyle={[
+                styles.formPinCell,
+                errorCode && styles.formPinCellError,
+              ]}
               cellSpacing={10}
               animated={false}
               mask={<View style={styles.formPinCustomMask} />}
+              onFulfill={(passCode) => handleLogin(passCode)}
             />
             <TouchableOpacity
               style={styles.marginTop}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={styles.hyperlink}>{translate('pin.forget')}</Text>
+              <Text style={[styles.hyperlink, styles.textCenter]}>
+                {translate('pin.forget')}
+              </Text>
+            </TouchableOpacity>
+            <Text
+              style={[
+                styles.leadText,
+                styles.textDefault,
+                styles.textCenter,
+                styles.marginTopLg,
+              ]}>
+              {formatPhoneNumber(dial_code, phone)}
+            </Text>
+            <TouchableOpacity
+              style={styles.marginY}
+              onPress={() => navigation.navigate(ROUTES.REGISTER)}>
+              <Text style={[styles.hyperlink, styles.textCenter]}>
+                {translate('phone.login.other.number')}
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.paddingMd}>
-          <Button
-            onPress={() => handleLogin()}
-            title={translate('common.login')}
-            titleStyle={styles.textUpperCase}
-            disabled={isLoading}
-          />
         </View>
       </ScrollView>
     </SafeAreaView>

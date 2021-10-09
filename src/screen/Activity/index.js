@@ -32,7 +32,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 const calendarHeaderStyle = {
   marginBottom: 10,
   marginLeft: 10,
-  fontWeight: 'light',
+  fontWeight: '100',
   fontSize: 18,
 };
 const calendarHeaderContainerStyle = {

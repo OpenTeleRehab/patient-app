@@ -60,6 +60,9 @@ export default {
   bgGrey: {
     backgroundColor: variables.grey,
   },
+  bgGreyLight: {
+    backgroundColor: variables.grey9,
+  },
   bgOrangeLight: {
     backgroundColor: variables.orangeLight,
   },

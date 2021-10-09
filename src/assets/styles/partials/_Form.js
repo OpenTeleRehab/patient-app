@@ -64,4 +64,7 @@ export default {
     height: 80,
     paddingLeft: 1,
   },
+  formPinCellError: {
+    borderColor: variables.danger,
+  },
 };

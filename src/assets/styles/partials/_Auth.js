@@ -21,4 +21,11 @@ export default {
   authBanner: {
     backgroundColor: variables.primary,
   },
+  authRegisterBanner: {
+    height: 100,
+  },
+  authKidLogo: {
+    alignSelf: 'center',
+    marginTop: variables.spacingMd,
+  },
 };
