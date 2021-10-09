@@ -6,17 +6,20 @@ import variables from '../variables';
 export default {
   navTabBar: {
     borderTopWidth: 1,
-    borderTopColor: variables.primary,
+    borderTopColor: variables.grey8,
   },
   navTabLabel: {
-    fontWeight: 'bold',
-    fontSize: 11,
+    fontSize: 12,
   },
   navTabBadge: {
     color: variables.danger,
     backgroundColor: variables.danger,
     maxWidth: 12,
     maxHeight: 12,
+  },
+  navTabIcon: {
+    height: 26,
+    width: 26,
   },
   navDrawerContainer: {
     flex: 1,
