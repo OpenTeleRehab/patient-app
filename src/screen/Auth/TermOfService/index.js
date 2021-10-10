@@ -56,6 +56,7 @@ const TermOfService = ({theme, navigation}) => {
       <HeaderBar
         backgroundPrimary={true}
         title={translate('term.of.service')}
+        onGoBack={() => navigation.goBack()}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
@@ -91,12 +92,6 @@ const TermOfService = ({theme, navigation}) => {
             titleStyle={styles.textUpperCase}
           />
           <Button
-            icon={{
-              name: 'chevron-left',
-              type: 'font-awesome-5',
-              color: theme.colors.primary,
-              size: 28,
-            }}
             title={translate('common.back')}
             type="clear"
             onPress={() =>

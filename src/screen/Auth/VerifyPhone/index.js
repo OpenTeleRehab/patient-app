@@ -43,6 +43,7 @@ const VerifyPhone = ({navigation}) => {
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState('');
   const [errorEmail, setErrorEmail] = useState(false);
+  const [errorCode, setErrorCode] = useState(false);
 
   useInterval(() => {
     if (count > 0) {
@@ -63,8 +64,8 @@ const VerifyPhone = ({navigation}) => {
     }
   }, [hash]);
 
-  const onConfirm = () => {
-    dispatch(verifyPhoneNumberRequest(formattedNumber, code, email)).then(
+  const onConfirm = (verifyCode) => {
+    dispatch(verifyPhoneNumberRequest(formattedNumber, verifyCode, email)).then(
       (result) => {
         if (result) {
           if (RNOtpVerify) {
@@ -78,6 +79,7 @@ const VerifyPhone = ({navigation}) => {
             [{text: translate('common.ok').toString(), onPress: () => reset()}],
             {cancelable: false},
           );
+          setErrorCode(true);
         }
       },
     );
@@ -113,10 +115,6 @@ const VerifyPhone = ({navigation}) => {
     }
   };
 
-  const disabledConfirm = () => {
-    return code.length !== 6 || isLoading;
-  };
-
   return (
     <>
       <HeaderBar
@@ -128,24 +126,28 @@ const VerifyPhone = ({navigation}) => {
         keyboardShouldPersistTaps="handled"
         style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
-          <Text>{translate('phone.verify.description')}</Text>
-          <Text style={styles.marginY}>
-            {translate('phone.send.to')}{' '}
-            <Text style={styles.textDefaultBold}>
-              &nbsp; {formatPhoneNumber(dialCode, formattedNumber)}
-            </Text>
+          <Text style={styles.marginBottomMd}>
+            {translate('phone.verify_discription', {
+              phone: formatPhoneNumber(dialCode, formattedNumber),
+            })}
           </Text>
           <SmoothPinCodeInput
             codeLength={6}
             value={code}
-            onTextChange={(pinCode) => setCode(pinCode)}
+            onTextChange={(pinCode) => [setCode(pinCode), setErrorCode(false)]}
             animated={false}
             cellSpacing={10}
-            textStyle={styles.formPinText}
+            textStyle={errorCode ? styles.formPinTextError : styles.formPinText}
             containerStyle={[styles.formPinContainer, styles.marginBottom]}
-            cellStyle={styles.formPinCell}
-            cellStyleFocused={styles.formPinCellFocused}
-            cellStyleFilled={styles.formPinCellFilled}
+            cellStyle={[
+              styles.formPinCell,
+              errorCode && styles.formPinCellError,
+            ]}
+            cellStyleFocused={!errorCode && styles.formPinCellFocused}
+            cellStyleFilled={
+              errorCode ? styles.formPinCellError : styles.formPinCellFilled
+            }
+            onFulfill={(verifyCode) => onConfirm(verifyCode)}
           />
           {showEmail && (
             <>
@@ -177,13 +179,6 @@ const VerifyPhone = ({navigation}) => {
               </TouchableOpacity>
             )}
           </View>
-          <Button
-            containerStyle={[styles.marginTopMd, styles.alignSelfStretch]}
-            titleStyle={styles.textUpperCase}
-            disabled={disabledConfirm()}
-            onPress={onConfirm}
-            title={translate('common.confirm')}
-          />
         </View>
       </ScrollView>
     </>

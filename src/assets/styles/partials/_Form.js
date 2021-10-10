@@ -67,4 +67,8 @@ export default {
   formPinCellError: {
     borderColor: variables.danger,
   },
+  formPinTextError: {
+    fontSize: 24,
+    color: variables.danger,
+  },
 };

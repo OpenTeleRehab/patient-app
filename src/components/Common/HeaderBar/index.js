@@ -43,7 +43,6 @@ const HeaderBar = (props) => {
     if (onGoBack) {
       return (
         <Button
-          title="Back"
           icon={{
             name: 'chevron-left',
             type: 'font-awesome-5',
