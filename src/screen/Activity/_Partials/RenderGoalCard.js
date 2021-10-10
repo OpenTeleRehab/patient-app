@@ -3,6 +3,20 @@ import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
+import quackerGoal from '../../../assets/images/quacker-goal.png';
+import {Grayscale} from 'react-native-color-matrix-image-filters';
+import {useSelector} from 'react-redux';
+
+const ImageCard = ({file, grayscale}) => {
+  if (grayscale) {
+    return (
+      <Grayscale>
+        <ImageCard file={file} />
+      </Grayscale>
+    );
+  }
+  return <Card.Image source={file} style={styles.activityCardImage} />;
+};
 
 const RenderGoalCard = ({
   item,
@@ -13,6 +27,8 @@ const RenderGoalCard = ({
   offlineGoals,
 }) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const {profile} = useSelector((state) => state.user);
+  const [kidTheme, setKidTheme] = useState(false);
 
   useEffect(() => {
     if (item) {
@@ -32,6 +48,12 @@ const RenderGoalCard = ({
     }
   }, [item, offlineGoals]);
 
+  useEffect(() => {
+    if (profile) {
+      setKidTheme(!!profile.kid_theme);
+    }
+  }, [profile]);
+
   return (
     <TouchableOpacity
       key={index}
@@ -44,36 +66,43 @@ const RenderGoalCard = ({
         })
       }>
       <Card containerStyle={styles.activityCardContainer}>
-        <View
-          style={[
-            styles.cardWithIconHeader,
-            item.completed || isCompletedOffline
-              ? styles.bgGrey
-              : {backgroundColor: theme.colors.blueLight4},
-          ]}>
-          <View style={styles.cardWithIconWrapper}>
-            <Icon
-              name="bullseye-arrow"
-              color={
-                item.completed || isCompletedOffline
-                  ? theme.colors.black
-                  : theme.colors.blueDark
-              }
-              size={100}
-              type="material-community"
-            />
-            <Text
-              style={[
-                styles.cardWithIconHeaderTitle,
-                item.completed || isCompletedOffline
-                  ? styles.textDefault
-                  : {color: theme.colors.blueDark},
-              ]}
-              numberOfLines={1}>
-              {translate('activity.goal.satisfaction')}
-            </Text>
+        {kidTheme ? (
+          <ImageCard
+            file={quackerGoal}
+            grayscale={item.completed || isCompletedOffline}
+          />
+        ) : (
+          <View
+            style={[
+              styles.cardWithIconHeader,
+              item.completed || isCompletedOffline
+                ? styles.bgGrey
+                : {backgroundColor: theme.colors.blueLight4},
+            ]}>
+            <View style={styles.cardWithIconWrapper}>
+              <Icon
+                name="bullseye-arrow"
+                color={
+                  item.completed || isCompletedOffline
+                    ? theme.colors.black
+                    : theme.colors.blueDark
+                }
+                size={100}
+                type="material-community"
+              />
+              <Text
+                style={[
+                  styles.cardWithIconHeaderTitle,
+                  item.completed || isCompletedOffline
+                    ? styles.textDefault
+                    : {color: theme.colors.blueDark},
+                ]}
+                numberOfLines={1}>
+                {translate('activity.goal.satisfaction')}
+              </Text>
+            </View>
           </View>
-        </View>
+        )}
         <View style={styles.activityCardInfoWrapper}>
           <Text
             style={[styles.activityCardTitle, styles.textDefaultBold]}
