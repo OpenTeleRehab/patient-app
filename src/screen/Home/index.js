@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, TouchableOpacity, View} from 'react-native';
-import {Text} from 'react-native-elements';
+import {ActivityIndicator, TouchableOpacity, View, Image} from 'react-native';
+import {Text, Button} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
@@ -21,6 +21,12 @@ import _ from 'lodash';
 import settings from '../../../config/settings';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
+import quackerWave from '../../assets/images/quacker-waving.gif';
+
+const kidThemeImageStyle = {
+  width: 300,
+  height: 255,
+};
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -44,6 +50,13 @@ const Home = ({navigation}) => {
     completed: 0,
   });
   const isOnline = useNetInfo().isConnected;
+  const [kidTheme, setKidTheme] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      setKidTheme(!!profile.kid_theme);
+    }
+  }, [profile]);
 
   useEffect(() => {
     if (languages.length) {
@@ -167,14 +180,13 @@ const Home = ({navigation}) => {
           styles.flexColumn,
           styles.justifyContentCenter,
         ]}>
-        <Text style={styles.textLightBold}>
-          {translate('common.hi')}, {profile.first_name}!
-        </Text>
-        {todaySummary.all ? (
+        {kidTheme ? (
+          <TouchableOpacity
+            onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
+            <Image source={quackerWave} style={kidThemeImageStyle} />
+          </TouchableOpacity>
+        ) : todaySummary.all ? (
           <>
-            <Text h4 style={[styles.textLight, styles.marginTop]}>
-              {translate('home.activities.today')}
-            </Text>
             <TouchableOpacity
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
               <AnimatedCircularProgress
@@ -184,8 +196,7 @@ const Home = ({navigation}) => {
                 lineCap="round"
                 tintColor={colors.white}
                 rotation={0}
-                backgroundColor={colors.blueLight}
-                style={styles.marginTopMd}>
+                backgroundColor={colors.blueLight}>
                 {() => (
                   <>
                     <Text style={styles.leadText}>
@@ -205,6 +216,27 @@ const Home = ({navigation}) => {
                 )}
               </AnimatedCircularProgress>
             </TouchableOpacity>
+          </>
+        ) : (
+          <Text />
+        )}
+        <Text style={[styles.textLightBold, styles.marginTopMd]}>
+          {translate('common.hi')}, {profile.first_name}!
+        </Text>
+        {todaySummary.all ? (
+          <>
+            <Text style={styles.textLightBold}>
+              {translate('home.activity.completed', {
+                number: todaySummary.completed + '/' + todaySummary.all,
+              })}
+            </Text>
+            <Button
+              title={translate('common.start')}
+              titleStyle={[styles.textPrimary, styles.fontWeightBold]}
+              onPress={() => navigation.navigate(ROUTES.ACTIVITY)}
+              containerStyle={[styles.marginTopMd]}
+              buttonStyle={[styles.bgLight, styles.paddingXLg]}
+            />
           </>
         ) : (
           <>
