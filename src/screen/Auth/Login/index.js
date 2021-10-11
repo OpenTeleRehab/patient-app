@@ -40,9 +40,7 @@ const Login = ({navigation}) => {
   const localize = useSelector((state) => state.localize);
   const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
-  const {phone, countryCode, dial_code, isLoading} = useSelector(
-    (state) => state.user,
-  );
+  const {phone, countryCode, dial_code} = useSelector((state) => state.user);
   const {isChatConnected} = useSelector((state) => state.indicator);
   const {subscribeIds} = useSelector((state) => state.rocketchat);
   const {pin} = useSelector((state) => state.user);

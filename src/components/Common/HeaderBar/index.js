@@ -45,6 +45,7 @@ const HeaderBar = (props) => {
     if (onGoBack) {
       return (
         <Button
+          title="Back"
           icon={
             <Icon
               type="feather"
@@ -57,7 +58,10 @@ const HeaderBar = (props) => {
           }
           onPress={() => onGoBack()}
           type="clear"
-          titleStyle={styles.headerTitle}
+          titleStyle={[
+            backgroundPrimary ? styles.textLight : styles.textDefault,
+            styles.paddingX,
+          ]}
           buttonStyle={styles.headerBackButton}
         />
       );
@@ -157,7 +161,7 @@ const HeaderBar = (props) => {
             }
             onPress={() => achievement.onGoAchievement()}
             type="clear"
-            buttonStyle={styles.marginRight}
+            buttonStyle={[styles.marginLeftLg, styles.noPadding]}
           />
           <Button
             title=""
@@ -173,10 +177,7 @@ const HeaderBar = (props) => {
             }
             onPress={() => setting.onGoSetting()}
             type="clear"
-            titleStyle={
-              backgroundPrimary ? styles.textLight : styles.textPrimary
-            }
-            buttonStyle={styles.headerButton('', backgroundPrimary)}
+            buttonStyle={[styles.marginLeftLg, styles.noPadding]}
           />
         </View>
       );
@@ -197,8 +198,7 @@ const HeaderBar = (props) => {
           }
           onPress={() => setting.onGoSetting()}
           type="clear"
-          titleStyle={backgroundPrimary ? styles.textLight : styles.textPrimary}
-          buttonStyle={styles.headerButton('', backgroundPrimary)}
+          buttonStyle={[styles.marginLeftLg, styles.noPadding]}
         />
       );
     }
@@ -218,7 +218,7 @@ const HeaderBar = (props) => {
           }
           onPress={() => achievement.onGoAchievement()}
           type="clear"
-          buttonStyle={styles.marginRight}
+          buttonStyle={[styles.marginLeftLg, styles.noPadding]}
         />
       );
     }

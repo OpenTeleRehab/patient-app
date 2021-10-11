@@ -6,14 +6,14 @@ export default {
   },
   appointmentListContainer: {
     borderRadius: 10,
-    padding: 2,
+    padding: 1,
     borderColor: variables.white,
     backgroundColor: variables.grey7,
   },
   appointmentListLeftContent: {
     backgroundColor: variables.primary,
     color: variables.white,
-    padding: 20,
+    padding: 30,
     alignItems: 'center',
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
@@ -35,6 +35,7 @@ export default {
     flexDirection: 'column',
     justifyContent: 'center',
     width: '100%',
+    paddingTop: 10,
     paddingRight: 30,
   },
   borderRadius: {
@@ -76,8 +77,12 @@ export default {
     flexDirection: 'column',
     alignItems: 'center',
   },
-  appointmentOverlayContainer: {
-    minWidth: '80%',
+  appointmentBackdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  appointmentOverlay: {
+    padding: 20,
+    width: '95%',
   },
   appointmentOverlayButtonsWrapper: {
     display: 'flex',
@@ -98,6 +103,10 @@ export default {
     justifyContent: 'space-between',
   },
   appointmentStatusAdditionalSpace: {
-    paddingBottom: 30,
+    paddingBottom: 15,
+  },
+  requestAppointmentButton: {
+    borderRadius: 8,
+    height: 48,
   },
 };

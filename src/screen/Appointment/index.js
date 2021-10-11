@@ -11,7 +11,7 @@ import {
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {Icon, Text} from 'react-native-elements';
+import {Button, Icon, Text} from 'react-native-elements';
 import {getAppointmentsListRequest} from '../../store/appointment/actions';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
@@ -21,14 +21,17 @@ import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
+import {useIsDrawerOpen} from '@react-navigation/drawer';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {profile} = useSelector((state) => state.user);
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
+  const isDrawerOpen = useIsDrawerOpen();
 
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
@@ -40,6 +43,16 @@ const Appointment = ({navigation}) => {
   useEffect(() => {
     dispatch(getProfessionRequest());
   }, [dispatch]);
+
+  useEffect(() => {
+    const tabNav = navigation.dangerouslyGetParent();
+    if (isDrawerOpen) {
+      tabNav.setOptions({tabBarVisible: false});
+    }
+    return () => {
+      tabNav.setOptions({tabBarVisible: true});
+    };
+  }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
     setAppointmentObjs(appointments);
@@ -75,11 +88,13 @@ const Appointment = ({navigation}) => {
     <>
       <HeaderBar
         leftContent={{label: translate('tab.appointments')}}
-        rightContent={{
-          title: translate('appointment.request_appointment'),
-          label: translate('appointment.request_appointment'),
-          onPress: handleRequestAppointment,
-          disabled: !netInfo.isConnected,
+        achievement={{
+          hasAchievement: profile.kid_theme,
+          onGoAchievement: () => navigation.navigate(ROUTES.ACHIEVEMENT),
+        }}
+        setting={{
+          hasSetting: true,
+          onGoSetting: () => navigation.toggleDrawer(),
         }}
       />
 
@@ -90,6 +105,16 @@ const Appointment = ({navigation}) => {
           navigation={navigation}
         />
       )}
+
+      <View style={styles.mainContainerLight}>
+        <Button
+          title={translate('appointment.request_new_appointment')}
+          buttonStyle={styles.requestAppointmentButton}
+          titleStyle={styles.marginLeftSm}
+          disabled={!netInfo.isConnected}
+          onPress={handleRequestAppointment}
+        />
+      </View>
 
       <ScrollView
         style={styles.mainContainerLight}
@@ -109,14 +134,10 @@ const Appointment = ({navigation}) => {
             {translate('appointment.no_appointment')}
           </Text>
         )}
+
         {groupedAppointments.map((group, index) => (
           <View key={index}>
-            <Text
-              style={[
-                styles.fontWeightBold,
-                styles.textLight,
-                styles.marginBottom,
-              ]}>
+            <Text style={[styles.fontWeightBold, styles.marginBottom]}>
               {group.month}
             </Text>
             {group.appointments.map((appointment, i) => (

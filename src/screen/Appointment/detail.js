@@ -117,7 +117,7 @@ const AppointmentDetail = ({route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4 style={styles.textLight}>
+          <Text numberOfLines={1} h4>
             {translate('appointment')}
           </Text>
         }

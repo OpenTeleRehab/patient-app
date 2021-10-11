@@ -255,16 +255,13 @@ const Activity = ({theme, navigation}) => {
             ? translate('tab.activities')
             : treatmentPlan.name,
         }}
-        rightContent={
-          _.isEmpty(treatmentPlan)
-            ? null
-            : {
-                label: translate('common.download'),
-                iconType: 'font-awesome-5',
-                onPress: () => handleDownload(treatmentPlan),
-                disabled: downloading || !netInfo.isConnected,
-              }
-        }
+        rightContent={{
+          label: translate('common.download'),
+          iconType: 'font-awesome-5',
+          onPress: () => handleDownload(treatmentPlan),
+          disabled:
+            _.isEmpty(treatmentPlan) || downloading || !netInfo.isConnected,
+        }}
       />
       <View style={styles.backgroundWhite}>
         <Button

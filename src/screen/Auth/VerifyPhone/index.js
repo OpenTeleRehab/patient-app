@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {Button, Input, Text} from 'react-native-elements';
+import {Input, Text} from 'react-native-elements';
 import {
   ScrollView,
   TouchableOpacity,

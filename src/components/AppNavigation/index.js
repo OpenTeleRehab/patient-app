@@ -118,12 +118,10 @@ const AppTabNavigator = (props) => {
             component={route.screen}
             options={{
               tabBarIcon: ({focused, color, size}) => (
-                <>
-                  <Image
-                    source={focused ? route.activeIcon : route.icon}
-                    style={styles.navTabIcon}
-                  />
-                </>
+                <Image
+                  source={focused ? route.activeIcon : route.icon}
+                  style={styles.navTabIcon}
+                />
               ),
               tabBarLabel: translate(route.label),
               tabBarBadge: hasBadge(route.badge),

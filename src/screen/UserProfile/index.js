@@ -9,7 +9,6 @@ import {
   ScrollView,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import styles from '../../assets/styles';
 import {useDispatch, useSelector} from 'react-redux';
@@ -170,38 +169,36 @@ const UserProfile = ({navigation}) => {
             navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
-      <ScrollView>
-        <View style={styles.mainContainerLight}>
-          {userInfo.map((user, index) => (
-            <RenderListItem {...user} key={index} />
-          ))}
-          <ListItem bottomDivider containerStyle={styles.listBackground}>
-            <ListItem.Content>
-              <ListItem.Title>
-                <TouchableOpacity
-                  disabled={!netInfo.isConnected}
-                  onPress={() => navigation.navigate(ROUTES.CONFIRM_PIN)}>
-                  <Text style={[styles.listStyle, styles.textPrimary]}>
-                    {translate('pin.change')}
-                  </Text>
-                </TouchableOpacity>
-              </ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-          <Button
-            type="clear"
-            title={translate('user.download_my_data')}
-            containerStyle={styles.marginTopMd}
-            onPress={handleExport}
-            disabled={!netInfo.isConnected}
-          />
-          <Button
-            title={translate('user.delete')}
-            buttonStyle={styles.bgGrey}
-            onPress={handleDelete}
-            disabled={!netInfo.isConnected}
-          />
-        </View>
+      <ScrollView style={styles.mainContainerLight}>
+        {userInfo.map((user, index) => (
+          <RenderListItem {...user} key={index} />
+        ))}
+        <ListItem bottomDivider containerStyle={styles.listBackground}>
+          <ListItem.Content>
+            <ListItem.Title>
+              <TouchableOpacity
+                disabled={!netInfo.isConnected}
+                onPress={() => navigation.navigate(ROUTES.CONFIRM_PIN)}>
+                <Text style={[styles.listStyle, styles.textPrimary]}>
+                  {translate('pin.change')}
+                </Text>
+              </TouchableOpacity>
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+        <Button
+          type="clear"
+          title={translate('user.download_my_data')}
+          containerStyle={styles.marginTopMd}
+          onPress={handleExport}
+          disabled={!netInfo.isConnected}
+        />
+        <Button
+          title={translate('user.delete')}
+          buttonStyle={styles.bgGrey}
+          onPress={handleDelete}
+          disabled={!netInfo.isConnected}
+        />
       </ScrollView>
 
       <Spinner

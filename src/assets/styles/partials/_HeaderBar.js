@@ -20,12 +20,12 @@ export default {
   },
   headerButton: (hasLabel, backgroundPrimary) => ({
     padding: hasLabel ? variables.spacingSm : 0,
-    borderRadius: 5,
+    borderRadius: 8,
     backgroundColor: backgroundPrimary ? variables.primary : variables.white,
     borderColor: backgroundPrimary ? variables.white : variables.primary,
+    borderWidth: 1,
   }),
   headerTitle: {
-    color: variables.black,
     fontSize: 18,
     marginLeft: variables.spacingSm,
   },
