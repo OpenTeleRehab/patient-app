@@ -27,6 +27,7 @@ export const ROUTES = {
   FAQ: 'Faq',
   TC: 'TermCondition',
   PP: 'PrivacyPolicy',
+  ACHIEVEMENT: 'Achievement',
 };
 
 export const STORAGE_KEY = {

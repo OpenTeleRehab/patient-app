@@ -11,6 +11,7 @@ export default {
   mainContainerLight: {
     padding: variables.spacingBase,
     backgroundColor: 'white',
+    height: '100%',
   },
   flexCenter: {
     flex: 1,

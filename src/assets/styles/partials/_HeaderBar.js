@@ -25,8 +25,9 @@ export default {
     borderColor: backgroundPrimary ? variables.white : variables.primary,
   }),
   headerTitle: {
-    color: variables.white,
-    fontSize: 17,
+    color: variables.black,
+    fontSize: 18,
+    marginLeft: variables.spacingSm,
   },
   offlineText: {
     textAlign: 'center',

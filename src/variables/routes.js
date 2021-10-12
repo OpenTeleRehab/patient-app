@@ -21,6 +21,7 @@ import TermConditionScreen from '../screen/TermCondition';
 import PrivacyPolicyScreen from '../screen/PrivacyPolicy';
 import UserProfileScreen from '../screen/UserProfile';
 import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
+import AchievementScreen from '../screen/Achievement';
 
 // Activity group
 import ActivityScreen from '../screen/Activity';
@@ -115,6 +116,10 @@ export const homes = [
   {
     name: ROUTES.USER_PROFILE_EDIT,
     screen: UserProfileEditScreen,
+  },
+  {
+    name: ROUTES.ACHIEVEMENT,
+    screen: AchievementScreen,
   },
 ];
 

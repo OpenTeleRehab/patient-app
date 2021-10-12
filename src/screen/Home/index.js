@@ -164,14 +164,15 @@ const Home = ({navigation}) => {
     <>
       <HeaderBar
         backgroundPrimary={true}
-        leftContent={{hasLogo: true}}
-        rightContent={{
-          icon: 'setting',
-          iconType: 'antdesign',
-          iconSize: 28,
-          label: '',
-          onPress: () => navigation.toggleDrawer(),
+        achievement={{
+          hasAchievement: kidTheme,
+          onGoAchievement: () => navigation.navigate(ROUTES.ACHIEVEMENT),
         }}
+        setting={{
+          hasSetting: true,
+          onGoSetting: () => navigation.toggleDrawer(),
+        }}
+        leftContent={{hasLogo: true}}
       />
       <View
         style={[
