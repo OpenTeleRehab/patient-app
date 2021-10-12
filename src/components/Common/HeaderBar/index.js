@@ -189,9 +189,7 @@ const HeaderBar = (props) => {
           }
           onPress={() => setting.onGoSetting()}
           type="clear"
-          titleStyle={
-            backgroundPrimary ? styles.textLight : styles.textPrimary
-          }
+          titleStyle={backgroundPrimary ? styles.textLight : styles.textPrimary}
           buttonStyle={styles.headerButton('', backgroundPrimary)}
         />
       );

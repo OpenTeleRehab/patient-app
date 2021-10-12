@@ -4,7 +4,7 @@
 import {callApi} from '../utils/request';
 
 const getAchievements = async (accessToken) => {
-  return await callApi('/patient/get-patient-achievements', accessToken);
+  return await callApi('/achievement/get-patient-achievements', accessToken);
 };
 
 export const Achievement = {
