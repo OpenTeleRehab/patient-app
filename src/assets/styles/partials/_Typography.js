@@ -12,6 +12,12 @@ export default {
   fontSizeMd: {
     fontSize: variables.fontSizeMd,
   },
+  fontSizeLg: {
+    fontSize: variables.fontSizeLg,
+  },
+  fontSizeXLg: {
+    fontSize: variables.fontSizeXLg,
+  },
   hyperlink: {
     color: variables.primary,
     textDecorationLine: 'underline',

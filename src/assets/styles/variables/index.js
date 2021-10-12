@@ -15,6 +15,9 @@ export default {
   get fontSizeLg() {
     return this.fontSizeBase + 4;
   },
+  get fontSizeXLg() {
+    return this.fontSizeBase + 8;
+  },
   spacingBase: 10,
   get spacingSm() {
     return this.spacingBase - 5;

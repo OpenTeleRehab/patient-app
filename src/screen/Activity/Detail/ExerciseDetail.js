@@ -23,6 +23,8 @@ const ExerciseDetail = ({theme, route, navigation}) => {
   const [activity, setActivity] = useState(undefined);
   const [tabIndex, setTabIndex] = useState(0);
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const [steps, setSteps] = useState(0);
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -112,7 +114,14 @@ const ExerciseDetail = ({theme, route, navigation}) => {
         />
       )}
       {tabIndex === 1 && (
-        <AssessmentForm activity={activity} navigation={navigation} />
+        <AssessmentForm
+          activity={activity}
+          navigation={navigation}
+          step={step}
+          setStep={setStep}
+          steps={steps}
+          setSteps={setSteps}
+        />
       )}
     </>
   );

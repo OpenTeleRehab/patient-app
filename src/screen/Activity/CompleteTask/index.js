@@ -16,6 +16,8 @@ const CompleteTask = ({route, navigation}) => {
   const {id, activityNumber} = route.params;
   const {treatmentPlan} = useSelector((state) => state.activity);
   const [activity, setActivity] = useState(undefined);
+  const [steps, setSteps] = useState(0);
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     if (id && treatmentPlan.activities.length) {
@@ -27,15 +29,30 @@ const CompleteTask = ({route, navigation}) => {
     }
   }, [id, treatmentPlan]);
 
+  const handleGoBack = () => {
+    if (step === 2) {
+      setStep(step - 1);
+    } else {
+      navigation.goBack();
+    }
+  };
+
   return (
     <>
       <HeaderBar
-        onGoBack={() => navigation.goBack()}
+        onGoBack={handleGoBack}
         title={translate('activity.complete_task_number', {
           number: activityNumber,
         })}
       />
-      <AssessmentForm activity={activity} navigation={navigation} />
+      <AssessmentForm
+        activity={activity}
+        navigation={navigation}
+        step={step}
+        setStep={setStep}
+        steps={steps}
+        setSteps={setSteps}
+      />
     </>
   );
 };

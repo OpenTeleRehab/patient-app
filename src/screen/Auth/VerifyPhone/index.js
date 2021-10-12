@@ -127,7 +127,7 @@ const VerifyPhone = ({navigation}) => {
         style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <Text style={styles.marginBottomMd}>
-            {translate('phone.verify_discription', {
+            {translate('phone.verify_description', {
               phone: formatPhoneNumber(dialCode, formattedNumber),
             })}
           </Text>

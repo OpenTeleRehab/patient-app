@@ -45,8 +45,16 @@ const HeaderBar = (props) => {
     if (onGoBack) {
       return (
         <Button
-          title="Back"
-          icon={<Icon type="feather" name="chevron-left" size={28} />}
+          icon={
+            <Icon
+              type="feather"
+              name="chevron-left"
+              size={28}
+              color={
+                backgroundPrimary ? theme.colors.white : theme.colors.black
+              }
+            />
+          }
           onPress={() => onGoBack()}
           type="clear"
           titleStyle={styles.headerTitle}
@@ -64,7 +72,7 @@ const HeaderBar = (props) => {
           <Text
             h4
             numberOfLines={1}
-            style={backgroundPrimary ? styles.textLight : theme.colors.black}>
+            style={backgroundPrimary ? styles.textLight : styles.textDefault}>
             {label}
           </Text>
         );
