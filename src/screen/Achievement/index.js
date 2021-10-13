@@ -1,21 +1,31 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderBar from '../../components/Common/HeaderBar';
-import {ScrollView, View} from 'react-native';
-import {Avatar, ListItem} from 'react-native-elements';
+import {Image, ScrollView, View} from 'react-native';
+import {
+  Avatar,
+  Button,
+  ListItem,
+  Text,
+  Icon,
+  Overlay,
+  withTheme,
+} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAchievementRequest} from '../../store/achievement/actions';
 import settings from '../../../config/settings';
 import {getTranslate} from 'react-localize-redux';
 import styles from '../../assets/styles';
 
-const Achievement = ({navigation}) => {
+const Achievement = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {achievements} = useSelector((state) => state.achievement);
+  const [achievement, setAchievement] = useState(null);
+  const [showAchievementOverlay, setShowAchievementOverlay] = useState(false);
 
   useEffect(() => {
     dispatch(getAchievementRequest());
@@ -33,13 +43,23 @@ const Achievement = ({navigation}) => {
     navigation.goBack();
   };
 
+  const handleOpenAchievement = (item) => {
+    setShowAchievementOverlay(true);
+    setAchievement(item);
+  };
+
+  const handleCloseAchievement = () => {
+    setShowAchievementOverlay(false);
+    setAchievement(null);
+  };
+
   return (
     <>
       <HeaderBar onGoBack={() => handleGoBack()} />
       <ScrollView style={styles.backgroundWhite}>
         {achievements.map((item, i) => (
           <View opacity={item.obtained ? 1.0 : 0.3} key={i}>
-            <ListItem onPress={() => console.warn('Badge details')}>
+            <ListItem onPress={() => handleOpenAchievement(item)}>
               <Avatar
                 source={{
                   uri: settings.apiBaseURL.replace('/api', '') + item.icon,
@@ -57,8 +77,63 @@ const Achievement = ({navigation}) => {
           </View>
         ))}
       </ScrollView>
+
+      {achievement && (
+        <Overlay
+          isVisible={showAchievementOverlay}
+          backdropStyle={styles.overlayBackdrop}
+          overlayStyle={styles.overlay}
+          onBackdropPress={handleCloseAchievement}>
+          <View style={styles.alignSelfCenter}>
+            <Image
+              source={{
+                uri: settings.apiBaseURL.replace('/api', '') + achievement.icon,
+              }}
+              style={styles.overlayBadge}
+            />
+          </View>
+
+          {!achievement.obtained && (
+            <Text style={[styles.marginTopMd, styles.textCenter]}>
+              {achievement.init_streak_number} / {achievement.max_streak_number}
+            </Text>
+          )}
+
+          <Text
+            style={[
+              styles.fontWeightBold,
+              styles.marginTopMd,
+              styles.marginBottomMd,
+              styles.textCenter,
+            ]}>
+            {translate(achievement.title)}
+          </Text>
+
+          <View style={[styles.textWithIcon, styles.alignSelfCenter]}>
+            <Text style={styles.marginRight}>
+              {translate(achievement.subtitle)}
+            </Text>
+            {achievement.obtained && (
+              <Icon
+                name="checkcircle"
+                type="antdesign"
+                color={theme.colors.lightgreen}
+              />
+            )}
+          </View>
+
+          <View style={[styles.marginTopLg, styles.alignSelfCenter]}>
+            <Button
+              raised={false}
+              title={translate('common.close')}
+              onPress={handleCloseAchievement}
+              buttonStyle={styles.btnStandard}
+            />
+          </View>
+        </Overlay>
+      )}
     </>
   );
 };
 
-export default Achievement;
+export default withTheme(Achievement);

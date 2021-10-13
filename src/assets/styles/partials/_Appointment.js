@@ -77,13 +77,6 @@ export default {
     flexDirection: 'column',
     alignItems: 'center',
   },
-  appointmentBackdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  appointmentOverlay: {
-    padding: 20,
-    width: '95%',
-  },
   appointmentOverlayButtonsWrapper: {
     display: 'flex',
     flexDirection: 'row',

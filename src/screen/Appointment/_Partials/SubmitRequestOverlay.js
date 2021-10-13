@@ -223,8 +223,8 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   return (
     <Overlay
       isVisible={true}
-      backdropStyle={styles.appointmentBackdrop}
-      overlayStyle={styles.appointmentOverlay}
+      backdropStyle={styles.overlayBackdrop}
+      overlayStyle={styles.overlay}
       onBackdropPress={handleCloseOverlay}>
       <View>
         <Text

@@ -39,6 +39,11 @@ export default {
   textCenter: {
     textAlign: 'center',
   },
+  textWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
   bgBlack: {
     backgroundColor: variables.dark,
   },
