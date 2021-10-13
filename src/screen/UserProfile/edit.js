@@ -296,6 +296,7 @@ const UserProfileEdit = ({navigation}) => {
             title={translate('common.save')}
             onPress={handleSave}
             containerStyle={styles.marginTopMd}
+            buttonStyle={styles.btnStandard}
             disabled={
               !netInfo.isConnected || _.isEqual(userInfo, originUserInfo)
             }

@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'react-native-elements';
 import {LocalizeProvider} from 'react-localize-redux';
 import {Provider} from 'react-redux';
@@ -52,7 +51,6 @@ const App: () => React$Node = () => {
         <LocalizeProvider store={store}>
           <AppProvider>
             <ThemeProvider theme={theme}>
-              <StatusBar barStyle="light-content" />
               <AppNavigation />
               <VideoCall />
             </ThemeProvider>

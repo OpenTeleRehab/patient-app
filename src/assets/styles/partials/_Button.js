@@ -43,6 +43,8 @@ export default {
     marginHorizontal: 5,
   },
   stickyButtonStyle: {
+    borderRadius: 8,
+    borderWidth: 1,
     height: 48,
   },
   stickyDisabledTitleStyle: {

@@ -268,14 +268,15 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           {activePaginationIndex < questionnaire.questions.length - 1 &&
             questionnaire.questions.length > 1 && (
               <Button
+                raised={false}
                 containerStyle={styles.stickyButtonContainer}
+                buttonStyle={styles.stickyButtonStyle}
                 icon={{
                   name: 'angle-right',
                   type: 'font-awesome',
                   color: theme.colors.primary,
                 }}
                 title={translate('activity.continue')}
-                titleStyle={styles.textUpperCase}
                 iconRight={true}
                 onPress={handleNext}
                 type="outline"
@@ -284,6 +285,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           {activePaginationIndex === questionnaire.questions.length - 1 && (
             <Button
               containerStyle={styles.stickyButtonContainer}
+              buttonStyle={styles.stickyButtonStyle}
               icon={{
                 name: 'angle-right',
                 type: 'font-awesome',
@@ -298,7 +300,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               title={translate(
                 questionnaire.completed ? 'common.submitted' : 'common.submit',
               )}
-              titleStyle={[styles.textUpperCase]}
               iconRight={true}
               onPress={handleCompleteTask}
               disabled={

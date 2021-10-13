@@ -76,8 +76,9 @@ const DrawerNavigator = ({navProps}) => {
       </DrawerContentScrollView>
       <View style={styles.navDrawerBottom}>
         <Button
+          raised={false}
           title={translate('common.logout')}
-          titleStyle={styles.textUpperCase}
+          buttonStyle={styles.btnStandard}
           onPress={() => handleLogout()}
         />
       </View>

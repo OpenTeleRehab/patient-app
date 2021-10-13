@@ -265,6 +265,7 @@ const Activity = ({theme, navigation}) => {
       />
       <View style={styles.backgroundWhite}>
         <Button
+          raised={false}
           type="outline"
           title={translate('common.today')}
           titleStyle={[styles.textPrimary, styles.paddingX]}

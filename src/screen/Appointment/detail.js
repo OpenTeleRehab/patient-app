@@ -113,6 +113,11 @@ const AppointmentDetail = ({route, navigation}) => {
     });
   };
 
+  const handleGoBack = () => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    navigation.navigate(ROUTES.APPOINTMENT);
+  };
+
   return (
     <>
       <HeaderBar
@@ -123,7 +128,7 @@ const AppointmentDetail = ({route, navigation}) => {
         }
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.APPOINTMENT),
+          onPress: () => handleGoBack(),
         }}
       />
       <ScrollView style={styles.mainContainerLight}>

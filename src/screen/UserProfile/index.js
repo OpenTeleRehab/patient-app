@@ -159,7 +159,7 @@ const UserProfile = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={true}
+        backgroundPrimary={false}
         onGoBack={() => navigation.navigate(ROUTES.HOME)}
         title={translate('preferences')}
         rightContent={{
@@ -189,13 +189,13 @@ const UserProfile = ({navigation}) => {
         <Button
           type="clear"
           title={translate('user.download_my_data')}
-          containerStyle={styles.marginTopMd}
+          containerStyle={[styles.marginTopMd, styles.btnStandard]}
           onPress={handleExport}
           disabled={!netInfo.isConnected}
         />
         <Button
           title={translate('user.delete')}
-          buttonStyle={styles.bgGrey}
+          buttonStyle={[styles.bgGrey, styles.btnStandard]}
           onPress={handleDelete}
           disabled={!netInfo.isConnected}
         />

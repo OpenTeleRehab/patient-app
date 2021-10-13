@@ -45,7 +45,7 @@ const HeaderBar = (props) => {
     if (onGoBack) {
       return (
         <Button
-          title="Back"
+          title=""
           icon={
             <Icon
               type="feather"
@@ -113,6 +113,7 @@ const HeaderBar = (props) => {
       const {icon, iconType, iconSize, label, onPress, disabled} = rightContent;
       return (
         <Button
+          raised={false}
           title={label}
           icon={
             icon
@@ -155,7 +156,7 @@ const HeaderBar = (props) => {
                 name="badge"
                 size={24}
                 color={
-                  backgroundPrimary ? theme.colors.white : theme.colors.primary
+                  backgroundPrimary ? theme.colors.white : theme.colors.black
                 }
               />
             }
@@ -171,7 +172,7 @@ const HeaderBar = (props) => {
                 name="settings"
                 size={24}
                 color={
-                  backgroundPrimary ? theme.colors.white : theme.colors.primary
+                  backgroundPrimary ? theme.colors.white : theme.colors.black
                 }
               />
             }
@@ -192,7 +193,7 @@ const HeaderBar = (props) => {
               name="settings"
               size={24}
               color={
-                backgroundPrimary ? theme.colors.white : theme.colors.primary
+                backgroundPrimary ? theme.colors.white : theme.colors.black
               }
             />
           }
@@ -212,7 +213,7 @@ const HeaderBar = (props) => {
               name="badge"
               size={24}
               color={
-                backgroundPrimary ? theme.colors.white : theme.colors.primary
+                backgroundPrimary ? theme.colors.white : theme.colors.black
               }
             />
           }
@@ -235,6 +236,8 @@ const HeaderBar = (props) => {
         <Text style={styles.offlineText}>{translate('common.offline')}</Text>
       )}
       <Header
+        statusBarProps={{barStyle: 'light-content'}}
+        barStyle="light-content"
         leftComponent={renderLeftComponent()}
         centerComponent={renderCenterComponent()}
         rightComponent={renderRightComponent()}

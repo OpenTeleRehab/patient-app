@@ -5,7 +5,7 @@ import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 import settings from '../../../../config/settings';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
-import quackerEducationMaterial from '../../../assets/images/quacker-education_material.png';
+import quackerEducationMaterial from '../../../assets/images/quacker-education-material.png';
 import {useSelector} from 'react-redux';
 
 const ImageCard = ({file, grayscale, kidTheme}) => {

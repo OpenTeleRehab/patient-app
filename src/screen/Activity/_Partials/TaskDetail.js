@@ -197,6 +197,7 @@ const TaskDetail = ({
       <Divider />
       <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
         <Button
+          raised={false}
           containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
           buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
           icon={
@@ -214,7 +215,6 @@ const TaskDetail = ({
               number: activityNumber,
             },
           )}
-          titleStyle={styles.textUpperCase}
           onPress={handleCompleteTask}
           disabled={
             isLoading ||
