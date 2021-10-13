@@ -131,7 +131,9 @@ const MaterialDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4 style={styles.textLight}>
+          <Text
+            numberOfLines={1}
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {material.title}
             {(!!material.completed || isCompletedOffline) && (
               <Icon
@@ -238,17 +240,15 @@ const MaterialDetail = ({theme, route, navigation}) => {
         <Divider />
         <View style={styles.stickyButtonWrapper}>
           <Button
-            containerStyle={styles.stickyButtonContainer}
-            icon={{
-              name: 'check',
-              type: 'font-awesome-5',
-              color:
-                !!material.completed ||
-                isCompletedOffline ||
-                moment().isBefore(material.date, 'day')
-                  ? theme.colors.grey1
-                  : theme.colors.white,
-            }}
+            containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
+            buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
+            icon={
+              (material.completed || isCompletedOffline) && {
+                name: 'check',
+                type: 'font-awesome-5',
+                color: theme.colors.grey1,
+              }
+            }
             title={translate(
               material.completed || isCompletedOffline
                 ? 'activity.completed_task_number'

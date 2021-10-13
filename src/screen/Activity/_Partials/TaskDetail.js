@@ -127,7 +127,7 @@ const TaskDetail = ({
 
   return (
     <>
-      <ScrollView style={styles.margin}>
+      <ScrollView style={styles.mainContainerLight}>
         {showMedia !== undefined && (
           <MediaView
             activity={activity}
@@ -163,22 +163,23 @@ const TaskDetail = ({
               style={styles.marginLeft}
             />
           </View>
-          {activity.sets > 0 && (
-            <Text>
+        </View>
+        {activity.sets > 0 && (
+          <View style={[styles.marginLeftSm, styles.marginBottomMd]}>
+            <Text style={styles.fontSize}>
               {translate('activity.number_of_sets_and_reps', {
                 sets: activity.sets,
                 reps: activity.reps,
               })}
             </Text>
-          )}
-        </View>
-
+          </View>
+        )}
         {activity.additional_fields?.map((additionalField, index) => (
           <View key={index} style={styles.marginBottomMd}>
-            <Text h4 style={styles.underlineHeader}>
+            <Text style={[styles.fontSizeMd, styles.fontWeightBold]}>
               {additionalField.field}
             </Text>
-            <Text>{additionalField.value}</Text>
+            <Text style={styles.marginTop}>{additionalField.value}</Text>
           </View>
         ))}
 
@@ -194,21 +195,17 @@ const TaskDetail = ({
       </ScrollView>
 
       <Divider />
-      <View style={styles.stickyButtonWrapper}>
+      <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
         <Button
-          containerStyle={styles.stickyButtonContainer}
-          buttonStyle={styles.stickyButtonStyle}
-          icon={{
-            name: 'check',
-            type: 'font-awesome-5',
-            color:
-              isLoading ||
-              !!activity.completed ||
-              isCompletedOffline ||
-              moment().isBefore(activity.date, 'day')
-                ? theme.colors.grey1
-                : theme.colors.white,
-          }}
+          containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
+          buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
+          icon={
+            (activity.completed || isCompletedOffline) && {
+              name: 'check',
+              type: 'font-awesome-5',
+              color: theme.colors.grey1,
+            }
+          }
           title={translate(
             activity.completed || isCompletedOffline
               ? 'activity.completed_task_number'

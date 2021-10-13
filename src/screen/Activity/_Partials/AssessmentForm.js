@@ -439,7 +439,7 @@ const AssessmentForm = ({
       {steps > 1 && step === 1 && (
         <>
           <Divider />
-          <View style={styles.stickyButtonWrapper}>
+          <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
             <Button
               containerStyle={styles.stickyButtonContainer}
               title={translate('common.next')}
@@ -453,7 +453,7 @@ const AssessmentForm = ({
       {steps > 1 && step === 2 ? (
         <>
           <Divider />
-          <View style={styles.stickyButtonWrapper}>
+          <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
             <Button
               containerStyle={styles.stickyButtonContainer}
               title={
@@ -477,7 +477,7 @@ const AssessmentForm = ({
         steps === 1 && (
           <>
             <Divider />
-            <View style={styles.stickyButtonWrapper}>
+            <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
               <Button
                 containerStyle={styles.stickyButtonContainer}
                 title={translate('common.submit')}

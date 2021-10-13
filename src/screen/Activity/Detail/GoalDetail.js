@@ -121,7 +121,9 @@ const GoalDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4 style={styles.textLight}>
+          <Text
+            numberOfLines={1}
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {goal && goal.title}
             {goal && (!!goal.completed || isCompletedOffline) && (
               <Icon
@@ -227,18 +229,16 @@ const GoalDetail = ({theme, route, navigation}) => {
       <Divider />
       <View style={styles.stickyButtonWrapper}>
         <Button
-          containerStyle={styles.stickyButtonContainer}
-          icon={{
-            name: 'check',
-            type: 'font-awesome-5',
-            color:
-              goal &&
-              (!!goal.completed ||
-                isCompletedOffline ||
-                moment().isBefore(goal.date, 'day'))
-                ? theme.colors.grey1
-                : theme.colors.white,
-          }}
+          containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
+          buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
+          icon={
+            goal &&
+            (goal.completed || isCompletedOffline) && {
+              name: 'check',
+              type: 'font-awesome-5',
+              color: theme.colors.grey1,
+            }
+          }
           title={translate(
             goal && (goal.completed || isCompletedOffline)
               ? 'activity.completed_task_number'
