@@ -378,14 +378,12 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           <View
             style={[styles.marginTop, styles.appointmentOverlayButtonsWrapper]}>
             <Button
-              raised={false}
               title={translate('common.cancel')}
               type="outline"
               containerStyle={styles.appointmentOverlayLeftButtonContainer}
               onPress={() => handleCloseOverlay()}
             />
             <Button
-              raised={false}
               title={translate('common.submit')}
               containerStyle={styles.appointmentOverlayRightButtonContainer}
               onPress={() => handleRequestAppoint()}

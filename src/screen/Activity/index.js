@@ -32,8 +32,8 @@ import {useNetInfo} from '@react-native-community/netinfo';
 const calendarHeaderStyle = {
   marginBottom: 10,
   marginLeft: 10,
-  fontWeight: '100',
   fontSize: 18,
+  fontFamily: 'Nunito-Light',
 };
 const calendarHeaderContainerStyle = {
   flexDirection: 'row',
@@ -265,10 +265,9 @@ const Activity = ({theme, navigation}) => {
       />
       <View style={styles.backgroundWhite}>
         <Button
-          raised={false}
           type="outline"
           title={translate('common.today')}
-          titleStyle={[styles.textPrimary, styles.paddingX]}
+          titleStyle={styles.textPrimary}
           buttonStyle={styles.headerButton(true)}
           containerStyle={styles.todayButton}
           onPress={handleTodayPress}

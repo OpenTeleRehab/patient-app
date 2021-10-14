@@ -240,7 +240,6 @@ const MaterialDetail = ({theme, route, navigation}) => {
         <Divider />
         <View style={styles.stickyButtonWrapper}>
           <Button
-            raised={false}
             containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
             buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
             icon={

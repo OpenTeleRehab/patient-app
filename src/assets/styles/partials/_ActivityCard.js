@@ -25,10 +25,10 @@ export default {
     backgroundColor: variables.primary,
   },
   activityCardFooterText: {
-    paddingTop: 3,
-    fontWeight: 'bold',
-    fontSize: variables.fontSizeBase,
     color: variables.white,
+    fontSize: variables.fontSizeBase,
+    fontFamily: variables.fontFamilyBold,
+    paddingTop: 3,
   },
   activityCardText: {
     margin: 10,
@@ -91,8 +91,8 @@ export default {
     justifyContent: 'center',
   },
   cardWithIconHeaderTitle: {
-    fontWeight: 'bold',
     fontSize: variables.fontSizeMd,
+    fontFamily: variables.fontFamilyBold,
   },
   educationMaterialDownloadWrapper: {
     padding: variables.spacingMd,

@@ -268,7 +268,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           {activePaginationIndex < questionnaire.questions.length - 1 &&
             questionnaire.questions.length > 1 && (
               <Button
-                raised={false}
                 containerStyle={styles.stickyButtonContainer}
                 buttonStyle={styles.stickyButtonStyle}
                 icon={{

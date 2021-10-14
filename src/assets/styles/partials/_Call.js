@@ -48,7 +48,7 @@ export default {
   },
   callActionLabel: {
     fontSize: variables.fontSizeMd,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   videoMeetingWrapper: {
     flex: 1,

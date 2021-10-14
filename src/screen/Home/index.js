@@ -232,12 +232,11 @@ const Home = ({navigation}) => {
               })}
             </Text>
             <Button
-              raised={false}
               title={translate('common.start')}
-              titleStyle={styles.textPrimary}
+              titleStyle={[styles.textPrimary, styles.fontWeightBold]}
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}
               containerStyle={[styles.marginTopMd]}
-              buttonStyle={[styles.bgLight, styles.btnStandard]}
+              buttonStyle={styles.bgLight}
             />
           </>
         ) : (

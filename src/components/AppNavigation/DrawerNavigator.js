@@ -64,6 +64,7 @@ const DrawerNavigator = ({navProps}) => {
                 key={index}
                 focused={state.routeNames[state.index] === route.name}
                 label={translate(route.label)}
+                labelStyle={styles.textDefault}
                 onPress={() => handleNavigate(route)}
                 icon={({focused, size, color}) => (
                   <FIcon name={route.icon} color={color} size={size} />
@@ -76,7 +77,6 @@ const DrawerNavigator = ({navProps}) => {
       </DrawerContentScrollView>
       <View style={styles.navDrawerBottom}>
         <Button
-          raised={false}
           title={translate('common.logout')}
           buttonStyle={styles.btnStandard}
           onPress={() => handleLogout()}

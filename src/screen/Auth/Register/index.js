@@ -146,7 +146,7 @@ const Register = ({theme, navigation}) => {
         keyboardShouldPersistTaps="handled"
         style={[styles.mainContainerLight, contentContainer]}>
         <View style={styles.paddingMd}>
-          <Text style={[styles.marginBottomMd]}>
+          <Text style={styles.marginBottomMd}>
             {translate('register.intro_text')}
           </Text>
           <View>

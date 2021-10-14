@@ -130,11 +130,9 @@ const Login = ({navigation}) => {
               onFulfill={(passCode) => handleLogin(passCode)}
             />
             <TouchableOpacity
-              style={styles.marginTop}
+              style={[styles.marginTop, styles.flexCenter]}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={[styles.hyperlink, styles.textCenter]}>
-                {translate('pin.forget')}
-              </Text>
+              <Text style={styles.hyperlink}>{translate('pin.forget')}</Text>
             </TouchableOpacity>
             <Text
               style={[

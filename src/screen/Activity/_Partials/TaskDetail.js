@@ -157,7 +157,7 @@ const TaskDetail = ({
         </View>
         <View style={[styles.flexCenter, styles.marginY]}>
           <View style={[styles.marginXMd, styles.flexRow]}>
-            <Text h4>{activity.title}</Text>
+            <Text style={styles.headerLeftTitleDark}>{activity.title}</Text>
             <TTSButton
               textsToSpeech={getTextsToSpeech()}
               style={styles.marginLeft}
@@ -165,8 +165,8 @@ const TaskDetail = ({
           </View>
         </View>
         {activity.sets > 0 && (
-          <View style={[styles.marginLeftSm, styles.marginBottomMd]}>
-            <Text style={styles.fontSize}>
+          <View style={styles.marginBottomMd}>
+            <Text>
               {translate('activity.number_of_sets_and_reps', {
                 sets: activity.sets,
                 reps: activity.reps,
@@ -197,7 +197,6 @@ const TaskDetail = ({
       <Divider />
       <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
         <Button
-          raised={false}
           containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
           buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
           icon={

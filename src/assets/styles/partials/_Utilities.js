@@ -6,6 +6,7 @@ import variables from '../variables';
 export default {
   textDefault: {
     color: variables.black,
+    fontFamily: variables.fontFamilyBase,
   },
   textPrimary: {
     color: variables.primary,
@@ -24,11 +25,11 @@ export default {
   },
   textDefaultBold: {
     color: variables.black,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   textLightBold: {
     color: variables.white,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   textUpperCase: {
     textTransform: 'uppercase',

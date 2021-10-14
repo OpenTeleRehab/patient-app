@@ -7,7 +7,7 @@ export default {
   leadText: {
     color: 'white',
     fontSize: variables.fontSizeMd,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   fontSizeMd: {
     fontSize: variables.fontSizeMd,
@@ -27,7 +27,7 @@ export default {
     fontSize: 72,
   },
   fontWeightBold: {
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   underlineHeader: {
     color: variables.primary,

@@ -9,6 +9,7 @@ export default {
     borderTopColor: variables.grey8,
   },
   navTabLabel: {
+    fontFamily: variables.fontFamilyBase,
     fontSize: 12,
   },
   navTabBadge: {

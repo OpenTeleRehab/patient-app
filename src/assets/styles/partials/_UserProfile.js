@@ -8,9 +8,9 @@ export default {
     backgroundColor: variables.grey6,
   },
   listStyle: {
-    fontSize: variables.fontSizeMd,
-    fontWeight: '500',
     color: variables.black,
+    fontSize: variables.fontSizeMd,
+    fontFamily: variables.fontFamilyBold,
   },
   listHeight: {
     height: 50,

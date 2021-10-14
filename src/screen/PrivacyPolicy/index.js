@@ -21,7 +21,7 @@ const containerStyle = {
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontWeight: 'bold',
+  fontFamily: 'Nunito-Bold',
 };
 const olStyle = {
   fontSize: 15,

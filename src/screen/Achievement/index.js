@@ -124,10 +124,8 @@ const Achievement = ({theme, navigation}) => {
 
           <View style={[styles.marginTopLg, styles.alignSelfCenter]}>
             <Button
-              raised={false}
               title={translate('common.close')}
               onPress={handleCloseAchievement}
-              buttonStyle={styles.btnStandard}
             />
           </View>
         </Overlay>

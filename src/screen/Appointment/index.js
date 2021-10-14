@@ -109,8 +109,6 @@ const Appointment = ({navigation}) => {
       <View style={styles.mainContainerLight}>
         <Button
           title={translate('appointment.request_new_appointment')}
-          buttonStyle={styles.requestAppointmentButton}
-          titleStyle={styles.marginLeftSm}
           disabled={!netInfo.isConnected}
           onPress={handleRequestAppointment}
         />

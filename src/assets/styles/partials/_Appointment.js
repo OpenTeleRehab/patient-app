@@ -23,13 +23,13 @@ export default {
   appointmentListMonth: {
     color: variables.white,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
     textTransform: 'uppercase',
   },
   appointmentListDay: {
     color: variables.white,
     fontSize: 36,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   appointmentListRightContent: {
     flexDirection: 'column',
@@ -66,8 +66,8 @@ export default {
   },
   appointmentActionButtonText: {
     color: variables.white,
+    fontFamily: variables.fontFamilyBold,
     paddingHorizontal: 10,
-    fontWeight: 'bold',
   },
   appointmentShowMoreButtonWrapper: {
     marginBottom: 40,
@@ -97,9 +97,5 @@ export default {
   },
   appointmentStatusAdditionalSpace: {
     paddingBottom: 15,
-  },
-  requestAppointmentButton: {
-    borderRadius: 8,
-    height: 48,
   },
 };

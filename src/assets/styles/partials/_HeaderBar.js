@@ -20,13 +20,29 @@ export default {
   },
   headerButton: (hasLabel, backgroundPrimary) => ({
     paddingVertical: hasLabel ? variables.spacingSm : 0,
-    paddingHorizontal: hasLabel ? variables.spacing : 0,
+    paddingHorizontal: hasLabel ? variables.spacingMd : 0,
     borderRadius: 8,
     backgroundColor: backgroundPrimary ? variables.primary : variables.white,
     borderColor: backgroundPrimary ? variables.white : variables.primary,
     borderWidth: 1,
   }),
-  headerTitle: {
+  headerLeftTitleLight: {
+    color: variables.white,
+    fontSize: 24,
+    fontFamily: variables.fontFamilyBold,
+  },
+  headerLeftTitleDark: {
+    color: variables.dark,
+    fontSize: 24,
+    fontFamily: variables.fontFamilyBold,
+  },
+  headerCenterTitleLight: {
+    color: variables.white,
+    fontSize: 18,
+    marginLeft: variables.spacingSm,
+  },
+  headerCenterTitleDark: {
+    color: variables.dark,
     fontSize: 18,
     marginLeft: variables.spacingSm,
   },

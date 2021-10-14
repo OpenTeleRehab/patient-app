@@ -74,9 +74,12 @@ const HeaderBar = (props) => {
       if (label) {
         return (
           <Text
-            h4
             numberOfLines={1}
-            style={backgroundPrimary ? styles.textLight : styles.textDefault}>
+            style={
+              backgroundPrimary
+                ? styles.headerLeftTitleLight
+                : styles.headerLeftTitleDark
+            }>
             {label}
           </Text>
         );
@@ -94,14 +97,11 @@ const HeaderBar = (props) => {
     if (title) {
       return (
         <Text
-          style={[
-            styles.headerTitle,
-            {
-              color: backgroundPrimary
-                ? theme.colors.white
-                : theme.colors.black,
-            },
-          ]}>
+          style={
+            backgroundPrimary
+              ? styles.headerCenterTitleLight
+              : styles.headerCenterTitleDark
+          }>
           {title}
         </Text>
       );
@@ -113,7 +113,6 @@ const HeaderBar = (props) => {
       const {icon, iconType, iconSize, label, onPress, disabled} = rightContent;
       return (
         <Button
-          raised={false}
           title={label}
           icon={
             icon
@@ -130,10 +129,7 @@ const HeaderBar = (props) => {
               : null
           }
           type={label ? 'outline' : 'clear'}
-          titleStyle={[
-            backgroundPrimary ? styles.textLight : styles.textPrimary,
-            styles.paddingX,
-          ]}
+          titleStyle={backgroundPrimary ? styles.textLight : styles.textPrimary}
           buttonStyle={styles.headerButton(label, backgroundPrimary)}
           onPress={onPress}
           disabled={disabled}

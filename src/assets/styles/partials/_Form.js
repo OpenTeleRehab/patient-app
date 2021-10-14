@@ -10,7 +10,6 @@ export default {
   formLabel: {
     color: variables.black,
     fontSize: variables.fontSizeBase,
-    fontWeight: '500',
     marginBottom: variables.spacingBase,
   },
   formControl: {
