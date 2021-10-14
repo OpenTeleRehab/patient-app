@@ -46,7 +46,7 @@ const Register = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const isLoading = useSelector((state) => state.user.isLoading);
+  const {isLoading, profile} = useSelector((state) => state.user);
   const {definedCountries, userCountryCode} = useSelector(
     (state) => state.country,
   );
@@ -138,10 +138,19 @@ const Register = ({theme, navigation}) => {
 
   return (
     <SafeAreaView style={styles.bgPrimary}>
-      <HeaderBar
-        backgroundPrimary={true}
-        title={translate('common.register')}
-      />
+      {!_.isEmpty(profile) ? (
+        <HeaderBar
+          backgroundPrimary={true}
+          onGoBack={() => navigation.goBack()}
+          title={translate('common.register')}
+        />
+      ) : (
+        <HeaderBar
+          backgroundPrimary={true}
+          title={translate('common.register')}
+        />
+      )}
+
       <ScrollView
         keyboardShouldPersistTaps="handled"
         style={[styles.mainContainerLight, contentContainer]}>
