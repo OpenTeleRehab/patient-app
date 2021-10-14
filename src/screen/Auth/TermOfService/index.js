@@ -89,7 +89,6 @@ const TermOfService = ({theme, navigation}) => {
             disabled={!acceptAgreement || !acceptPrivacyPolicy || isLoading}
             onPress={() => onSubmit()}
             containerStyle={styles.marginTop}
-            titleStyle={styles.textUpperCase}
           />
           <Button
             title={translate('common.back')}
@@ -98,7 +97,6 @@ const TermOfService = ({theme, navigation}) => {
               navigation.navigate(profile.id ? ROUTES.LOGIN : ROUTES.REGISTER)
             }
             containerStyle={styles.marginTop}
-            titleStyle={styles.textUpperCase}
           />
         </View>
       </ScrollView>

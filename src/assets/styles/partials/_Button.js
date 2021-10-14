@@ -26,7 +26,6 @@ export default {
     ...btnLightOutlineStyles,
     borderRadius: 50,
   },
-  btnStandard: {},
   stickyButtonWrapper: {
     display: 'flex',
     flexDirection: 'row',

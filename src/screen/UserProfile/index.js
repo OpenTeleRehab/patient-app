@@ -189,13 +189,13 @@ const UserProfile = ({navigation}) => {
         <Button
           type="clear"
           title={translate('user.download_my_data')}
-          containerStyle={[styles.marginTopMd, styles.btnStandard]}
+          containerStyle={styles.marginTopMd}
           onPress={handleExport}
           disabled={!netInfo.isConnected}
         />
         <Button
           title={translate('user.delete')}
-          buttonStyle={[styles.bgGrey, styles.btnStandard]}
+          buttonStyle={styles.bgGrey}
           onPress={handleDelete}
           disabled={!netInfo.isConnected}
         />

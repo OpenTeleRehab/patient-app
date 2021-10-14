@@ -250,7 +250,6 @@ const GoalDetail = ({theme, route, navigation}) => {
               number: activityNumber,
             },
           )}
-          titleStyle={styles.textUpperCase}
           onPress={handleSubmit}
           disabled={
             goal &&

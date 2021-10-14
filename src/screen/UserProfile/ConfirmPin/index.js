@@ -101,7 +101,6 @@ const ConfirmPin = ({navigation}) => {
         <View style={[styles.paddingMd, customStyles.marginTopXXL]}>
           <Button
             title={translate('common.confirm')}
-            titleStyle={styles.textUpperCase}
             disabled={disabledConfirm()}
             onPress={() => handleConfirm()}
           />

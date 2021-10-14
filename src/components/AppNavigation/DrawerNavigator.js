@@ -78,7 +78,6 @@ const DrawerNavigator = ({navProps}) => {
       <View style={styles.navDrawerBottom}>
         <Button
           title={translate('common.logout')}
-          buttonStyle={styles.btnStandard}
           onPress={() => handleLogout()}
         />
       </View>

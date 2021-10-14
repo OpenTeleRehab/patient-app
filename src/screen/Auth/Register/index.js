@@ -232,7 +232,6 @@ const Register = ({theme, navigation}) => {
             onPress={handleRegister}
             title={translate('common.next')}
             containerStyle={styles.marginTopLg}
-            titleStyle={styles.textUpperCase}
             disabled={isLoading || !phoneNumber}
           />
         </View>

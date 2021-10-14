@@ -443,7 +443,6 @@ const AssessmentForm = ({
             <Button
               containerStyle={styles.stickyButtonContainer}
               title={translate('common.next')}
-              titleStyle={styles.textUpperCase}
               onPress={handleNext}
               disabled={isLoading}
             />
@@ -461,7 +460,6 @@ const AssessmentForm = ({
                   ? translate('common.submit')
                   : translate('activity.previous')
               }
-              titleStyle={styles.textUpperCase}
               onPress={
                 !activity?.completed && !isCompletedOffline
                   ? handleSubmit

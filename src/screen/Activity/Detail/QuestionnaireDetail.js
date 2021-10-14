@@ -158,8 +158,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
         leftContent={
           <Text
             numberOfLines={1}
-            h4
-            style={[styles.textLight, styles.marginRight]}>
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {questionnaire.title}
             {!!questionnaire.completed && (
               <Icon
@@ -260,7 +259,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
                 color: theme.colors.primary,
               }}
               title={translate('activity.previous')}
-              titleStyle={styles.textUpperCase}
               onPress={handlePrevious}
               type="outline"
             />

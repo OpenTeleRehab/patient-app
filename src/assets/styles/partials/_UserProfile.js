@@ -13,6 +13,6 @@ export default {
     fontFamily: variables.fontFamilyBold,
   },
   listHeight: {
-    height: 50,
+    height: 48,
   },
 };
