@@ -308,6 +308,9 @@ const Activity = ({theme, navigation}) => {
                   number: activities.length,
                 })}
               </Text>
+              <Text style={styles.activityTotalNumberText}>
+                {translate('common.tasks_done')}
+              </Text>
             </View>
             <Pagination
               dotsLength={activities.length}

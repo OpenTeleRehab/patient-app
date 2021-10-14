@@ -269,7 +269,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
             questionnaire.questions.length > 1 && (
               <Button
                 containerStyle={styles.stickyButtonContainer}
-                buttonStyle={styles.stickyButtonStyle}
                 icon={{
                   name: 'angle-right',
                   type: 'font-awesome',
@@ -284,7 +283,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
           {activePaginationIndex === questionnaire.questions.length - 1 && (
             <Button
               containerStyle={styles.stickyButtonContainer}
-              buttonStyle={styles.stickyButtonStyle}
               icon={{
                 name: 'angle-right',
                 type: 'font-awesome',

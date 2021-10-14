@@ -31,10 +31,12 @@ import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 import TTSButton from '../../../components/TTSButton';
 import moment from 'moment';
+import quackerEducationMaterial from '../../../assets/images/quacker-education-material.png';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
+  const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const {id, activityNumber} = route.params;
   const {treatmentPlan, offlineActivities} = useSelector(
@@ -169,6 +171,12 @@ const MaterialDetail = ({theme, route, navigation}) => {
                   }}
                   style={styles.activityCardImage}
                 />
+              ) : profile.kid_theme ? (
+                <Card.Image
+                  source={quackerEducationMaterial}
+                  style={styles.activityCardImage}
+                  resizeMode={'cover'}
+                />
               ) : (
                 <>
                   <View style={styles.cardWithIconWrapper}>
@@ -200,12 +208,12 @@ const MaterialDetail = ({theme, route, navigation}) => {
           </Card>
           <View
             style={[
-              styles.marginY,
-              styles.marginXMd,
+              styles.paddingY,
+              styles.paddingXLg,
               styles.flexRow,
               styles.alignSelfCenter,
             ]}>
-            <Text h4>{material.title}</Text>
+            <Text style={styles.activityEntryTitle}>{material.title}</Text>
             <TTSButton
               textsToSpeech={[material.title]}
               style={styles.marginLeft}
@@ -240,15 +248,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
         <Divider />
         <View style={styles.stickyButtonWrapper}>
           <Button
-            containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
-            buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
-            icon={
-              (material.completed || isCompletedOffline) && {
-                name: 'check',
-                type: 'font-awesome-5',
-                color: theme.colors.grey1,
-              }
-            }
+            containerStyle={styles.stickyButtonContainer}
             title={translate(
               material.completed || isCompletedOffline
                 ? 'activity.completed_task_number'

@@ -102,4 +102,8 @@ export default {
   educationMaterialFileName: {
     maxWidth: '90%',
   },
+  activityEntryTitle: {
+    fontSize: 20,
+    fontFamily: variables.fontFamilyBold,
+  },
 };

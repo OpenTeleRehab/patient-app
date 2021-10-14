@@ -479,11 +479,7 @@ const AssessmentForm = ({
             <Divider />
             <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
               <Button
-                containerStyle={[
-                  styles.stickyButtonContainer,
-                  styles.borderRadius,
-                ]}
-                buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
+                containerStyle={styles.stickyButtonContainer}
                 title={translate('common.submit')}
                 onPress={handleSubmit}
                 disabled={isLoading}

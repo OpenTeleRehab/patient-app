@@ -197,8 +197,7 @@ const TaskDetail = ({
       <Divider />
       <View style={[styles.stickyButtonWrapper, styles.bgLight]}>
         <Button
-          containerStyle={[styles.stickyButtonContainer, styles.borderRadius]}
-          buttonStyle={[styles.stickyButtonStyle, styles.borderRadius]}
+          containerStyle={styles.stickyButtonContainer}
           icon={
             (activity.completed || isCompletedOffline) && {
               name: 'check',
