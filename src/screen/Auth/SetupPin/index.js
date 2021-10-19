@@ -3,7 +3,7 @@
  */
 import React, {useState} from 'react';
 import {ScrollView, View, Alert} from 'react-native';
-import {Text, Button} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles/index';
 import {ROUTES} from '../../../variables/constants';
@@ -26,11 +26,11 @@ const SetupPin = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isPINChanged = route.params?.isPINChanged || false;
-  const isLoading = useSelector((state) => state.user.isLoading);
+  const [errorCode, setErrorCode] = useState(false);
 
-  const handlerSave = async () => {
-    if (code && confirmCode) {
-      if (code === confirmCode) {
+  const handlerSave = async (passCode) => {
+    if (code && passCode) {
+      if (code === passCode) {
         let result;
         if (isPINChanged) {
           result = await dispatch(
@@ -80,6 +80,7 @@ const SetupPin = ({navigation, route}) => {
           ],
           {cancelable: false},
         );
+        setErrorCode(true);
       }
     }
   };
@@ -87,10 +88,6 @@ const SetupPin = ({navigation, route}) => {
   const handlerReset = () => {
     setCode('');
     setConfirmCode('');
-  };
-
-  const disabledConfirm = () => {
-    return code.length !== 4 || confirmCode.length !== 4 || isLoading;
   };
 
   const onCancelOrOnSucceed = () => {
@@ -105,6 +102,7 @@ const SetupPin = ({navigation, route}) => {
   return (
     <>
       <HeaderBar
+        backgroundPrimary={true}
         onGoBack={isPINChanged ? null : () => navigation.goBack()}
         title={translate('pin.setup.number')}
         rightContent={
@@ -122,9 +120,7 @@ const SetupPin = ({navigation, route}) => {
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View
             style={[styles.paddingY, styles.marginTopMd, styles.marginBottom]}>
-            <Text style={[styles.formLabel, styles.textCenter]}>
-              {translate('pin.setup.title')}
-            </Text>
+            <Text style={styles.formLabel}>{translate('pin.setup.title')}</Text>
           </View>
           <View>
             <Text style={styles.formLabel}>{translate('pin.new.number')}</Text>
@@ -136,8 +132,11 @@ const SetupPin = ({navigation, route}) => {
               textStyle={styles.formPinText}
               cellSpacing={10}
               containerStyle={styles.formPinContainer}
-              cellStyle={styles.formPinCell}
-              cellStyleFocused={styles.formPinCellFocused}
+              cellStyle={[
+                styles.formPinCell,
+                errorCode && styles.formPinCellError,
+              ]}
+              cellStyleFocused={!errorCode && styles.formPinCellFocused}
               cellStyleFilled={styles.formPinCellFilled}
               mask={<View style={styles.formPinCustomMask} />}
             />
@@ -156,20 +155,17 @@ const SetupPin = ({navigation, route}) => {
               animated={false}
               cellSpacing={10}
               containerStyle={styles.formPinContainer}
-              cellStyle={styles.formPinCell}
-              cellStyleFocused={styles.formPinCellFocused}
+              cellStyle={[
+                styles.formPinCell,
+                errorCode && styles.formPinCellError,
+              ]}
+              cellStyleFocused={!errorCode && styles.formPinCellFocused}
               cellStyleFilled={styles.formPinCellFilled}
               mask={<View style={styles.formPinCustomMask} />}
+              editable={code.length === 4}
+              onFulfill={(passCode) => handlerSave(passCode)}
             />
           </View>
-        </View>
-        <View style={[styles.paddingMd]}>
-          <Button
-            title={translate('common.confirm')}
-            titleStyle={styles.textUpperCase}
-            onPress={() => handlerSave()}
-            disabled={disabledConfirm()}
-          />
         </View>
       </ScrollView>
     </>

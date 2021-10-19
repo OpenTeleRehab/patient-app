@@ -35,9 +35,6 @@ export default {
     flex: 1,
     marginHorizontal: 5,
   },
-  stickyButtonStyle: {
-    height: 48,
-  },
   stickyDisabledTitleStyle: {
     color: variables.grey1,
   },

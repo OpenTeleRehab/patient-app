@@ -9,17 +9,21 @@ import {Dimensions, ScrollView, Text, View} from 'react-native';
 import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
 import _ from 'lodash';
+import {getTranslate} from 'react-localize-redux';
 
 const contentWidth = Dimensions.get('window').width;
 
 const containerStyle = {
   flexGrow: 1,
+  backgroundColor: 'white',
 };
+
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontWeight: 'bold',
+  fontFamily: 'Nunito-Bold',
 };
+
 const olStyle = {
   fontSize: 15,
 };
@@ -35,6 +39,8 @@ const contentStyle = {
 
 const TermCondition = ({navigation}) => {
   const dispatch = useDispatch();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const {termOfService} = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -43,7 +49,11 @@ const TermCondition = ({navigation}) => {
 
   return (
     <>
-      <HeaderBar onGoBack={() => navigation.goBack()} />
+      <HeaderBar
+        backgroundPrimary={false}
+        title={translate('menu.tc')}
+        onGoBack={() => navigation.goBack()}
+      />
       <ScrollView contentContainerStyle={containerStyle}>
         {!_.isEmpty(termOfService) && (
           <>

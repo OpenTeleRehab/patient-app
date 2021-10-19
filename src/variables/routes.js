@@ -21,6 +21,7 @@ import TermConditionScreen from '../screen/TermCondition';
 import PrivacyPolicyScreen from '../screen/PrivacyPolicy';
 import UserProfileScreen from '../screen/UserProfile';
 import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
+import AchievementScreen from '../screen/Achievement';
 
 // Activity group
 import ActivityScreen from '../screen/Activity';
@@ -37,6 +38,39 @@ import AppointmentDetailScreen from '../screen/Appointment/detail';
 // Message group
 import ChatRoomListScreen from '../screen/ChatOrCall/ChatRoomList';
 import ChatPanelScreen from '../screen/ChatOrCall/ChatPanel';
+
+const drawer = [
+  {
+    name: ROUTES.USER_PROFILE,
+    screen: UserProfileScreen,
+    label: 'menu.user.profile',
+    icon: 'user',
+  },
+  {
+    name: ROUTES.FAQ,
+    screen: FaqScreen,
+    label: 'menu.faq',
+    icon: 'help-circle',
+  },
+  {
+    name: ROUTES.TC,
+    screen: TermConditionScreen,
+    label: 'menu.tc',
+    icon: 'file-text',
+  },
+  {
+    name: ROUTES.PP,
+    screen: PrivacyPolicyScreen,
+    label: 'menu.pp',
+    icon: 'file-text',
+  },
+  {
+    name: ROUTES.ABOUT,
+    screen: AboutScreen,
+    label: 'menu.about.app',
+    icon: 'info',
+  },
+];
 
 export const auths = [
   {
@@ -75,36 +109,6 @@ export const homes = [
     screen: HomeScreen,
   },
   {
-    name: ROUTES.USER_PROFILE,
-    screen: UserProfileScreen,
-    label: 'menu.user.profile',
-    icon: 'user',
-  },
-  {
-    name: ROUTES.FAQ,
-    screen: FaqScreen,
-    label: 'menu.faq',
-    icon: 'help-circle',
-  },
-  {
-    name: ROUTES.TC,
-    screen: TermConditionScreen,
-    label: 'menu.tc',
-    icon: 'file-text',
-  },
-  {
-    name: ROUTES.PP,
-    screen: PrivacyPolicyScreen,
-    label: 'menu.pp',
-    icon: 'file-text',
-  },
-  {
-    name: ROUTES.ABOUT,
-    screen: AboutScreen,
-    label: 'menu.about.app',
-    icon: 'info',
-  },
-  {
     name: ROUTES.CONFIRM_PIN,
     screen: ConfirmPinScreen,
   },
@@ -116,6 +120,11 @@ export const homes = [
     name: ROUTES.USER_PROFILE_EDIT,
     screen: UserProfileEditScreen,
   },
+  {
+    name: ROUTES.ACHIEVEMENT,
+    screen: AchievementScreen,
+  },
+  ...drawer,
 ];
 
 export const activities = [

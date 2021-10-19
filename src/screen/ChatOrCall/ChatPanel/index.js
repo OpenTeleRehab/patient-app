@@ -222,7 +222,11 @@ const ChatPanel = ({navigation, theme}) => {
 
   return (
     <>
-      <HeaderBar onGoBack={() => handleGoBack()} title={selectedRoom.name} />
+      <HeaderBar
+        backgroundPrimary={true}
+        onGoBack={() => handleGoBack()}
+        title={selectedRoom.name}
+      />
       <Spinner
         visible={isLoading}
         textContent={translate('common.loading')}

@@ -90,6 +90,15 @@ const acceptPrivacyPolicy = async (id, accessToken) => {
   );
 };
 
+const enableKidTheme = async (accessToken, payload) => {
+  return await callApi(
+    '/auth/enable-kid-theme',
+    accessToken,
+    {kid_theme: payload},
+    'post',
+  );
+};
+
 export const User = {
   register,
   verifyPhoneNumber,
@@ -104,4 +113,5 @@ export const User = {
   acceptTermOfService,
   getPrivacyPolicy,
   acceptPrivacyPolicy,
+  enableKidTheme,
 };

@@ -2,29 +2,39 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {appointments} from '../../../variables/routes';
-import {ROUTES} from '../../../variables/constants';
+import {withTheme} from 'react-native-elements';
+import DrawerNavigator from '../DrawerNavigator';
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-const AppointmentTab = () => {
+const AppointmentTab = (props) => {
+  const renderDrawerContent = (navProps) => {
+    return <DrawerNavigator navProps={navProps} />;
+  };
+
   return (
-    <Stack.Navigator
-      headerMode="none"
-      initialRouteName={ROUTES.APPOINTMENT}
-      screenOptions={{gestureEnabled: false}}>
+    <Drawer.Navigator
+      drawerPosition="right"
+      edgeWidth={window.innerWidth}
+      drawerContent={(navProps) => renderDrawerContent(navProps)}
+      drawerContentOptions={{
+        inactiveTintColor: props.theme.colors.grey,
+        activeTintColor: props.theme.colors.primary,
+      }}
+      screenOptions={{swipeEnabled: false}}>
       {appointments.map((route, index) => {
         return (
-          <Stack.Screen
+          <Drawer.Screen
             key={index}
             name={route.name}
             component={route.screen}
           />
         );
       })}
-    </Stack.Navigator>
+    </Drawer.Navigator>
   );
 };
 
-export default AppointmentTab;
+export default withTheme(AppointmentTab);

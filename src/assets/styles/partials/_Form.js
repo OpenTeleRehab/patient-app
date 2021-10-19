@@ -10,7 +10,6 @@ export default {
   formLabel: {
     color: variables.black,
     fontSize: variables.fontSizeBase,
-    fontWeight: '500',
     marginBottom: variables.spacingBase,
   },
   formControl: {
@@ -63,5 +62,12 @@ export default {
   inputContainer: {
     height: 80,
     paddingLeft: 1,
+  },
+  formPinCellError: {
+    borderColor: variables.danger,
+  },
+  formPinTextError: {
+    fontSize: 24,
+    color: variables.danger,
   },
 };

@@ -3,12 +3,13 @@
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import styles from '../../assets/styles';
-import {Icon} from 'react-native-elements';
-import {Alert, Platform, TouchableOpacity} from 'react-native';
+import {Alert, Image, Platform, TouchableOpacity} from 'react-native';
 import Tts from 'react-native-tts';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {TTS} from '../../variables/constants';
+import ttsIcon from '../../assets/images/tts.svg';
+import {SvgUri} from 'react-native-svg';
 
 const TTSButton = ({textsToSpeech, style}) => {
   const localize = useSelector((state) => state.localize);
@@ -123,11 +124,9 @@ const TTSButton = ({textsToSpeech, style}) => {
 
   return (
     <TouchableOpacity style={style} onPress={handleReadTextToSpeech}>
-      <Icon
-        name={ttsStatus === 'started' ? 'text-to-speech' : 'text-to-speech-off'}
-        size={26}
-        style={styles.marginTopSm}
-        type="material-community"
+      <SvgUri
+        uri={Image.resolveAssetSource(ttsIcon).uri}
+        style={styles.marginTop}
       />
     </TouchableOpacity>
   );

@@ -238,6 +238,25 @@ const generateFakeAccessTokenSuccess = () => {
   };
 };
 
+const enableKidThemeRequest = () => {
+  return {
+    type: 'ENABLE_KID_THEME_REQUESTED',
+  };
+};
+
+const enableKidThemeSuccess = (data) => {
+  return {
+    type: 'ENABLE_KID_THEME_SUCCEED',
+    data,
+  };
+};
+
+const enableKidThemeFailure = () => {
+  return {
+    type: 'ENABLE_KID_THEME_FAILED',
+  };
+};
+
 export const mutation = {
   userRegisterRequest,
   userRegisterSuccess,
@@ -276,4 +295,7 @@ export const mutation = {
   acceptPrivacyPolicySuccess,
   acceptPrivacyPolicyFailure,
   acceptPrivacyPolicyRequest,
+  enableKidThemeRequest,
+  enableKidThemeSuccess,
+  enableKidThemeFailure,
 };

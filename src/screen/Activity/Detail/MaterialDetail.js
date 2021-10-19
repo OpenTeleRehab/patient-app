@@ -31,10 +31,12 @@ import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 import TTSButton from '../../../components/TTSButton';
 import moment from 'moment';
+import quackerEducationMaterial from '../../../assets/images/quacker-education-material.png';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
+  const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const {id, activityNumber} = route.params;
   const {treatmentPlan, offlineActivities} = useSelector(
@@ -131,7 +133,9 @@ const MaterialDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4 style={styles.textLight}>
+          <Text
+            numberOfLines={1}
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {material.title}
             {(!!material.completed || isCompletedOffline) && (
               <Icon
@@ -167,6 +171,12 @@ const MaterialDetail = ({theme, route, navigation}) => {
                   }}
                   style={styles.activityCardImage}
                 />
+              ) : profile.kid_theme ? (
+                <Card.Image
+                  source={quackerEducationMaterial}
+                  style={styles.activityCardImage}
+                  resizeMode={'cover'}
+                />
               ) : (
                 <>
                   <View style={styles.cardWithIconWrapper}>
@@ -198,12 +208,12 @@ const MaterialDetail = ({theme, route, navigation}) => {
           </Card>
           <View
             style={[
-              styles.marginY,
-              styles.marginXMd,
+              styles.paddingY,
+              styles.paddingXLg,
               styles.flexRow,
               styles.alignSelfCenter,
             ]}>
-            <Text h4>{material.title}</Text>
+            <Text style={styles.activityEntryTitle}>{material.title}</Text>
             <TTSButton
               textsToSpeech={[material.title]}
               style={styles.marginLeft}
@@ -239,16 +249,6 @@ const MaterialDetail = ({theme, route, navigation}) => {
         <View style={styles.stickyButtonWrapper}>
           <Button
             containerStyle={styles.stickyButtonContainer}
-            icon={{
-              name: 'check',
-              type: 'font-awesome-5',
-              color:
-                !!material.completed ||
-                isCompletedOffline ||
-                moment().isBefore(material.date, 'day')
-                  ? theme.colors.grey1
-                  : theme.colors.white,
-            }}
             title={translate(
               material.completed || isCompletedOffline
                 ? 'activity.completed_task_number'
@@ -257,7 +257,6 @@ const MaterialDetail = ({theme, route, navigation}) => {
                 number: activityNumber,
               },
             )}
-            titleStyle={styles.textUpperCase}
             onPress={handleCompleteTask}
             disabled={
               !!material.completed ||

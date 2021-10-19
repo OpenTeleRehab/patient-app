@@ -223,7 +223,8 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   return (
     <Overlay
       isVisible={true}
-      overlayStyle={styles.appointmentOverlayContainer}
+      backdropStyle={styles.overlayBackdrop}
+      overlayStyle={styles.overlay}
       onBackdropPress={handleCloseOverlay}>
       <View>
         <Text
@@ -377,18 +378,16 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           <View
             style={[styles.marginTop, styles.appointmentOverlayButtonsWrapper]}>
             <Button
-              title={translate('common.submit')}
-              titleStyle={[styles.textUpperCase]}
+              title={translate('common.cancel')}
+              type="outline"
               containerStyle={styles.appointmentOverlayLeftButtonContainer}
-              onPress={() => handleRequestAppoint()}
-              disabled={isLoading}
+              onPress={() => handleCloseOverlay()}
             />
             <Button
-              title={translate('common.cancel')}
-              titleStyle={[styles.textUpperCase]}
-              type="outline"
+              title={translate('common.submit')}
               containerStyle={styles.appointmentOverlayRightButtonContainer}
-              onPress={() => handleCloseOverlay()}
+              onPress={() => handleRequestAppoint()}
+              disabled={isLoading}
             />
           </View>
         </View>

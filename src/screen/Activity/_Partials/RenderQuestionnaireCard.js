@@ -5,10 +5,24 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
 import questionIcon from '../../../assets/images/questionnaire.png';
 import questionIconBlack from '../../../assets/images/questionnaire-black.png';
+import quackerQuestionnaire from '../../../assets/images/quacker-questionnaire.png';
+import {Grayscale} from 'react-native-color-matrix-image-filters';
+import {useSelector} from 'react-redux';
 
 const iconStyle = {
   height: 100,
   width: 100,
+};
+
+const ImageCard = ({file, grayscale}) => {
+  if (grayscale) {
+    return (
+      <Grayscale>
+        <ImageCard file={file} />
+      </Grayscale>
+    );
+  }
+  return <Card.Image source={file} style={styles.activityCardImage} />;
 };
 
 const RenderQuestionnaireCard = ({
@@ -20,6 +34,8 @@ const RenderQuestionnaireCard = ({
   offlineQuestionnaireAnswers,
 }) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const {profile} = useSelector((state) => state.user);
+  const [kidTheme, setKidTheme] = useState(false);
 
   useEffect(() => {
     if (item) {
@@ -34,6 +50,12 @@ const RenderQuestionnaireCard = ({
     }
   }, [item, offlineQuestionnaireAnswers]);
 
+  useEffect(() => {
+    if (profile) {
+      setKidTheme(!!profile.kid_theme);
+    }
+  }, [profile]);
+
   return (
     <TouchableOpacity
       key={index}
@@ -43,31 +65,38 @@ const RenderQuestionnaireCard = ({
         })
       }>
       <Card containerStyle={styles.activityCardContainer}>
-        <View
-          style={[
-            styles.cardWithIconHeader,
-            item.completed || isCompletedOffline
-              ? styles.bgGrey
-              : styles.bgBlueDark,
-          ]}>
-          <View style={styles.cardWithIconWrapper}>
-            {item.completed || isCompletedOffline ? (
-              <Image source={questionIconBlack} style={iconStyle} />
-            ) : (
-              <Image style={iconStyle} source={questionIcon} />
-            )}
-            <Text
-              style={[
-                styles.cardWithIconHeaderTitle,
-                item.completed || isCompletedOffline
-                  ? styles.textDefault
-                  : styles.textLight,
-              ]}
-              numberOfLines={1}>
-              {translate('activity.questionnaire')}
-            </Text>
+        {kidTheme ? (
+          <ImageCard
+            file={quackerQuestionnaire}
+            grayscale={item.completed || isCompletedOffline}
+          />
+        ) : (
+          <View
+            style={[
+              styles.cardWithIconHeader,
+              item.completed || isCompletedOffline
+                ? styles.bgGrey
+                : styles.bgBlueDark,
+            ]}>
+            <View style={styles.cardWithIconWrapper}>
+              {item.completed || isCompletedOffline ? (
+                <Image source={questionIconBlack} style={iconStyle} />
+              ) : (
+                <Image style={iconStyle} source={questionIcon} />
+              )}
+              <Text
+                style={[
+                  styles.cardWithIconHeaderTitle,
+                  item.completed || isCompletedOffline
+                    ? styles.textDefault
+                    : styles.textLight,
+                ]}
+                numberOfLines={1}>
+                {translate('activity.questionnaire')}
+              </Text>
+            </View>
           </View>
-        </View>
+        )}
         <View style={styles.activityCardInfoWrapper}>
           <Text
             style={[styles.activityCardTitle, styles.textDefaultBold]}

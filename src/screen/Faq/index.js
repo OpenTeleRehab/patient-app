@@ -11,6 +11,7 @@ import settings from '../../../config/settings';
 import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
 import _ from 'lodash';
+import {getTranslate} from 'react-localize-redux';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -21,6 +22,7 @@ const titleStyle = {
   left: 15,
   right: 15,
 };
+
 const imageStyle = {
   width: contentWidth,
   height: 300,
@@ -28,12 +30,15 @@ const imageStyle = {
 
 const containerStyle = {
   flexGrow: 1,
+  backgroundColor: 'white',
 };
+
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontWeight: 'bold',
+  fontFamily: 'Nunito-Bold',
 };
+
 const olStyle = {
   fontSize: 15,
 };
@@ -49,6 +54,8 @@ const contentStyle = {
 
 const Faq = ({navigation}) => {
   const dispatch = useDispatch();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const {faqPage} = useSelector((state) => state.staticPage);
   const {language} = useSelector((state) => state.translation);
   const uri = faqPage.file
@@ -60,7 +67,11 @@ const Faq = ({navigation}) => {
   }, [language, dispatch]);
   return (
     <>
-      <HeaderBar onGoBack={() => navigation.goBack()} />
+      <HeaderBar
+        backgroundPrimary={false}
+        title={translate('menu.faq')}
+        onGoBack={() => navigation.goBack()}
+      />
       <ScrollView contentContainerStyle={containerStyle}>
         {!_.isEmpty(faqPage) && (
           <>

@@ -22,6 +22,7 @@ const titleStyle = {
   left: 15,
   right: 15,
 };
+
 const imageStyle = {
   width: contentWidth,
   height: 300,
@@ -29,12 +30,15 @@ const imageStyle = {
 
 const containerStyle = {
   flexGrow: 1,
+  backgroundColor: 'white',
 };
+
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontWeight: 'bold',
+  fontFamily: 'Nunito-Bold',
 };
+
 const olStyle = {
   fontSize: 15,
 };
@@ -70,7 +74,11 @@ const About = ({navigation}) => {
   }, [language, dispatch]);
   return (
     <>
-      <HeaderBar onGoBack={() => navigation.goBack()} />
+      <HeaderBar
+        backgroundPrimary={false}
+        title={translate('menu.about.app')}
+        onGoBack={() => navigation.goBack()}
+      />
       <ScrollView contentContainerStyle={containerStyle}>
         {!_.isEmpty(aboutPage) && (
           <>

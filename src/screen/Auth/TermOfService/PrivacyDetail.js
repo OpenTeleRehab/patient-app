@@ -21,6 +21,7 @@ const TermOfServiceDetail = ({navigation}) => {
       <HeaderBar
         onGoBack={() => navigation.goBack()}
         title={translate('privacy.policy.detail')}
+        backgroundPrimary={true}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View>

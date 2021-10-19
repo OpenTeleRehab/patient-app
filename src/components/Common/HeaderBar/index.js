@@ -2,8 +2,8 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Image} from 'react-native';
-import {Header, Text, Button, withTheme} from 'react-native-elements';
+import {Image, View} from 'react-native';
+import {Header, Text, Button, Icon, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import {useSelector} from 'react-redux';
@@ -19,7 +19,16 @@ NetInfo.fetch().then((state) => {
 const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
-  const {theme, title, onGoBack, leftContent, rightContent} = props;
+  const {
+    theme,
+    title,
+    onGoBack,
+    leftContent,
+    rightContent,
+    backgroundPrimary,
+    setting,
+    achievement,
+  } = props;
   const {videoCall} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -36,15 +45,23 @@ const HeaderBar = (props) => {
     if (onGoBack) {
       return (
         <Button
-          title="Back"
-          icon={{
-            name: 'chevron-left',
-            type: 'font-awesome-5',
-            color: theme.colors.white,
-          }}
+          title=""
+          icon={
+            <Icon
+              type="feather"
+              name="chevron-left"
+              size={28}
+              color={
+                backgroundPrimary ? theme.colors.white : theme.colors.black
+              }
+            />
+          }
           onPress={() => onGoBack()}
           type="clear"
-          titleStyle={styles.headerTitle}
+          titleStyle={[
+            backgroundPrimary ? styles.textLight : styles.textDefault,
+            styles.paddingX,
+          ]}
           buttonStyle={styles.headerBackButton}
         />
       );
@@ -56,19 +73,38 @@ const HeaderBar = (props) => {
       }
       if (label) {
         return (
-          <Text h4 numberOfLines={1} style={styles.textLight}>
+          <Text
+            numberOfLines={1}
+            style={
+              backgroundPrimary
+                ? styles.headerLeftTitleLight
+                : styles.headerLeftTitleDark
+            }>
             {label}
           </Text>
         );
       }
       return leftContent;
     }
-    return <Text style={styles.textPrimary}>Empty</Text>;
+    return (
+      <Text style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
+        Empty
+      </Text>
+    );
   };
 
   const renderCenterComponent = () => {
     if (title) {
-      return <Text style={styles.headerTitle}>{title}</Text>;
+      return (
+        <Text
+          style={
+            backgroundPrimary
+              ? styles.headerCenterTitleLight
+              : styles.headerCenterTitleDark
+          }>
+          {title}
+        </Text>
+      );
     }
   };
 
@@ -83,20 +119,111 @@ const HeaderBar = (props) => {
               ? {
                   name: icon,
                   type: iconType,
-                  color: disabled ? theme.colors.disabled : theme.colors.white,
-                  size: iconSize || 20,
+                  color: disabled
+                    ? theme.colors.disabled
+                    : backgroundPrimary
+                    ? theme.colors.white
+                    : theme.colors.primary,
+                  size: iconSize || 15,
                 }
               : null
           }
           type={label ? 'outline' : 'clear'}
-          titleStyle={styles.textLight}
-          buttonStyle={styles.headerButton(label)}
+          titleStyle={backgroundPrimary ? styles.textLight : styles.textPrimary}
+          buttonStyle={styles.headerButton(label, backgroundPrimary)}
           onPress={onPress}
           disabled={disabled}
         />
       );
     }
-    return <Text style={styles.textPrimary}>Empty</Text>;
+    if (
+      setting &&
+      setting.hasSetting &&
+      achievement &&
+      achievement.hasAchievement
+    ) {
+      return (
+        <View style={[styles.flexRow, styles.flexCenter]}>
+          <Button
+            title=""
+            icon={
+              <Icon
+                type="simple-line-icon"
+                name="badge"
+                size={24}
+                color={
+                  backgroundPrimary ? theme.colors.white : theme.colors.black
+                }
+              />
+            }
+            onPress={() => achievement.onGoAchievement()}
+            type="clear"
+            buttonStyle={[styles.marginLeftLg, styles.noPadding]}
+          />
+          <Button
+            title=""
+            icon={
+              <Icon
+                type="simple-line-icon"
+                name="settings"
+                size={24}
+                color={
+                  backgroundPrimary ? theme.colors.white : theme.colors.black
+                }
+              />
+            }
+            onPress={() => setting.onGoSetting()}
+            type="clear"
+            buttonStyle={[styles.marginLeftLg, styles.noPadding]}
+          />
+        </View>
+      );
+    }
+    if (setting && setting.hasSetting) {
+      return (
+        <Button
+          title=""
+          icon={
+            <Icon
+              type="simple-line-icon"
+              name="settings"
+              size={24}
+              color={
+                backgroundPrimary ? theme.colors.white : theme.colors.black
+              }
+            />
+          }
+          onPress={() => setting.onGoSetting()}
+          type="clear"
+          buttonStyle={[styles.marginLeftLg, styles.noPadding]}
+        />
+      );
+    }
+    if (achievement && achievement.hasAchievement) {
+      return (
+        <Button
+          title=""
+          icon={
+            <Icon
+              type="simple-line-icon"
+              name="badge"
+              size={24}
+              color={
+                backgroundPrimary ? theme.colors.white : theme.colors.black
+              }
+            />
+          }
+          onPress={() => achievement.onGoAchievement()}
+          type="clear"
+          buttonStyle={[styles.marginLeftLg, styles.noPadding]}
+        />
+      );
+    }
+    return (
+      <Text style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
+        Empty
+      </Text>
+    );
   };
 
   return (
@@ -105,6 +232,8 @@ const HeaderBar = (props) => {
         <Text style={styles.offlineText}>{translate('common.offline')}</Text>
       )}
       <Header
+        statusBarProps={{barStyle: 'light-content'}}
+        barStyle="light-content"
         leftComponent={renderLeftComponent()}
         centerComponent={renderCenterComponent()}
         rightComponent={renderRightComponent()}
@@ -118,6 +247,7 @@ const HeaderBar = (props) => {
             ? styles.headerWorkAround
             : styles.noneBorderBottom,
           !isOnline && styles.headerWorkAround,
+          backgroundPrimary ? styles.backgroundPrimary : styles.backgroundWhite,
         ]}
       />
     </>

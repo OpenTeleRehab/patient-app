@@ -6,6 +6,9 @@ import colors from './colors';
 export default {
   ...colors,
   fontSizeBase: 16,
+  fontFamilyBase: 'Nunito-Regular',
+  fontFamilyLight: 'Nunito-Light',
+  fontFamilyBold: 'Nunito-Bold',
   get fontSizeSm() {
     return this.fontSizeBase - 2;
   },
@@ -14,6 +17,9 @@ export default {
   },
   get fontSizeLg() {
     return this.fontSizeBase + 4;
+  },
+  get fontSizeXLg() {
+    return this.fontSizeBase + 8;
   },
   spacingBase: 10,
   get spacingSm() {

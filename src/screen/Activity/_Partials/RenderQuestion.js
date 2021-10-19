@@ -91,7 +91,7 @@ const RenderQuestion = ({
       )}
       <View style={[styles.marginTopMd, styles.paddingXMd]}>
         <View style={[styles.flexRow, styles.marginBottom]}>
-          <Text h4 style={styles.flexRow}>
+          <Text style={[styles.activityEntryTitle, styles.flexRow]}>
             {question.title}
           </Text>
           <TTSButton

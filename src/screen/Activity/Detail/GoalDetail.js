@@ -27,6 +27,7 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import {useNetInfo} from '@react-native-community/netinfo';
 import GoalChart from '../_Partials/GoalChart';
 import moment from 'moment';
+import quackerGoal from '../../../assets/images/quacker-goal.png';
 
 const sliderThumbStyle = {
   width: 15,
@@ -37,6 +38,7 @@ const GoalDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {activity_id, activityNumber, day, week} = route.params;
+  const {profile} = useSelector((state) => state.user);
   const {treatmentPlan, offlineGoals} = useSelector((state) => state.activity);
   const [goal, setGoal] = useState(undefined);
   const [satisfactionLevel, setSatisfactionLevel] = useState(5);
@@ -121,7 +123,9 @@ const GoalDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4 style={styles.textLight}>
+          <Text
+            numberOfLines={1}
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {goal && goal.title}
             {goal && (!!goal.completed || isCompletedOffline) && (
               <Icon
@@ -150,37 +154,47 @@ const GoalDetail = ({theme, route, navigation}) => {
           {translate('activity.goal.detail.question')}
         </Text>
       </View>
-      <ScrollView style={styles.bgLight}>
+      <ScrollView>
         <Card containerStyle={styles.activityCardContainer}>
           <View
             style={[
               styles.cardWithIconHeader,
               {backgroundColor: theme.colors.blueLight4},
             ]}>
-            <View style={styles.cardWithIconWrapper}>
-              <Icon
-                name="bullseye-arrow"
-                color={theme.colors.blueDark}
-                size={100}
-                type="material-community"
+            {profile.kid_theme ? (
+              <Card.Image
+                source={quackerGoal}
+                style={styles.activityCardImage}
+                resizeMode={'cover'}
               />
-              <Text
-                style={[
-                  styles.cardWithIconHeaderTitle,
-                  {color: theme.colors.blueDark},
-                ]}
-                numberOfLines={1}>
-                {translate('activity.goal.satisfaction')}
-              </Text>
-            </View>
-            <Text
-              style={[
-                styles.marginLeft,
-                styles.marginY,
-                {color: theme.colors.blueDark},
-              ]}>
-              {goal ? translate('activity.goal.' + goal.frequency) : ''}
-            </Text>
+            ) : (
+              <>
+                <View style={styles.cardWithIconWrapper}>
+                  <Icon
+                    name="bullseye-arrow"
+                    color={theme.colors.blueDark}
+                    size={100}
+                    type="material-community"
+                  />
+                  <Text
+                    style={[
+                      styles.cardWithIconHeaderTitle,
+                      {color: theme.colors.blueDark},
+                    ]}
+                    numberOfLines={1}>
+                    {translate('activity.goal.satisfaction')}
+                  </Text>
+                </View>
+                <Text
+                  style={[
+                    styles.marginLeft,
+                    styles.marginY,
+                    {color: theme.colors.blueDark},
+                  ]}>
+                  {goal ? translate('activity.goal.' + goal.frequency) : ''}
+                </Text>
+              </>
+            )}
           </View>
         </Card>
 
@@ -228,17 +242,6 @@ const GoalDetail = ({theme, route, navigation}) => {
       <View style={styles.stickyButtonWrapper}>
         <Button
           containerStyle={styles.stickyButtonContainer}
-          icon={{
-            name: 'check',
-            type: 'font-awesome-5',
-            color:
-              goal &&
-              (!!goal.completed ||
-                isCompletedOffline ||
-                moment().isBefore(goal.date, 'day'))
-                ? theme.colors.grey1
-                : theme.colors.white,
-          }}
           title={translate(
             goal && (goal.completed || isCompletedOffline)
               ? 'activity.completed_task_number'
@@ -247,7 +250,6 @@ const GoalDetail = ({theme, route, navigation}) => {
               number: activityNumber,
             },
           )}
-          titleStyle={styles.textUpperCase}
           onPress={handleSubmit}
           disabled={
             goal &&

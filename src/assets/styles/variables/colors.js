@@ -22,12 +22,16 @@ export default {
   grey4: '#ADADAD',
   grey5: '#EBEBEB',
   grey6: '#E9EAF2',
+  grey7: '#F2F4F4',
+  grey8: '#CDD2D4',
+  grey9: '#E6E8EA',
   greyOutline: '#D6D6D6',
   primary: '#0077C8',
   success: '#00933B',
   warning: '#E35205',
   danger: '#E35205',
   disabled: '#EBEBEB',
+  lightgreen: '#26E16C',
   platform: {
     android: {
       primary: '#0077C8',

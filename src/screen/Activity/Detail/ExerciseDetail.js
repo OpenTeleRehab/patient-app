@@ -11,6 +11,7 @@ import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
 import TaskDetail from '../_Partials/TaskDetail';
 import AssessmentForm from '../_Partials/AssessmentForm';
+import {View} from 'react-native';
 
 const ExerciseDetail = ({theme, route, navigation}) => {
   const localize = useSelector((state) => state.localize);
@@ -23,6 +24,8 @@ const ExerciseDetail = ({theme, route, navigation}) => {
   const [activity, setActivity] = useState(undefined);
   const [tabIndex, setTabIndex] = useState(0);
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const [steps, setSteps] = useState(0);
+  const [step, setStep] = useState(1);
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -72,7 +75,9 @@ const ExerciseDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4 style={styles.textLight}>
+          <Text
+            numberOfLines={1}
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {activity.title}
             {(!!activity.completed || isCompletedOffline) && (
               <Icon
@@ -93,14 +98,16 @@ const ExerciseDetail = ({theme, route, navigation}) => {
 
       {(!!activity.completed || isCompletedOffline) &&
         (activity.include_feedback || activity.get_pain_level) && (
-          <ButtonGroup
-            onPress={(index) => setTabIndex(index)}
-            buttons={[
-              translate('activity.task_detail'),
-              translate('activity.results'),
-            ]}
-            selectedIndex={tabIndex}
-          />
+          <View style={styles.bgLight}>
+            <ButtonGroup
+              onPress={(index) => setTabIndex(index)}
+              buttons={[
+                translate('activity.task_detail'),
+                translate('activity.results'),
+              ]}
+              selectedIndex={tabIndex}
+            />
+          </View>
         )}
 
       {tabIndex === 0 && (
@@ -112,7 +119,14 @@ const ExerciseDetail = ({theme, route, navigation}) => {
         />
       )}
       {tabIndex === 1 && (
-        <AssessmentForm activity={activity} navigation={navigation} />
+        <AssessmentForm
+          activity={activity}
+          navigation={navigation}
+          step={step}
+          setStep={setStep}
+          steps={steps}
+          setSteps={setSteps}
+        />
       )}
     </>
   );

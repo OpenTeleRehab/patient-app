@@ -7,6 +7,7 @@ import {initialize, localizeReducer} from 'react-localize-redux';
 import {user} from './user/reducers';
 import {indicator} from './indicator/reducers';
 import {activity} from './activity/reducers';
+import {achievement} from './achievement/reducers';
 import {goal} from './goal/reducers';
 import {appointment} from './appointment/reducers';
 import {country} from './country/reducers';
@@ -27,6 +28,7 @@ const rootReducers = {
   user,
   indicator,
   activity,
+  achievement,
   goal,
   appointment,
   country,

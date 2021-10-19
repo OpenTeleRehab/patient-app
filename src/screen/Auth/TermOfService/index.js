@@ -53,7 +53,11 @@ const TermOfService = ({theme, navigation}) => {
 
   return (
     <>
-      <HeaderBar title={translate('term.of.service')} />
+      <HeaderBar
+        backgroundPrimary={true}
+        title={translate('term.of.service')}
+        onGoBack={() => navigation.goBack()}
+      />
       <ScrollView style={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <CheckBox
@@ -85,22 +89,14 @@ const TermOfService = ({theme, navigation}) => {
             disabled={!acceptAgreement || !acceptPrivacyPolicy || isLoading}
             onPress={() => onSubmit()}
             containerStyle={styles.marginTop}
-            titleStyle={styles.textUpperCase}
           />
           <Button
-            icon={{
-              name: 'chevron-left',
-              type: 'font-awesome-5',
-              color: theme.colors.primary,
-              size: 28,
-            }}
             title={translate('common.back')}
             type="clear"
             onPress={() =>
               navigation.navigate(profile.id ? ROUTES.LOGIN : ROUTES.REGISTER)
             }
             containerStyle={styles.marginTop}
-            titleStyle={styles.textUpperCase}
           />
         </View>
       </ScrollView>

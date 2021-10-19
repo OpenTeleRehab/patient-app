@@ -25,10 +25,10 @@ export default {
     backgroundColor: variables.primary,
   },
   activityCardFooterText: {
-    paddingTop: 3,
-    fontWeight: 'bold',
-    fontSize: variables.fontSizeBase,
     color: variables.white,
+    fontSize: variables.fontSizeBase,
+    fontFamily: variables.fontFamilyBold,
+    paddingTop: 3,
   },
   activityCardText: {
     margin: 10,
@@ -50,13 +50,16 @@ export default {
   activityPaginationView: {
     flex: 1,
     justifyContent: 'center',
+    marginLeft: 5,
   },
   activityPaginationIconContainer: {
     height: 20,
   },
   activityPaginationButton: {
-    height: 7,
+    height: 5,
     padding: 0,
+    backgroundColor: variables.lightgreen,
+    borderColor: variables.lightgreen,
   },
   activityPaginationContainer: {
     paddingTop: 5,
@@ -68,6 +71,7 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 17,
   },
   activityTotalNumberText: {
     fontSize: 18,
@@ -87,8 +91,8 @@ export default {
     justifyContent: 'center',
   },
   cardWithIconHeaderTitle: {
-    fontWeight: 'bold',
     fontSize: variables.fontSizeMd,
+    fontFamily: variables.fontFamilyBold,
   },
   educationMaterialDownloadWrapper: {
     padding: variables.spacingMd,
@@ -97,5 +101,9 @@ export default {
   },
   educationMaterialFileName: {
     maxWidth: '90%',
+  },
+  activityEntryTitle: {
+    fontSize: 20,
+    fontFamily: variables.fontFamilyBold,
   },
 };

@@ -20,6 +20,8 @@ import Call from './partials/_Call';
 import SplashScreen from './partials/_SplashScreen';
 import Appointment from './partials/_Appointment';
 import MediaPicker from './partials/_MediaPicker';
+import Modal from './partials/_Modal';
+import Overlay from './partials/_Overlay';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -39,6 +41,8 @@ const styles = StyleSheet.create({
   ...SplashScreen,
   ...Appointment,
   ...MediaPicker,
+  ...Modal,
+  ...Overlay,
 });
 
 export default styles;

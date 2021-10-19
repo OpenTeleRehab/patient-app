@@ -5,8 +5,10 @@ import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
 import settings from '../../../../config/settings';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
+import quackerEducationMaterial from '../../../assets/images/quacker-education-material.png';
+import {useSelector} from 'react-redux';
 
-const ImageCard = ({file, grayscale}) => {
+const ImageCard = ({file, grayscale, kidTheme}) => {
   if (grayscale) {
     return (
       <Grayscale>
@@ -16,7 +18,12 @@ const ImageCard = ({file, grayscale}) => {
   }
 
   const uri = `${settings.adminApiBaseURL}/file/${file.id}?thumbnail=${file.hasThumbnail}`;
-  return <Card.Image source={{uri}} style={styles.activityCardImage} />;
+  return (
+    <Card.Image
+      source={kidTheme ? file : {uri}}
+      style={styles.activityCardImage}
+    />
+  );
 };
 
 const RenderEducationMaterialCard = ({
@@ -28,6 +35,8 @@ const RenderEducationMaterialCard = ({
   offlineActivities,
 }) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
+  const {profile} = useSelector((state) => state.user);
+  const [kidTheme, setKidTheme] = useState(false);
 
   useEffect(() => {
     if (item) {
@@ -39,6 +48,12 @@ const RenderEducationMaterialCard = ({
       }
     }
   }, [item, offlineActivities]);
+
+  useEffect(() => {
+    if (profile) {
+      setKidTheme(!!profile.kid_theme);
+    }
+  }, [profile]);
 
   return (
     <TouchableOpacity
@@ -63,6 +78,12 @@ const RenderEducationMaterialCard = ({
             <ImageCard
               file={item.file}
               grayscale={item.completed || isCompletedOffline}
+            />
+          ) : kidTheme ? (
+            <ImageCard
+              file={quackerEducationMaterial}
+              grayscale={item.completed || isCompletedOffline}
+              kidTheme={kidTheme}
             />
           ) : (
             <>

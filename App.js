@@ -2,7 +2,6 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'react-native-elements';
 import {LocalizeProvider} from 'react-localize-redux';
 import {Provider} from 'react-redux';
@@ -13,10 +12,23 @@ import VideoCall from './src/components/VideoCall';
 import {PersistGate} from 'redux-persist/integration/react';
 import store, {persistor} from './src/store';
 
-const theme = {
+export const theme = {
   colors,
+  Text: {
+    style: {
+      fontFamily: 'Nunito-Regular',
+    },
+  },
   Button: {
-    raised: true,
+    raised: false,
+    titleStyle: {
+      fontSize: 18,
+      fontFamily: 'Nunito-Regular',
+    },
+    buttonStyle: {
+      borderRadius: 8,
+      paddingHorizontal: 30,
+    },
   },
   ButtonGroup: {
     containerStyle: {
@@ -52,7 +64,6 @@ const App: () => React$Node = () => {
         <LocalizeProvider store={store}>
           <AppProvider>
             <ThemeProvider theme={theme}>
-              <StatusBar barStyle="light-content" />
               <AppNavigation />
               <VideoCall />
             </ThemeProvider>

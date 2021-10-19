@@ -6,13 +6,14 @@ export default {
   },
   appointmentListContainer: {
     borderRadius: 10,
-    padding: 2,
+    padding: 1,
     borderColor: variables.white,
+    backgroundColor: variables.grey7,
   },
   appointmentListLeftContent: {
     backgroundColor: variables.primary,
     color: variables.white,
-    padding: 20,
+    padding: 30,
     alignItems: 'center',
     borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
@@ -22,18 +23,19 @@ export default {
   appointmentListMonth: {
     color: variables.white,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
     textTransform: 'uppercase',
   },
   appointmentListDay: {
     color: variables.white,
     fontSize: 36,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   appointmentListRightContent: {
     flexDirection: 'column',
     justifyContent: 'center',
     width: '100%',
+    paddingTop: 10,
     paddingRight: 30,
   },
   borderRadius: {
@@ -64,8 +66,8 @@ export default {
   },
   appointmentActionButtonText: {
     color: variables.white,
+    fontFamily: variables.fontFamilyBold,
     paddingHorizontal: 10,
-    fontWeight: 'bold',
   },
   appointmentShowMoreButtonWrapper: {
     marginBottom: 40,
@@ -74,9 +76,6 @@ export default {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  appointmentOverlayContainer: {
-    minWidth: '80%',
   },
   appointmentOverlayButtonsWrapper: {
     display: 'flex',
@@ -97,6 +96,6 @@ export default {
     justifyContent: 'space-between',
   },
   appointmentStatusAdditionalSpace: {
-    paddingBottom: 30,
+    paddingBottom: 15,
   },
 };

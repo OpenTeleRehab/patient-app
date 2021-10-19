@@ -6,6 +6,7 @@ import variables from '../variables';
 export default {
   textDefault: {
     color: variables.black,
+    fontFamily: variables.fontFamilyBase,
   },
   textPrimary: {
     color: variables.primary,
@@ -24,11 +25,11 @@ export default {
   },
   textDefaultBold: {
     color: variables.black,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   textLightBold: {
     color: variables.white,
-    fontWeight: 'bold',
+    fontFamily: variables.fontFamilyBold,
   },
   textUpperCase: {
     textTransform: 'uppercase',
@@ -38,6 +39,11 @@ export default {
   },
   textCenter: {
     textAlign: 'center',
+  },
+  textWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   bgBlack: {
     backgroundColor: variables.dark,
@@ -59,6 +65,9 @@ export default {
   },
   bgGrey: {
     backgroundColor: variables.grey,
+  },
+  bgGreyLight: {
+    backgroundColor: variables.grey9,
   },
   bgOrangeLight: {
     backgroundColor: variables.orangeLight,
@@ -123,11 +132,14 @@ export default {
   marginLeft: {
     marginLeft: variables.spacingBase,
   },
-  marginRight: {
-    marginRight: variables.spacingBase,
-  },
   marginLeftSm: {
     marginLeft: variables.spacingBase / 2,
+  },
+  marginLeftLg: {
+    marginLeft: variables.spacingLg,
+  },
+  marginRight: {
+    marginRight: variables.spacingBase,
   },
   marginRightSm: {
     marginRight: variables.spacingBase / 2,
