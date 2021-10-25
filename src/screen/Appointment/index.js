@@ -108,6 +108,7 @@ const Appointment = ({navigation}) => {
 
       <View style={styles.mainContainerLight}>
         <Button
+          style={styles.textDefault}
           title={translate('appointment.request_new_appointment')}
           disabled={!netInfo.isConnected}
           onPress={handleRequestAppointment}
@@ -128,8 +129,9 @@ const Appointment = ({navigation}) => {
               styles.alignSelfCenter,
               styles.textLightGrey,
               styles.fontWeightBold,
+              styles.textDefault,
             ]}>
-            {translate('appointment.no_appointment')}
+            {translate('appointment.no_appointment')} - 1
           </Text>
         )}
 

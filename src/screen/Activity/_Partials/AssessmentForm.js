@@ -173,7 +173,12 @@ const AssessmentForm = ({
                   <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
                     {translate('activity.pain_level.question')}
                   </Text>
-                  <Text style={[styles.paddingMd, styles.textCenter]}>
+                  <Text
+                    style={[
+                      styles.paddingMd,
+                      styles.textCenter,
+                      styles.textDefault,
+                    ]}>
                     {translate('activity.pain_level.description')}
                   </Text>
                 </View>
@@ -310,7 +315,12 @@ const AssessmentForm = ({
                   <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
                     {translate('activity.pain_level.question')}
                   </Text>
-                  <Text style={[styles.paddingMd, styles.textCenter]}>
+                  <Text
+                    style={[
+                      styles.paddingMd,
+                      styles.textCenter,
+                      styles.textDefault,
+                    ]}>
                     {translate('activity.pain_level.description')}
                   </Text>
                 </View>
@@ -331,6 +341,7 @@ const AssessmentForm = ({
                       styles.textCenter,
                       {left: left},
                       styles.fontSizeMd,
+                      styles.textDefault,
                     ]}>
                     {painLevel}
                   </Text>
