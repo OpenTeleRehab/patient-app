@@ -122,22 +122,6 @@ const GoalDetail = ({theme, route, navigation}) => {
   return (
     <>
       <HeaderBar
-        leftContent={
-          <Text
-            numberOfLines={1}
-            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
-            {goal && goal.title}
-            {goal && (!!goal.completed || isCompletedOffline) && (
-              <Icon
-                name="check"
-                type="font-awesome-5"
-                color={theme.colors.white}
-                size={18}
-                style={styles.marginLeft}
-              />
-            )}
-          </Text>
-        }
         rightContent={{
           label: translate('common.close'),
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),
