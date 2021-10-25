@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ButtonGroup, Icon, Text, withTheme} from 'react-native-elements';
+import {ButtonGroup, withTheme} from 'react-native-elements';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';

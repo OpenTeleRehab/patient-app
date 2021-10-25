@@ -30,7 +30,13 @@ import moment from 'moment';
 import quackerGoal from '../../../assets/images/quacker-goal.png';
 
 const sliderThumbStyle = {
-  width: 15,
+  width: 20,
+  height: 20,
+  borderRadius: 0,
+};
+
+const trackStyle = {
+  height: 1,
 };
 
 const GoalDetail = ({theme, route, navigation}) => {
@@ -189,36 +195,36 @@ const GoalDetail = ({theme, route, navigation}) => {
               {goal ? goal.title : ''}
             </Text>
           </View>
-          <View
-            style={[
-              styles.flexRow,
-              styles.justifyContentSpaceBetween,
-              styles.marginBottomMd,
-            ]}>
-            <View>
-              <Text h5 style={styles.textPrimary}>
-                {translate('activity.satisfaction_level.no_satisfaction')}
-              </Text>
-            </View>
-            <View>
-              <Text h5 style={styles.textPrimary}>
-                {translate('activity.satisfaction_level.extreme_satisfaction')}
-              </Text>
-            </View>
+          <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
+            <Text style={[styles.textCenter, styles.fontSizeMd]}>
+              {satisfactionLevel}
+            </Text>
           </View>
-          <Slider
-            value={satisfactionLevel}
-            onValueChange={(value) => setSatisfactionLevel(value)}
-            minimumValue={1}
-            maximumValue={10}
-            step={1}
-            thumbStyle={sliderThumbStyle}
-            disabled={goal && (!!goal.completed || isCompletedOffline)}
-            allowTouchTrack={
-              !(goal && (!!goal.completed || isCompletedOffline))
-            }
-          />
-          {goal && <GoalChart goal={goal} />}
+          <View>
+            <Slider
+              value={satisfactionLevel}
+              onValueChange={(value) => setSatisfactionLevel(value)}
+              minimumValue={0}
+              maximumValue={10}
+              step={1}
+              thumbStyle={[sliderThumbStyle, styles.bgPrimary]}
+              disabled={goal && (!!goal.completed || isCompletedOffline)}
+              allowTouchTrack={
+                !(goal && (!!goal.completed || isCompletedOffline))
+              }
+              trackStyle={[trackStyle]}
+            />
+            {goal && <GoalChart goal={goal} />}
+          </View>
+
+          <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
+            <Text>
+              {translate('activity.satisfaction_level.no_satisfaction')}
+            </Text>
+            <Text>
+              {translate('activity.satisfaction_level.extreme_satisfaction')}
+            </Text>
+          </View>
         </View>
       </ScrollView>
 
