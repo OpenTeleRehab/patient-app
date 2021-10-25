@@ -52,7 +52,7 @@ const AssessmentForm = ({
   const {offlineActivities} = useSelector((state) => state.activity);
 
   const {isLoading} = useSelector((state) => state.activity);
-  const [painLevel, setPainLevel] = useState(1);
+  const [painLevel, setPainLevel] = useState(0);
   const [numberOfSets, setNumberOfSets] = useState(0);
   const [numberOfReps, setNumberOfReps] = useState(0);
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
@@ -202,7 +202,7 @@ const AssessmentForm = ({
                   <Slider
                     value={painLevel}
                     onValueChange={(value) => setPainLevel(value)}
-                    minimumValue={1}
+                    minimumValue={0}
                     maximumValue={10}
                     step={1}
                     thumbStyle={[sliderThumbStyle, styles.bgPrimary]}
@@ -339,7 +339,7 @@ const AssessmentForm = ({
                   <Slider
                     value={painLevel}
                     onValueChange={(value) => setPainLevel(value)}
-                    minimumValue={1}
+                    minimumValue={0}
                     maximumValue={10}
                     step={1}
                     thumbStyle={[sliderThumbStyle, styles.bgPrimary]}
