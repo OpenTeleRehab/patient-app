@@ -191,12 +191,17 @@ const GoalDetail = ({theme, route, navigation}) => {
         <View
           style={[styles.marginTopLg, styles.paddingXMd, styles.marginBottom]}>
           <View style={[styles.marginBottomMd]}>
-            <Text h4 numberOfLines={3}>
+            <Text h4 numberOfLines={3} style={styles.textDefault}>
               {goal ? goal.title : ''}
             </Text>
           </View>
           <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-            <Text style={[styles.textCenter, styles.fontSizeMd]}>
+            <Text
+              style={[
+                styles.textCenter,
+                styles.fontSizeMd,
+                styles.textDefault,
+              ]}>
               {satisfactionLevel}
             </Text>
           </View>
