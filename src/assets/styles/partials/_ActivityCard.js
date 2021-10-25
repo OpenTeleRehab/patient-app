@@ -58,8 +58,8 @@ export default {
   activityPaginationButton: {
     height: 5,
     padding: 0,
-    backgroundColor: variables.lightgreen,
-    borderColor: variables.lightgreen,
+    backgroundColor: variables.primary,
+    borderColor: variables.primary,
   },
   activityPaginationContainer: {
     paddingTop: 5,

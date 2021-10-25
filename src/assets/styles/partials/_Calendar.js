@@ -27,5 +27,6 @@ export default {
     zIndex: 1,
     top: 5,
     right: 10,
+    fontFamily: variables.fontFamilyBase,
   },
 };

@@ -250,6 +250,7 @@ const Activity = ({theme, navigation}) => {
   return (
     <>
       <HeaderBar
+        style={styles.textDefault}
         leftContent={{
           label: _.isEmpty(treatmentPlan)
             ? translate('tab.activities')
