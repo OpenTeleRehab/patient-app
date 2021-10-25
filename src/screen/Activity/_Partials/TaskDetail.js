@@ -165,8 +165,8 @@ const TaskDetail = ({
           </View>
         </View>
         {activity.sets > 0 && (
-          <View style={styles.marginBottomMd}>
-            <Text>
+          <View style={[styles.flexCenter, styles.marginBottomMd]}>
+            <Text style={styles.fontSizeMd}>
               {translate('activity.number_of_sets_and_reps', {
                 sets: activity.sets,
                 reps: activity.reps,
