@@ -214,6 +214,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
                   styles.hyperlink,
                   styles.educationMaterialFileName,
                   netInfo.isConnected === false && {color: theme.colors.grey},
+                  styles.fontBase,
                 ]}>
                 {material.file.fileName}
               </Text>

@@ -144,4 +144,7 @@ export default {
   marginRightSm: {
     marginRight: variables.spacingBase / 2,
   },
+  fontBase: {
+    fontFamily: variables.fontFamilyBase,
+  },
 };

@@ -105,7 +105,11 @@ const RenderQuestion = ({
               return (
                 <CheckBox
                   containerStyle={containerStyle}
-                  title={answer.description}
+                  title={
+                    <Text style={styles.textDefaultBold}>
+                      {answer.description}
+                    </Text>
+                  }
                   checkedIcon="dot-circle-o"
                   uncheckedIcon="circle-o"
                   onPress={() => handleOnClickRadio(answer)}
@@ -127,7 +131,11 @@ const RenderQuestion = ({
               return (
                 <CheckBox
                   containerStyle={containerStyle}
-                  title={answer.description}
+                  title={
+                    <Text style={styles.textDefaultBold}>
+                      {answer.description}
+                    </Text>
+                  }
                   onPress={() => handleOnClickCheckbox(answer)}
                   key={answer.id}
                   checked={
@@ -143,6 +151,9 @@ const RenderQuestion = ({
         )}
         {question.type === 'open-number' && (
           <Input
+            style={[styles.textDefault]}
+            labelStyle={styles.textDefault}
+            placeholderStyle={styles.textDefault}
             keyboardType="phone-pad"
             placeholder={translate('activity.enter_your_answer')}
             value={patientAnswers[question.id] || ''}
@@ -153,6 +164,9 @@ const RenderQuestion = ({
         )}
         {question.type === 'open-text' && (
           <Input
+            style={[styles.textDefault]}
+            labelStyle={styles.textDefault}
+            placeholderStyle={styles.textDefault}
             placeholder={translate('activity.enter_your_answer')}
             value={patientAnswers[question.id] || ''}
             onChangeText={(value) => handleOnChange(value)}
