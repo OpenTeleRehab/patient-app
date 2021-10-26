@@ -215,15 +215,33 @@ const Activity = ({theme, navigation}) => {
     if (!_.isEmpty(treatmentPlan)) {
       let marks = [];
       _.uniqBy(treatmentPlan.activities, 'date').map((day) => {
-        marks.push({
-          date: moment(day.date),
-          dots: [
-            {
-              color: 'black',
-              selectedColor: 'white',
-            },
-          ],
-        });
+        let date = moment(day.date);
+        if (
+          date.isoWeekday() === 6 ||
+          date.isoWeekday() === 7 ||
+          date.format(settings.format.date) ===
+            moment().format(settings.format.date)
+        ) {
+          marks.push({
+            date: moment(day.date),
+            dots: [
+              {
+                color: 'white',
+                selectedColor: 'white',
+              },
+            ],
+          });
+        } else {
+          marks.push({
+            date: moment(day.date),
+            dots: [
+              {
+                color: 'black',
+                selectedColor: 'white',
+              },
+            ],
+          });
+        }
       });
       setMarkDates(marks);
     }
