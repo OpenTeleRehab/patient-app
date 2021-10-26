@@ -3,7 +3,7 @@
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import styles from '../../assets/styles';
-import {Alert, Image, Platform, TouchableOpacity, View} from 'react-native';
+import {Alert, Platform, TouchableOpacity, View} from 'react-native';
 import Tts from 'react-native-tts';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';

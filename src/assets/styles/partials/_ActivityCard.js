@@ -76,6 +76,7 @@ export default {
   activityTotalNumberText: {
     fontSize: 18,
     padding: 3,
+    fontFamily: variables.fontFamilyBase,
   },
   activityCardVideo: {
     height: 250,
