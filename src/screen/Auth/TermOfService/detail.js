@@ -8,6 +8,7 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import HTML from 'react-native-render-html';
+import {tagsStyles} from '../../../variables/tagsStyles';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -29,6 +30,8 @@ const TermOfServiceDetail = ({navigation}) => {
             <HTML
               source={{html: termContent.content}}
               contentWidth={contentWidth}
+              baseFontStyle={styles.fontBase}
+              tagsStyles={tagsStyles}
             />
           ) || translate('term.of.service.not_found')}
         </View>

@@ -13,7 +13,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
       renderComposer={() => (
         <Composer
           {...chatData}
-          textInputStyle={styles.chatComposer}
+          textInputStyle={[styles.chatComposer, styles.fontBase]}
           placeholder={translate('placeholder.type.message')}
         />
       )}

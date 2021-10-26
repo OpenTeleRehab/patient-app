@@ -10,6 +10,7 @@ import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
+import {tagsStyles} from '../../variables/tagsStyles';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -21,7 +22,6 @@ const containerStyle = {
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontFamily: 'Nunito-Bold',
 };
 
 const olStyle = {
@@ -31,10 +31,6 @@ const olStyle = {
 const ulStyle = {
   marginTop: -20,
   fontSize: 30,
-};
-
-const contentStyle = {
-  paddingBottom: 50,
 };
 
 const TermCondition = ({navigation}) => {
@@ -57,35 +53,35 @@ const TermCondition = ({navigation}) => {
       <ScrollView contentContainerStyle={containerStyle}>
         {!_.isEmpty(termOfService) && (
           <>
-            <View style={[styles.paddingMd, styles.flexColumn, contentStyle]}>
-              <View>
-                <HTML
-                  source={{html: termOfService.content}}
-                  contentWidth={contentWidth}
-                  listsPrefixesRenderers={{
-                    ol: (
-                      _htmlAttribs,
-                      _children,
-                      _convertedCSSStyles,
-                      passProps,
-                    ) => {
-                      return (
-                        <Text style={[olStyle, listStyle]}>
-                          {passProps.index + 1}.
-                        </Text>
-                      );
-                    },
-                    ul: (
-                      _htmlAttribs,
-                      _children,
-                      _convertedCSSStyles,
-                      passProps,
-                    ) => {
-                      return <Text style={[ulStyle, listStyle]}>.</Text>;
-                    },
-                  }}
-                />
-              </View>
+            <View style={[styles.paddingMd, styles.flexColumn]}>
+              <HTML
+                source={{html: termOfService.content}}
+                contentWidth={contentWidth}
+                baseFontStyle={styles.fontBase}
+                tagsStyles={tagsStyles}
+                listsPrefixesRenderers={{
+                  ol: (
+                    _htmlAttribs,
+                    _children,
+                    _convertedCSSStyles,
+                    passProps,
+                  ) => {
+                    return (
+                      <Text style={[olStyle, listStyle]}>
+                        {passProps.index + 1}.
+                      </Text>
+                    );
+                  },
+                  ul: (
+                    _htmlAttribs,
+                    _children,
+                    _convertedCSSStyles,
+                    passProps,
+                  ) => {
+                    return <Text style={[ulStyle, listStyle]}>.</Text>;
+                  },
+                }}
+              />
             </View>
           </>
         )}

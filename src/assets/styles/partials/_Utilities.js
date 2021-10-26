@@ -6,7 +6,6 @@ import variables from '../variables';
 export default {
   textDefault: {
     color: variables.black,
-    fontFamily: variables.fontFamilyBase,
   },
   textPrimary: {
     color: variables.primary,
@@ -144,11 +143,11 @@ export default {
   marginRightSm: {
     marginRight: variables.spacingBase / 2,
   },
-  fontBase: {
-    fontFamily: variables.fontFamilyBase,
-  },
   displayNone: {
-    width: 0,
     height: 0,
+    width: 0,
+  },
+  width70: {
+    width: '70%',
   },
 };

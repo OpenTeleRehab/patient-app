@@ -104,7 +104,7 @@ const RenderQuestionnaireCard = ({
             {item.title}
           </Text>
           <Text style={styles.activityCardText}>
-            <Text style={styles.fontWeightBold}>{item.questions.length}</Text>{' '}
+            <Text style={styles.fontBold}>{item.questions.length}</Text>{' '}
             {translate('activity.questions')}
           </Text>
         </View>

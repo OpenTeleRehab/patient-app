@@ -159,7 +159,7 @@ const Register = ({theme, navigation}) => {
             {translate('register.intro_text')}
           </Text>
           <View>
-            <Text style={[styles.formLabel, styles.fontWeightBold]}>
+            <Text style={[styles.formLabel, styles.fontBold]}>
               {translate('register.language.label')}
             </Text>
             <View
@@ -183,12 +183,7 @@ const Register = ({theme, navigation}) => {
               />
             </View>
           </View>
-          <Text
-            style={[
-              styles.formLabel,
-              styles.marginTopMd,
-              styles.fontWeightBold,
-            ]}>
+          <Text style={[styles.formLabel, styles.marginTopMd, styles.fontBold]}>
             {translate('register.phone.label')}
           </Text>
           <View style={styles.flexRow}>

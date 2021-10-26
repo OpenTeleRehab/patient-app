@@ -132,10 +132,13 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               style={[styles.marginTop, styles.flexCenter]}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={styles.hyperlink}>{translate('pin.forget')}</Text>
+              <Text style={[styles.fontBase, styles.hyperlink]}>
+                {translate('pin.forget')}
+              </Text>
             </TouchableOpacity>
             <Text
               style={[
+                styles.fontBase,
                 styles.leadText,
                 styles.textDefault,
                 styles.textCenter,
@@ -146,7 +149,8 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               style={styles.marginY}
               onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-              <Text style={[styles.hyperlink, styles.textCenter]}>
+              <Text
+                style={[styles.fontBase, styles.hyperlink, styles.textCenter]}>
                 {translate('phone.login.other.number')}
               </Text>
             </TouchableOpacity>

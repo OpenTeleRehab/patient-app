@@ -102,7 +102,7 @@ const Achievement = ({theme, navigation}) => {
 
           <Text
             style={[
-              styles.fontWeightBold,
+              styles.fontBold,
               styles.marginTopMd,
               styles.marginBottomMd,
               styles.textCenter,

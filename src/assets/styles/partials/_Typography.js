@@ -5,9 +5,21 @@ import variables from '../variables';
 
 export default {
   leadText: {
-    color: 'white',
+    color: variables.white,
     fontSize: variables.fontSizeMd,
+  },
+  fontBase: {
+    fontFamily: variables.fontFamilyBase,
+    fontWeight: variables.fontWeightBase,
+  },
+  fontBold: {
     fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
+  },
+  htmlHeadingTag: {
+    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
+    paddingBottom: variables.spacingMd,
   },
   fontSizeMd: {
     fontSize: variables.fontSizeMd,
@@ -25,9 +37,6 @@ export default {
   progressTextStyle: {
     color: variables.white,
     fontSize: 72,
-  },
-  fontWeightBold: {
-    fontFamily: variables.fontFamilyBold,
   },
   underlineHeader: {
     color: variables.primary,

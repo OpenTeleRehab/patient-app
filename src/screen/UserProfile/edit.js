@@ -198,11 +198,7 @@ const UserProfileEdit = ({navigation}) => {
           <View style={styles.formGroup}>
             <Input
               label={translate('first.name')}
-              labelStyle={[
-                styles.formLabel,
-                styles.textSmall,
-                styles.marginTop,
-              ]}
+              labelStyle={[styles.formLabel, styles.marginTop]}
               inputContainerStyle={styles.noneBorderBottom}
               containerStyle={styles.inputContainer}
               value={userInfo.first_name}
@@ -221,11 +217,7 @@ const UserProfileEdit = ({navigation}) => {
             />
             <Input
               label={translate('last.name')}
-              labelStyle={[
-                styles.formLabel,
-                styles.textSmall,
-                styles.marginTop,
-              ]}
+              labelStyle={[styles.formLabel, styles.marginTop]}
               inputContainerStyle={styles.noneBorderBottom}
               containerStyle={styles.inputContainer}
               value={userInfo.last_name}
@@ -241,9 +233,7 @@ const UserProfileEdit = ({navigation}) => {
             />
           </View>
           <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
-              {translate('common.gender')}
-            </Text>
+            <Text style={styles.formLabel}>{translate('common.gender')}</Text>
             <SelectPicker
               placeholder={{}}
               value={userInfo.language_id}
@@ -267,9 +257,7 @@ const UserProfileEdit = ({navigation}) => {
             onClickIcon={showDatepicker}
           />
           <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
-              {translate('common.language')}
-            </Text>
+            <Text style={styles.formLabel}>{translate('common.language')}</Text>
             <SelectPicker
               placeholder={{}}
               value={userInfo.language_id}
@@ -284,9 +272,7 @@ const UserProfileEdit = ({navigation}) => {
             <Divider />
           </View>
           <View style={styles.formGroup}>
-            <Text style={[styles.formLabel, styles.textSmall]}>
-              {translate('phone.number')}
-            </Text>
+            <Text style={styles.formLabel}>{translate('phone.number')}</Text>
             <Text style={styles.textFormDisabled}>
               {formatPhoneNumber(profile.dial_code, profile.phone)}
             </Text>

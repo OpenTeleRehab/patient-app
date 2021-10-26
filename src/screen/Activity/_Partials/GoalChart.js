@@ -38,6 +38,9 @@ const GoalChart = ({theme, goal}) => {
     backgroundGradientTo: theme.colors.white,
     backgroundGradientFromOpacity: 1,
     backgroundGradientToOpacity: 1,
+    propsForLabels: {
+      fontFamily: 'Nunito-Regular',
+    },
     color: (opacity = 1) => theme.colors.greyOutline,
     labelColor: (opacity = 1) => theme.colors.dark,
     barPercentage: 1,
@@ -156,7 +159,12 @@ const GoalChart = ({theme, goal}) => {
 
   return (
     <>
-      <Text h5 style={[styles.marginY, {color: theme.colors.orangeDark}]}>
+      <Text
+        style={[
+          styles.marginY,
+          styles.fontBase,
+          {color: theme.colors.orangeDark},
+        ]}>
         {translate('activity.satisfaction_level.extreme_satisfaction')}
       </Text>
       <ScrollView horizontal>
@@ -172,12 +180,8 @@ const GoalChart = ({theme, goal}) => {
         />
       </ScrollView>
 
-      <Text h6 style={styles.textCenter}>
+      <Text style={(styles.textCenter, styles.navTabLabel, styles.fontBase)}>
         {goal ? translate('activity.goal.' + goal.frequency) : ''}
-      </Text>
-
-      <Text h5 style={{color: theme.colors.orangeDark}}>
-        {translate('activity.satisfaction_level.no_satisfaction')}
       </Text>
     </>
   );

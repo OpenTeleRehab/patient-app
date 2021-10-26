@@ -229,7 +229,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       <View>
         <Text
           style={[
-            styles.fontWeightBold,
+            styles.fontBold,
             styles.leadText,
             styles.textDefault,
             styles.marginBottomMd,
@@ -242,7 +242,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         </Text>
         <Divider style={styles.marginBottomMd} />
         <View style={styles.formGroup}>
-          <Text style={[styles.formLabel, styles.textSmall]}>
+          <Text style={styles.formLabel}>
             {translate('appointment.choose_therapist')}
           </Text>
           <SelectPicker
@@ -279,7 +279,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           <Input
             placeholder={translate('appointment.placeholder.date')}
             label={translate('appointment.label.date')}
-            labelStyle={[styles.formLabel, styles.textSmall]}
+            labelStyle={styles.formLabel}
             disabled
             value={date ? formatDate(date) : ''}
             rightIcon={{
@@ -307,7 +307,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           <Input
             placeholder={translate('appointment.placeholder.start')}
             label={translate('appointment.label.from')}
-            labelStyle={[styles.formLabel, styles.textSmall]}
+            labelStyle={styles.formLabel}
             disabled
             value={fromTime ? formatTime(fromTime) : ''}
             rightIcon={{
@@ -342,7 +342,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           <Input
             placeholder={translate('appointment.placeholder.end')}
             label={translate('appointment.label.to')}
-            labelStyle={[styles.formLabel, styles.textSmall]}
+            labelStyle={styles.formLabel}
             disabled
             value={toTime ? formatTime(toTime) : ''}
             rightIcon={{

@@ -122,7 +122,7 @@ const AppointmentDetail = ({route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} h4>
+          <Text numberOfLines={1} style={styles.headerLeftTitleDark}>
             {translate('appointment')}
           </Text>
         }
@@ -132,17 +132,17 @@ const AppointmentDetail = ({route, navigation}) => {
         }}
       />
       <ScrollView style={styles.mainContainerLight}>
-        <Text style={[styles.fontWeightBold, styles.textPrimary]}>
+        <Text style={[styles.fontBold, styles.textPrimary]}>
           {moment.utc(appointment.start_date).local().format('DD MMM YYYY')}
         </Text>
-        <Text style={[styles.fontWeightBold, styles.textWarning]}>
+        <Text style={[styles.fontBold, styles.textWarning]}>
           {moment.utc(appointment.start_date).local().format('hh:mm A')}
           {' - '}
           {moment.utc(appointment.end_date).local().format('hh:mm A')}
         </Text>
         <Divider style={styles.marginY} />
         <Text>{translate('appointment.appointment_with')}</Text>
-        <Text style={styles.fontWeightBold}>
+        <Text style={styles.fontBold}>
           {getTherapistName(appointment.therapist_id, therapists)}
         </Text>
         {appointment.note && appointment.note.trim() !== '' && (

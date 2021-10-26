@@ -124,20 +124,18 @@ const Appointment = ({navigation}) => {
         }>
         {!groupedAppointments.length && !loading && (
           <Text
-            h4
             style={[
               styles.alignSelfCenter,
               styles.textLightGrey,
-              styles.fontWeightBold,
-              styles.textDefault,
+              styles.headerLeftTitleDark,
             ]}>
-            {translate('appointment.no_appointment')} - 1
+            {translate('appointment.no_appointment')}
           </Text>
         )}
 
         {groupedAppointments.map((group, index) => (
           <View key={index}>
-            <Text style={[styles.fontWeightBold, styles.marginBottom]}>
+            <Text style={[styles.fontBold, styles.marginBottom]}>
               {group.month}
             </Text>
             {group.appointments.map((appointment, i) => (
@@ -167,7 +165,7 @@ const Appointment = ({navigation}) => {
                     netInfo.type !== 'unknown' && netInfo.isConnected === false
                       ? styles.textLightGrey
                       : styles.textLight,
-                    styles.fontWeightBold,
+                    styles.fontBold,
                   ]}>
                   {translate('appointment.show_more', {
                     number: listInfo.total_count - currentPage * pageSize,

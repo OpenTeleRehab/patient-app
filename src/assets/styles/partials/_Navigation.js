@@ -34,7 +34,4 @@ export default {
     backgroundColor: variables.grey6,
     padding: variables.spacingMd,
   },
-  navKidThemeLabel: {
-    width: '70%',
-  },
 };
