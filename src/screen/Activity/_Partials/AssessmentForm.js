@@ -2,10 +2,17 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Modal, ScrollView, View, Image} from 'react-native';
+import {Dimensions, Modal, ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Button, Divider, Slider, Text, withTheme} from 'react-native-elements';
+import {
+  Button,
+  Divider,
+  Slider,
+  Text,
+  withTheme,
+  Card,
+} from 'react-native-elements';
 
 import styles from '../../../assets/styles';
 
@@ -17,13 +24,12 @@ import {ROUTES} from '../../../variables/constants';
 import {useNetInfo} from '@react-native-community/netinfo';
 import _ from 'lodash';
 import ScrollPicker from '@webessentials/react-native-picker-scrollview';
-import {SvgUri} from 'react-native-svg';
-import quackerPain012 from '../../../assets/images/quacker-pain-012.svg';
-import quackerPain34 from '../../../assets/images/quacker-pain-34.svg';
-import quackerPain56 from '../../../assets/images/quacker-pain-56.svg';
-import quackerPain78 from '../../../assets/images/quacker-pain-78.svg';
-import quackerPain910 from '../../../assets/images/quacker-pain-910.svg';
-import quackerFeedBackSubmit from '../../../assets/images/quacker-feedback-submit.svg';
+import quackerPain012 from '../../../assets/images/quacker-pain-1.png';
+import quackerPain34 from '../../../assets/images/quacker-pain-2.png';
+import quackerPain56 from '../../../assets/images/quacker-pain-3.png';
+import quackerPain78 from '../../../assets/images/quacker-pain-4.png';
+import quackerPain910 from '../../../assets/images/quacker-pain-5.png';
+import quackerFeedBackSubmit from '../../../assets/images/quacker-feedback-submit.png';
 
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
@@ -183,13 +189,12 @@ const AssessmentForm = ({
                   </Text>
                 </View>
                 {kidTheme && (
-                  <View
-                    style={[
-                      styles.flexCenter,
-                      styles.marginTopLg,
-                      styles.marginBottomMd,
-                    ]}>
-                    <SvgUri uri={Image.resolveAssetSource(painImage).uri} />
+                  <View style={[styles.marginTopLg, styles.marginBottomMd]}>
+                    <Card.Image
+                      source={painImage}
+                      style={styles.activityCardImage}
+                      resizeMode={'contain'}
+                    />
                   </View>
                 )}
                 <View
@@ -325,13 +330,12 @@ const AssessmentForm = ({
                   </Text>
                 </View>
                 {kidTheme && (
-                  <View
-                    style={[
-                      styles.flexCenter,
-                      styles.marginTopLg,
-                      styles.marginBottomMd,
-                    ]}>
-                    <SvgUri uri={Image.resolveAssetSource(painImage).uri} />
+                  <View style={[styles.marginTopLg, styles.marginBottomMd]}>
+                    <Card.Image
+                      source={painImage}
+                      style={styles.activityCardImage}
+                      resizeMode={'contain'}
+                    />
                   </View>
                 )}
                 <View
@@ -504,8 +508,10 @@ const AssessmentForm = ({
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             {kidTheme && (
-              <SvgUri
-                uri={Image.resolveAssetSource(quackerFeedBackSubmit).uri}
+              <Card.Image
+                source={quackerFeedBackSubmit}
+                style={styles.activityCardImage}
+                resizeMode={'contain'}
               />
             )}
             <Text
