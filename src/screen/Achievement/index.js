@@ -62,7 +62,7 @@ const Achievement = ({theme, navigation}) => {
             <ListItem onPress={() => handleOpenAchievement(item)}>
               <Avatar
                 source={{
-                  uri: settings.apiBaseURL.replace('/api', '') + item.icon,
+                  uri: settings.apiBaseURL + item.icon,
                 }}
                 size={62}
               />
@@ -86,17 +86,18 @@ const Achievement = ({theme, navigation}) => {
           onBackdropPress={handleCloseAchievement}>
           <View style={styles.alignSelfCenter}>
             <Image
-              source={{
-                uri: settings.apiBaseURL.replace('/api', '') + achievement.icon,
-              }}
+              source={{uri: settings.apiBaseURL + achievement.icon}}
               style={styles.overlayBadge}
             />
           </View>
 
           {!achievement.obtained && (
-            <Text style={[styles.marginTopMd, styles.textCenter]}>
-              {achievement.init_streak_number} / {achievement.max_streak_number}
-            </Text>
+            <View style={styles.marginTopMd}>
+              <Text style={styles.textCenter}>
+                {achievement.init_streak_number} /{' '}
+                {achievement.max_streak_number}
+              </Text>
+            </View>
           )}
 
           <Text
