@@ -333,19 +333,12 @@ const AssessmentForm = ({
                     />
                   </View>
                 )}
-                <View
-                  style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-                  <Text
-                    style={[
-                      styles.textCenter,
-                      {left: left},
-                      styles.fontSizeMd,
-                      styles.textDefault,
-                    ]}>
-                    {painLevel}
-                  </Text>
-                </View>
                 <View style={styles.paddingXMd}>
+                  <View style={[styles.flexRow, styles.fontSizeMd]}>
+                    <View style={{left: left, width: painLevelValueWidth}}>
+                      <Text style={styles.textCenter}>{painLevel}</Text>
+                    </View>
+                  </View>
                   <Slider
                     value={painLevel}
                     onValueChange={(value) => setPainLevel(value)}

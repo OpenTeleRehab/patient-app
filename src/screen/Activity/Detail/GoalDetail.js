@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {Dimensions, ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {
@@ -51,6 +51,10 @@ const GoalDetail = ({theme, route, navigation}) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
   const netInfo = useNetInfo();
   const type = ACTIVITY_TYPES.GOAL;
+  const screenWidth = Dimensions.get('window').width;
+  const painLevelValueWidth = 20;
+  const left =
+    (satisfactionLevel * (screenWidth - (40 - painLevelValueWidth))) / 11;
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -133,13 +137,7 @@ const GoalDetail = ({theme, route, navigation}) => {
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),
         }}
       />
-      <View
-        style={[
-          styles.bgPrimary,
-          styles.paddingX,
-          styles.paddingY,
-          styles.listHeight,
-        ]}>
+      <View style={[styles.bgPrimary, styles.paddingXMd, styles.paddingY]}>
         <Text style={styles.textLight}>
           {translate('activity.goal.detail.question')}
         </Text>
@@ -195,32 +193,26 @@ const GoalDetail = ({theme, route, navigation}) => {
               {goal ? goal.title : ''}
             </Text>
           </View>
-          <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-            <Text
-              style={[
-                styles.textCenter,
-                styles.fontSizeMd,
-                styles.textDefault,
-              ]}>
-              {satisfactionLevel}
-            </Text>
+
+          <View style={[styles.flexRow, styles.fontSizeMd]}>
+            <View style={{left: left, width: painLevelValueWidth}}>
+              <Text style={styles.textCenter}>{satisfactionLevel}</Text>
+            </View>
           </View>
-          <View>
-            <Slider
-              value={satisfactionLevel}
-              onValueChange={(value) => setSatisfactionLevel(value)}
-              minimumValue={0}
-              maximumValue={10}
-              step={1}
-              thumbStyle={[sliderThumbStyle, styles.bgPrimary]}
-              disabled={goal && (!!goal.completed || isCompletedOffline)}
-              allowTouchTrack={
-                !(goal && (!!goal.completed || isCompletedOffline))
-              }
-              trackStyle={[trackStyle]}
-            />
-            {goal && <GoalChart goal={goal} />}
-          </View>
+
+          <Slider
+            value={satisfactionLevel}
+            onValueChange={(value) => setSatisfactionLevel(value)}
+            minimumValue={0}
+            maximumValue={10}
+            step={1}
+            thumbStyle={[sliderThumbStyle, styles.bgPrimary]}
+            disabled={goal && (!!goal.completed || isCompletedOffline)}
+            allowTouchTrack={
+              !(goal && (!!goal.completed || isCompletedOffline))
+            }
+            trackStyle={[trackStyle]}
+          />
 
           <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
             <Text>
@@ -230,6 +222,8 @@ const GoalDetail = ({theme, route, navigation}) => {
               {translate('activity.satisfaction_level.extreme_satisfaction')}
             </Text>
           </View>
+
+          {goal && <GoalChart goal={goal} />}
         </View>
       </ScrollView>
 
