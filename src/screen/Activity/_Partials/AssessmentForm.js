@@ -66,8 +66,10 @@ const AssessmentForm = ({
   const {profile} = useSelector((state) => state.user);
   const [kidTheme, setKidTheme] = useState(false);
   const [painImage, setPainImage] = useState('');
-  const left = (painLevel * (Dimensions.get('window').width - 30)) / 10 - 18;
   const [showCompletedPopup, setShowCompletedPopup] = useState(false);
+  const screenWidth = Dimensions.get('window').width;
+  const painLevelValueWidth = 20;
+  const left = (painLevel * (screenWidth - (60 - painLevelValueWidth))) / 11;
 
   useEffect(() => {
     if (profile) {
@@ -106,8 +108,7 @@ const AssessmentForm = ({
         setSteps(1);
       }
     }
-    // eslint-disable-next-line
-  }, [activity]);
+  }, [activity, setSteps]);
 
   useEffect(() => {
     if (painLevel < 3) {
@@ -197,18 +198,12 @@ const AssessmentForm = ({
                     />
                   </View>
                 )}
-                <View
-                  style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-                  <Text
-                    style={[
-                      styles.textCenter,
-                      {left: left},
-                      styles.fontSizeMd,
-                    ]}>
-                    {painLevel}
-                  </Text>
-                </View>
                 <View style={styles.paddingXMd}>
+                  <View style={[styles.flexRow, styles.fontSizeMd]}>
+                    <View style={{left: left, width: painLevelValueWidth}}>
+                      <Text style={styles.textCenter}>{painLevel}</Text>
+                    </View>
+                  </View>
                   <Slider
                     value={painLevel}
                     onValueChange={(value) => setPainLevel(value)}
