@@ -82,7 +82,7 @@ const ExerciseDetail = ({theme, route, navigation}) => {
 
       {(!!activity.completed || isCompletedOffline) &&
         (activity.include_feedback || activity.get_pain_level) && (
-          <View style={styles.bgLight}>
+          <View style={[styles.paddingX, styles.bgLight]}>
             <ButtonGroup
               onPress={(index) => setTabIndex(index)}
               buttons={[

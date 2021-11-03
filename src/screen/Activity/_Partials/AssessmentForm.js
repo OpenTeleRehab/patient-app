@@ -225,82 +225,82 @@ const AssessmentForm = ({
                 </View>
               </View>
             )}
-            {activity?.include_feedback && step === 2 && (
-              <View style={styleSetsAndRapsContainer}>
-                <View style={[styles.flexCenter, styles.marginBottomMd]}>
-                  <Text style={styles.marginBottom}>
-                    {translate('activity.step', {
-                      step: step + '/2',
-                    }).toUpperCase()}
+            <View
+              style={
+                activity?.include_feedback && step !== 2 && styles.displayNone
+              }>
+              <View style={[styles.flexCenter, styles.marginBottomMd]}>
+                <Text style={styles.marginBottom}>
+                  {translate('activity.step', {
+                    step: step + '/2',
+                  }).toUpperCase()}
+                </Text>
+                <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
+                  {translate('activity.sets_reps.completed_label')}
+                </Text>
+                <Text style={[styles.paddingMd, styles.textCenter]}>
+                  {translate('activity.sets_reps.completed_description')}
+                </Text>
+              </View>
+              <View style={[styles.flexRow, styles.justifyContentSpaceAround]}>
+                <View>
+                  <Text
+                    style={[
+                      styles.textCenter,
+                      styles.fontWeightBold,
+                      styles.fontSizeMd,
+                    ]}>
+                    {translate('activity.sets')}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
-                    {translate('activity.sets_reps.completed_label')}
-                  </Text>
-                  <Text style={[styles.paddingMd, styles.textCenter]}>
-                    {translate('activity.sets_reps.completed_description')}
+                  <ScrollPicker
+                    dataSource={Array.from({length: 101}, (v, i) => i)}
+                    itemHeight={50}
+                    wrapperColor={theme.colors.white}
+                    selectedIndex={numberOfSets}
+                    onValueChange={(data) => setNumberOfSets(data)}
+                    disabled={!!activity?.completed || isCompletedOffline}
+                  />
+                  <Text
+                    style={[
+                      styles.fontSizeMd,
+                      styles.marginTop,
+                      styles.textLightGrey,
+                    ]}>
+                    {translate('activity.sets_reps.recommend', {
+                      number: activity.sets,
+                    })}
                   </Text>
                 </View>
-                <View
-                  style={[styles.flexRow, styles.justifyContentSpaceAround]}>
-                  <View>
-                    <Text
-                      style={[
-                        styles.textCenter,
-                        styles.fontWeightBold,
-                        styles.fontSizeMd,
-                      ]}>
-                      {translate('activity.sets')}
-                    </Text>
-                    <ScrollPicker
-                      dataSource={Array.from({length: 101}, (v, i) => i)}
-                      itemHeight={50}
-                      wrapperColor={theme.colors.white}
-                      selectedIndex={numberOfSets}
-                      onValueChange={(data) => setNumberOfSets(data)}
-                      disabled={!!activity?.completed || isCompletedOffline}
-                    />
-                    <Text
-                      style={[
-                        styles.fontSizeMd,
-                        styles.marginTop,
-                        styles.textLightGrey,
-                      ]}>
-                      {translate('activity.sets_reps.recommend', {
-                        number: activity.sets,
-                      })}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text
-                      style={[
-                        styles.fontSizeMd,
-                        styles.textCenter,
-                        styles.fontWeightBold,
-                      ]}>
-                      {translate('activity.reps')}
-                    </Text>
-                    <ScrollPicker
-                      dataSource={Array.from({length: 101}, (v, i) => i)}
-                      itemHeight={50}
-                      wrapperColor={theme.colors.white}
-                      selectedIndex={numberOfReps}
-                      onValueChange={(data) => setNumberOfReps(data)}
-                      disabled={!!activity?.completed || isCompletedOffline}
-                    />
-                    <Text
-                      style={[
-                        styles.fontSizeMd,
-                        styles.marginTop,
-                        styles.textLightGrey,
-                      ]}>
-                      {translate('activity.sets_reps.recommend', {
-                        number: activity.reps,
-                      })}
-                    </Text>
-                  </View>
+                <View>
+                  <Text
+                    style={[
+                      styles.fontSizeMd,
+                      styles.textCenter,
+                      styles.fontWeightBold,
+                    ]}>
+                    {translate('activity.reps')}
+                  </Text>
+                  <ScrollPicker
+                    dataSource={Array.from({length: 101}, (v, i) => i)}
+                    itemHeight={50}
+                    wrapperColor={theme.colors.white}
+                    selectedIndex={numberOfReps}
+                    onValueChange={(data) => setNumberOfReps(data)}
+                    disabled={!!activity?.completed || isCompletedOffline}
+                  />
+                  <Text
+                    style={[
+                      styles.fontSizeMd,
+                      styles.marginTop,
+                      styles.textLightGrey,
+                    ]}>
+                    {translate('activity.sets_reps.recommend', {
+                      number: activity.reps,
+                    })}
+                  </Text>
                 </View>
               </View>
-            )}
+            </View>
           </>
         ) : (
           <>

@@ -147,4 +147,8 @@ export default {
   fontBase: {
     fontFamily: variables.fontFamilyBase,
   },
+  displayNone: {
+    width: 0,
+    height: 0,
+  },
 };
