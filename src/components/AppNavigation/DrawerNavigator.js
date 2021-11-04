@@ -46,7 +46,7 @@ const DrawerNavigator = ({navProps}) => {
             styles.flexCenter,
             styles.justifyContentSpaceAround,
           ]}>
-          <Text style={styles.navKidThemeLabel}>
+          <Text style={[styles.width70, styles.fontBase]}>
             {translate('common.theme.kid')}
           </Text>
           <Switch
@@ -64,7 +64,7 @@ const DrawerNavigator = ({navProps}) => {
                 key={index}
                 focused={state.routeNames[state.index] === route.name}
                 label={translate(route.label)}
-                labelStyle={styles.textDefault}
+                labelStyle={[styles.textDefault, styles.fontBase]}
                 onPress={() => handleNavigate(route)}
                 icon={({focused, size, color}) => (
                   <FIcon name={route.icon} color={color} size={size} />

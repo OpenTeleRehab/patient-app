@@ -189,7 +189,7 @@ const GoalDetail = ({theme, route, navigation}) => {
         <View
           style={[styles.marginTopLg, styles.paddingXMd, styles.marginBottom]}>
           <View style={[styles.marginBottomMd]}>
-            <Text h4 numberOfLines={3} style={styles.textDefault}>
+            <Text numberOfLines={3} style={styles.headerLeftTitleDark}>
               {goal ? goal.title : ''}
             </Text>
           </View>

@@ -29,12 +29,6 @@ import RNFS from 'react-native-fs';
 import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 
-const calendarHeaderStyle = {
-  marginBottom: 10,
-  marginLeft: 10,
-  fontSize: 18,
-  fontFamily: 'Nunito-Light',
-};
 const calendarHeaderContainerStyle = {
   flexDirection: 'row',
   justifyContent: 'space-between',
@@ -226,8 +220,8 @@ const Activity = ({theme, navigation}) => {
             date: moment(day.date),
             dots: [
               {
-                color: 'white',
-                selectedColor: 'white',
+                color: theme.colors.white,
+                selectedColor: theme.colors.white,
               },
             ],
           });
@@ -236,8 +230,8 @@ const Activity = ({theme, navigation}) => {
             date: moment(day.date),
             dots: [
               {
-                color: 'black',
-                selectedColor: 'white',
+                color: theme.colors.black,
+                selectedColor: theme.colors.white,
               },
             ],
           });
@@ -245,7 +239,7 @@ const Activity = ({theme, navigation}) => {
       });
       setMarkDates(marks);
     }
-  }, [treatmentPlan]);
+  }, [treatmentPlan, theme]);
 
   useEffect(() => {
     if (selectedDate && !_.isEmpty(treatmentPlan)) {
@@ -296,14 +290,14 @@ const Activity = ({theme, navigation}) => {
           selectedDate={selectedDate}
           markedDates={markedDates}
           scrollable={true}
-          dateNumberStyle={styles.textDefault}
+          dateNumberStyle={[styles.fontBold, styles.textDefault]}
           dateNameStyle={styles.textDefault}
           weekendDateNameStyle={styles.textLight}
           weekendDateNumberStyle={styles.textLight}
-          highlightDateNumberStyle={styles.textLight}
+          highlightDateNumberStyle={[styles.fontBold, styles.textLight]}
           highlightDateNameStyle={styles.textLight}
           style={calendarContainer}
-          calendarHeaderStyle={calendarHeaderStyle}
+          calendarHeaderStyle={[styles.fontBold, styles.marginLeft]}
           calendarHeaderContainerStyle={calendarHeaderContainerStyle}
           customDatesStyles={customDatesStylesFunc}
           leftSelector={[]}
@@ -431,7 +425,7 @@ const Activity = ({theme, navigation}) => {
             styles.flexColumn,
             styles.justifyContentCenter,
           ]}>
-          <Text h4 style={styles.marginTop}>
+          <Text style={[styles.marginTop, styles.headerLeftTitleDark]}>
             {translate('activity.no.task.for.this.day')}
           </Text>
         </View>

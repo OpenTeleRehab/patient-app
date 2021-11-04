@@ -12,6 +12,7 @@ import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
+import {tagsStyles} from '../../variables/tagsStyles';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -36,7 +37,6 @@ const containerStyle = {
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontFamily: 'Nunito-Bold',
 };
 
 const olStyle = {
@@ -114,17 +114,8 @@ const About = ({navigation}) => {
                 <HTML
                   source={{html: aboutPage.content}}
                   contentWidth={contentWidth}
-                  tagsStyles={{
-                    p: {color: aboutPage.text_color},
-                    ul: {color: aboutPage.text_color},
-                    ol: {color: aboutPage.text_color},
-                    h1: {color: aboutPage.text_color},
-                    h2: {color: aboutPage.text_color},
-                    h3: {color: aboutPage.text_color},
-                    h4: {color: aboutPage.text_color},
-                    h5: {color: aboutPage.text_color},
-                    h6: {color: aboutPage.text_color},
-                  }}
+                  baseFontStyle={styles.fontBase}
+                  tagsStyles={tagsStyles}
                   listsPrefixesRenderers={{
                     ol: (
                       _htmlAttribs,
@@ -170,7 +161,7 @@ const About = ({navigation}) => {
               <View style={footerStyle}>
                 <Text
                   style={[
-                    styles.fontWeightBold,
+                    styles.fontBold,
                     styles.fontSizeMd,
                     {color: aboutPage.text_color},
                   ]}>

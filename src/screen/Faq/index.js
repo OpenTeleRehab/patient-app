@@ -12,6 +12,7 @@ import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
+import {tagsStyles} from '../../variables/tagsStyles';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -107,17 +108,8 @@ const Faq = ({navigation}) => {
                 <HTML
                   source={{html: faqPage.content}}
                   contentWidth={contentWidth}
-                  tagsStyles={{
-                    p: {color: faqPage.text_color},
-                    ul: {color: faqPage.text_color},
-                    ol: {color: faqPage.text_color},
-                    h1: {color: faqPage.text_color},
-                    h2: {color: faqPage.text_color},
-                    h3: {color: faqPage.text_color},
-                    h4: {color: faqPage.text_color},
-                    h5: {color: faqPage.text_color},
-                    h6: {color: faqPage.text_color},
-                  }}
+                  baseFontStyle={styles.fontBase}
+                  tagsStyles={tagsStyles}
                   listsPrefixesRenderers={{
                     ol: (
                       _htmlAttribs,

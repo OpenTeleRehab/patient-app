@@ -10,6 +10,7 @@ import HTML from 'react-native-render-html';
 import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
+import {tagsStyles} from '../../variables/tagsStyles';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -61,6 +62,8 @@ const PrivacyPolicy = ({navigation}) => {
                 <HTML
                   source={{html: privacyPolicy.content}}
                   contentWidth={contentWidth}
+                  baseFontStyle={styles.fontBase}
+                  tagsStyles={tagsStyles}
                   listsPrefixesRenderers={{
                     ol: (
                       _htmlAttribs,

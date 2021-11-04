@@ -28,17 +28,19 @@ const SplashScreen = () => {
         </View>
         <View style={styles.splashScreenPoweredByContainer}>
           <View style={styles.splashScreenPoweredByWrapper}>
-            <Text style={[styles.fontWeightBold, styles.textLight]}>
+            <Text style={[styles.fontBold, styles.textLight]}>
               <Translate id="common.powered_by" />
             </Text>
             <Image source={hiLogo} style={styles.splashScreenPoweredByLogo} />
           </View>
-          <Text style={styles.textLight}>{settings.appVersion}</Text>
+          <Text style={[styles.fontBase, styles.textLight]}>
+            {settings.appVersion}
+          </Text>
         </View>
       </View>
       {partnerLogo && (
         <View style={styles.splashScreenSponsorsContainer}>
-          <Text style={[styles.fontWeightBold, styles.textPrimary]}>
+          <Text style={[styles.fontBold, styles.textPrimary]}>
             <Translate id="common.supported_by" />
           </Text>
           <Image

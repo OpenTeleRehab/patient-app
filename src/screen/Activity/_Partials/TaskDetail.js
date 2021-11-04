@@ -176,7 +176,7 @@ const TaskDetail = ({
         )}
         {activity.additional_fields?.map((additionalField, index) => (
           <View key={index} style={styles.marginBottomMd}>
-            <Text style={[styles.fontSizeMd, styles.fontWeightBold]}>
+            <Text style={[styles.fontSizeMd, styles.fontBold]}>
               {additionalField.field}
             </Text>
             <Text style={styles.marginTop}>{additionalField.value}</Text>
@@ -186,7 +186,8 @@ const TaskDetail = ({
         {activity.additional_information &&
           activity.additional_information.trim() !== '' && (
             <View style={styles.marginBottomMd}>
-              <Text h4 style={styles.underlineHeader}>
+              <Text
+                style={[styles.underlineHeader, styles.headerLeftTitleDark]}>
                 {translate('activity.additional_information')}
               </Text>
               <Text>{activity.additional_information}</Text>

@@ -177,14 +177,14 @@ const AssessmentForm = ({
                       step: step + '/2',
                     }).toUpperCase()}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
+                  <Text style={[styles.fontSizeXLg, styles.fontBold]}>
                     {translate('activity.pain_level.question')}
                   </Text>
                   <Text
                     style={[
+                      styles.fontBase,
                       styles.paddingMd,
                       styles.textCenter,
-                      styles.textDefault,
                     ]}>
                     {translate('activity.pain_level.description')}
                   </Text>
@@ -235,7 +235,7 @@ const AssessmentForm = ({
                     step: step + '/2',
                   }).toUpperCase()}
                 </Text>
-                <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
+                <Text style={[styles.fontSizeXLg, styles.fontBold]}>
                   {translate('activity.sets_reps.completed_label')}
                 </Text>
                 <Text style={[styles.paddingMd, styles.textCenter]}>
@@ -246,9 +246,9 @@ const AssessmentForm = ({
                 <View>
                   <Text
                     style={[
-                      styles.textCenter,
-                      styles.fontWeightBold,
+                      styles.fontBold,
                       styles.fontSizeMd,
+                      styles.textCenter,
                     ]}>
                     {translate('activity.sets')}
                   </Text>
@@ -257,11 +257,19 @@ const AssessmentForm = ({
                     itemHeight={50}
                     wrapperColor={theme.colors.white}
                     selectedIndex={numberOfSets}
+                    renderItem={(data, index, isSelected) => {
+                      return (
+                        <View>
+                          <Text>{data}</Text>
+                        </View>
+                      );
+                    }}
                     onValueChange={(data) => setNumberOfSets(data)}
                     disabled={!!activity?.completed || isCompletedOffline}
                   />
                   <Text
                     style={[
+                      styles.fontBase,
                       styles.fontSizeMd,
                       styles.marginTop,
                       styles.textLightGrey,
@@ -274,9 +282,9 @@ const AssessmentForm = ({
                 <View>
                   <Text
                     style={[
+                      styles.fontBold,
                       styles.fontSizeMd,
                       styles.textCenter,
-                      styles.fontWeightBold,
                     ]}>
                     {translate('activity.reps')}
                   </Text>
@@ -285,11 +293,19 @@ const AssessmentForm = ({
                     itemHeight={50}
                     wrapperColor={theme.colors.white}
                     selectedIndex={numberOfReps}
+                    renderItem={(data, index, isSelected) => {
+                      return (
+                        <View>
+                          <Text>{data}</Text>
+                        </View>
+                      );
+                    }}
                     onValueChange={(data) => setNumberOfReps(data)}
                     disabled={!!activity?.completed || isCompletedOffline}
                   />
                   <Text
                     style={[
+                      styles.fontBase,
                       styles.fontSizeMd,
                       styles.marginTop,
                       styles.textLightGrey,
@@ -312,14 +328,14 @@ const AssessmentForm = ({
                       step: step + '/2',
                     }).toUpperCase()}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
+                  <Text style={[styles.fontSizeXLg, styles.fontBold]}>
                     {translate('activity.pain_level.question')}
                   </Text>
                   <Text
                     style={[
+                      styles.fontBase,
                       styles.paddingMd,
                       styles.textCenter,
-                      styles.textDefault,
                     ]}>
                     {translate('activity.pain_level.description')}
                   </Text>
@@ -368,10 +384,15 @@ const AssessmentForm = ({
                       step: step + '/2',
                     }).toUpperCase()}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
+                  <Text style={[styles.fontSizeXLg, styles.fontBold]}>
                     {translate('activity.sets_reps.completed_label')}
                   </Text>
-                  <Text style={[styles.paddingMd, styles.textCenter]}>
+                  <Text
+                    style={[
+                      styles.fontBase,
+                      styles.paddingMd,
+                      styles.textCenter,
+                    ]}>
                     {translate('activity.sets_reps.completed_description')}
                   </Text>
                 </View>
@@ -380,9 +401,9 @@ const AssessmentForm = ({
                   <View>
                     <Text
                       style={[
-                        styles.textCenter,
-                        styles.fontWeightBold,
+                        styles.fontBold,
                         styles.fontSizeMd,
+                        styles.textCenter,
                       ]}>
                       {translate('activity.sets')}
                     </Text>
@@ -391,11 +412,19 @@ const AssessmentForm = ({
                       itemHeight={50}
                       wrapperColor={theme.colors.white}
                       selectedIndex={numberOfSets}
+                      renderItem={(data, index, isSelected) => {
+                        return (
+                          <View>
+                            <Text>{data}</Text>
+                          </View>
+                        );
+                      }}
                       onValueChange={(data) => setNumberOfSets(data)}
                       disabled={!!activity?.completed || isCompletedOffline}
                     />
                     <Text
                       style={[
+                        styles.fontBase,
                         styles.fontSizeMd,
                         styles.marginTop,
                         styles.textLightGrey,
@@ -408,9 +437,9 @@ const AssessmentForm = ({
                   <View>
                     <Text
                       style={[
+                        styles.fontBold,
                         styles.fontSizeMd,
                         styles.textCenter,
-                        styles.fontWeightBold,
                       ]}>
                       {translate('activity.reps')}
                     </Text>
@@ -419,11 +448,19 @@ const AssessmentForm = ({
                       itemHeight={50}
                       wrapperColor={theme.colors.white}
                       selectedIndex={numberOfReps}
+                      renderItem={(data, index, isSelected) => {
+                        return (
+                          <View>
+                            <Text>{data}</Text>
+                          </View>
+                        );
+                      }}
                       onValueChange={(data) => setNumberOfReps(data)}
                       disabled={!!activity?.completed || isCompletedOffline}
                     />
                     <Text
                       style={[
+                        styles.fontBase,
                         styles.fontSizeMd,
                         styles.marginTop,
                         styles.textLightGrey,
@@ -504,7 +541,7 @@ const AssessmentForm = ({
             )}
             <Text
               style={[
-                styles.fontWeightBold,
+                styles.fontBold,
                 styles.textCenter,
                 styles.marginBottomMd,
                 styles.marginTopMd,

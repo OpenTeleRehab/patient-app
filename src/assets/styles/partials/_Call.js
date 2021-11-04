@@ -14,7 +14,6 @@ export default {
   callingText: {
     color: variables.blueLight,
     fontSize: 20,
-    fontStyle: 'italic',
     paddingBottom: variables.spacingBase,
   },
   btnCallOption: {
