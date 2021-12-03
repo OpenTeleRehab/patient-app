@@ -3,6 +3,7 @@
  */
 import React, {useEffect, useState} from 'react';
 import HeaderBar from '../../components/Common/HeaderBar';
+import {useIsFocused} from '@react-navigation/native';
 import {Image, ScrollView, View} from 'react-native';
 import {
   Avatar,
@@ -23,13 +24,14 @@ const Achievement = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const isFocused = useIsFocused();
   const {achievements} = useSelector((state) => state.achievement);
   const [achievement, setAchievement] = useState(null);
   const [showAchievementOverlay, setShowAchievementOverlay] = useState(false);
 
   useEffect(() => {
     dispatch(getAchievementRequest());
-  }, [dispatch]);
+  }, [dispatch, isFocused]);
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
