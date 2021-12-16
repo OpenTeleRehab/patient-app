@@ -39,8 +39,8 @@ const setupPinNumber = async (
   });
 };
 
-const login = async (phone, pin, countryCode) => {
-  const body = {phone, pin};
+const login = async (phone, pin, timezone, countryCode) => {
+  const body = {phone, pin, timezone};
   return await callApi('/auth/login', '', body, 'post', false, {countryCode});
 };
 

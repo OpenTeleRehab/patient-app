@@ -7,6 +7,7 @@ import settings from '../../../config/settings';
 import moment from 'moment';
 import {storeLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY} from '../../variables/constants';
+import RNLocalize from 'react-native-localize';
 
 export const registerRequest = (dialCode, to, hash, country, email) => async (
   dispatch,
@@ -80,7 +81,12 @@ export const loginRequest = (phone, pin, countryCode) => async (
   getState,
 ) => {
   dispatch(mutation.userLoginRequest());
-  let data = await User.login(phone, pin, countryCode);
+  let data = await User.login(
+    phone,
+    pin,
+    RNLocalize.getTimeZone(),
+    countryCode,
+  );
   if (data.success) {
     let acceptedTermOfService = true;
     let acceptedPrivacyPolicy = true;

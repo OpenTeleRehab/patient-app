@@ -30,6 +30,7 @@ import quackerPain56 from '../../../assets/images/quacker-pain-3.png';
 import quackerPain78 from '../../../assets/images/quacker-pain-4.png';
 import quackerPain910 from '../../../assets/images/quacker-pain-5.png';
 import quackerFeedBackSubmit from '../../../assets/images/quacker-feedback-submit.png';
+import RNLocalize from 'react-native-localize';
 
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
@@ -132,6 +133,7 @@ const AssessmentForm = ({
           pain_level: activity.get_pain_level ? painLevel : null,
           sets: activity.include_feedback ? numberOfSets : null,
           reps: activity.include_feedback ? numberOfReps : null,
+          timezone: RNLocalize.getTimeZone(),
         }),
       ).then((res) => {
         if (res) {
@@ -145,6 +147,7 @@ const AssessmentForm = ({
         pain_level: activity.get_pain_level ? painLevel : null,
         sets: activity.include_feedback ? numberOfSets : null,
         reps: activity.include_feedback ? numberOfReps : null,
+        timezone: RNLocalize.getTimeZone(),
       });
       dispatch(completeActivityOffline(offlineActivitiesObj));
       setShowCompletedPopup(true);

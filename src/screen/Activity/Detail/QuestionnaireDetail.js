@@ -16,6 +16,7 @@ import {
 import {useNetInfo} from '@react-native-community/netinfo';
 import Tts from 'react-native-tts';
 import moment from 'moment';
+import RNLocalize from 'react-native-localize';
 
 const RenderPaginateDots = (questions, patientAnswers, activeIndex, theme) =>
   questions.map((question, i) => (
@@ -124,6 +125,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
       const data = {
         id: id,
         answers: patientAnswers,
+        timezone: RNLocalize.getTimeZone(),
       };
       dispatch(completeQuestionnaire(data)).then((res) => {
         if (res) {
@@ -134,7 +136,11 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
       let offlineQuestionnaireAnswersObj = _.cloneDeep(
         offlineQuestionnaireAnswers,
       );
-      offlineQuestionnaireAnswersObj.push({id: id, answers: patientAnswers});
+      offlineQuestionnaireAnswersObj.push({
+        id: id,
+        answers: patientAnswers,
+        timezone: RNLocalize.getTimeZone(),
+      });
       dispatch(completeQuestionnaireOffline(offlineQuestionnaireAnswersObj));
       navigation.navigate(ROUTES.ACTIVITY);
     }
