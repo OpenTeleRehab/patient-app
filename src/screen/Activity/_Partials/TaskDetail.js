@@ -26,6 +26,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import _ from 'lodash';
 import TTSButton from '../../../components/TTSButton';
 import moment from 'moment';
+import RNLocalize from 'react-native-localize';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH);
@@ -79,14 +80,19 @@ const TaskDetail = ({
   const handleCompleteTask = () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
       if (netInfo.isConnected) {
-        dispatch(completeActive({id: activity.id})).then((res) => {
+        dispatch(
+          completeActive({id: activity.id, timezone: RNLocalize.getTimeZone()}),
+        ).then((res) => {
           if (res) {
             navigation.navigate(ROUTES.ACTIVITY);
           }
         });
       } else {
         let offlineActivityObj = _.cloneDeep(offlineActivities);
-        offlineActivityObj.push({id: activity.id});
+        offlineActivityObj.push({
+          id: activity.id,
+          timezone: RNLocalize.getTimeZone(),
+        });
         dispatch(completeActivityOffline(offlineActivityObj));
         navigation.navigate(ROUTES.ACTIVITY);
       }

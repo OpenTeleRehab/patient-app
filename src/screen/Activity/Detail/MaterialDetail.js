@@ -32,6 +32,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import TTSButton from '../../../components/TTSButton';
 import moment from 'moment';
 import quackerEducationMaterial from '../../../assets/images/quacker-education-material.png';
+import RNLocalize from 'react-native-localize';
 
 const MaterialDetail = ({theme, route, navigation}) => {
   const dispatch = useDispatch();
@@ -80,14 +81,19 @@ const MaterialDetail = ({theme, route, navigation}) => {
 
   const handleCompleteTask = () => {
     if (netInfo.isConnected) {
-      dispatch(completeActive({id: material.id})).then((res) => {
+      dispatch(
+        completeActive({id: material.id, timezone: RNLocalize.getTimeZone()}),
+      ).then((res) => {
         if (res) {
           navigation.navigate(ROUTES.ACTIVITY);
         }
       });
     } else {
       let offlineActivityObj = _.cloneDeep(offlineActivities);
-      offlineActivityObj.push({id: material.id});
+      offlineActivityObj.push({
+        id: material.id,
+        timezone: RNLocalize.getTimeZone(),
+      });
       dispatch(completeActivityOffline(offlineActivityObj));
       navigation.navigate(ROUTES.ACTIVITY);
     }
