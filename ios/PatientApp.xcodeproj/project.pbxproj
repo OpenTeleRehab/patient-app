@@ -13,11 +13,17 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* PatientAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* PatientAppTests.m */; };
 		5BB48AF2B8DED8AB84792D45 /* libPods-PatientApp-PatientAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 359FDFE01FC1D65E184A9432 /* libPods-PatientApp-PatientAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8B24D12B271ECD8B00978E88 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B24D12A271ECD8B00978E88 /* Nunito-Bold.ttf */; };
 		8B3E0594266B1FA90043E066 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 8B3E0593266B1FA90043E066 /* main.jsbundle */; };
+		8B6A5A1A271ECE540033E005 /* Nunito-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B6A5A14271ECE540033E005 /* Nunito-ExtraBold.ttf */; };
+		8B6A5A1B271ECE540033E005 /* Nunito-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B6A5A15271ECE540033E005 /* Nunito-Italic.ttf */; };
+		8B6A5A1C271ECE540033E005 /* Nunito-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B6A5A16271ECE540033E005 /* Nunito-Light.ttf */; };
+		8B6A5A1D271ECE540033E005 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B6A5A17271ECE540033E005 /* Nunito-Regular.ttf */; };
+		8B6A5A1E271ECE540033E005 /* Nunito-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B6A5A18271ECE540033E005 /* Nunito-SemiBold.ttf */; };
+		8B6A5A1F271ECE540033E005 /* Nunito-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B6A5A19271ECE540033E005 /* Nunito-Black.ttf */; };
 		B7E229F1ACFA6420E7E0075D /* libPods-PatientApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DEAC3A41915420F369659C5 /* libPods-PatientApp.a */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +61,14 @@
 		3DEAC3A41915420F369659C5 /* libPods-PatientApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PatientApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		66681D509024B0CC73639330 /* Pods-PatientApp-PatientAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp-PatientAppTests.debug.xcconfig"; path = "Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PatientApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8B24D12A271ECD8B00978E88 /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Bold.ttf"; path = "../src/assets/fonts/Nunito-Bold.ttf"; sourceTree = "<group>"; };
 		8B3E0593266B1FA90043E066 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		8B6A5A14271ECE540033E005 /* Nunito-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-ExtraBold.ttf"; path = "../src/assets/fonts/Nunito-ExtraBold.ttf"; sourceTree = "<group>"; };
+		8B6A5A15271ECE540033E005 /* Nunito-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Italic.ttf"; path = "../src/assets/fonts/Nunito-Italic.ttf"; sourceTree = "<group>"; };
+		8B6A5A16271ECE540033E005 /* Nunito-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Light.ttf"; path = "../src/assets/fonts/Nunito-Light.ttf"; sourceTree = "<group>"; };
+		8B6A5A17271ECE540033E005 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Regular.ttf"; path = "../src/assets/fonts/Nunito-Regular.ttf"; sourceTree = "<group>"; };
+		8B6A5A18271ECE540033E005 /* Nunito-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-SemiBold.ttf"; path = "../src/assets/fonts/Nunito-SemiBold.ttf"; sourceTree = "<group>"; };
+		8B6A5A19271ECE540033E005 /* Nunito-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Black.ttf"; path = "../src/assets/fonts/Nunito-Black.ttf"; sourceTree = "<group>"; };
 		A5B0E3F0F56E2D7D359809F1 /* Pods-PatientApp-PatientAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp-PatientAppTests.release.xcconfig"; path = "Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		B5D981FF3E957A56B6F62992 /* Pods-PatientApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp.release.xcconfig"; path = "Target Support Files/Pods-PatientApp/Pods-PatientApp.release.xcconfig"; sourceTree = "<group>"; };
 		BCAB00B3771184C0ADE006A9 /* Pods-PatientApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp.debug.xcconfig"; path = "Target Support Files/Pods-PatientApp/Pods-PatientApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -149,6 +162,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8B24D12C271ECD9300978E88 /* Resources */,
 				8B3E0593266B1FA90043E066 /* main.jsbundle */,
 				13B07FAE1A68108700A75B9A /* PatientApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -173,6 +187,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8B24D12C271ECD9300978E88 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8B6A5A19271ECE540033E005 /* Nunito-Black.ttf */,
+				8B6A5A14271ECE540033E005 /* Nunito-ExtraBold.ttf */,
+				8B6A5A15271ECE540033E005 /* Nunito-Italic.ttf */,
+				8B6A5A16271ECE540033E005 /* Nunito-Light.ttf */,
+				8B6A5A17271ECE540033E005 /* Nunito-Regular.ttf */,
+				8B6A5A18271ECE540033E005 /* Nunito-SemiBold.ttf */,
+				8B24D12A271ECD8B00978E88 /* Nunito-Bold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		D9A99518B5F2627480905F97 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,8 +223,8 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				FCE9541E3A7D1556885E92C4 /* [CP] Embed Pods Frameworks */,
 				071B1C110259A1A884A0658A /* [CP] Copy Pods Resources */,
+				521AEC934FACEDF5595E5AA5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -218,8 +246,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				5E63430C932D8E3A0298D586 /* [CP] Embed Pods Frameworks */,
 				F986A270D7518F3DA5513FF7 /* [CP] Copy Pods Resources */,
+				47D2A12101F0E241CAEF3B41 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -328,7 +356,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B3E0594266B1FA90043E066 /* main.jsbundle in Resources */,
+				8B6A5A1F271ECE540033E005 /* Nunito-Black.ttf in Resources */,
+				8B6A5A1C271ECE540033E005 /* Nunito-Light.ttf in Resources */,
+				8B6A5A1D271ECE540033E005 /* Nunito-Regular.ttf in Resources */,
+				8B6A5A1E271ECE540033E005 /* Nunito-SemiBold.ttf in Resources */,
+				8B6A5A1B271ECE540033E005 /* Nunito-Italic.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				8B6A5A1A271ECE540033E005 /* Nunito-ExtraBold.ttf in Resources */,
+				8B24D12B271ECD8B00978E88 /* Nunito-Bold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,7 +464,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		5E63430C932D8E3A0298D586 /* [CP] Embed Pods Frameworks */ = {
+		47D2A12101F0E241CAEF3B41 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -447,6 +482,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PatientApp/Pods-PatientApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		521AEC934FACEDF5595E5AA5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests-frameworks.sh",
+				"${PODS_ROOT}/JitsiMeetSDK/Frameworks/JitsiMeet.framework",
+				"${PODS_ROOT}/JitsiMeetSDK/Frameworks/WebRTC.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JitsiMeet.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BF5144DFB2AD132CDC83DD44 /* [CP] Check Pods Manifest.lock */ = {
@@ -543,26 +598,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PatientApp/Pods-PatientApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FCE9541E3A7D1556885E92C4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests-frameworks.sh",
-				"${PODS_ROOT}/JitsiMeetSDK/Frameworks/JitsiMeet.framework",
-				"${PODS_ROOT}/JitsiMeetSDK/Frameworks/WebRTC.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JitsiMeet.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WebRTC.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -625,7 +660,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -703,13 +737,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1.3.8;
+				CURRENT_PROJECT_VERSION = "1.6.2\t";
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PatientApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -732,13 +766,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.3.8;
+				CURRENT_PROJECT_VERSION = "1.6.2\t";
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PatientApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
