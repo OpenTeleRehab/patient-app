@@ -132,6 +132,7 @@ const HeaderBar = (props) => {
           titleStyle={backgroundPrimary ? styles.textLight : styles.textPrimary}
           buttonStyle={styles.headerButton(label, backgroundPrimary)}
           onPress={onPress}
+          loading={disabled}
           disabled={disabled}
         />
       );
