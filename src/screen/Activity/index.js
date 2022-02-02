@@ -161,39 +161,60 @@ const Activity = ({theme, navigation}) => {
     }
 
     // Download education material file attached
+    const datetime = moment().format('DDMMYYhhmmss');
     const materials = treatment.activities.filter(
       (activity) =>
         activity.type === ACTIVITY_TYPES.MATERIAL &&
         activity.file &&
         activity.file.fileGroupType !== 'common.type.image',
     );
+
     materials.forEach((material) => {
+      const materialFileName = material.file.fileName
+        .replace(/\s+/g, '-')
+        .toLowerCase();
+
       RNFS.downloadFile({
         fromUrl: settings.adminApiBaseURL + `/file/${material.file.id}`,
-        toFile: `${location}/${material.title}_${material.file.fileName}`,
+        toFile: `${location}/${datetime}-${material.title}-${materialFileName}`,
+        readTimeout: settings.downloadFileReadTimeout,
       });
     });
 
+    // Download ongoing treatment plan
+    const treatmentFileName = treatment.name.replace(/\s+/g, '-').toLowerCase();
+
     RNFS.downloadFile({
       fromUrl: settings.apiBaseURL + '/treatment-plan/export/on-going',
-      toFile: `${location}/${treatment.name}.pdf`,
+      toFile: `${location}/${datetime}-${treatmentFileName}.pdf`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }).promise.then(() => {
-      setDownloading(false);
-      if (Platform.OS === 'ios') {
-        Alert.alert(
-          translate('common.download'),
-          translate('activity.file_has_been_downloaded_successfully'),
-        );
-      } else {
-        ToastAndroid.show(
-          translate('activity.file_has_been_downloaded_successfully'),
-          ToastAndroid.SHORT,
-        );
-      }
-    });
+      background: true,
+      readTimeout: settings.downloadFileReadTimeout,
+    })
+      .promise.then(() => {
+        setDownloading(false);
+        if (Platform.OS === 'ios') {
+          Alert.alert(
+            translate('common.download'),
+            translate('activity.file_has_been_downloaded_successfully'),
+          );
+        } else {
+          ToastAndroid.show(
+            translate('activity.file_has_been_downloaded_successfully'),
+            ToastAndroid.SHORT,
+          );
+        }
+      })
+      .catch((err) => {
+        setDownloading(false);
+        if (Platform.OS === 'ios') {
+          Alert.alert(translate('common.download'), err);
+        } else {
+          ToastAndroid.show(err, ToastAndroid.SHORT);
+        }
+      });
   };
 
   useEffect(() => {
