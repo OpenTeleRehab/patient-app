@@ -169,7 +169,7 @@ const UserProfile = ({navigation}) => {
             navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
-      <ScrollView style={styles.mainContainerLight}>
+      <ScrollView contentContainerStyle={styles.mainContainerLight}>
         {userInfo.map((user, index) => (
           <RenderListItem {...user} key={index} />
         ))}
