@@ -9,6 +9,7 @@ export default {
     backgroundColor: variables.primary,
   },
   mainContainerLight: {
+    flexGrow: 1,
     padding: variables.spacingBase,
     backgroundColor: 'white',
   },
