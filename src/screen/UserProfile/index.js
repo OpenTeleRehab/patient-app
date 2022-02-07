@@ -28,6 +28,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useNetInfo} from '@react-native-community/netinfo';
 import RNLocalize from 'react-native-localize';
 import formatPhoneNumber from '../../utils/phoneNumber';
+import moment from 'moment';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -70,35 +71,50 @@ const UserProfile = ({navigation}) => {
   }, [dispatch]);
 
   const handleExport = async () => {
+    setDownloading(true);
+
     const location = await getDownloadDirectoryPath();
     if (location === false) {
       return;
     }
 
-    setDownloading(true);
+    // Download patient data
+    const datetime = moment().format('DDMMYYhhmmss');
+
     RNFS.downloadFile({
       fromUrl:
         settings.apiBaseURL +
         '/patient/profile/export?timezone=' +
         RNLocalize.getTimeZone(),
-      toFile: `${location}/patient_data.zip`,
+      toFile: `${location}/${datetime}_patient_data.zip`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }).promise.then(() => {
-      setDownloading(false);
-      if (Platform.OS === 'ios') {
-        Alert.alert(
-          translate('common.download'),
-          translate('activity.file_has_been_downloaded_successfully'),
-        );
-      } else {
-        ToastAndroid.show(
-          translate('activity.file_has_been_downloaded_successfully'),
-          ToastAndroid.SHORT,
-        );
-      }
-    });
+      connectionTimeout: settings.downloadFileReadTimeout,
+      readTimeout: settings.downloadFileReadTimeout,
+    })
+      .promise.then(() => {
+        setDownloading(false);
+        if (Platform.OS === 'ios') {
+          Alert.alert(
+            translate('common.download'),
+            translate('activity.file_has_been_downloaded_successfully'),
+          );
+        } else {
+          ToastAndroid.show(
+            translate('activity.file_has_been_downloaded_successfully'),
+            ToastAndroid.SHORT,
+          );
+        }
+      })
+      .catch((err) => {
+        setDownloading(false);
+        if (Platform.OS === 'ios') {
+          Alert.alert(translate('common.download'), err);
+        } else {
+          ToastAndroid.show(err, ToastAndroid.SHORT);
+        }
+      });
   };
 
   const handleDelete = () => {
