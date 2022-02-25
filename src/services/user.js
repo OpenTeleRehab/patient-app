@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {callApi, callAdminApi} from '../utils/request';
+import {callApi, callAdminApi, callGlobalAdminApi} from '../utils/request';
 import {getCountryCodeFromStore} from '../utils/country';
 
 const register = async (to, hash, country, email) => {
@@ -65,11 +65,11 @@ const deleteProfile = async (accessToken) => {
 };
 
 const getTermOfService = async (lang) => {
-  return await callAdminApi('/user-term-condition', {lang: lang});
+  return await callGlobalAdminApi('/user-term-condition', {lang: lang});
 };
 
 const getPrivacyPolicy = async (lang) => {
-  return await callAdminApi('/user-privacy-policy', {lang: lang});
+  return await callGlobalAdminApi('/user-privacy-policy', {lang: lang});
 };
 
 const acceptTermOfService = async (id, accessToken) => {

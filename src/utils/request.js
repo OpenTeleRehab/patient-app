@@ -16,7 +16,7 @@ export const callApi = async (
   isFormData = false,
   headers = {},
 ) => {
-  const endpoint = settings.apiBaseURL + uri;
+  const endpoint = store.getState().phone.apiBaseURL + uri;
   const allHeaders = {
     country: getUserCountryIsoCode(),
     ...getHeaders(accessToken, isFormData),
@@ -27,13 +27,25 @@ export const callApi = async (
 };
 
 export const callAdminApi = async (uri, body = null) => {
-  const endpoint = settings.adminApiBaseURL + uri;
+  const endpoint = store.getState().phone.adminApiBaseURL + uri;
   const headers = getHeaders();
   return await fetchApi(endpoint, headers, body);
 };
 
 export const callTherapistApi = async (uri, body = null) => {
-  const endpoint = settings.therapistApiBaseURL + uri;
+  const endpoint = store.getState().phone.therapistApiBaseURL + uri;
+  const headers = getHeaders();
+  return await fetchApi(endpoint, headers, body);
+};
+
+export const callPhoneApi = async (uri, body = null) => {
+  const endpoint = settings.phoneApiBaseURL + uri;
+  const headers = getHeaders();
+  return await fetchApi(endpoint, headers, body);
+};
+
+export const callGlobalAdminApi = async (uri, body = null) => {
+  const endpoint = settings.adminApiBaseURL + uri;
   const headers = getHeaders();
   return await fetchApi(endpoint, headers, body);
 };
@@ -46,7 +58,7 @@ export const callChatApi = async (
   method = 'get',
   isFormData = false,
 ) => {
-  const endpoint = settings.chatApiBaseURL + uri;
+  const endpoint = store.getState().phone.chatBaseURL + '/api/v1' + uri;
   const defaultHeaders = getHeaders('', isFormData);
   const headers = {
     ...defaultHeaders,

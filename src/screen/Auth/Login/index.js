@@ -28,6 +28,7 @@ import {chatLogout, unSubscribeEvent} from '../../../utils/rocketchat';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {getCountryRequest} from '../../../store/country/actions';
 import formatPhoneNumber from '../../../utils/phoneNumber';
+import {getPhoneRequest} from '../../../store/phone/actions';
 
 const containerStyle = {
   height: '100%',
@@ -59,23 +60,30 @@ const Login = ({navigation}) => {
   }, [chatSocket, dispatch, isChatConnected, subscribeIds]);
 
   const handleLogin = (passCode) => {
-    dispatch(loginRequest(phone, passCode, countryCode)).then((result) => {
-      if (result.success) {
-        if (!result.acceptedTermOfService || !result.acceptedPrivacyPolicy) {
-          navigation.navigate(ROUTES.TERM_OF_SERVICE);
-        }
-      } else {
-        if (passCode === pin) {
-          dispatch(generateFakeAccessToken());
-        } else {
-          Alert.alert(
-            translate('common.login.fail'),
-            translate('wrong.pin'),
-            [{text: translate('common.ok'), onPress: () => reset()}],
-            {cancelable: false},
-          );
-          setErrorCode(true);
-        }
+    dispatch(getPhoneRequest({phone: phone})).then((result) => {
+      if (result) {
+        dispatch(loginRequest(phone, passCode, countryCode)).then((result) => {
+          if (result.success) {
+            if (
+              !result.acceptedTermOfService ||
+              !result.acceptedPrivacyPolicy
+            ) {
+              navigation.navigate(ROUTES.TERM_OF_SERVICE);
+            }
+          } else {
+            if (passCode === pin) {
+              dispatch(generateFakeAccessToken());
+            } else {
+              Alert.alert(
+                translate('common.login.fail'),
+                translate('wrong.pin'),
+                [{text: translate('common.ok'), onPress: () => reset()}],
+                {cancelable: false},
+              );
+              setErrorCode(true);
+            }
+          }
+        });
       }
     });
   };

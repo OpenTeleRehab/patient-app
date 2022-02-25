@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import {callAdminApi} from '../utils/request';
+import {callGlobalAdminApi} from '../utils/request';
 
 const getAboutPage = async (lang) => {
   const body = {
@@ -20,7 +21,7 @@ const getFaqPage = async (lang) => {
     lang: lang,
   };
 
-  return await callAdminApi('/page/static-page-data', body);
+  return await callGlobalAdminApi('/page/static-page-data', body);
 };
 
 export const StaticPage = {
