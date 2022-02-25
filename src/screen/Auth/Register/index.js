@@ -16,6 +16,7 @@ import {getTranslate} from 'react-localize-redux';
 import {getDefinedCountries} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
+import {getPhoneRequest} from '../../../store/phone/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import HeaderBar from '../../../components/Common/HeaderBar';
 
@@ -126,10 +127,20 @@ const Register = ({theme, navigation}) => {
 
     const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
     dispatch(
-      registerRequest(countryPhoneCode, formattedNumber, hash, countryCode),
+      getPhoneRequest({
+        phone: formattedNumber,
+      }),
     ).then((result) => {
       if (result) {
-        navigation.navigate(ROUTES.VERIFY_PHONE);
+        dispatch(
+          registerRequest(countryPhoneCode, formattedNumber, hash, countryCode),
+        ).then((result) => {
+          if (result) {
+            navigation.navigate(ROUTES.VERIFY_PHONE);
+          } else {
+            setErrorPhoneNumber(true);
+          }
+        });
       } else {
         setErrorPhoneNumber(true);
       }

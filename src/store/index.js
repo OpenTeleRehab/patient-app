@@ -18,6 +18,7 @@ import {partnerLogo} from './partnerLogo/reducers';
 import {rocketchat} from './rocketchat/reducers';
 import {therapist} from './therapist/reducers';
 import {profession} from './profession/reducers';
+import {phone} from './phone/reducers';
 import settings from '../../config/settings';
 import {persistReducer, persistStore, createTransform} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,6 +40,7 @@ const rootReducers = {
   therapist,
   profession,
   partnerLogo,
+  phone,
 };
 
 const blacklistTransform = createTransform((inboundState, key) => {
