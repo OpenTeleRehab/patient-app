@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {callAdminApi} from '../utils/request';
 import {callGlobalAdminApi} from '../utils/request';
 
 const getTranslations = async (lang) => {

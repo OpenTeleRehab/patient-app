@@ -134,6 +134,7 @@ const Register = ({theme, navigation}) => {
       if (result) {
         dispatch(
           registerRequest(countryPhoneCode, formattedNumber, hash, countryCode),
+          // eslint-disable-next-line no-shadow
         ).then((result) => {
           if (result) {
             navigation.navigate(ROUTES.VERIFY_PHONE);

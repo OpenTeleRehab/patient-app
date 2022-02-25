@@ -62,6 +62,7 @@ const Login = ({navigation}) => {
   const handleLogin = (passCode) => {
     dispatch(getPhoneRequest({phone: phone})).then((result) => {
       if (result) {
+        // eslint-disable-next-line no-shadow
         dispatch(loginRequest(phone, passCode, countryCode)).then((result) => {
           if (result.success) {
             if (
