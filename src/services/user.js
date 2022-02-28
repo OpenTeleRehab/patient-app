@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {callApi, callAdminApi, callGlobalAdminApi} from '../utils/request';
+import {callApi, callGlobalAdminApi} from '../utils/request';
 import {getCountryCodeFromStore} from '../utils/country';
 
 const register = async (to, hash, country, email) => {

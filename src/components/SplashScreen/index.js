@@ -14,6 +14,7 @@ import {Translate} from 'react-localize-redux';
 
 const SplashScreen = () => {
   const {partnerLogo} = useSelector((state) => state.partnerLogo);
+  const {adminApiBaseURL} = useSelector((state) => state.phone);
 
   return (
     <View style={styles.flexColumn}>
@@ -45,7 +46,9 @@ const SplashScreen = () => {
           </Text>
           <Image
             style={styles.splashScreenSponsorLogos}
-            source={{uri: settings.adminApiBaseURL + '/file/' + partnerLogo.id}}
+            source={{
+              uri: adminApiBaseURL + '/file/' + partnerLogo.id,
+            }}
           />
         </View>
       )}
