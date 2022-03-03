@@ -16,7 +16,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../../variables/constants';
 import MediaView from './MediaView';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import settings from '../../../../config/settings';
 import {
   completeActive,
   completeActivityOffline,
@@ -27,6 +26,7 @@ import _ from 'lodash';
 import TTSButton from '../../../components/TTSButton';
 import moment from 'moment';
 import RNLocalize from 'react-native-localize';
+import store from '../../../store';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH);
@@ -39,7 +39,7 @@ const stylePaginationDot = {
 };
 
 const RenderMediaItem = ({item, index}, setShowMedia) => {
-  let uri = settings.adminApiBaseURL + '/file/' + item.id;
+  let uri = store.getState().phone.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
 
   if (type === 'video/mp4') {

@@ -18,9 +18,9 @@ import {
 import VideoPlayer from 'react-native-video-player';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import settings from '../../../../config/settings';
 import music from '../../../assets/images/music.png';
 import styles from '../../../assets/styles';
+import store from '../../../store';
 
 const styleToggleScreenBtn = {
   position: 'absolute',
@@ -51,7 +51,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const styleMedia = {width: '100%', height: '100%'};
 
 const RenderMediaItem = ({item, index}, activeItem) => {
-  const uri = settings.adminApiBaseURL + '/file/' + item.id;
+  const uri = store.getState().phone.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
   const autoplay = index === activeItem;
 
@@ -82,7 +82,9 @@ const RenderMediaItem = ({item, index}, activeItem) => {
   }
   return (
     <Image
-      source={{uri: settings.adminApiBaseURL + '/file/' + item.id}}
+      source={{
+        uri: store.getState().phone.adminApiBaseURL + '/file/' + item.id,
+      }}
       style={styleMedia}
       resizeMode="contain"
       PlaceholderContent={<ActivityIndicator size={50} />}

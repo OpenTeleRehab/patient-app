@@ -3,10 +3,10 @@ import {MATERIAL_TYPE, ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {TouchableOpacity, View} from 'react-native';
-import settings from '../../../../config/settings';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
 import quackerEducationMaterial from '../../../assets/images/quacker-education-material.png';
 import {useSelector} from 'react-redux';
+import store from '../../../store';
 
 const ImageCard = ({file, grayscale, kidTheme}) => {
   if (grayscale) {
@@ -17,7 +17,9 @@ const ImageCard = ({file, grayscale, kidTheme}) => {
     );
   }
 
-  const uri = `${settings.adminApiBaseURL}/file/${file.id}?thumbnail=${file.hasThumbnail}`;
+  const uri = `${store.getState().phone.adminApiBaseURL}/file/${
+    file.id
+  }?thumbnail=${file.hasThumbnail}`;
   return (
     <Card.Image
       source={kidTheme ? file : {uri}}
