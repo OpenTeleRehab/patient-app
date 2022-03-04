@@ -26,7 +26,6 @@ import {
   completeActive,
   completeActivityOffline,
 } from '../../../store/activity/actions';
-import settings from '../../../../config/settings';
 import {getDownloadDirectoryPath} from '../../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 import TTSButton from '../../../components/TTSButton';
@@ -46,6 +45,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const [material, setMaterial] = useState(undefined);
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
   const netInfo = useNetInfo();
+  const {adminApiBaseURL} = useSelector((state) => state.phone);
 
   useEffect(() => {
     navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
@@ -106,7 +106,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
     }
 
     RNFS.downloadFile({
-      fromUrl: settings.adminApiBaseURL + '/file/' + material.file.id,
+      fromUrl: adminApiBaseURL + '/file/' + material.file.id,
       toFile: `${location}/${material.file.fileName}`,
     }).promise.then(() => {
       if (Platform.OS === 'ios') {
@@ -157,7 +157,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
                 material.file.fileGroupType === MATERIAL_TYPE.image) ? (
                 <Card.Image
                   source={{
-                    uri: `${settings.adminApiBaseURL}/file/${material.file.id}?thumbnail=${material.file.hasThumbnail}`,
+                    uri: `${adminApiBaseURL}/file/${material.file.id}?thumbnail=${material.file.hasThumbnail}`,
                   }}
                   style={styles.activityCardImage}
                 />

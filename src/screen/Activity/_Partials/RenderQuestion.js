@@ -1,6 +1,5 @@
 import React from 'react';
 import {CheckBox, Image, Input, Text} from 'react-native-elements';
-import settings from '../../../../config/settings';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
 import {View} from 'react-native';
@@ -25,6 +24,7 @@ const RenderQuestion = ({
 }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {adminApiBaseURL} = useSelector((state) => state.phone);
 
   const handleOnClickRadio = (answer) => {
     setPatientAnswers({...patientAnswers, [question.id]: answer.id});
@@ -84,7 +84,7 @@ const RenderQuestion = ({
     <>
       {question.file && (
         <Image
-          source={{uri: settings.adminApiBaseURL + '/file/' + question.file.id}}
+          source={{uri: adminApiBaseURL + '/file/' + question.file.id}}
           style={styles.questionImage}
           resizeMode={'contain'}
         />

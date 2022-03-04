@@ -116,6 +116,7 @@ const Activity = ({theme, navigation}) => {
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [downloading, setDownloading] = useState(false);
   const netInfo = useNetInfo();
+  const {adminApiBaseURL, apiBaseURL} = useSelector((state) => state.phone);
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -175,7 +176,7 @@ const Activity = ({theme, navigation}) => {
         .toLowerCase();
 
       RNFS.downloadFile({
-        fromUrl: settings.adminApiBaseURL + `/file/${material.file.id}`,
+        fromUrl: adminApiBaseURL + `/file/${material.file.id}`,
         toFile: `${location}/${datetime}-${material.title}-${materialFileName}`,
         readTimeout: settings.downloadFileReadTimeout,
       });
@@ -185,7 +186,7 @@ const Activity = ({theme, navigation}) => {
     const treatmentFileName = treatment.name.replace(/\s+/g, '-').toLowerCase();
 
     RNFS.downloadFile({
-      fromUrl: settings.apiBaseURL + '/treatment-plan/export/on-going',
+      fromUrl: apiBaseURL + '/treatment-plan/export/on-going',
       toFile: `${location}/${datetime}-${treatmentFileName}.pdf`,
       headers: {
         Authorization: `Bearer ${accessToken}`,

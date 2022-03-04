@@ -4,8 +4,8 @@ import {ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text, Image} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Grayscale} from 'react-native-color-matrix-image-filters';
-import settings from '../../../../config/settings';
 import musicUrl from '../../../assets/images/music.png';
+import store from '../../../store';
 
 const ImageCard = ({files, grayscale}) => {
   if (grayscale) {
@@ -19,7 +19,7 @@ const ImageCard = ({files, grayscale}) => {
   let uri = '';
   let type = '';
   if (files.length) {
-    uri = settings.adminApiBaseURL + '/file/' + files[0].id;
+    uri = store.getState().phone.adminApiBaseURL + '/file/' + files[0].id;
     type = files[0].fileType;
   }
   if (type === 'video/mp4') {
