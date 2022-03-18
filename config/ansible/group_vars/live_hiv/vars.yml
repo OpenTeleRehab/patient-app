@@ -7,6 +7,7 @@ git_repos:                  'git@git.web-essentials.asia:hiv-tra-20/patient-app.
 patient_api_base_url:       'https://admin.opentelerehab.com/api/patient'
 admin_api_base_url:         'https://admin.opentelerehab.com/api/admin'
 therapist_api_base_url:     'https://admin.opentelerehab.com/api/therapist'
+phone_api_base_url:         'https://admin.opentelerehab.com/api/phone'
 jitsi_base_url:             'https://meet.opentelerehab.com'
 rocketchat_base_url:        'https://chat.opentelerehab.com'
 chat_websocket_url:         'wss://chat.opentelerehab.com/websocket'
