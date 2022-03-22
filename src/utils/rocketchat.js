@@ -14,7 +14,7 @@ import {
 } from '../store/indicator/actions';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../variables/constants';
 import {getUniqueId, getChatMessage} from './helper';
-import settings from '../../config/settings';
+import store from '../store';
 
 export const initialChatSocket = (
   dispatch,
@@ -28,7 +28,7 @@ export const initialChatSocket = (
   const {loginId, roomMessageId, notifyLoggedId} = subscribeIds;
 
   // register websocket
-  const socket = new WebSocket(settings.chatWebsocketURL);
+  const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
 
   // observer
   socket.onmessage = (e) => {

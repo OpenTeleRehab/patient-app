@@ -8,6 +8,7 @@ import _ from 'lodash';
 import settings from '../../config/settings';
 import {CALL_STATUS} from '../variables/constants';
 import styles from '../assets/styles';
+import store from '../store';
 
 export const formatDate = (date) => {
   return date ? moment(date).format(settings.format.date) : '';
@@ -47,7 +48,7 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
   let video = '';
   if (file && attachments) {
     text = attachments[0].description;
-    let baseUrl = settings.chatBaseURL;
+    let baseUrl = store.getState().phone.chatBaseURL;
     let authParams = `?rc_uid=${userId}&rc_token=${authToken}`;
     if (file.type.includes('video/')) {
       video = encodeURI(`${baseUrl}${attachments[0].video_url}${authParams}`);
