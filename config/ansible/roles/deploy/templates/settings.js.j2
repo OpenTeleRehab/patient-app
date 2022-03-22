@@ -5,9 +5,6 @@ const settings = {
   phoneApiBaseURL: '{{ phone_api_base_url }}',
   jitsiBaseURL: '{{ jitsi_base_url }}',
   chatBaseURL: '{{ rocketchat_base_url }}',
-  get chatApiBaseURL() {
-    return `${this.chatBaseURL}/api/v1`;
-  },
   chatWebsocketURL: '{{ chat_websocket_url }}',
   isDebugMode: {{ is_debug_mode }},
   format: {
