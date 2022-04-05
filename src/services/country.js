@@ -12,7 +12,12 @@ const getDefinedCountries = async () => {
   return await callGlobalAdminApi('/country/list/defined-country');
 };
 
+const getCountryCodeByClinicId = async (clinic_id) => {
+  return await callAdminApi(`/country/list/by-clinic?clinic_id=${clinic_id}`);
+};
+
 export const Country = {
   getCountries,
   getDefinedCountries,
+  getCountryCodeByClinicId,
 };

@@ -19,6 +19,7 @@ import {getTranslations} from '../../../store/translation/actions';
 import {getPhoneRequest} from '../../../store/phone/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import HeaderBar from '../../../components/Common/HeaderBar';
+import {Country} from '../../../services/country';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -52,12 +53,12 @@ const Register = ({theme, navigation}) => {
     (state) => state.country,
   );
   const {languages} = useSelector((state) => state.language);
+  const {clinicId} = useSelector((state) => state.phone);
 
   const [hash, setHash] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
   const [language, setLanguage] = useState('');
-  const [countryCode, setCountryCode] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
 
   const validateAndSetLanguage = useCallback(
@@ -100,7 +101,6 @@ const Register = ({theme, navigation}) => {
 
       setCountryPhoneCode(defaultCountry.phone_code);
       validateAndSetLanguage(defaultCountry.language_id);
-      setCountryCode(defaultCountry.iso_code);
     }
   }, [definedCountries, userCountryCode, dispatch, validateAndSetLanguage]);
 
@@ -108,7 +108,6 @@ const Register = ({theme, navigation}) => {
     setCountryPhoneCode(phoneCode);
     const selectedCountry = _.find(definedCountries, {phone_code: phoneCode});
     validateAndSetLanguage(selectedCountry.language_id);
-    setCountryCode(selectedCountry.iso_code);
   };
 
   const handleLanguageChange = (lang) => {
@@ -126,20 +125,25 @@ const Register = ({theme, navigation}) => {
     }
 
     const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
-    dispatch(
-      getPhoneRequest({
-        phone: formattedNumber,
-      }),
-    ).then((result) => {
+    dispatch(getPhoneRequest({phone: formattedNumber})).then(async (result) => {
       if (result) {
-        dispatch(
-          registerRequest(countryPhoneCode, formattedNumber, hash, countryCode),
-          // eslint-disable-next-line no-shadow
-        ).then((result) => {
-          if (result) {
-            navigation.navigate(ROUTES.VERIFY_PHONE);
-          } else {
-            setErrorPhoneNumber(true);
+        await Country.getCountryCodeByClinicId(clinicId).then((res) => {
+          if (res.success) {
+            dispatch(
+              registerRequest(
+                countryPhoneCode,
+                formattedNumber,
+                hash,
+                res.data.iso_code,
+              ),
+              // eslint-disable-next-line no-shadow
+            ).then((result) => {
+              if (result) {
+                navigation.navigate(ROUTES.VERIFY_PHONE);
+              } else {
+                setErrorPhoneNumber(true);
+              }
+            });
           }
         });
       } else {
