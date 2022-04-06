@@ -51,6 +51,10 @@ const VerifyPhone = ({navigation}) => {
     } else if (!showEmail && resentCount >= 5) {
       setShowEmail(true);
     }
+
+    if (code.length === 6) {
+      onConfirm(code);
+    }
   }, 1000);
 
   useEffect(() => {
