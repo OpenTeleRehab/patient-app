@@ -44,6 +44,7 @@ const VerifyPhone = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCode, setErrorCode] = useState(false);
+  const [delay, setDelay] = useState(1000);
 
   useInterval(() => {
     if (count > 0) {
@@ -54,8 +55,9 @@ const VerifyPhone = ({navigation}) => {
 
     if (code.length === 6) {
       onConfirm(code);
+      setDelay(null);
     }
-  }, 1000);
+  }, delay);
 
   useEffect(() => {
     if (RNOtpVerify && hash === '') {

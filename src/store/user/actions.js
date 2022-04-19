@@ -145,7 +145,7 @@ export const changePinNumberRequest = (pin, phone, accessToken) => async (
       },
       true,
     );
-    dispatch(mutation.userChangePinNumberSuccess(data.data));
+    dispatch(mutation.userChangePinNumberSuccess(data.data, phone));
     return {success: true, data: data.data};
   } else {
     dispatch(mutation.userChangePinNumberFailure());

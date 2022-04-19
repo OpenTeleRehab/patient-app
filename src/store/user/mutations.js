@@ -116,10 +116,11 @@ const userChangePinNumberRequest = () => {
   };
 };
 
-const userChangePinNumberSuccess = (data) => {
+const userChangePinNumberSuccess = (data, phone) => {
   return {
     type: 'USER_CHANGE_PIN_NUMBER_SUCCEED',
     data,
+    phone,
   };
 };
 
