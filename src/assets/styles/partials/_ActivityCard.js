@@ -105,4 +105,7 @@ export default {
     fontSize: 20,
     fontFamily: variables.fontFamilyBold,
   },
+  activityCardSpeakerIcon: {
+    marginTop: 6,
+  },
 };

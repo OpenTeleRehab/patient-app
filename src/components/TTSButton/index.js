@@ -123,8 +123,8 @@ const TTSButton = ({textsToSpeech, style}) => {
 
   return (
     <TouchableOpacity style={style} onPress={handleReadTextToSpeech}>
-      <View style={styles.marginTop}>
-        <Icon name="volume-up" size={15} type="font-awesome-5" color="black" />
+      <View style={styles.activityCardSpeakerIcon}>
+        <Icon name="volume-up" size={22} type="font-awesome-5" color="black" />
       </View>
     </TouchableOpacity>
   );
