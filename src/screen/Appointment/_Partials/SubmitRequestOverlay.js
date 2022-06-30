@@ -286,6 +286,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
               name: 'calendar-today',
               type: 'material-community',
               color: '#575757',
+              size: 28,
               onPress: handleShowDatePicker,
             }}
             containerStyle={styles.formControlDate}
@@ -314,6 +315,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
               name: 'clock-time-twelve-outline',
               type: 'material-community',
               color: '#575757',
+              size: 28,
               onPress: () => handleShowFromTimePicker(),
             }}
             containerStyle={styles.formControlDate}
@@ -349,6 +351,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
               name: 'clock-time-three-outline',
               type: 'material-community',
               color: fromTime ? '#575757' : '#ADADAD',
+              size: 28,
               onPress: () => fromTime && handleShowToTimePicker(),
             }}
             containerStyle={styles.formControlDate}
