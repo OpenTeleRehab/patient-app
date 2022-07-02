@@ -117,6 +117,7 @@ const Activity = ({theme, navigation}) => {
   const [downloading, setDownloading] = useState(false);
   const netInfo = useNetInfo();
   const {adminApiBaseURL, apiBaseURL} = useSelector((state) => state.phone);
+  const [locale, setLocale] = useState();
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -224,6 +225,15 @@ const Activity = ({theme, navigation}) => {
         id: profile.language_id,
       });
       moment.locale(languages[languageIndex].code);
+
+      setLocale({
+        name: moment.locale(),
+        config: {
+          months: moment.months(),
+          weekdays: moment.weekdays(),
+          weekdaysShort: moment.weekdaysShort(),
+        },
+      });
     }
   }, [profile, languages]);
 
@@ -325,6 +335,7 @@ const Activity = ({theme, navigation}) => {
           leftSelector={[]}
           rightSelector={[]}
           onDateSelected={(date) => setSelectedDate(date)}
+          locale={locale}
         />
       </View>
       {activities?.length ? (
