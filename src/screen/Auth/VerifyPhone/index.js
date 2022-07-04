@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {Input, Text} from 'react-native-elements';
+import {Button, Input, Text} from 'react-native-elements';
 import {
   ScrollView,
   TouchableOpacity,
@@ -131,60 +131,73 @@ const VerifyPhone = ({navigation}) => {
       <ScrollView
         keyboardShouldPersistTaps="handled"
         style={styles.mainContainerLight}>
-        <View style={[styles.flexCenter, styles.paddingMd]}>
-          <Text style={styles.marginBottomMd}>
-            {translate('phone.verify_description', {
-              phone: formatPhoneNumber(dialCode, formattedNumber),
-            })}
-          </Text>
-          <SmoothPinCodeInput
-            codeLength={6}
-            value={code}
-            onTextChange={(pinCode) => [setCode(pinCode), setErrorCode(false)]}
-            animated={false}
-            cellSpacing={10}
-            textStyle={errorCode ? styles.formPinTextError : styles.formPinText}
-            containerStyle={[styles.formPinContainer, styles.marginBottom]}
-            cellStyle={[
-              styles.formPinCell,
-              errorCode && styles.formPinCellError,
-            ]}
-            cellStyleFocused={!errorCode && styles.formPinCellFocused}
-            cellStyleFilled={
-              errorCode ? styles.formPinCellError : styles.formPinCellFilled
-            }
-            onFulfill={(verifyCode) => onConfirm(verifyCode)}
-          />
-          {showEmail && (
-            <>
-              <Input
-                label={translate('common.email')}
-                placeholder={translate('placeholder.email')}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={(value) => setEmail(value)}
-                containerStyle={styles.marginBottom}
-                disabled={count > 0}
-                renderErrorMessage={errorEmail}
-                errorMessage={
-                  errorEmail ? translate('error.message.email') : null
-                }
-              />
-            </>
-          )}
-          <View style={[styles.flexRow, styles.marginY]}>
-            <Text>{translate('phone.dont.receive.code')} &nbsp;</Text>
-            {count > 0 ? (
-              <Text>{count}</Text>
-            ) : (
-              <TouchableOpacity onPress={onResent} disabled={isLoading}>
-                <Text style={styles.hyperlink}>
-                  {translate('phone.resend.code')}
-                </Text>
-              </TouchableOpacity>
+        <View style={styles.paddingMd}>
+          <View style={styles.flexCenter}>
+            <Text style={styles.marginBottomMd}>
+              {translate('phone.verify_description', {
+                phone: formatPhoneNumber(dialCode, formattedNumber),
+              })}
+            </Text>
+            <SmoothPinCodeInput
+              codeLength={6}
+              value={code}
+              onTextChange={(pinCode) => [
+                setCode(pinCode),
+                setErrorCode(false),
+              ]}
+              animated={false}
+              cellSpacing={10}
+              textStyle={
+                errorCode ? styles.formPinTextError : styles.formPinText
+              }
+              containerStyle={[styles.formPinContainer, styles.marginBottom]}
+              cellStyle={[
+                styles.formPinCell,
+                errorCode && styles.formPinCellError,
+              ]}
+              cellStyleFocused={!errorCode && styles.formPinCellFocused}
+              cellStyleFilled={
+                errorCode ? styles.formPinCellError : styles.formPinCellFilled
+              }
+              onFulfill={(verifyCode) => onConfirm(verifyCode)}
+            />
+            {showEmail && (
+              <>
+                <Input
+                  label={translate('common.email')}
+                  placeholder={translate('placeholder.email')}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={(value) => setEmail(value)}
+                  containerStyle={styles.marginBottom}
+                  disabled={count > 0}
+                  renderErrorMessage={errorEmail}
+                  errorMessage={
+                    errorEmail ? translate('error.message.email') : null
+                  }
+                />
+              </>
             )}
+            <View style={[styles.flexRow, styles.marginY]}>
+              <Text>{translate('phone.dont.receive.code')} &nbsp;</Text>
+              {count > 0 ? (
+                <Text>{count}</Text>
+              ) : (
+                <TouchableOpacity onPress={onResent} disabled={isLoading}>
+                  <Text style={styles.hyperlink}>
+                    {translate('phone.resend.code')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+          <Button
+            onPress={() => onConfirm(code)}
+            title={translate('common.confirm')}
+            containerStyle={styles.marginTopLg}
+            disabled={code.length < 6}
+          />
         </View>
       </ScrollView>
     </>
