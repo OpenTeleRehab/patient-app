@@ -24,6 +24,7 @@ const DatePicker = (props) => {
             type: 'material-community',
             color: '#575757',
             onPress: () => onClickIcon(),
+            size: 28,
           }}
           containerStyle={styles.formControlDate}
           inputContainerStyle={styles.noneBorderBottom}
