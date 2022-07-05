@@ -29,17 +29,8 @@ import RNFS from 'react-native-fs';
 import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import {useNetInfo} from '@react-native-community/netinfo';
 
-const calendarHeaderContainerStyle = {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-};
-
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.75);
-const calendarContainer = {
-  height: 120,
-  paddingTop: 10,
-};
 
 const containerPaddingBottom = {
   paddingBottom: 100,
@@ -125,6 +116,7 @@ const Activity = ({theme, navigation}) => {
     ) {
       return {
         dateContainerStyle: styles.dateContainerSelected,
+        highlightDateNumberStyle: styles.highlightDateNumberSelected,
       };
     }
 
@@ -312,15 +304,15 @@ const Activity = ({theme, navigation}) => {
           selectedDate={selectedDate}
           markedDates={markedDates}
           scrollable={true}
-          dateNumberStyle={[styles.fontBold, styles.textDefault]}
-          dateNameStyle={styles.textDefault}
+          dateNumberStyle={styles.dateNumber}
+          dateNameStyle={styles.dateName}
           weekendDateNameStyle={styles.textLight}
           weekendDateNumberStyle={styles.textLight}
-          highlightDateNumberStyle={[styles.fontBold, styles.textLight]}
+          highlightDateNumberStyle={styles.highlightDateNumber}
           highlightDateNameStyle={styles.textLight}
-          style={calendarContainer}
-          calendarHeaderStyle={[styles.fontBold, styles.marginLeft]}
-          calendarHeaderContainerStyle={calendarHeaderContainerStyle}
+          style={styles.calendarContainer}
+          calendarHeaderStyle={styles.calendarHeader}
+          calendarHeaderContainerStyle={styles.calendarHeaderContainer}
           customDatesStyles={customDatesStylesFunc}
           leftSelector={[]}
           rightSelector={[]}

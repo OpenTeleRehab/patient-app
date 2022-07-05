@@ -50,7 +50,11 @@ const AppointmentCard = ({appointment, style, theme}) => {
       <ListItem.Content>
         <View style={styles.appointmentListRightContent}>
           <Text
-            style={[styles.fontBold, styles.textWarning, additionTextStyle]}>
+            style={[
+              styles.fontWeightBold,
+              styles.textWarning,
+              additionTextStyle,
+            ]}>
             {moment.utc(appointment.start_date).local().format('hh:mm A')}
             {' - '}
             {moment.utc(appointment.end_date).local().format('hh:mm A')}
@@ -59,7 +63,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
           <Text style={additionTextStyle}>
             {translate('appointment.appointment_with')}
           </Text>
-          <Text style={[styles.fontBold, additionTextStyle]}>
+          <Text style={[styles.fontWeightBold, additionTextStyle]}>
             {getTherapistName(appointment.therapist_id, therapists)}
           </Text>
           <View
@@ -69,7 +73,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
               !(appointment.note && appointment.note.trim() !== '') &&
                 styles.appointmentStatusAdditionalSpace,
             ]}>
-            <Text style={[styles.fontBold, statusTextStyle]}>
+            <Text style={[styles.fontWeightBold, statusTextStyle]}>
               {translate(statusText)}
             </Text>
             {!appointment.created_by_therapist && (

@@ -29,12 +29,12 @@ export default {
   headerLeftTitleLight: {
     color: variables.white,
     fontSize: 24,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   headerLeftTitleDark: {
     color: variables.dark,
     fontSize: 24,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   headerCenterTitleLight: {
     color: variables.white,

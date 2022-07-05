@@ -10,7 +10,7 @@ export default {
   },
   chatDay: {
     color: variables.grey,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   chatBubbleLeft: {
     backgroundColor: variables.white,

@@ -114,7 +114,6 @@ const About = ({navigation}) => {
                 <HTML
                   source={{html: aboutPage.content}}
                   contentWidth={contentWidth}
-                  baseFontStyle={styles.fontBase}
                   tagsStyles={tagsStyles}
                   listsPrefixesRenderers={{
                     ol: (
@@ -161,7 +160,7 @@ const About = ({navigation}) => {
               <View style={footerStyle}>
                 <Text
                   style={[
-                    styles.fontBold,
+                    styles.fontWeightBold,
                     styles.fontSizeMd,
                     {color: aboutPage.text_color},
                   ]}>

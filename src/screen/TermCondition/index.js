@@ -57,7 +57,6 @@ const TermCondition = ({navigation}) => {
               <HTML
                 source={{html: termOfService.content}}
                 contentWidth={contentWidth}
-                baseFontStyle={styles.fontBase}
                 tagsStyles={tagsStyles}
                 listsPrefixesRenderers={{
                   ol: (

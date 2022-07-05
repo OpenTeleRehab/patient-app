@@ -30,7 +30,6 @@ const TermOfServiceDetail = ({navigation}) => {
             <HTML
               source={{html: termContent.content}}
               contentWidth={contentWidth}
-              baseFontStyle={styles.fontBase}
               tagsStyles={tagsStyles}
             />
           ) || translate('term.of.service.not_found')}

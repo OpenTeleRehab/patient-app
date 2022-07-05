@@ -162,7 +162,7 @@ const UserProfile = ({navigation}) => {
         </ListItem>
         <ListItem bottomDivider>
           <ListItem.Content>
-            <ListItem.Title style={styles.fontBold}>
+            <ListItem.Title style={styles.fontWeightBold}>
               {user.value}
             </ListItem.Title>
           </ListItem.Content>

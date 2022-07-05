@@ -8,17 +8,7 @@ export default {
     color: variables.white,
     fontSize: variables.fontSizeMd,
   },
-  fontBase: {
-    fontFamily: variables.fontFamilyBase,
-    fontWeight: variables.fontWeightBase,
-  },
-  fontBold: {
-    fontFamily: variables.fontFamilyBold,
-    fontWeight: variables.fontWeightBold,
-  },
   htmlHeadingTag: {
-    fontFamily: variables.fontFamilyBold,
-    fontWeight: variables.fontWeightBold,
     paddingBottom: variables.spacingMd,
   },
   fontSizeMd: {

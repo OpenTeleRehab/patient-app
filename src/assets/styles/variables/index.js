@@ -6,11 +6,9 @@ import colors from './colors';
 export default {
   ...colors,
   fontSizeBase: 16,
-  fontFamilyBase: 'Nunito-Regular',
-  fontFamilyLight: 'Nunito-Light',
-  fontFamilyBold: 'Nunito-Bold',
-  fontWeightBase: '400',
   fontWeightLight: '300',
+  fontWeightDefault: '400',
+  fontWeightMedium: '500',
   fontWeightBold: '600',
   get fontSizeSm() {
     return this.fontSizeBase - 2;

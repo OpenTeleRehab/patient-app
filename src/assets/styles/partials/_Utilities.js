@@ -24,11 +24,11 @@ export default {
   },
   textDefaultBold: {
     color: variables.black,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   textLightBold: {
     color: variables.white,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   textUpperCase: {
     textTransform: 'uppercase',
