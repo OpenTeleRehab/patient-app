@@ -2,8 +2,10 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 import {
-  ActivityIndicator,
+  Image,
   Alert,
   Dimensions,
   Modal,
@@ -11,18 +13,17 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {Button, Image, Text} from 'react-native-elements';
-
+import {Button, Text} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
-import styles from '../../../assets/styles';
 import VideoPlayer from 'react-native-video-player';
 import RNFS from 'react-native-fs';
+import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
+
+import styles from '../../../assets/styles';
 import {
   getDownloadDirectoryPath,
   getRocketChatAttachmentFilename,
 } from '../../../utils/fileSystem';
-import {useSelector} from 'react-redux';
-import {getTranslate} from 'react-localize-redux';
 
 const styleCarouselContainer = {
   flex: 1,
@@ -32,17 +33,23 @@ const styleCarouselContainer = {
   backgroundColor: '#000',
 };
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const styleMedia = {width: '100%', height: '100%'};
+const mediaSize = {width: '100%', height: '100%'};
+const mediaResizeMode = {resizeMode: 'contain'};
 
 const RenderMediaItem = ({item, index}, currentIndex) => {
   if (item.image !== '') {
     return (
-      <Image
-        source={{uri: item.image}}
-        style={styleMedia}
-        resizeMode="contain"
-        PlaceholderContent={<ActivityIndicator color="#ffffff" size="large" />}
-      />
+      <View style={mediaSize}>
+        <ReactNativeZoomableView
+          maxZoom={2}
+          minZoom={1}
+          movementSensibility={0.5}>
+          <Image
+            style={[mediaSize, mediaResizeMode]}
+            source={{uri: item.image}}
+          />
+        </ReactNativeZoomableView>
+      </View>
     );
   }
 
@@ -52,7 +59,7 @@ const RenderMediaItem = ({item, index}, currentIndex) => {
         autoplay={index === currentIndex}
         video={{uri: item.video}}
         resizeMode="contain"
-        style={styleMedia}
+        style={mediaSize}
         audioOnly={true}
         disableFullscreen={true}
       />
