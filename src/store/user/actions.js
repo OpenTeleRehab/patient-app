@@ -257,3 +257,17 @@ export const enableKidTheme = (accessToken, payload) => async (dispatch) => {
     return false;
   }
 };
+
+export const createFirebaseToken = (accessToken, payload) => async (
+  dispatch,
+) => {
+  dispatch(mutation.userCreateFirebaseTokenRequest());
+
+  let data = await User.createFirebaseToken(accessToken, payload);
+
+  if (data.success) {
+    dispatch(mutation.userCreateFirebaseTokenSuccess(data.data));
+  } else {
+    dispatch(mutation.userCreateFirebaseTokenFailure());
+  }
+};

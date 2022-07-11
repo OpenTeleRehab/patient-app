@@ -22,6 +22,7 @@ import settings from '../../../config/settings';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 import quackerWave from '../../assets/images/quacker-waving.gif';
+import {updateIndicatorList} from '../../store/indicator/actions';
 
 const kidThemeImageStyle = {
   width: 300,
@@ -51,6 +52,7 @@ const Home = ({navigation}) => {
   });
   const isOnline = useNetInfo().isConnected;
   const [kidTheme, setKidTheme] = useState(false);
+  const [todayAppointments, setTodayAppointments] = useState([]);
 
   useEffect(() => {
     if (profile) {
@@ -155,10 +157,26 @@ const Home = ({navigation}) => {
           APPOINTMENT_STATUS.REJECTED,
         ),
     );
+
     if (upComingAppointments.length) {
       setUpComingAppointment(upComingAppointments[0]);
+      // Filter today appointment
+      const appointmentsForToday = upComingAppointments.filter((a) =>
+        moment(a.end_date).isSame(moment(), 'day'),
+      );
+      setTodayAppointments(appointmentsForToday);
     }
   }, [appointments]);
+
+  useEffect(() => {
+    dispatch(
+      updateIndicatorList({
+        hasActivity:
+          todaySummary.all && todaySummary.completed !== todaySummary.all,
+        hasAppointment: todayAppointments.length > 0,
+      }),
+    );
+  }, [dispatch, todayAppointments, todaySummary, upComingAppointment]);
 
   return (
     <>

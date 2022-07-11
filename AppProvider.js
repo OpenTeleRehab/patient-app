@@ -2,12 +2,16 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useCallback, useEffect, useState} from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
-import {setInitialRouteName} from './src/store/user/actions';
-import {ROUTES, STORAGE_KEY} from './src/variables/constants';
+import {
+  createFirebaseToken,
+  setInitialRouteName,
+} from './src/store/user/actions';
+import {CALL_STATUS, ROUTES, STORAGE_KEY} from './src/variables/constants';
 import {getLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
@@ -16,21 +20,24 @@ import {
   initialChatSocket,
   loadHistoryInRoom,
   sendNewMessage,
+  updateMessage,
 } from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
 import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import {
-  getChatRooms,
-  setChatSubscribeIds,
-  postAttachmentMessage,
   clearOfflineMessages,
-  clearVideoCallStatus,
   clearSecondaryVideoCallStatus,
+  clearVideoCallStatus,
+  getChatRooms,
+  postAttachmentMessage,
+  setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
-import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
+import RNCallKeep from 'react-native-callkeep';
+import uuid from 'react-native-uuid';
 import {Alert} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
 import store from './src/store';
 import {forceLogout} from './src/store/auth/actions';
 import {
@@ -39,12 +46,15 @@ import {
   completeQuestionnaire,
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
+import messaging from '@react-native-firebase/messaging';
 
 let chatSocket = null;
+let remoteMessageData = null;
+let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
-  const {accessToken, profile, isDataUpToDate} = useSelector(
+  const {accessToken, firebaseToken, profile, isDataUpToDate} = useSelector(
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
@@ -66,6 +76,7 @@ const AppProvider = ({children}) => {
   const [timespan, setTimespan] = useState('');
   const [language, setLanguage] = useState(undefined);
   const isOnline = useNetInfo().isConnected;
+  const callUUID = uuid.v4();
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
@@ -75,6 +86,81 @@ const AppProvider = ({children}) => {
 
     const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
     setLanguage(lang);
+  }, []);
+
+  const answerCall = () => {
+    if (remoteMessageData != null) {
+      isAnswerCall = true;
+
+      const message = {
+        _id: remoteMessageData._id,
+        rid: remoteMessageData.rid,
+        msg: CALL_STATUS.ACCEPTED,
+      };
+
+      updateMessage(chatSocket, message, profile.id);
+    }
+
+    RNCallKeep.endCall(remoteMessageData.rid);
+  };
+
+  const endCall = () => {
+    if (remoteMessageData != null && !_.isEmpty(profile) && !isAnswerCall) {
+      const message = {
+        _id: remoteMessageData._id,
+        rid: remoteMessageData.rid,
+        msg: remoteMessageData.body.includes('audio')
+          ? CALL_STATUS.AUDIO_MISSED
+          : CALL_STATUS.VIDEO_MISSED,
+      };
+
+      updateMessage(chatSocket, message, profile.id);
+    }
+
+    RNCallKeep.endCall(remoteMessageData.rid);
+  };
+
+  useEffect(() => {
+    const options = {
+      ios: {
+        appName: 'PatientApp',
+      },
+      android: {
+        alertTitle: 'Permissions required',
+        alertDescription:
+          'This application needs to access your phone accounts',
+        cancelButton: 'Cancel',
+        okButton: 'ok',
+        additionalPermissions: [],
+      },
+    };
+
+    RNCallKeep.setup(options);
+  }, []);
+
+  useEffect(() => {
+    return messaging().onMessage(async (remoteMessage) => {
+      if (!_.isEmpty(remoteMessage.data) && !accessToken) {
+        isAnswerCall = false;
+        remoteMessageData = remoteMessage.data;
+        RNCallKeep.displayIncomingCall(
+          remoteMessage.data.rid,
+          translate('video_call_starting'),
+          remoteMessage.data.title,
+        );
+      }
+    });
+  }, [callUUID, translate, accessToken]);
+
+  useEffect(() => {
+    RNCallKeep.addEventListener('answerCall', answerCall);
+    RNCallKeep.addEventListener('endCall', endCall);
+
+    return () => {
+      RNCallKeep.removeEventListener('answerCall', answerCall);
+      RNCallKeep.removeEventListener('endCall', endCall);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -122,19 +208,20 @@ const AppProvider = ({children}) => {
   useEffect(() => {
     if (
       isOnline &&
-      !loading &&
-      accessToken &&
-      profile.chat_user_id &&
-      profile.chat_rooms
+      profile.identity &&
+      profile.chat_password &&
+      chatSocket === null
     ) {
       const subscribeIds = {
         loginId: getUniqueId(profile.id),
         roomMessageId: getUniqueId(profile.id),
         notifyLoggedId: getUniqueId(profile.id),
       };
+
       dispatch(clearVideoCallStatus());
       dispatch(clearSecondaryVideoCallStatus());
       dispatch(setChatSubscribeIds(subscribeIds));
+
       chatSocket = initialChatSocket(
         dispatch,
         subscribeIds,
@@ -142,7 +229,7 @@ const AppProvider = ({children}) => {
         profile.chat_password,
       );
     }
-  }, [isOnline, dispatch, loading, accessToken, profile]);
+  }, [dispatch, isOnline, profile]);
 
   useEffect(() => {
     if (chatAuth !== undefined) {
@@ -213,6 +300,18 @@ const AppProvider = ({children}) => {
       dispatch(completeGoal(offlineGoals));
     }
   }, [dispatch, accessToken, isOnline, offlineGoals]);
+
+  useEffect(() => {
+    if (accessToken && (firebaseToken === undefined || firebaseToken === '')) {
+      messaging()
+        .getToken()
+        .then((fcmToken) => {
+          if (fcmToken && fcmToken !== firebaseToken) {
+            dispatch(createFirebaseToken(accessToken, fcmToken));
+          }
+        });
+    }
+  }, [dispatch, accessToken, firebaseToken]);
 
   return loading ? (
     <SplashScreen />

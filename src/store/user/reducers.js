@@ -124,6 +124,13 @@ export const user = (state = initialState, action) => {
       return state;
     }
     case 'ENABLE_KID_THEME_FAILED':
+    case 'USER_CREATE_FIREBASE_TOKEN_REQUEST':
+    case 'USER_CREATE_FIREBASE_TOKEN_SUCCESS': {
+      return Object.assign({}, state, {
+        firebaseToken: action.firebase_token,
+      });
+    }
+    case 'USER_CREATE_FIREBASE_TOKEN_FAILED':
     default:
       return state;
   }

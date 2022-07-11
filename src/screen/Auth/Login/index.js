@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -24,8 +24,6 @@ import kidLogo from '../../../assets/images/quacker-pincode.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
-import {chatLogout, unSubscribeEvent} from '../../../utils/rocketchat';
-import RocketchatContext from '../../../context/RocketchatContext';
 import {getCountryRequest} from '../../../store/country/actions';
 import formatPhoneNumber from '../../../utils/phoneNumber';
 import {getPhoneRequest} from '../../../store/phone/actions';
@@ -36,28 +34,17 @@ const containerStyle = {
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
-  const chatSocket = useContext(RocketchatContext);
   const [code, setCode] = useState('');
   const localize = useSelector((state) => state.localize);
   const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const {phone, countryCode, dial_code} = useSelector((state) => state.user);
-  const {isChatConnected} = useSelector((state) => state.indicator);
-  const {subscribeIds} = useSelector((state) => state.rocketchat);
   const {pin} = useSelector((state) => state.user);
   const [errorCode, setErrorCode] = useState(false);
 
   useEffect(() => {
     dispatch(getCountryRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isChatConnected && chatSocket !== null) {
-      unSubscribeEvent(chatSocket, subscribeIds.roomMessageId);
-      unSubscribeEvent(chatSocket, subscribeIds.notifyLoggedId);
-      chatLogout(chatSocket, subscribeIds.loginId);
-    }
-  }, [chatSocket, dispatch, isChatConnected, subscribeIds]);
 
   const handleLogin = (passCode) => {
     dispatch(getPhoneRequest({phone: phone})).then((result) => {

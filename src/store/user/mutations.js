@@ -258,6 +258,25 @@ const enableKidThemeFailure = () => {
   };
 };
 
+const userCreateFirebaseTokenRequest = () => {
+  return {
+    type: 'USER_CREATE_FIREBASE_TOKEN_REQUEST',
+  };
+};
+
+const userCreateFirebaseTokenSuccess = (data) => {
+  return {
+    type: 'USER_CREATE_FIREBASE_TOKEN_SUCCESS',
+    data,
+  };
+};
+
+const userCreateFirebaseTokenFailure = () => {
+  return {
+    type: 'USER_CREATE_FIREBASE_TOKEN_FAILED',
+  };
+};
+
 export const mutation = {
   userRegisterRequest,
   userRegisterSuccess,
@@ -299,4 +318,7 @@ export const mutation = {
   enableKidThemeRequest,
   enableKidThemeSuccess,
   enableKidThemeFailure,
+  userCreateFirebaseTokenRequest,
+  userCreateFirebaseTokenSuccess,
+  userCreateFirebaseTokenFailure,
 };
