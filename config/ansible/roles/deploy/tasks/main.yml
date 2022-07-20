@@ -22,11 +22,17 @@
     dest: '{{ workspace }}/{{ android_build_path }}/app/release-key.keystore'
 
 - name: Build Android apk release app
-  shell: 'JAVA_HOME=/usr/lib/jvm/java-10-openjdk-amd64 ./gradlew assembleRelease'
+  shell: 'JAVA_HOME=/usr/lib/jvm/java-10-openjdk-amd64 ./gradlew {{ item }}'
   args:
     chdir: '{{ workspace }}/{{ android_build_path }}'
+  loop:
+      - assembleRelease
+      - bundleRelease
 
 - name: Copy release apk file to packages server
-  shell: 'scp {{ android_apk_file }} dmz:{{ android_release_path }}/{{ android_apk_release_file }}'
+  shell: 'scp {{ item }}'
   args:
     chdir: '{{ workspace }}'
+  loop:
+      - {{ android_apk_file }} dmz:{{ android_release_path }}/{{ android_apk_release_file }}
+      - {{ android_aab_file }} dmz:{{ android_release_path }}/{{ android_aab_release_file }}

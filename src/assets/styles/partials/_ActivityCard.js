@@ -27,7 +27,7 @@ export default {
   activityCardFooterText: {
     color: variables.white,
     fontSize: variables.fontSizeBase,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
     paddingTop: 3,
   },
   activityCardText: {
@@ -74,7 +74,6 @@ export default {
   activityTotalNumberText: {
     fontSize: 18,
     padding: 3,
-    fontFamily: variables.fontFamilyBase,
   },
   activityCardVideo: {
     height: 250,
@@ -91,7 +90,7 @@ export default {
   },
   cardWithIconHeaderTitle: {
     fontSize: variables.fontSizeMd,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   educationMaterialDownloadWrapper: {
     padding: variables.spacingMd,
@@ -103,7 +102,7 @@ export default {
   },
   activityEntryTitle: {
     fontSize: 20,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   activityCardSpeakerIcon: {
     marginTop: 6,

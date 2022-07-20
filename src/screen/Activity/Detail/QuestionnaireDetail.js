@@ -162,7 +162,9 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
     <>
       <HeaderBar
         leftContent={
-          <Text numberOfLines={1} style={[styles.fontSizeXLg, styles.fontBold]}>
+          <Text
+            numberOfLines={1}
+            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
             {questionnaire.title}
             {!!questionnaire.completed && (
               <Icon

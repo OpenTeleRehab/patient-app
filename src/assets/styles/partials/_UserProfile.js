@@ -10,7 +10,7 @@ export default {
   listStyle: {
     color: variables.black,
     fontSize: variables.fontSizeMd,
-    fontFamily: variables.fontFamilyBold,
+    fontWeight: variables.fontWeightBold,
   },
   listHeight: {
     height: 48,

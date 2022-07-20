@@ -11,15 +11,11 @@ const pickerStyles = {
     paddingVertical: 10,
     color: 'black',
     fontSize: 17,
-    fontFamily: 'Nunito-Regular',
-    fontWeight: '400',
   },
   inputAndroid: {
     paddingVertical: 10,
     color: 'black',
     fontSize: 17,
-    fontFamily: 'Nunito-Regular',
-    fontWeight: '400',
   },
   iconContainer: {
     top: Platform.OS === 'android' ? 12 : 10,

@@ -46,9 +46,7 @@ const DrawerNavigator = ({navProps}) => {
             styles.flexCenter,
             styles.justifyContentSpaceAround,
           ]}>
-          <Text style={[styles.width70, styles.fontBase]}>
-            {translate('common.theme.kid')}
-          </Text>
+          <Text style={styles.width70}>{translate('common.theme.kid')}</Text>
           <Switch
             trackColor={{false: '#767577', true: '#0077C8'}}
             thumbColor={'#ffffff'}
@@ -64,7 +62,7 @@ const DrawerNavigator = ({navProps}) => {
                 key={index}
                 focused={state.routeNames[state.index] === route.name}
                 label={translate(route.label)}
-                labelStyle={[styles.textDefault, styles.fontBase]}
+                labelStyle={styles.textDefault}
                 onPress={() => handleNavigate(route)}
                 icon={({focused, size, color}) => (
                   <FIcon name={route.icon} color={color} size={size} />

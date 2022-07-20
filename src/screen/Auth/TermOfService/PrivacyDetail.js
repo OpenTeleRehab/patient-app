@@ -30,7 +30,6 @@ const TermOfServiceDetail = ({navigation}) => {
             <HTML
               source={{html: privacyContent && privacyContent.content}}
               contentWidth={contentWidth}
-              baseFontStyle={styles.fontBase}
               tagsStyles={tagsStyles}
             />
           ) || translate('privacy.policy.not_found')}

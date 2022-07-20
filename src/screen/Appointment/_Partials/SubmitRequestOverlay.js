@@ -229,7 +229,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       <View>
         <Text
           style={[
-            styles.fontBold,
+            styles.fontWeightBold,
             styles.leadText,
             styles.textDefault,
             styles.marginBottomMd,

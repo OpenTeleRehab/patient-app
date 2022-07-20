@@ -22,7 +22,6 @@ const containerStyle = {
 const listStyle = {
   paddingLeft: 5,
   paddingRight: 5,
-  fontFamily: 'Nunito-Bold',
 };
 const olStyle = {
   fontSize: 15,
@@ -62,7 +61,6 @@ const PrivacyPolicy = ({navigation}) => {
                 <HTML
                   source={{html: privacyPolicy.content}}
                   contentWidth={contentWidth}
-                  baseFontStyle={styles.fontBase}
                   tagsStyles={tagsStyles}
                   listsPrefixesRenderers={{
                     ol: (

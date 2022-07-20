@@ -132,17 +132,17 @@ const AppointmentDetail = ({route, navigation}) => {
         }}
       />
       <ScrollView style={styles.mainContainerLight}>
-        <Text style={[styles.fontBold, styles.textPrimary]}>
+        <Text style={[styles.fontWeightBold, styles.textPrimary]}>
           {moment.utc(appointment.start_date).local().format('DD MMM YYYY')}
         </Text>
-        <Text style={[styles.fontBold, styles.textWarning]}>
+        <Text style={[styles.fontWeightBold, styles.textWarning]}>
           {moment.utc(appointment.start_date).local().format('hh:mm A')}
           {' - '}
           {moment.utc(appointment.end_date).local().format('hh:mm A')}
         </Text>
         <Divider style={styles.marginY} />
         <Text>{translate('appointment.appointment_with')}</Text>
-        <Text style={styles.fontBold}>
+        <Text style={styles.fontWeightBold}>
           {getTherapistName(appointment.therapist_id, therapists)}
         </Text>
         {appointment.note && appointment.note.trim() !== '' && (

@@ -9,7 +9,7 @@ import styles from '../../../assets/styles';
 const ChatTypeText = ({chatData, translate}) => {
   const {text, isVideoCall} = chatData.currentMessage;
   let msgText = text;
-  let textStyle = [styles.textDefault, styles.fontBase];
+  let textStyle = styles.textDefault;
   if (isVideoCall) {
     if (
       text === CALL_STATUS.AUDIO_MISSED ||
@@ -17,7 +17,7 @@ const ChatTypeText = ({chatData, translate}) => {
       text === CALL_STATUS.BUSY
     ) {
       msgText = translate(text);
-      textStyle = [styles.textDanger, styles.fontBase];
+      textStyle = styles.textDanger;
     } else if (
       text === CALL_STATUS.AUDIO_STARTED ||
       text === CALL_STATUS.VIDEO_STARTED
@@ -32,12 +32,7 @@ const ChatTypeText = ({chatData, translate}) => {
   }
   chatData.currentMessage.text = msgText;
 
-  return (
-    <MessageText
-      {...chatData}
-      textStyle={{left: textStyle, right: styles.fontBase}}
-    />
-  );
+  return <MessageText {...chatData} textStyle={{left: textStyle}} />;
 };
 
 export default ChatTypeText;

@@ -24,10 +24,6 @@ const ChatContainer = ({
         renderBubble={() => (
           <Bubble
             {...chatData}
-            timeTextStyle={{
-              left: styles.fontBase,
-              right: styles.fontBase,
-            }}
             wrapperStyle={{
               left: styles.chatBubbleLeft,
               right: styles.chatBubbleRight,
@@ -57,7 +53,7 @@ const ChatContainer = ({
         renderDay={() => (
           <Day
             {...chatData}
-            textStyle={[styles.chatDay, styles.fontBase]}
+            textStyle={styles.chatDay}
             dateFormat={settings.format.date}
           />
         )}

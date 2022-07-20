@@ -135,7 +135,7 @@ const Appointment = ({navigation}) => {
 
         {groupedAppointments.map((group, index) => (
           <View key={index}>
-            <Text style={[styles.fontBold, styles.marginBottom]}>
+            <Text style={[styles.fontWeightBold, styles.marginBottom]}>
               {group.month}
             </Text>
             {group.appointments.map((appointment, i) => (
@@ -165,7 +165,7 @@ const Appointment = ({navigation}) => {
                     netInfo.type !== 'unknown' && netInfo.isConnected === false
                       ? styles.textLightGrey
                       : styles.textLight,
-                    styles.fontBold,
+                    styles.fontWeightBold,
                   ]}>
                   {translate('appointment.show_more', {
                     number: listInfo.total_count - currentPage * pageSize,

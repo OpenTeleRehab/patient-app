@@ -1,9 +1,9 @@
 import styles from '../assets/styles';
 
 export const tagsStyles = {
-  p: [styles.fontBase, styles.marginBottomMd],
-  ul: [styles.fontBase, styles.marginBottomMd],
-  ol: [styles.fontBase, styles.marginBottomMd],
+  p: styles.marginBottomMd,
+  ul: styles.marginBottomMd,
+  ol: styles.marginBottomMd,
   h1: styles.htmlHeadingTag,
   h2: styles.htmlHeadingTag,
   h3: styles.htmlHeadingTag,

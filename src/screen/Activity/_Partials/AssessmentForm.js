@@ -180,15 +180,10 @@ const AssessmentForm = ({
                       step: step + '/2',
                     }).toUpperCase()}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontBold]}>
+                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
                     {translate('activity.pain_level.question')}
                   </Text>
-                  <Text
-                    style={[
-                      styles.fontBase,
-                      styles.paddingMd,
-                      styles.textCenter,
-                    ]}>
+                  <Text style={[styles.paddingMd, styles.textCenter]}>
                     {translate('activity.pain_level.description')}
                   </Text>
                 </View>
@@ -238,7 +233,7 @@ const AssessmentForm = ({
                     step: step + '/2',
                   }).toUpperCase()}
                 </Text>
-                <Text style={[styles.fontSizeXLg, styles.fontBold]}>
+                <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
                   {translate('activity.sets_reps.completed_label')}
                 </Text>
                 <Text style={[styles.paddingMd, styles.textCenter]}>
@@ -249,7 +244,7 @@ const AssessmentForm = ({
                 <View>
                   <Text
                     style={[
-                      styles.fontBold,
+                      styles.fontWeightBold,
                       styles.fontSizeMd,
                       styles.textCenter,
                     ]}>
@@ -272,7 +267,6 @@ const AssessmentForm = ({
                   />
                   <Text
                     style={[
-                      styles.fontBase,
                       styles.fontSizeMd,
                       styles.marginTop,
                       styles.textLightGrey,
@@ -285,7 +279,7 @@ const AssessmentForm = ({
                 <View>
                   <Text
                     style={[
-                      styles.fontBold,
+                      styles.fontWeightBold,
                       styles.fontSizeMd,
                       styles.textCenter,
                     ]}>
@@ -308,7 +302,6 @@ const AssessmentForm = ({
                   />
                   <Text
                     style={[
-                      styles.fontBase,
                       styles.fontSizeMd,
                       styles.marginTop,
                       styles.textLightGrey,
@@ -331,15 +324,10 @@ const AssessmentForm = ({
                       step: step + '/2',
                     }).toUpperCase()}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontBold]}>
+                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
                     {translate('activity.pain_level.question')}
                   </Text>
-                  <Text
-                    style={[
-                      styles.fontBase,
-                      styles.paddingMd,
-                      styles.textCenter,
-                    ]}>
+                  <Text style={[styles.paddingMd, styles.textCenter]}>
                     {translate('activity.pain_level.description')}
                   </Text>
                 </View>
@@ -387,15 +375,10 @@ const AssessmentForm = ({
                       step: step + '/2',
                     }).toUpperCase()}
                   </Text>
-                  <Text style={[styles.fontSizeXLg, styles.fontBold]}>
+                  <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>
                     {translate('activity.sets_reps.completed_label')}
                   </Text>
-                  <Text
-                    style={[
-                      styles.fontBase,
-                      styles.paddingMd,
-                      styles.textCenter,
-                    ]}>
+                  <Text style={[styles.paddingMd, styles.textCenter]}>
                     {translate('activity.sets_reps.completed_description')}
                   </Text>
                 </View>
@@ -404,7 +387,7 @@ const AssessmentForm = ({
                   <View>
                     <Text
                       style={[
-                        styles.fontBold,
+                        styles.fontWeightBold,
                         styles.fontSizeMd,
                         styles.textCenter,
                       ]}>
@@ -427,7 +410,6 @@ const AssessmentForm = ({
                     />
                     <Text
                       style={[
-                        styles.fontBase,
                         styles.fontSizeMd,
                         styles.marginTop,
                         styles.textLightGrey,
@@ -438,12 +420,7 @@ const AssessmentForm = ({
                     </Text>
                   </View>
                   <View>
-                    <Text
-                      style={[
-                        styles.fontBold,
-                        styles.fontSizeMd,
-                        styles.textCenter,
-                      ]}>
+                    <Text style={[styles.fontSizeMd, styles.textCenter]}>
                       {translate('activity.reps')}
                     </Text>
                     <ScrollPicker
@@ -463,7 +440,6 @@ const AssessmentForm = ({
                     />
                     <Text
                       style={[
-                        styles.fontBase,
                         styles.fontSizeMd,
                         styles.marginTop,
                         styles.textLightGrey,
@@ -544,7 +520,7 @@ const AssessmentForm = ({
             )}
             <Text
               style={[
-                styles.fontBold,
+                styles.fontWeightBold,
                 styles.textCenter,
                 styles.marginBottomMd,
                 styles.marginTopMd,

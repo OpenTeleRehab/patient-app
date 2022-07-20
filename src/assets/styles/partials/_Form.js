@@ -10,8 +10,7 @@ export default {
   formLabel: {
     color: variables.black,
     fontSize: variables.fontSizeSm,
-    fontFamily: variables.fontFamilyBold,
-    fontWeight: variables.fontWeightBold,
+    fontWeight: variables.fontWeightMedium,
     marginBottom: variables.spacingBase,
   },
   formControl: {
@@ -39,8 +38,6 @@ export default {
   formPinText: {
     color: variables.primary,
     fontSize: 24,
-    fontFamily: variables.fontFamilyBase,
-    fontWeight: variables.fontWeightBase,
   },
   formPinCustomMask: {
     width: 14,

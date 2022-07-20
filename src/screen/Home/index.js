@@ -204,7 +204,11 @@ const Home = ({navigation}) => {
                       {translate('common.completed')}
                     </Text>
                     <Text style={styles.progressTextStyle}>
-                      <Text style={[styles.progressTextStyle, styles.fontBold]}>
+                      <Text
+                        style={[
+                          styles.progressTextStyle,
+                          styles.fontWeightBold,
+                        ]}>
                         {todaySummary.completed}
                       </Text>
                       /{todaySummary.all}
@@ -229,7 +233,7 @@ const Home = ({navigation}) => {
             </Text>
             <Button
               title={translate('common.start')}
-              titleStyle={[styles.textPrimary, styles.fontBold]}
+              titleStyle={[styles.textPrimary, styles.fontWeightBold]}
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}
               containerStyle={[styles.marginTopMd]}
               buttonStyle={styles.bgLight}

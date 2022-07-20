@@ -12,23 +12,10 @@ import VideoCall from './src/components/VideoCall';
 import {PersistGate} from 'redux-persist/integration/react';
 import store, {persistor} from './src/store';
 
-const fontBase = 'Nunito-Regular';
-const fontWeightBase = '400';
-
 export const theme = {
   colors,
-  Text: {
-    style: {
-      fontFamily: fontBase,
-      fontWeight: fontWeightBase,
-    },
-  },
   Button: {
     raised: false,
-    titleStyle: {
-      fontFamily: fontBase,
-      fontWeight: fontWeightBase,
-    },
     buttonStyle: {
       borderRadius: 8,
       paddingHorizontal: 30,
@@ -58,12 +45,6 @@ export const theme = {
       height: 10,
     },
     minimumTrackTintColor: colors.primary,
-  },
-  Input: {
-    inputStyle: {
-      fontFamily: fontBase,
-      fontWeight: fontWeightBase,
-    },
   },
 };
 

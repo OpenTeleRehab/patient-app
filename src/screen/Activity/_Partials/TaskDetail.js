@@ -182,7 +182,7 @@ const TaskDetail = ({
         )}
         {activity.additional_fields?.map((additionalField, index) => (
           <View key={index} style={styles.marginBottomMd}>
-            <Text style={[styles.fontSizeMd, styles.fontBold]}>
+            <Text style={[styles.fontSizeMd, styles.fontWeightBold]}>
               {additionalField.field}
             </Text>
             <Text style={styles.marginTop}>{additionalField.value}</Text>
