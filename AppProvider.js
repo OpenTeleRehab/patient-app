@@ -12,7 +12,7 @@ import {
   setInitialRouteName,
 } from './src/store/user/actions';
 import {CALL_STATUS, ROUTES, STORAGE_KEY} from './src/variables/constants';
-import {getLocalData} from './src/utils/local_storage';
+import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
@@ -49,7 +49,6 @@ import {updateIndicatorList} from './src/store/indicator/actions';
 import messaging from '@react-native-firebase/messaging';
 
 let chatSocket = null;
-let remoteMessageData = null;
 let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
@@ -86,44 +85,52 @@ const AppProvider = ({children}) => {
 
     const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
     setLanguage(lang);
+
+    await messaging().requestPermission();
   }, []);
 
-  const answerCall = () => {
-    if (remoteMessageData != null) {
+  const answerCall = async () => {
+    const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+    if (!_.isEmpty(callInfo)) {
       isAnswerCall = true;
 
       const message = {
-        _id: remoteMessageData._id,
-        rid: remoteMessageData.rid,
+        _id: callInfo._id,
+        rid: callInfo.rid,
         msg: CALL_STATUS.ACCEPTED,
       };
-
       updateMessage(chatSocket, message, profile.id);
-    }
 
-    RNCallKeep.endCall(remoteMessageData.rid);
+      RNCallKeep.endCall(callInfo.callUUID);
+    }
   };
 
-  const endCall = () => {
-    if (remoteMessageData != null && !_.isEmpty(profile) && !isAnswerCall) {
+  const endCall = async () => {
+    const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+    if (!_.isEmpty(callInfo) && !_.isEmpty(profile) && !isAnswerCall) {
       const message = {
-        _id: remoteMessageData._id,
-        rid: remoteMessageData.rid,
-        msg: remoteMessageData.body.includes('audio')
+        _id: callInfo._id,
+        rid: callInfo.rid,
+        msg: callInfo.body.includes('audio')
           ? CALL_STATUS.AUDIO_MISSED
           : CALL_STATUS.VIDEO_MISSED,
       };
 
       updateMessage(chatSocket, message, profile.id);
-    }
 
-    RNCallKeep.endCall(remoteMessageData.rid);
+      RNCallKeep.endCall(callInfo.callUUID);
+      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+    }
   };
 
   useEffect(() => {
     const options = {
       ios: {
         appName: 'PatientApp',
+        imageName: 'sim_icon',
+        supportsVideo: true,
+        maximumCallGroups: '1',
+        maximumCallsPerCallGroup: '1',
       },
       android: {
         alertTitle: 'Permissions required',
@@ -142,7 +149,6 @@ const AppProvider = ({children}) => {
     return messaging().onMessage(async (remoteMessage) => {
       if (!_.isEmpty(remoteMessage.data) && !accessToken) {
         isAnswerCall = false;
-        remoteMessageData = remoteMessage.data;
         RNCallKeep.displayIncomingCall(
           remoteMessage.data.rid,
           translate('video_call_starting'),
