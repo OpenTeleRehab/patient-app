@@ -4,14 +4,15 @@
 export const initialState = {
   profile: {},
   accessToken: '',
+  firebaseToken: '',
   initialRouteName: '',
-  isLoading: false,
   termOfService: {},
   privacyPolicy: {},
   dial_code: undefined,
   phone: '',
   countryCode: '',
   pin: '',
+  isLoading: false,
   isNewRegister: false,
   isDataUpToDate: true,
 };

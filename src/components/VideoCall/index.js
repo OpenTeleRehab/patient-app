@@ -18,7 +18,7 @@ const VideoCall = ({theme}) => {
   const {videoCall, secondaryVideoCall} = useSelector(
     (state) => state.rocketchat,
   );
-  const patient = useSelector((state) => state.user.profile);
+  const {profile, accessToken} = useSelector((state) => state.user);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [isVideoOn, setIsVideoOn] = useState(false);
@@ -41,7 +41,7 @@ const VideoCall = ({theme}) => {
       JitsiMeet.endCall();
       setShowModal(false);
     }
-  }, [videoCall]);
+  }, [videoCall, accessToken]);
 
   useEffect(() => {
     if (
@@ -55,7 +55,7 @@ const VideoCall = ({theme}) => {
         rid: secondaryVideoCall.rid,
         msg: CALL_STATUS.BUSY,
       };
-      updateMessage(chatSocket, message, patient.id);
+      updateMessage(chatSocket, message, profile.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [secondaryVideoCall]);
@@ -86,7 +86,7 @@ const VideoCall = ({theme}) => {
       rid: videoCall.rid,
       msg,
     };
-    updateMessage(chatSocket, message, patient.id);
+    updateMessage(chatSocket, message, profile.id);
   };
 
   return (
@@ -101,7 +101,7 @@ const VideoCall = ({theme}) => {
           loadingText={translate('common.loading')}
           roomId={videoCall.rid}
           subject={videoCall.u.name}
-          displayName={`${patient.last_name} ${patient.first_name}`}
+          displayName={`${profile.last_name} ${profile.first_name}`}
         />
       ) : videoCall.status === CALL_STATUS.AUDIO_STARTED ||
         videoCall.status === CALL_STATUS.VIDEO_STARTED ? (

@@ -99,6 +99,15 @@ const enableKidTheme = async (accessToken, payload) => {
   );
 };
 
+const createFirebaseToken = async (accessToken, payload) => {
+  return await callApi(
+    '/auth/create-firebase-token',
+    accessToken,
+    {firebase_token: payload},
+    'post',
+  );
+};
+
 export const User = {
   register,
   verifyPhoneNumber,
@@ -114,4 +123,5 @@ export const User = {
   getPrivacyPolicy,
   acceptPrivacyPolicy,
   enableKidTheme,
+  createFirebaseToken,
 };

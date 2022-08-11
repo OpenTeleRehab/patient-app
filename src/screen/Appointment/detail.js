@@ -19,6 +19,7 @@ import {
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {displayNotification} from '../../utils/appointmentNotification';
 
 const AppointmentDetail = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -95,6 +96,7 @@ const AppointmentDetail = ({route, navigation}) => {
     ).then((res) => {
       setIsLoading(false);
       if (res) {
+        displayNotification(appointment, therapists, translate);
         navigation.navigate(ROUTES.APPOINTMENT);
       }
     });
