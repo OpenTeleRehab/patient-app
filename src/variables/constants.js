@@ -34,6 +34,7 @@ export const STORAGE_KEY = {
   AUTH_INFO: 'AuthInfo',
   LANGUAGE: 'Language',
   TRANSLATE: 'Translate',
+  CALL_INFO: 'CallInfo',
 };
 
 export const ACTIVITY_TYPES = {

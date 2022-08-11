@@ -27,8 +27,11 @@ export const initialChatSocket = (
   let authToken = '';
   const {loginId, roomMessageId, notifyLoggedId} = subscribeIds;
 
+  console.log(subscribeIds);
+
   // register websocket
   const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
+  console.log(socket);
 
   // observer
   socket.onmessage = (e) => {
@@ -73,6 +76,7 @@ export const initialChatSocket = (
         console.error(`Websocket: ${error.reason}`);
       } else if (id === loginId && result) {
         // login success
+        console.log('login success');
 
         // set auth token
         const {token, tokenExpires} = result;

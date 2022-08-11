@@ -90,6 +90,9 @@ __Note:__ If you previously installed a global `react-native-cli`, please remove
      * `patchApkVersion` = 0
      * `classifierApkVersion` = "local"
 
+     Add firebase SDK into `dependencies`
+     * `classpath 'com.google.gms:google-services:4.3.13`
+
 2. Start your local emulator or plug with real mobile device
 
 3. Deploy development app to online testing device(s): `adb devices`

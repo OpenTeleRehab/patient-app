@@ -11,10 +11,7 @@ import {
 } from 'react-native';
 import {Button, Image, withTheme} from 'react-native-elements';
 import Orientation from 'react-native-orientation-locker';
-import {
-  PORTRAIT,
-  LANDSCAPE,
-} from 'react-native-orientation-locker/ScreenOrientation';
+import {PORTRAIT, LANDSCAPE} from 'react-native-orientation-locker';
 import VideoPlayer from 'react-native-video-player';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
