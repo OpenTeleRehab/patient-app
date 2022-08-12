@@ -21,11 +21,14 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     if (remoteMessage.data.body.includes('missed')) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
       RNCallKeep.endCall(callInfo.callUUID);
+      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     } else {
       RNCallKeep.displayIncomingCall(
         callUUID,
         remoteMessage.data.body,
         remoteMessage.data.title,
+        'generic',
+        remoteMessage.data.body.includes('video'),
       );
 
       const callInfo = {

@@ -180,7 +180,8 @@
 		};
 		8B24D12C271ECD9300978E88 /* Resources */ = {
 			isa = PBXGroup;
-			children = ();
+			children = (
+			);
 			name = Resources;
 			sourceTree = "<group>";
 		};
