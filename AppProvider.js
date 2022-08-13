@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useCallback, useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -34,7 +35,6 @@ import {
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from 'react-native-callkeep';
-import uuid from 'react-native-uuid';
 import {Alert} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
@@ -75,7 +75,6 @@ const AppProvider = ({children}) => {
   const [timespan, setTimespan] = useState('');
   const [language, setLanguage] = useState(undefined);
   const isOnline = useNetInfo().isConnected;
-  const callUUID = uuid.v4();
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
@@ -92,6 +91,9 @@ const AppProvider = ({children}) => {
   const answerCall = async () => {
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
     if (!_.isEmpty(callInfo)) {
+      if (Platform.OS === 'android') {
+        RNCallKeep.backToForeground();
+      }
       isAnswerCall = true;
 
       const message = {
@@ -144,19 +146,6 @@ const AppProvider = ({children}) => {
 
     RNCallKeep.setup(options);
   }, []);
-
-  useEffect(() => {
-    return messaging().onMessage(async (remoteMessage) => {
-      if (!_.isEmpty(remoteMessage.data) && !accessToken) {
-        isAnswerCall = false;
-        RNCallKeep.displayIncomingCall(
-          remoteMessage.data.rid,
-          translate('video_call_starting'),
-          remoteMessage.data.title,
-        );
-      }
-    });
-  }, [callUUID, translate, accessToken]);
 
   useEffect(() => {
     RNCallKeep.addEventListener('answerCall', answerCall);
