@@ -34,5 +34,5 @@
   args:
     chdir: '{{ workspace }}'
   loop:
-    - {{ android_apk_file }} dmz:{{ android_release_path }}/{{ android_apk_release_file }}
-    - {{ android_aab_file }} dmz:{{ android_release_path }}/{{ android_aab_release_file }}
+    - '{{ android_apk_file }} dmz:{{ android_release_path }}/{{ android_apk_release_file }}'
+    - '{{ android_aab_file }} dmz:{{ android_release_path }}/{{ android_aab_release_file }}'
