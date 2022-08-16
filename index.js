@@ -69,7 +69,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         };
 
         RNCallKeep.checkPhoneAccountEnabled()
-          .then((test) => {
+          .then(() => {
             let isOnCall = false;
             RNCallKeep.registerPhoneAccount(options);
             RNCallKeep.registerAndroidEvents();

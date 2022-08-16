@@ -14,7 +14,7 @@ target 'PatientApp' do
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
 
-  pod 'RNCallKeep', :path => '../node_modules/react-native-callkeep'
+  pod 'RNCallKeep', :path => '../node_modules/@webessentials/react-native-callkeep'
 
   target 'PatientAppTests' do
     inherit! :complete
