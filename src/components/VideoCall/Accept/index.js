@@ -7,6 +7,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import styles from '../../../assets/styles';
 import settings from '../../../../config/settings';
 import {Platform} from 'react-native';
+import {getLocalData} from '../../../utils/local_storage';
+import {STORAGE_KEY} from '../../../variables/constants';
+import _ from 'lodash';
 
 const AcceptCall = ({
   theme,
@@ -24,9 +27,14 @@ const AcceptCall = ({
   const [jitsiVisible, setJitsiVisible] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
+    setTimeout(async () => {
+      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+      let videoOn = onVideoOn;
+      if (!_.isEmpty(callInfo)) {
+        videoOn = callInfo.body.includes('video');
+      }
       const options = {
-        audioOnly: !onVideoOn,
+        audioOnly: !videoOn,
         audioMuted: onMute,
         videoMuted: onMute,
         subject,

@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useCallback, useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -33,8 +34,7 @@ import {
   setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
-import RNCallKeep from 'react-native-callkeep';
-import uuid from 'react-native-uuid';
+import RNCallKeep from '@webessentials/react-native-callkeep';
 import {Alert} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
@@ -47,15 +47,20 @@ import {
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
 import messaging from '@react-native-firebase/messaging';
+import {getPhoneRequest} from './src/store/phone/actions';
 
 let chatSocket = null;
 let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
-  const {accessToken, firebaseToken, profile, isDataUpToDate} = useSelector(
-    (state) => state.user,
-  );
+  const {
+    accessToken,
+    firebaseToken,
+    profile,
+    isDataUpToDate,
+    phone,
+  } = useSelector((state) => state.user);
   const {messages} = useSelector((state) => state.translation);
   const {
     messages: chatMessages,
@@ -75,7 +80,7 @@ const AppProvider = ({children}) => {
   const [timespan, setTimespan] = useState('');
   const [language, setLanguage] = useState(undefined);
   const isOnline = useNetInfo().isConnected;
-  const callUUID = uuid.v4();
+  const [socket, setSocket] = useState(null);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
@@ -92,6 +97,9 @@ const AppProvider = ({children}) => {
   const answerCall = async () => {
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
     if (!_.isEmpty(callInfo)) {
+      if (Platform.OS === 'android') {
+        RNCallKeep.backToForeground();
+      }
       isAnswerCall = true;
 
       const message = {
@@ -144,19 +152,6 @@ const AppProvider = ({children}) => {
 
     RNCallKeep.setup(options);
   }, []);
-
-  useEffect(() => {
-    return messaging().onMessage(async (remoteMessage) => {
-      if (!_.isEmpty(remoteMessage.data) && !accessToken) {
-        isAnswerCall = false;
-        RNCallKeep.displayIncomingCall(
-          remoteMessage.data.rid,
-          translate('video_call_starting'),
-          remoteMessage.data.title,
-        );
-      }
-    });
-  }, [callUUID, translate, accessToken]);
 
   useEffect(() => {
     RNCallKeep.addEventListener('answerCall', answerCall);
@@ -268,6 +263,58 @@ const AppProvider = ({children}) => {
     selectedRoom,
     offlineMessages,
   ]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      if (socket === null) {
+        dispatch(getPhoneRequest({phone: phone})).then(() => {
+          setSocket(new WebSocket(store.getState().phone.chatWebsocketURL));
+        });
+      } else {
+        socket.onopen = () => {
+          if (
+            isOnline &&
+            profile &&
+            socket &&
+            !!socket.readyState &&
+            profile.id
+          ) {
+            getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
+              getLocalData(STORAGE_KEY.REJECTED_CALL, false).then(
+                (rejectedCall) => {
+                  if (rejectedCall === 'true') {
+                    const message = {
+                      _id: callInfo._id,
+                      rid: callInfo.rid,
+                      msg: callInfo.body.includes('audio')
+                        ? CALL_STATUS.AUDIO_MISSED
+                        : CALL_STATUS.VIDEO_MISSED,
+                    };
+
+                    updateMessage(chatSocket, message, profile.id);
+
+                    RNCallKeep.endCall(callInfo.callUUID);
+                  } else {
+                    if (!_.isEmpty(callInfo)) {
+                      const message = {
+                        _id: callInfo._id,
+                        rid: callInfo.rid,
+                        msg: CALL_STATUS.ACCEPTED,
+                      };
+
+                      isAnswerCall = true;
+
+                      updateMessage(chatSocket, message, profile.id);
+                    }
+                  }
+                },
+              );
+            });
+          }
+        };
+      }
+    }
+  }, [profile, isOnline, dispatch, socket, phone]);
 
   useEffect(() => {
     if (
