@@ -26,13 +26,13 @@
   args:
     chdir: '{{ workspace }}/{{ android_build_path }}'
   loop:
-      - assembleRelease
-      - bundleRelease
+    - assembleRelease
+    - bundleRelease
 
 - name: Copy release apk file to packages server
   shell: 'scp {{ item }}'
   args:
     chdir: '{{ workspace }}'
   loop:
-      - {{ android_apk_file }} dmz:{{ android_release_path }}/{{ android_apk_release_file }}
-      - {{ android_aab_file }} dmz:{{ android_release_path }}/{{ android_aab_release_file }}
+    - {{ android_apk_file }} dmz:{{ android_release_path }}/{{ android_apk_release_file }}
+    - {{ android_aab_file }} dmz:{{ android_release_path }}/{{ android_aab_release_file }}
