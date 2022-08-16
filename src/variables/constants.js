@@ -35,6 +35,7 @@ export const STORAGE_KEY = {
   LANGUAGE: 'Language',
   TRANSLATE: 'Translate',
   CALL_INFO: 'CallInfo',
+  REJECTED_CALL: 'RejectedCall',
 };
 
 export const ACTIVITY_TYPES = {
