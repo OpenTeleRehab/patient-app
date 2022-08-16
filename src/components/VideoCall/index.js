@@ -9,9 +9,10 @@ import {useSelector} from 'react-redux';
 import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import IncomingCall from './Incoming';
 import AcceptCall from './Accept';
-import {CALL_STATUS} from '../../variables/constants';
+import {CALL_STATUS, STORAGE_KEY} from '../../variables/constants';
 import RocketchatContext from '../../context/RocketchatContext';
 import {updateMessage} from '../../utils/rocketchat';
+import {storeLocalData} from '../../utils/local_storage';
 
 const VideoCall = ({theme}) => {
   const chatSocket = useContext(RocketchatContext);
@@ -61,10 +62,12 @@ const VideoCall = ({theme}) => {
   }, [secondaryVideoCall]);
 
   const onAcceptCall = () => {
+    storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
     handleUpdateMessage(CALL_STATUS.ACCEPTED);
   };
 
   const onEndCall = () => {
+    storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
     handleUpdateMessage(
       videoCall.status === CALL_STATUS.VIDEO_ENDED
         ? CALL_STATUS.VIDEO_ENDED
@@ -72,7 +75,8 @@ const VideoCall = ({theme}) => {
     );
   };
 
-  const onDeclineCall = () => {
+  const onDeclineCall = async () => {
+    await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     handleUpdateMessage(
       videoCall.status === CALL_STATUS.VIDEO_MISSED
         ? CALL_STATUS.VIDEO_MISSED

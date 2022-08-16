@@ -129,8 +129,10 @@ export const comparePinNumberRequest = (pin, accessToken) => async (
 
 export const changePinNumberRequest = (pin, phone, accessToken) => async (
   dispatch,
+  getState,
 ) => {
   dispatch(mutation.userChangePinNumberRequest());
+  const {countryCode} = getState().user;
   const data = await User.changePinNumber(pin, accessToken);
   if (data.success) {
     const timespan = moment()
@@ -142,6 +144,7 @@ export const changePinNumberRequest = (pin, phone, accessToken) => async (
       {
         phone,
         timespan,
+        country: countryCode,
       },
       true,
     );
