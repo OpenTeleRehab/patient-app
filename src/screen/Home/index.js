@@ -33,6 +33,7 @@ const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {language} = useSelector((state) => state.translation);
   const {profile} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
@@ -62,8 +63,8 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     if (languages.length) {
-      const language = languages.find((l) => l.id === profile.language_id);
-      moment.locale(language ? language.code : '');
+      const foundLanguage = languages.find((l) => l.id === profile.language_id);
+      moment.locale(foundLanguage ? foundLanguage.code : '');
     }
   }, [languages, profile]);
 
@@ -82,7 +83,7 @@ const Home = ({navigation}) => {
       dispatch(getAppointmentsListRequest({page_size: 10}));
       dispatch(getTreatmentPlanRequest());
     }
-  }, [dispatch, isOnline, offlineQuestionnaireAnswers]);
+  }, [dispatch, isOnline, offlineQuestionnaireAnswers, language]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
