@@ -76,7 +76,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             RNCallKeep.setAvailable(true);
             RNCallKeep.displayIncomingCall(
               callUUID,
-              remoteMessage.data.body,
+              remoteMessage.data.title,
               remoteMessage.data.title,
               'generic',
               remoteMessage.data.body.includes('video'),
