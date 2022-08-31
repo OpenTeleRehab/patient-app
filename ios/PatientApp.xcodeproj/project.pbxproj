@@ -733,7 +733,7 @@
 				CODE_SIGN_ENTITLEMENTS = PatientApp/PatientApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.16.01;
+				CURRENT_PROJECT_VERSION = 1.21.01;
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -741,7 +741,7 @@
 				INFOPLIST_FILE = PatientApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.16;
+				MARKETING_VERSION = 1.21;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -767,7 +767,7 @@
 				CODE_SIGN_ENTITLEMENTS = PatientApp/PatientApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.16.01;
+				CURRENT_PROJECT_VERSION = 1.21.01;
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
@@ -775,7 +775,7 @@
 				INFOPLIST_FILE = PatientApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.16;
+				MARKETING_VERSION = 1.21;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
