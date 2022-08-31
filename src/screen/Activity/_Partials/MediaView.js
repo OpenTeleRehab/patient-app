@@ -2,17 +2,12 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  Modal,
-  SafeAreaView,
-  View,
-} from 'react-native';
-import {Button, Image, withTheme} from 'react-native-elements';
+import {Dimensions, Image, Modal, SafeAreaView, View} from 'react-native';
+import {Button, withTheme} from 'react-native-elements';
 import Orientation from 'react-native-orientation-locker';
 import {PORTRAIT, LANDSCAPE} from 'react-native-orientation-locker';
 import VideoPlayer from 'react-native-video-player';
+import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import music from '../../../assets/images/music.png';
@@ -78,14 +73,19 @@ const RenderMediaItem = ({item, index}, activeItem) => {
     );
   }
   return (
-    <Image
-      source={{
-        uri: store.getState().phone.adminApiBaseURL + '/file/' + item.id,
-      }}
-      style={styleMedia}
-      resizeMode="contain"
-      PlaceholderContent={<ActivityIndicator size={50} />}
-    />
+    <ReactNativeZoomableView
+      maxZoom={3}
+      minZoom={1}
+      zoomStep={0.5}
+      initialZoom={1}>
+      <Image
+        source={{
+          uri: store.getState().phone.adminApiBaseURL + '/file/' + item.id,
+        }}
+        style={styleMedia}
+        resizeMode="contain"
+      />
+    </ReactNativeZoomableView>
   );
 };
 
