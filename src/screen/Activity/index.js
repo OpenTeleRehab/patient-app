@@ -270,7 +270,7 @@ const Activity = ({theme, navigation}) => {
       const selectedActivities = treatmentPlan.activities.filter(
         (day) =>
           moment(day.date).format(settings.format.date) ===
-          moment(selectedDate.toString()).format(settings.format.date),
+          moment(selectedDate).format(settings.format.date),
       );
       setActivities(selectedActivities ? selectedActivities : []);
     }
