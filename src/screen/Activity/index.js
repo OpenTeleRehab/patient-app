@@ -267,11 +267,12 @@ const Activity = ({theme, navigation}) => {
 
   useEffect(() => {
     if (selectedDate && !_.isEmpty(treatmentPlan)) {
-      const selectedActivities = treatmentPlan.activities.filter(
-        (day) =>
+      const selectedActivities = treatmentPlan.activities.filter((day) => {
+        return (
           moment(day.date).format(settings.format.date) ===
-          moment(selectedDate).format(settings.format.date),
-      );
+          moment(selectedDate.toDate()).format(settings.format.date)
+        );
+      });
       setActivities(selectedActivities ? selectedActivities : []);
     }
   }, [selectedDate, treatmentPlan, profile]);
