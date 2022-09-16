@@ -212,20 +212,23 @@ const Activity = ({theme, navigation}) => {
   };
 
   useEffect(() => {
-    if (languages.length) {
+    if (languages.length && profile) {
       const languageIndex = _.findIndex(languages, {
         id: profile.language_id,
       });
-      moment.locale(languages[languageIndex].code);
 
-      setLocale({
-        name: moment.locale(),
-        config: {
-          months: moment.months(),
-          weekdays: moment.weekdays(),
-          weekdaysShort: moment.weekdaysShort(),
-        },
-      });
+      if (languageIndex > -1) {
+        moment.locale(languages[languageIndex].code);
+
+        setLocale({
+          name: languages[languageIndex].code,
+          config: {
+            months: moment.months(),
+            weekdays: moment.weekdays(),
+            weekdaysShort: moment.weekdaysShort(),
+          },
+        });
+      }
     }
   }, [profile, languages]);
 
@@ -328,7 +331,8 @@ const Activity = ({theme, navigation}) => {
           leftSelector={[]}
           rightSelector={[]}
           onDateSelected={(date) => setSelectedDate(date)}
-          locale={locale}
+          //TODO: Change locale based on user selected language
+          // locale={locale}
         />
       </View>
       {activities?.length ? (
