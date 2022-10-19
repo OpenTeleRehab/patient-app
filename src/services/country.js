@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {callAdminApi} from '../utils/request';
+import {callAdminApi, callApi} from '../utils/request';
 import {callGlobalAdminApi} from '../utils/request';
 
 const getCountries = async () => {
@@ -13,7 +13,7 @@ const getDefinedCountries = async () => {
 };
 
 const getCountryCodeByClinicId = async (clinic_id) => {
-  return await callAdminApi(`/country/list/by-clinic?clinic_id=${clinic_id}`);
+  return await callApi(`/country/list/by-clinic?clinic_id=${clinic_id}`);
 };
 
 export const Country = {

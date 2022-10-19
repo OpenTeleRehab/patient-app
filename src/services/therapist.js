@@ -3,8 +3,8 @@
  */
 import {callApi} from '../utils/request';
 
-const getTherapists = async (payload) => {
-  return await callApi('/therapist/by-ids', payload);
+const getTherapists = async (payload, accessToken) => {
+  return await callApi('/therapist/by-ids', accessToken, payload);
 };
 
 export const Therapist = {
