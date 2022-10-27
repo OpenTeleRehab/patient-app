@@ -318,6 +318,7 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (
+      accessToken &&
       chatSocket !== null &&
       chatSocket.readyState === chatSocket.OPEN &&
       profile.id &&
@@ -327,7 +328,7 @@ const AppProvider = ({children}) => {
         loadHistoryInRoom(chatSocket, item.rid, profile.id);
       });
     }
-  }, [selectedRoom, profile, chatRooms]);
+  }, [accessToken, selectedRoom, profile, chatRooms]);
 
   useEffect(() => {
     if (isOnline && isDataUpToDate === false) {

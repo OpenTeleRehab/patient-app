@@ -22,33 +22,28 @@ export const initialChatSocket = (
   username,
   password,
 ) => {
-  let isConnected = false;
   let userId = '';
   let authToken = '';
   const {loginId, roomMessageId, notifyLoggedId} = subscribeIds;
-
-  console.log(subscribeIds);
 
   // register websocket
   const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
   console.log(socket);
 
+  socket.addEventListener('open', (e) => {
+    const options = {
+      msg: 'connect',
+      version: '1',
+      support: ['1'],
+    };
+    socket.send(JSON.stringify(options));
+  });
+
   // observer
-  socket.onmessage = (e) => {
+  socket.addEventListener('message', (e) => {
     const response = JSON.parse(e.data);
     const {id, result, error, collection, fields} = response;
     const resMessage = response.msg;
-
-    // create connection
-    if (!isConnected && resMessage === undefined && socket.readyState === 1) {
-      isConnected = true;
-      const options = {
-        msg: 'connect',
-        version: '1',
-        support: ['1', 'pre2', 'pre1'],
-      };
-      socket.send(JSON.stringify(options));
-    }
 
     if (resMessage === 'ping') {
       // Keep connection alive
@@ -75,10 +70,7 @@ export const initialChatSocket = (
       if (error !== undefined) {
         console.error(`Websocket: ${error.reason}`);
       } else if (id === loginId && result) {
-        // login success
-        console.log('login success');
-
-        // set auth token
+        // login success, and set auth token
         const {token, tokenExpires} = result;
         const expiredAt = new Date(tokenExpires.$date);
         userId = result.id;
@@ -129,7 +121,7 @@ export const initialChatSocket = (
         dispatch(prependNewMessage(newMessage));
         dispatch(updateUnreadMessageIndicator());
       } else if (collection === 'stream-notify-logged') {
-        // trigger user logged status
+        // trigger therapist logged status
         const res = fields.args[0];
         const data = {
           _id: res[0],
@@ -144,7 +136,7 @@ export const initialChatSocket = (
       dispatch(updateIndicatorList({isChatConnected: false}));
       dispatch(clearChatData());
     }
-  };
+  });
 
   return socket;
 };

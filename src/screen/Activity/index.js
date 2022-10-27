@@ -108,7 +108,7 @@ const Activity = ({theme, navigation}) => {
   const [downloading, setDownloading] = useState(false);
   const netInfo = useNetInfo();
   const {adminApiBaseURL, apiBaseURL} = useSelector((state) => state.phone);
-  const [locale, setLocale] = useState();
+  // const [locale, setLocale] = useState();
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -220,14 +220,14 @@ const Activity = ({theme, navigation}) => {
       if (languageIndex > -1) {
         moment.locale(languages[languageIndex].code);
 
-        setLocale({
-          name: languages[languageIndex].code,
-          config: {
-            months: moment.months(),
-            weekdays: moment.weekdays(),
-            weekdaysShort: moment.weekdaysShort(),
-          },
-        });
+        // setLocale({
+        //   name: languages[languageIndex].code,
+        //   config: {
+        //     months: moment.months(),
+        //     weekdays: moment.weekdays(),
+        //     weekdaysShort: moment.weekdaysShort(),
+        //   },
+        // });
       }
     }
   }, [profile, languages]);
