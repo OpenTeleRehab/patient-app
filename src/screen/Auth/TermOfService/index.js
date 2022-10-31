@@ -43,8 +43,8 @@ const TermOfService = ({theme, navigation}) => {
 
   const onSubmit = () => {
     if (profile.id && !isNewRegister) {
-      dispatch(acceptTermOfServiceRequest(termContent.id));
-      dispatch(acceptPrivacyPolicyRequest(privacyContent.id));
+      dispatch(acceptTermOfServiceRequest(termContent?.id));
+      dispatch(acceptPrivacyPolicyRequest(privacyContent?.id));
     } else {
       // accept term and privacy policy when set up new pin
       navigation.navigate(ROUTES.SETUP_PIN);

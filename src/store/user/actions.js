@@ -5,6 +5,7 @@ import {User} from '../../services/user';
 import {mutation} from './mutations';
 import settings from '../../../config/settings';
 import moment from 'moment';
+import _ from 'lodash';
 import {storeLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY} from '../../variables/constants';
 import RNLocalize from 'react-native-localize';
@@ -88,21 +89,24 @@ export const loginRequest = (phone, pin, countryCode) => async (
     countryCode,
   );
   if (data.success) {
-    let acceptedTermOfService = true;
-    let acceptedPrivacyPolicy = true;
-    if (
-      data.data.profile.term_and_condition_id !==
-        getState().user.termOfService.id ||
-      data.data.profile.privacy_and_policy_id !==
-        getState().user.privacyPolicy.id
-    ) {
+    const {
+      term_and_condition_id: currentAcceptedTermId,
+      privacy_and_policy_id: currentAcceptedPolicyId,
+    } = data.data.profile;
+    const latestTerm = getState().user.termOfService;
+    const latestPolicy = getState().user.privacyPolicy;
+
+    const acceptedTerm =
+      _.isEmpty(latestTerm) || latestTerm.id === currentAcceptedTermId;
+    const acceptedPolicy =
+      _.isEmpty(latestPolicy) || latestPolicy?.id === currentAcceptedPolicyId;
+
+    if (!acceptedTerm || !acceptedPolicy) {
       data.data.profile.token = data.data.token;
       data.data.token = '';
-      acceptedTermOfService = false;
-      acceptedPrivacyPolicy = false;
     }
     dispatch(mutation.userLoginSuccess(data.data, phone, pin));
-    return {success: true, acceptedTermOfService, acceptedPrivacyPolicy};
+    return {success: true, acceptedTerm, acceptedPolicy};
   } else {
     dispatch(mutation.userLoginFailure());
     return {success: false};
