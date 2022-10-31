@@ -70,12 +70,12 @@ export const user = (state = initialState, action) => {
       });
     case 'FETCH_TERM_OF_SERVICE_SUCCEED': {
       return Object.assign({}, state, {
-        termOfService: action.data,
+        termOfService: action.data || {},
       });
     }
     case 'FETCH_PRIVACY_POLICY_SUCCEED': {
       return Object.assign({}, state, {
-        privacyPolicy: action.data,
+        privacyPolicy: action.data || {},
       });
     }
     case 'ACCEPT_TERM_OF_SERVICE_SUCCEED': {
