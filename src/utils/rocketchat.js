@@ -28,7 +28,6 @@ export const initialChatSocket = (
 
   // register websocket
   const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
-  console.log(socket);
 
   socket.addEventListener('open', (e) => {
     const options = {
