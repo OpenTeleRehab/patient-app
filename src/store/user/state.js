@@ -12,6 +12,7 @@ export const initialState = {
   phone: '',
   countryCode: '',
   pin: '',
+  encrypted: false,
   isLoading: false,
   isNewRegister: false,
   isDataUpToDate: true,
