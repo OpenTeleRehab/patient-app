@@ -4,7 +4,7 @@
 import {callAdminApi} from '../utils/request';
 
 const getPartnerLogo = async () => {
-  return await callAdminApi('/partnerLogo');
+  return await callAdminApi('/partner-logo');
 };
 
 export const PartnerLogo = {
