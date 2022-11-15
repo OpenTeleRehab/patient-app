@@ -7,7 +7,8 @@ import {mutation} from './mutations';
 export const getProfessionRequest = () => async (dispatch, getState) => {
   dispatch(mutation.professionFetchRequest);
   const {country_id} = getState().user.profile;
-  const res = await Profession.getProfessions(country_id);
+  const {accessToken} = getState().user;
+  const res = await Profession.getProfessions(country_id, accessToken);
   if (res.success) {
     dispatch(mutation.professionFetchSuccess(res.data));
   } else {

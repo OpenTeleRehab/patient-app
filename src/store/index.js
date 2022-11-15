@@ -21,8 +21,23 @@ import {profession} from './profession/reducers';
 import {phone} from './phone/reducers';
 import settings from '../../config/settings';
 import {persistReducer, persistStore, createTransform} from 'redux-persist';
+import CryptoJS from 'react-native-crypto-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
+import {storeLocalData} from '../utils/local_storage';
+import {STORAGE_KEY} from '../variables/constants';
+
+AsyncStorage.getItem('persist:OrgHiOpenRehab').then(async (response) => {
+  if (response) {
+    const store = JSON.parse(response);
+    const userData = JSON.parse(store.user);
+
+    if (!userData.encrypted && userData.phone && userData.dial_code) {
+      await storeLocalData(STORAGE_KEY.PHONE, userData.phone, false);
+      await storeLocalData(STORAGE_KEY.DIAL_CODE, userData.dial_code, false);
+    }
+  }
+});
 
 const rootReducers = {
   localize: localizeReducer,
@@ -43,28 +58,47 @@ const rootReducers = {
   phone,
 };
 
-const blacklistTransform = createTransform((inboundState, key) => {
-  if (key === 'user') {
-    return _.omit(inboundState, [
-      'accessToken',
-      'isNewRegister',
-      'isDataUpToDate',
-      'privacyPolicy',
-      'termOfService',
-      'isLoading',
-    ]);
-  } else if (key === 'rocketchat') {
-    return {
-      ...inboundState,
-      messages: [],
-      videoCall: {},
-      secondaryVideoCall: {},
-      selectedRoom: {},
-    };
-  } else {
-    return inboundState;
-  }
-});
+const blacklistTransform = createTransform(
+  (inboundState, key) => {
+    if (!inboundState) {
+      return inboundState;
+    }
+
+    if (key === 'user') {
+      return _.omit(inboundState, [
+        'accessToken',
+        'isNewRegister',
+        'isDataUpToDate',
+        'privacyPolicy',
+        'termOfService',
+        'isLoading',
+      ]);
+    } else if (key === 'rocketchat') {
+      return {
+        ...inboundState,
+        messages: [],
+        videoCall: {},
+        secondaryVideoCall: {},
+        selectedRoom: {},
+      };
+    } else {
+      const cryptedText = CryptoJS.AES.encrypt(
+        JSON.stringify(inboundState),
+        'OrgHiOpenRehabSecret',
+      );
+      return cryptedText.toString();
+    }
+  },
+  (outboundState, key) => {
+    if (!outboundState) {
+      return outboundState;
+    }
+    const bytes = CryptoJS.AES.decrypt(outboundState, 'OrgHiOpenRehabSecret');
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+
+    return JSON.parse(decrypted);
+  },
+);
 
 const persistConfig = {
   key: 'OrgHiOpenRehab',
@@ -100,6 +134,7 @@ const defaultLanguage = 'en';
 const onMissingTranslation = ({translationId}) => translationId;
 
 const store = createStore(persistedReducer, applyMiddleware(...middlewares));
+
 store.dispatch(
   initialize({
     languages,
