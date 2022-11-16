@@ -32,12 +32,6 @@ export const callAdminApi = async (uri, body = null) => {
   return await fetchApi(endpoint, headers, body);
 };
 
-export const callTherapistApi = async (uri, body = null) => {
-  const endpoint = store.getState().phone.therapistApiBaseURL + uri;
-  const headers = getHeaders();
-  return await fetchApi(endpoint, headers, body);
-};
-
 export const callPhoneApi = async (uri, body = null) => {
   const endpoint = settings.phoneApiBaseURL + uri;
   const headers = getHeaders();
