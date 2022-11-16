@@ -56,8 +56,8 @@ const changePinNumber = async (pin, accessToken) => {
   return await callApi('/auth/change-pin', accessToken, {pin}, 'post');
 };
 
-const updateProfile = async (id, payload) => {
-  return await callApi(`/patient/${id}`, '', {...payload}, 'put');
+const updateProfile = async (id, payload, accessToken) => {
+  return await callApi(`/patient/${id}`, accessToken, {...payload}, 'put');
 };
 
 const deleteProfile = async (accessToken) => {
