@@ -1,6 +1,6 @@
 # Overview
 
-This mobile app project was bootstrapped with [React Native App](https://reactnative.dev/docs/environment-setup).
+OpenTeleRehab mobile app project was bootstrapped with [React Native App](https://reactnative.dev/docs/environment-setup).
 
 # Requirements
 
