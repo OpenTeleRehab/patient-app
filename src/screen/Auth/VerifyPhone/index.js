@@ -54,7 +54,6 @@ const VerifyPhone = ({navigation}) => {
     }
 
     if (code.length === 6) {
-      onConfirm(code);
       setDelay(null);
     }
   }, delay);
