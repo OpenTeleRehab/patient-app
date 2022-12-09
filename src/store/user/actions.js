@@ -170,7 +170,7 @@ export const setProfileInfo = (data) => async (dispatch) => {
 
 export const updateProfileRequest = (id, payload, phone, therapistId) => async (
   dispatch,
-  getState
+  getState,
 ) => {
   const {accessToken} = getState().user;
   let data = await User.updateProfile(id, payload, accessToken);
