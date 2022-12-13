@@ -9,7 +9,7 @@ export const getPhoneRequest = (payload) => async (dispatch) => {
   const data = await Phone.getPhone(payload);
   if (data.success) {
     dispatch(mutation.phoneFetchSuccess(data.data));
-    return true;
+    return data.data;
   } else {
     dispatch(mutation.phoneFetchFailure());
     return false;
