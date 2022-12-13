@@ -24,20 +24,6 @@ import {persistReducer, persistStore, createTransform} from 'redux-persist';
 import CryptoJS from 'react-native-crypto-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
-import {storeLocalData} from '../utils/local_storage';
-import {STORAGE_KEY} from '../variables/constants';
-
-AsyncStorage.getItem('persist:OrgHiOpenRehab').then(async (response) => {
-  if (response) {
-    const store = JSON.parse(response);
-    const userData = JSON.parse(store.user);
-
-    if (!userData.encrypted && userData.phone && userData.dial_code) {
-      await storeLocalData(STORAGE_KEY.PHONE, userData.phone, false);
-      await storeLocalData(STORAGE_KEY.DIAL_CODE, userData.dial_code, false);
-    }
-  }
-});
 
 const rootReducers = {
   localize: localizeReducer,
@@ -64,8 +50,10 @@ const blacklistTransform = createTransform(
       return inboundState;
     }
 
+    let inboundStateData = inboundState;
+
     if (key === 'user') {
-      return _.omit(inboundState, [
+      inboundStateData = _.omit(inboundState, [
         'accessToken',
         'isNewRegister',
         'isDataUpToDate',
@@ -74,25 +62,27 @@ const blacklistTransform = createTransform(
         'isLoading',
       ]);
     } else if (key === 'rocketchat') {
-      return {
+      inboundStateData = {
         ...inboundState,
         messages: [],
         videoCall: {},
         secondaryVideoCall: {},
         selectedRoom: {},
       };
-    } else {
-      const cryptedText = CryptoJS.AES.encrypt(
-        JSON.stringify(inboundState),
-        'OrgHiOpenRehabSecret',
-      );
-      return cryptedText.toString();
     }
+
+    const cryptedText = CryptoJS.AES.encrypt(
+      JSON.stringify(inboundStateData),
+      'OrgHiOpenRehabSecret',
+    );
+
+    return cryptedText.toString();
   },
   (outboundState, key) => {
     if (!outboundState) {
       return outboundState;
     }
+
     const bytes = CryptoJS.AES.decrypt(outboundState, 'OrgHiOpenRehabSecret');
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
 
