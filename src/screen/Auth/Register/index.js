@@ -124,10 +124,10 @@ const Register = ({theme, navigation}) => {
       mobileNumber = phoneNumber;
     }
 
-    const formattedNumber = `${countryPhoneCode}${parseInt(mobileNumber, 10)}`;
-    dispatch(getPhoneRequest({phone: formattedNumber})).then(async (result) => {
-      if (result) {
-        await Country.getCountryCodeByClinicId(clinicId).then((res) => {
+    const formattedNumber = countryPhoneCode + parseInt(mobileNumber, 10);
+    dispatch(getPhoneRequest({phone: formattedNumber})).then((phone) => {
+      if (phone) {
+        Country.getCountryCodeByClinicId(phone.clinic_id).then((res) => {
           if (res.success) {
             dispatch(
               registerRequest(
@@ -136,7 +136,6 @@ const Register = ({theme, navigation}) => {
                 hash,
                 res.data.iso_code,
               ),
-              // eslint-disable-next-line no-shadow
             ).then((result) => {
               if (result) {
                 navigation.navigate(ROUTES.VERIFY_PHONE);

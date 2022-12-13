@@ -33,8 +33,8 @@ const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {language} = useSelector((state) => state.translation);
   const {profile} = useSelector((state) => state.user);
+  const {countries} = useSelector((state) => state.country);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
   const {
@@ -79,11 +79,11 @@ const Home = ({navigation}) => {
   }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
-    if (isOnline) {
+    if (isOnline && countries && countries.length) {
       dispatch(getAppointmentsListRequest({page_size: 10}));
       dispatch(getTreatmentPlanRequest());
     }
-  }, [dispatch, isOnline, offlineQuestionnaireAnswers, language]);
+  }, [dispatch, isOnline, countries]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
