@@ -6,8 +6,7 @@ import {mutation} from './mutations';
 
 export const getTherapistRequest = (payload) => async (dispatch, getState) => {
   dispatch(mutation.therapistFetchRequest);
-  const {accessToken} = getState().user;
-  const data = await Therapist.getTherapists(payload, accessToken);
+  const data = await Therapist.getTherapists(payload);
   if (data.success) {
     dispatch(mutation.therapistFetchSuccess(data.data));
   } else {
