@@ -34,7 +34,6 @@ const Home = ({navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
-  const {countries} = useSelector((state) => state.country);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
   const {
@@ -79,11 +78,11 @@ const Home = ({navigation}) => {
   }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
-    if (isOnline && countries && countries.length) {
+    if (isOnline) {
       dispatch(getAppointmentsListRequest({page_size: 10}));
       dispatch(getTreatmentPlanRequest());
     }
-  }, [dispatch, isOnline, countries]);
+  }, [dispatch, isOnline]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {
@@ -147,7 +146,7 @@ const Home = ({navigation}) => {
       );
       dispatch(getLanguageRequest());
     }
-  }, [profile, dispatch]);
+  }, [dispatch, profile]);
 
   useEffect(() => {
     // Filter up-coming appointments for offline data reason

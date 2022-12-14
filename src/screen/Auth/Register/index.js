@@ -5,21 +5,22 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {View, Platform, ScrollView, SafeAreaView} from 'react-native';
 import {Button, Input, Text, withTheme} from 'react-native-elements';
+import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
-
 import styles from '../../../assets/styles';
 
-import {ROUTES} from '../../../variables/constants';
-
 import {registerRequest} from '../../../store/user/actions';
-import {getTranslate} from 'react-localize-redux';
-import {getDefinedCountries} from '../../../store/country/actions';
+import {
+  getCountryRequest,
+  getDefinedCountries,
+} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
 import {getPhoneRequest} from '../../../store/phone/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {Country} from '../../../services/country';
+import {ROUTES} from '../../../variables/constants';
 
 let RNOtpVerify;
 if (Platform.OS === 'android') {
@@ -53,8 +54,6 @@ const Register = ({theme, navigation}) => {
     (state) => state.country,
   );
   const {languages} = useSelector((state) => state.language);
-  const {clinicId} = useSelector((state) => state.phone);
-
   const [hash, setHash] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
@@ -127,6 +126,8 @@ const Register = ({theme, navigation}) => {
     const formattedNumber = countryPhoneCode + parseInt(mobileNumber, 10);
     dispatch(getPhoneRequest({phone: formattedNumber})).then((phone) => {
       if (phone) {
+        dispatch(getCountryRequest());
+
         Country.getCountryCodeByClinicId(phone.clinic_id).then((res) => {
           if (res.success) {
             dispatch(
