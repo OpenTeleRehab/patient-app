@@ -93,6 +93,7 @@ const UserProfileEdit = ({navigation}) => {
           userInfo,
           profile.phone,
           profile.therapist_id,
+          profile.country_id,
         ),
       ).then((result) => {
         if (result) {

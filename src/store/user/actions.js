@@ -168,15 +168,19 @@ export const setProfileInfo = (data) => async (dispatch) => {
   dispatch(mutation.userSetProfileSuccess(data));
 };
 
-export const updateProfileRequest = (id, payload, phone, therapistId) => async (
-  dispatch,
-  getState,
-) => {
+export const updateProfileRequest = (
+  id,
+  payload,
+  phone,
+  therapistId,
+  countryId,
+) => async (dispatch, getState) => {
   const {accessToken} = getState().user;
   let data = await User.updateProfile(id, payload, accessToken);
   if (data.success) {
     payload.phone = phone;
     payload.therapist_id = therapistId;
+    payload.country_id = countryId;
     dispatch(mutation.updateProfileSuccess(payload));
     return true;
   } else {
