@@ -24,7 +24,6 @@ import kidLogo from '../../../assets/images/quacker-pincode.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
-import {getCountryRequest} from '../../../store/country/actions';
 import formatPhoneNumber from '../../../utils/phoneNumber';
 import {getPhoneRequest} from '../../../store/phone/actions';
 
@@ -41,10 +40,6 @@ const Login = ({navigation}) => {
   const translate = getTranslate(localize);
   const [code, setCode] = useState('');
   const [errorCode, setErrorCode] = useState(false);
-
-  useEffect(() => {
-    dispatch(getCountryRequest());
-  }, [dispatch]);
 
   const handleLogin = (passCode) => {
     dispatch(getPhoneRequest({phone: phone})).then((result) => {
