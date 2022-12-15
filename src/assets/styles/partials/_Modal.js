@@ -31,4 +31,28 @@ export default {
     flex: 1,
     marginHorizontal: 5,
   },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  modalFooter: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    flexDirection: 'row',
+  },
+  titleContainer: {
+    height: '16%',
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    color: '#fff',
+    fontSize: 16,
+  },
 };
