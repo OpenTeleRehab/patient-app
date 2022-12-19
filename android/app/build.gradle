@@ -200,22 +200,14 @@ dependencies {
 
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
-
-    implementation(project(':webessentials_react-native-jitsi-meet')) {
-        exclude group: 'com.facebook.react',module:'react-native-vector-icons'
-        exclude group: 'com.facebook.react',module:'react-native-async-storage'
-        exclude group: 'com.facebook.react',module:'react-native-community-async-storage'
-        exclude group: 'com.facebook.react',module:'react-native-community_netinfo'
-        exclude group: 'com.facebook.react',module:'react-native-svg'
-        exclude group: 'com.facebook',module:'hermes'
-        transitive = true
-    }
-
     implementation "com.google.firebase:firebase-core:16.0.9"
     implementation "com.google.firebase:firebase-messaging:18.0.0"
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:30.2.0')
+
+    // Import the twilio video webrtc
+    implementation project(':react-native-twilio-video-webrtc')
 
     // Add the dependency for the Firebase SDK for Google Analytics
     // When using the BoM, don't specify versions in Firebase dependencies
