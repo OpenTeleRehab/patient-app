@@ -23,6 +23,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 import quackerWave from '../../assets/images/quacker-waving.gif';
 import {updateIndicatorList} from '../../store/indicator/actions';
+import {getAssistiveTechnologiesRequest} from '../../store/assistiveTechnology/actions';
 
 const kidThemeImageStyle = {
   width: 300,
@@ -81,6 +82,7 @@ const Home = ({navigation}) => {
     if (isOnline) {
       dispatch(getAppointmentsListRequest({page_size: 10}));
       dispatch(getTreatmentPlanRequest());
+      dispatch(getAssistiveTechnologiesRequest());
     }
   }, [dispatch, isOnline]);
 
