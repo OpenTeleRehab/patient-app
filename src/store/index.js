@@ -19,6 +19,7 @@ import {rocketchat} from './rocketchat/reducers';
 import {therapist} from './therapist/reducers';
 import {profession} from './profession/reducers';
 import {phone} from './phone/reducers';
+import {assistiveTechnology} from './assistiveTechnology/reducers';
 import settings from '../../config/settings';
 import {persistReducer, persistStore, createTransform} from 'redux-persist';
 import CryptoJS from 'react-native-crypto-js';
@@ -44,6 +45,7 @@ const rootReducers = {
   partnerLogo,
   phone,
   appSettings,
+  assistiveTechnology,
 };
 
 const blacklistTransform = createTransform(
