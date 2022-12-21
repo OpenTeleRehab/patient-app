@@ -24,6 +24,7 @@ import {persistReducer, persistStore, createTransform} from 'redux-persist';
 import CryptoJS from 'react-native-crypto-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
+import {appSettings} from './appSetting/reducers';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -42,6 +43,7 @@ const rootReducers = {
   profession,
   partnerLogo,
   phone,
+  appSettings,
 };
 
 const blacklistTransform = createTransform(
