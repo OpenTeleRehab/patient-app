@@ -1,14 +1,15 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useCallback, useEffect} from 'react';
-import {useSelector} from 'react-redux';
-import {Image, PermissionsAndroid, Platform} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {Image, Linking, PermissionsAndroid, Platform} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
+import DeviceInfo from 'react-native-device-info';
 import HomeTab from './Tab/HomeTab';
 import ActivityTab from './Tab/ActivityTab';
 import AppointmentTab from './Tab/AppointmentTab';
@@ -25,6 +26,9 @@ import appointmentIcon from '../../assets/images/appointment-icon.png';
 import appointmentActiveIcon from '../../assets/images/appointment-active-icon.png';
 import messageIcon from '../../assets/images/message-icon.png';
 import messageActiveIcon from '../../assets/images/message-active-icon.png';
+import CommonPopup from '../Common/Popup';
+import {getAppSettingsRequest} from '../../store/appSetting/actions';
+import {mutation} from '../../store/appSetting/mutations';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -135,7 +139,13 @@ const AppTabNavigator = (props) => {
 };
 
 const AppNavigation = (props) => {
+  const dispatch = useDispatch();
   const {accessToken} = useSelector((state) => state.user);
+  const localize = useSelector((state) => state.localize);
+  const {appVersion, skipVersion} = useSelector((state) => state.appSettings);
+  const [appOutdatedPopup, setAppOutdatedPopup] = useState(false);
+  const [appForceUpdate, setAppForceUpdate] = useState(false);
+  const translate = getTranslate(localize);
 
   // check required permission(s) on android
   const checkAndroidPermission = useCallback(async () => {
@@ -156,8 +166,63 @@ const AppNavigation = (props) => {
     }
   }, [checkAndroidPermission]);
 
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      dispatch(getAppSettingsRequest({name: 'android'}));
+    } else {
+      dispatch(getAppSettingsRequest({name: 'ios'}));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (appVersion && appVersion.length > 0) {
+      const force = appVersion.includes('f');
+      const version = parseInt(DeviceInfo.getBuildNumber(), 10);
+      const requiredVersion = parseInt(appVersion, 10);
+      if (
+        (version < requiredVersion && skipVersion !== requiredVersion) ||
+        (force && skipVersion === requiredVersion)
+      ) {
+        setAppOutdatedPopup(true);
+        setAppForceUpdate(force);
+      } else {
+        setAppOutdatedPopup(false);
+      }
+    }
+  }, [appVersion, skipVersion]);
+
   return (
     <NavigationContainer>
+      <CommonPopup
+        popup={appOutdatedPopup}
+        iconType="material"
+        iconName="update"
+        onConfirm={() =>
+          Platform.OS === 'android'
+            ? Linking.openURL('market://details?id=org.hi.patient')
+            : Linking.openURL(
+                'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
+              )
+        }
+        tittle={translate('app.update.title')}
+        message={translate(
+          appForceUpdate ? 'app.update.message.force' : 'app.update.message',
+        )}
+        onCancel={
+          appForceUpdate
+            ? null
+            : () => {
+                setAppOutdatedPopup(false);
+                appVersion &&
+                  appVersion.length > 0 &&
+                  dispatch(
+                    mutation.appSettingsUpdateSkipVersion(
+                      parseInt(appVersion, 10),
+                    ),
+                  );
+              }
+        }
+      />
       {accessToken ? <AppTabNavigator {...props} /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
