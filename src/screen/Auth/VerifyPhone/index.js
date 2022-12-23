@@ -44,7 +44,10 @@ const VerifyPhone = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCode, setErrorCode] = useState(false);
+  const [enableConfirm, setEnableConfirm] = useState(false);
   const [delay, setDelay] = useState(1000);
+
+  const codeLength = 6;
 
   useInterval(() => {
     if (count > 0) {
@@ -53,7 +56,7 @@ const VerifyPhone = ({navigation}) => {
       setShowEmail(true);
     }
 
-    if (code.length === 6) {
+    if (code.length === codeLength) {
       setDelay(null);
     }
   }, delay);
@@ -68,6 +71,16 @@ const VerifyPhone = ({navigation}) => {
         .catch((p) => console.log(p));
     }
   }, [hash]);
+
+  useEffect(() => {
+    if (code.length === codeLength) {
+      setTimeout(() => {
+        setEnableConfirm(true);
+      }, 1000);
+    } else {
+      setEnableConfirm(false);
+    }
+  }, [code]);
 
   const onConfirm = (verifyCode) => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, verifyCode, email)).then(
@@ -138,7 +151,7 @@ const VerifyPhone = ({navigation}) => {
               })}
             </Text>
             <SmoothPinCodeInput
-              codeLength={6}
+              codeLength={codeLength}
               value={code}
               onTextChange={(pinCode) => [
                 setCode(pinCode),
@@ -195,7 +208,7 @@ const VerifyPhone = ({navigation}) => {
             onPress={() => onConfirm(code)}
             title={translate('common.confirm')}
             containerStyle={styles.marginTopLg}
-            disabled={code.length < 6}
+            disabled={!enableConfirm}
           />
         </View>
       </ScrollView>
