@@ -11,6 +11,7 @@ import {View} from 'react-native';
 import styles from '../../../assets/styles';
 import {getTherapistName} from '../../../utils/therapist';
 import {APPOINTMENT_STATUS} from '../../../variables/constants';
+import {getAssistiveTechnologyName} from '../../../utils/assistiveTechnology';
 
 const AppointmentCard = ({appointment, style, theme}) => {
   const localize = useSelector((state) => state.localize);
@@ -66,6 +67,22 @@ const AppointmentCard = ({appointment, style, theme}) => {
           <Text style={[styles.fontWeightBold, additionTextStyle]}>
             {getTherapistName(appointment.therapist_id, therapists)}
           </Text>
+          {appointment.assistive_technology ? (
+            <Text style={styles.marginTop} numberOfLines={1}>
+              {translate('appointment.at_follow_up', {
+                name: getAssistiveTechnologyName(
+                  appointment.assistive_technology.assistive_technology_id,
+                ),
+              })}
+              {appointment.note && ' : ' + appointment.note}
+            </Text>
+          ) : (
+            <Text
+              style={appointment.note && styles.marginTop}
+              numberOfLines={1}>
+              {appointment.note}
+            </Text>
+          )}
           <View
             style={[
               styles.paddingY,
