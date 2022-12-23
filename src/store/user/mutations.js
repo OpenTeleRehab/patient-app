@@ -169,6 +169,24 @@ const deleteProfileFailure = () => {
   };
 };
 
+const getCallAccessTokenRequest = () => {
+  return {
+    type: 'GET_CALL_ACCESS_TOKEN_REQUEST',
+  };
+};
+
+const getCallAccessTokenSuccess = () => {
+  return {
+    type: 'GET_CALL_ACCESS_TOKEN_SUCCESS',
+  };
+};
+
+const getCallAccessTokenFailure = () => {
+  return {
+    type: 'GET_CALL_ACCESS_TOKEN_FAILED',
+  };
+};
+
 const fetchTermOfServiceSuccess = (data) => {
   return {
     type: 'FETCH_TERM_OF_SERVICE_SUCCEED',
@@ -304,6 +322,9 @@ export const mutation = {
   updateProfileFailure,
   deleteProfileSuccess,
   deleteProfileFailure,
+  getCallAccessTokenRequest,
+  getCallAccessTokenSuccess,
+  getCallAccessTokenFailure,
   fetchTermOfServiceSuccess,
   fetchTermOfServiceFailure,
   acceptTermOfServiceRequest,

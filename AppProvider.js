@@ -24,7 +24,6 @@ import {
   updateMessage,
 } from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
-import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import {
   clearOfflineMessages,
   clearSecondaryVideoCallStatus,
@@ -235,7 +234,6 @@ const AppProvider = ({children}) => {
   useEffect(() => {
     if (chatAuth !== undefined) {
       dispatch(getChatRooms());
-      JitsiMeet.endCall();
     }
   }, [dispatch, chatAuth]);
 

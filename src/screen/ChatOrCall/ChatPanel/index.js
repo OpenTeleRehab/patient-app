@@ -5,10 +5,10 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Text, withTheme} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useIsFocused} from '@react-navigation/native';
-import styles from '../../../assets/styles';
-import HeaderBar from '../../../components/Common/HeaderBar';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
+import HeaderBar from '../../../components/Common/HeaderBar';
 import settings from '../../../../config/settings';
 import {generateHash} from '../../../utils/helper';
 import {Platform, View, Keyboard} from 'react-native';
@@ -16,6 +16,7 @@ import {CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {sendNewMessage} from '../../../utils/rocketchat';
 import {updateIndicatorList} from '../../../store/indicator/actions';
+import {mutation} from '../../../store/rocketchat/mutations';
 import MediaPicker from '../../../components/MediaPicker';
 import {
   postAttachmentMessage,
@@ -24,8 +25,7 @@ import {
 import ChatContainer from '../_Partials/ChatContainer';
 import ChatToolbar from '../_Partials/ChatToolbar';
 import ChatMediaSlider from '../_Partials/ChatMediaSlider';
-import {mutation} from '../../../store/rocketchat/mutations';
-import Spinner from 'react-native-loading-spinner-overlay';
+import styles from '../../../assets/styles';
 
 const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();

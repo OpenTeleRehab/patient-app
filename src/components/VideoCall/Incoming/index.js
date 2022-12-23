@@ -24,7 +24,7 @@ const IncomingCall = ({
     videoCall.status === CALL_STATUS.VIDEO_STARTED,
   );
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
-  const [isMute, setIsMute] = useState(true);
+  const [isMute, setIsMute] = useState(false);
 
   useEffect(() => {
     onVideoOn(videoCall.status === CALL_STATUS.VIDEO_STARTED);
@@ -94,7 +94,7 @@ const IncomingCall = ({
                 size={22}
                 style={[styles.callOptionIcon, isMute ? '' : styles.bgDark]}
               />
-              <Text>{translate(isMute ? 'mute' : 'unmute')}</Text>
+              <Text>{translate(isMute ? 'unmute' : 'mute')}</Text>
             </TouchableOpacity>
           </View>
         </View>

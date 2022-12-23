@@ -6,7 +6,6 @@ import {Modal} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
-import JitsiMeet from '@webessentials/react-native-jitsi-meet';
 import IncomingCall from './Incoming';
 import AcceptCall from './Accept';
 import {CALL_STATUS, STORAGE_KEY} from '../../variables/constants';
@@ -39,7 +38,6 @@ const VideoCall = ({theme}) => {
     ) {
       setShowModal(true);
     } else {
-      JitsiMeet.endCall();
       setShowModal(false);
     }
   }, [videoCall, accessToken]);
@@ -75,8 +73,8 @@ const VideoCall = ({theme}) => {
     );
   };
 
-  const onDeclineCall = async () => {
-    await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+  const onDeclineCall = () => {
+    storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
     handleUpdateMessage(
       videoCall.status === CALL_STATUS.VIDEO_MISSED
         ? CALL_STATUS.VIDEO_MISSED
@@ -95,20 +93,8 @@ const VideoCall = ({theme}) => {
 
   return (
     <Modal animationType="fade" transparent={false} visible={showModal}>
-      {videoCall.status === CALL_STATUS.ACCEPTED ? (
-        <AcceptCall
-          onEndCall={onEndCall}
-          onVideoOn={isVideoOn}
-          onSpeakerOn={isSpeakerOn}
-          onMute={isMute}
-          theme={theme}
-          loadingText={translate('common.loading')}
-          roomId={videoCall.rid}
-          subject={videoCall.u.name}
-          displayName={`${profile.last_name} ${profile.first_name}`}
-        />
-      ) : videoCall.status === CALL_STATUS.AUDIO_STARTED ||
-        videoCall.status === CALL_STATUS.VIDEO_STARTED ? (
+      {videoCall.status === CALL_STATUS.AUDIO_STARTED ||
+      videoCall.status === CALL_STATUS.VIDEO_STARTED ? (
         <IncomingCall
           onAcceptCall={onAcceptCall}
           onDeclineCall={onDeclineCall}
@@ -119,7 +105,16 @@ const VideoCall = ({theme}) => {
           theme={theme}
           callName={videoCall.u.name}
         />
-      ) : null}
+      ) : (
+        <AcceptCall
+          theme={theme}
+          roomId={videoCall?.rid}
+          onEndCall={onEndCall}
+          onVideoOn={isVideoOn}
+          onSpeakerOn={isSpeakerOn}
+          onMute={isMute}
+        />
+      )}
     </Modal>
   );
 };
