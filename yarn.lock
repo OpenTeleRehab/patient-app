@@ -1541,10 +1541,6 @@
   version "4.3.3"
   resolved "https://codeload.github.com/webessentials/react-native-callkeep/tar.gz/3dad1548a4ea8f4bf4f4a664849d6eb7c854cc99"
 
-"@webessentials/react-native-jitsi-meet@webessentials/react-native-jitsi-meet#master":
-  version "2.6.0"
-  resolved "https://codeload.github.com/webessentials/react-native-jitsi-meet/tar.gz/02f1374de33355604d2b349310034c7cdfc721e3"
-
 "@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
   version "2.0.0"
   resolved "https://codeload.github.com/webessentials/react-native-otp-verify/tar.gz/4ac9c354e080f08d4034144f61b7839c194a0808"
@@ -6546,6 +6542,12 @@ react-native-tts@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/react-native-tts/-/react-native-tts-4.1.0.tgz#05fa34492bec234bcd64f6ed2bf122c4667d141a"
   integrity sha512-tvf3lQ6u9MqztUie37qoPw5YQPqi0ql1lPhDsBBs/RRA6A/H1J9X9H/qb1A0Hx0ZpjavrEdtVSqQQ2JDZvZCTQ==
+
+react-native-twilio-video-webrtc@blackuy/react-native-twilio-video-webrtc:
+  version "3.0.0"
+  resolved "https://codeload.github.com/blackuy/react-native-twilio-video-webrtc/tar.gz/76c8cab685899abe129eec8574696dec12c357a8"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-typing-animation@^0.1.7:
   version "0.1.7"

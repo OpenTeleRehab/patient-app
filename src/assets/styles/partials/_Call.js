@@ -5,7 +5,10 @@ import variables from '../variables';
 
 export default {
   callContainer: {
+    flex: 1,
     backgroundColor: variables.grey6,
+    height: '100%',
+    width: '100%',
   },
   callerName: {
     fontSize: 48,
@@ -53,5 +56,57 @@ export default {
     flex: 1,
     height: '100%',
     width: '100%',
+  },
+  participantContainer: {
+    backgroundColor: variables.black,
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    elevation: 1,
+    zIndex: 1,
+  },
+  participantView: {
+    position: 'relative',
+    height: '100%',
+    width: '100%',
+    elevation: 1,
+    zIndex: 1,
+  },
+  localVideoContainer: {
+    backgroundColor: variables.dark,
+    width: 150,
+    height: 250,
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    elevation: 99,
+    zIndex: 99,
+  },
+  localVideoView: {
+    width: 150,
+    height: 250,
+  },
+  localVideoAvatar: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    elevation: 99,
+    zIndex: 99,
+  },
+  callOptions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    width: '100%',
+    elevation: 99,
+    zIndex: 99,
+  },
+  optionButton: {
+    marginHorizontal: variables.spacingMd,
   },
 };
