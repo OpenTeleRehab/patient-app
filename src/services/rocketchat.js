@@ -3,9 +3,14 @@
  */
 import {callChatApi} from '../utils/request';
 
-const getUserStatus = async (chatUserIds, userId, authToken) => {
+const login = async (user, password) => {
+  const body = JSON.stringify({user, password});
+  return await callChatApi('/login', '', '', body, 'post');
+};
+
+const getUserStatus = async (chatUsernames, userId, authToken) => {
   const fields = JSON.stringify({status: 1});
-  const query = JSON.stringify({_id: {$in: chatUserIds}});
+  const query = JSON.stringify({username: {$in: chatUsernames}});
   const body = {fields, query, count: 999999};
   return await callChatApi('/users.list', userId, authToken, body);
 };
@@ -48,6 +53,7 @@ const sendAttachmentMessage = async (roomId, userId, authToken, attachment) => {
 };
 
 export const Rocketchat = {
+  login,
   getUserStatus,
   getLastMessages,
   getMessageCounters,

@@ -1,12 +1,9 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import settings from '../../config/settings';
 import {getUserCountryIsoCode} from './country';
-import {forceLogout} from '../store/auth/actions';
+import settings from '../../config/settings';
 import store from '../store';
-import {Alert} from 'react-native';
-import {getTranslate} from 'react-localize-redux';
 
 export const callApi = async (
   uri,
@@ -87,13 +84,6 @@ const fetchApi = async (endpoint, headers, body = null, method = 'get') => {
   const response = await fetch(url, configs).catch((error) => {
     return false;
   });
-
-  if (response.status === 401) {
-    const localize = store.getState().localize;
-    const translate = getTranslate(localize);
-    store.dispatch(forceLogout());
-    Alert.alert(translate('user.session'), translate('user.session_expired'));
-  }
 
   return !response || (response && (response.status !== 200 || !response.ok))
     ? {}
