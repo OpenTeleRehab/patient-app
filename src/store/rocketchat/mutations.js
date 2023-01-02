@@ -20,15 +20,6 @@ const getChatRoomsFailure = () => ({
   type: 'GET_CHAT_ROOMS_FAILED',
 });
 
-const getChatUsersStatusSuccess = (data) => ({
-  type: 'GET_CHAT_USERS_STATUS_SUCCEED',
-  data,
-});
-
-const getChatUsersStatusFailure = () => ({
-  type: 'GET_CHAT_USERS_STATUS_FAILED',
-});
-
 const getLastMessagesSuccess = (data) => ({
   type: 'GET_LAST_MESSAGES_SUCCEED',
   data,
@@ -104,8 +95,6 @@ export const mutation = {
   chatUserLoginSuccess,
   getChatRoomsSuccess,
   getChatRoomsFailure,
-  getChatUsersStatusSuccess,
-  getChatUsersStatusFailure,
   getLastMessagesSuccess,
   getLastMessagesFailure,
   selectRoomSuccess,
