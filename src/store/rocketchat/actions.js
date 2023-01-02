@@ -78,32 +78,6 @@ export const getChatRooms = () => async (dispatch, getState) => {
   }
 };
 
-export const getChatUsersStatus = () => async (dispatch, getState) => {
-  const {chatAuth, chatRooms} = getState().rocketchat;
-  const {userId, token} = chatAuth || {};
-  const userIds = [];
-  const mapIndex = [];
-  chatRooms.forEach((room, idx) => {
-    if (room.enabled) {
-      userIds.push(room.u._id);
-      mapIndex[room.u._id] = idx;
-    }
-  });
-  if (userIds.length) {
-    const data = await Rocketchat.getUserStatus(userIds, userId, token);
-    if (data.success) {
-      data.users.forEach((user) => {
-        chatRooms[mapIndex[user._id]].u.status = user.status;
-      });
-      dispatch(mutation.getChatUsersStatusSuccess(chatRooms));
-      return true;
-    } else {
-      dispatch(mutation.getChatUsersStatusFailure());
-      return false;
-    }
-  }
-};
-
 export const getMessagesInRoom = (payload) => async (dispatch, getState) => {
   if (!payload.length) {
     return false;
@@ -117,7 +91,7 @@ export const getMessagesInRoom = (payload) => async (dispatch, getState) => {
     token,
   );
   const userStatus = await Rocketchat.getUserStatus(
-    [chatRooms[fIndex].u._id],
+    [chatRooms[fIndex].u.username],
     userId,
     token,
   );

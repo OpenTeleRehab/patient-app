@@ -15,6 +15,7 @@ import {
 import {CALL_STATUS, CHAT_USER_STATUS} from '../variables/constants';
 import {getUniqueId, getChatMessage} from './helper';
 import store from '../store';
+import {Rocketchat} from '../services/rocketchat';
 
 export const initialChatSocket = (
   dispatch,
@@ -50,21 +51,24 @@ export const initialChatSocket = (
     } else if (resMessage === 'connected') {
       // connection success => login
       dispatch(updateIndicatorList({isChatConnected: true}));
-      const options = {
-        msg: 'method',
-        method: 'login',
-        id: loginId,
-        params: [
-          {
-            user: {username},
-            password: {
-              digest: password,
-              algorithm: 'sha-256',
-            },
-          },
-        ],
-      };
-      socket.send(JSON.stringify(options));
+
+      Rocketchat.login(username, {digest: password, algorithm: 'sha-256'}).then(
+        (res) => {
+          if (res.data) {
+            const options = {
+              msg: 'method',
+              method: 'login',
+              id: loginId,
+              params: [
+                {
+                  resume: res.data.authToken,
+                },
+              ],
+            };
+            socket.send(JSON.stringify(options));
+          }
+        },
+      );
     } else if (resMessage === 'result') {
       if (error !== undefined) {
         console.error(`Websocket: ${error.reason}`);
