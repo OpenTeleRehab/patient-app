@@ -4,7 +4,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
-import {Icon} from 'react-native-elements';
+import {Avatar, Icon} from 'react-native-elements';
 import {
   TwilioVideoLocalView,
   TwilioVideoParticipantView,
@@ -23,6 +23,7 @@ const AcceptCall = ({
   onVideoOn,
   onSpeakerOn,
   onMute,
+  callName,
 }) => {
   const twilioRef = useRef(null);
   const {accessToken} = useSelector((state) => state.user);
@@ -110,10 +111,8 @@ const AcceptCall = ({
     );
   };
 
-  const _onParticipantRemovedVideoTrack = ({track}) => {
-    const videoTracksLocal = videoTracks;
-    videoTracksLocal.delete(track.trackSid);
-    setVideoTracks(videoTracksLocal);
+  const _onParticipantRemovedVideoTrack = () => {
+    setVideoTracks(new Map());
   };
 
   return (
@@ -121,23 +120,39 @@ const AcceptCall = ({
       {status === 'connected' && (
         <>
           <View style={styles.participantContainer}>
+            <Avatar
+              size={100}
+              rounded
+              title={callName?.charAt(0)}
+              containerStyle={{backgroundColor: theme.colors.primary}}
+            />
+
             {Array.from(videoTracks, ([trackSid, trackIdentifier]) => {
               return (
                 <TwilioVideoParticipantView
-                  style={styles.participantView}
                   key={trackSid}
                   trackIdentifier={trackIdentifier}
+                  style={styles.participantView}
                 />
               );
             })}
           </View>
 
           <View style={styles.localVideoContainer}>
-            <TwilioVideoLocalView
-              enabled
-              applyZOrder
-              style={styles.localVideoView}
-            />
+            {isVideoEnabled ? (
+              <TwilioVideoLocalView
+                enabled
+                applyZOrder
+                style={styles.localVideoView}
+              />
+            ) : (
+              <Icon
+                reverse
+                name="user-alt"
+                type="font-awesome-5"
+                color={theme.colors.black}
+              />
+            )}
           </View>
         </>
       )}
