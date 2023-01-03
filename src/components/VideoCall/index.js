@@ -103,7 +103,7 @@ const VideoCall = ({theme}) => {
           onMute={setIsMute}
           translate={translate}
           theme={theme}
-          callName={videoCall.u.name}
+          callName={videoCall?.u.name}
         />
       ) : (
         <AcceptCall
@@ -113,6 +113,7 @@ const VideoCall = ({theme}) => {
           onVideoOn={isVideoOn}
           onSpeakerOn={isSpeakerOn}
           onMute={isMute}
+          callName={videoCall?.u?.name}
         />
       )}
     </Modal>
