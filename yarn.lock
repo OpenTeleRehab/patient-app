@@ -1549,6 +1549,12 @@
   version "1.0.1"
   resolved "https://codeload.github.com/webessentials/react-native-picker-scrollview/tar.gz/fe95111a1cacf7c9ad3d2953ed7ceb38ea670d79"
 
+"@webessentials/react-native-twilio-video-webrtc@webessentials/react-native-twilio-video-webrtc#master":
+  version "3.0.0"
+  resolved "https://codeload.github.com/webessentials/react-native-twilio-video-webrtc/tar.gz/fd85d20e30bb5522c32d09e79080a39db3e4c965"
+  dependencies:
+    prop-types "^15.5.10"
+
 "@xmldom/xmldom@~0.7.0":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.7.5.tgz#09fa51e356d07d0be200642b0e4f91d8e6dd408d"
@@ -6542,13 +6548,6 @@ react-native-tts@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/react-native-tts/-/react-native-tts-4.1.0.tgz#05fa34492bec234bcd64f6ed2bf122c4667d141a"
   integrity sha512-tvf3lQ6u9MqztUie37qoPw5YQPqi0ql1lPhDsBBs/RRA6A/H1J9X9H/qb1A0Hx0ZpjavrEdtVSqQQ2JDZvZCTQ==
-
-react-native-twilio-video-webrtc@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-twilio-video-webrtc/-/react-native-twilio-video-webrtc-3.0.0.tgz#056829d8672b1d52e071674f2e7acef65338edaf"
-  integrity sha512-/gbv4B9V2YJAX6GksvjFNcDUoRG8xsOSdTcWjB7PjPdy5tb6WdIaihHKluZsKrMA0nn5pL/hw6i1X9fWQ18huA==
-  dependencies:
-    prop-types "^15.5.10"
 
 react-native-typing-animation@^0.1.7:
   version "0.1.7"

@@ -15,6 +15,7 @@ target 'PatientApp' do
   pod 'FirebaseCore', :modular_headers => true
 
   pod 'RNCallKeep', :path => '../node_modules/@webessentials/react-native-callkeep'
+  pod 'react-native-twilio-video-webrtc', path: '../node_modules/@webessentials/react-native-twilio-video-webrtc'
 
   target 'PatientAppTests' do
     inherit! :complete
