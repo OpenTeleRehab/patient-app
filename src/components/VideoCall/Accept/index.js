@@ -9,7 +9,7 @@ import {
   TwilioVideoLocalView,
   TwilioVideoParticipantView,
   TwilioVideo,
-} from 'react-native-twilio-video-webrtc';
+} from '@webessentials/react-native-twilio-video-webrtc';
 import _ from 'lodash';
 import {getLocalData} from '../../../utils/local_storage';
 import {User} from '../../../services/user';
@@ -43,14 +43,18 @@ const AcceptCall = ({
     if (accessToken && roomId) {
       User.getCallAccessToken(roomId, accessToken).then((response) => {
         if (response.success) {
-          twilioRef.current.connect({accessToken: response.token});
-
           getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
             let videoOn = onVideoOn;
 
             if (!_.isEmpty(callInfo)) {
               videoOn = callInfo.body.includes('video');
             }
+
+            twilioRef.current.connect({
+              accessToken: response.token,
+              enableVideo: true,
+              enableAudio: true,
+            });
 
             twilioRef.current
               .setLocalVideoEnabled(videoOn)
@@ -208,7 +212,6 @@ const AcceptCall = ({
         onRoomDidConnect={_onRoomDidConnect}
         onRoomDidDisconnect={_onRoomDidDisconnect}
         onRoomDidFailToConnect={_onRoomDidFailToConnect}
-        onCameraDidStart={_onCameraDidStart}
         onParticipantAddedVideoTrack={_onParticipantAddedVideoTrack}
         onParticipantRemovedVideoTrack={_onParticipantRemovedVideoTrack}
       />
