@@ -13,6 +13,7 @@ target 'PatientApp' do
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebasePerformance', :modular_headers => true
 
   pod 'RNCallKeep', :path => '../node_modules/@webessentials/react-native-callkeep'
   pod 'react-native-twilio-video-webrtc', path: '../node_modules/@webessentials/react-native-twilio-video-webrtc'
