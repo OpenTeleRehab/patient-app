@@ -64,3 +64,5 @@ buck-out/
 
 # App
 /config/settings.js
+/android/app/google-services.json
+/ios/GoogleService-Info.plist

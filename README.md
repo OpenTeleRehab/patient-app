@@ -62,19 +62,26 @@ __Note:__ If you previously installed a global `react-native-cli`, please remove
     cp config/ansible/roles/deploy/templates/settings.js.j2 config/settings.js
     ```
 
+5. Decrypt `Firebase google services`
+
+     ```bash
+    ansible-vault decrypt config/ansible/roles/deploy/templates/google-services.json.j2 --output=android/app/google-services.json
+    ansible-vault decrypt config/ansible/roles/deploy/templates/GoogleService-Info.plist.j2 --output=ios/GoogleService-Info.plist
+    ```
+
     Edit file and replace/add value for:
     * isDebugMode = `true` // or `false` if you want to disable redux log print out
     * Set patient api URL `apiBaseURL`: `'http://your-computer-ip:8084/api'`
     * Set admin api URL `adminApiBaseURL`: `'http://your-computer-ip:8082/api'`
     * appVersion = `'1.0.0-local'`
 
-5. Start JS server with Metro Bundler
+6. Start JS server with Metro Bundler
 
     ```bash
     yarn start
     ```
 
-6. Start your local emulator or plug with real mobile device
+7. Start your local emulator or plug with real mobile device
 
 ### Android
 
