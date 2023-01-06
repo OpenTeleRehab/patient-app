@@ -17,23 +17,23 @@
     - {src: 'gradle.properties.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/gradle.properties'}
 
 - name: Configure firebase google services for development
-  template:
+  copy:
     src: '{{ item.src }}'
     dest: '{{ item.dest }}'
     mode: 0755
   loop:
-    - {src: 'google-services.json.j2', dest: '{{ workspace }}/android/app/google-services.json'}
-    - {src: 'GoogleService-Info.plist.j2', dest: '{{ workspace }}/ios/GoogleService-Info.plist'}
+    - {src: google-services.json.vault, dest: '{{ workspace }}/{{ android_build_path }}/app/google-services.json'}
+    - {src: GoogleService-Info.plist.vault, dest: '{{ workspace }}/ios/GoogleService-Info.plist'}
   when: stage != 'live'
 
 - name: Configure firebase google services for production
-  template:
-    src: '{{ item.src }}/live'
+  copy:
+    src: '{{ item.src }}'
     dest: '{{ item.dest }}'
     mode: 0755
   loop:
-    - {src: 'google-services.json.j2', dest: '{{ workspace }}/android/app/google-services.json'}
-    - {src: 'GoogleService-Info.plist.j2', dest: '{{ workspace }}/ios/GoogleService-Info.plist'}
+    - {src: google-services.json.live.vault, dest: '{{ workspace }}/android/app/google-services.json'}
+    - {src: GoogleService-Info.plist.live.vault, dest: '{{ workspace }}/ios/GoogleService-Info.plist'}
   when: stage == 'live'
 
 - name: Configure Android release key
