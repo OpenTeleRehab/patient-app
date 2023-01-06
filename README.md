@@ -7,7 +7,7 @@ This mobile app project was bootstrapped with [React Native App](https://reactna
 * [Git](https://git-scm.com/) version >= 2.0.0
 * [NodeJS](https://nodejs.org/en/download/package-manager/) version >= 10.0.0 && < 15.0.0
 * [Yarn](https://yarnpkg.com/lang/en/docs/install/#debian-stable) version >= 1.20.0
-* JDK [OpenJDK](http://openjdk.java.net/install/) or [Standard Edition](https://docs.oracle.com/en/java/javase/index.html) version >= 8 (10 is recommended)
+* JDK [OpenJDK](http://openjdk.java.net/install/) or [Standard Edition](https://docs.oracle.com/en/java/javase/index.html) version >= 11
 * Configure Android environment variables
 
     ```bash
