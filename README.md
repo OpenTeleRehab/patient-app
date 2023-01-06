@@ -172,6 +172,12 @@ It is manually build on `Mac`, in which you can find the ipa file(s) for each st
     ```bash
     adb devices
     ```
+  
+* Check performance monitoring
+
+    ```bash
+    adb logcat -s FirebasePerformance
+    ```
 
 * Uninstall Android debug app from device(s)
 
