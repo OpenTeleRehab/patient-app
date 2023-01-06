@@ -42,7 +42,7 @@
     dest: '{{ workspace }}/{{ android_build_path }}/app/release-key.keystore'
 
 - name: Build Android apk release app
-  shell: 'JAVA_HOME=/usr/lib/jvm/java-10-openjdk-amd64 ./gradlew {{ item }}'
+  shell: 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ./gradlew {{ item }}'
   args:
     chdir: '{{ workspace }}/{{ android_build_path }}'
   loop:
