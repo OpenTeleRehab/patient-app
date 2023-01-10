@@ -66,10 +66,11 @@ const deleteProfile = async (accessToken) => {
   return await callApi('/patient/profile/delete', accessToken, null, 'delete');
 };
 
-const getCallAccessToken = async (roomId, accessToken) => {
-  const body = {room_id: roomId};
-
-  return await callApi('/patient/get-call-access-token', accessToken, body);
+const getCallAccessToken = async (roomId, identity) => {
+  return await callApi('/patient/get-call-access-token', '', {
+    room_id: roomId,
+    identity: identity,
+  });
 };
 
 const getTermOfService = async (lang) => {
