@@ -18,15 +18,15 @@ import styles from '../../../assets/styles';
 
 const AcceptCall = ({
   theme,
-  roomId,
   onEndCall,
   onVideoOn,
   onSpeakerOn,
   onMute,
+  identity,
+  roomId,
   callName,
 }) => {
   const twilioRef = useRef(null);
-  const {accessToken} = useSelector((state) => state.user);
   const {videoCall} = useSelector((state) => state.rocketchat);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
@@ -40,8 +40,8 @@ const AcceptCall = ({
   }, [videoCall]);
 
   useEffect(() => {
-    if (accessToken && roomId) {
-      User.getCallAccessToken(roomId, accessToken).then((response) => {
+    if (roomId && identity) {
+      User.getCallAccessToken(roomId, identity).then((response) => {
         if (response.success) {
           getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
             let videoOn = onVideoOn;
@@ -69,7 +69,7 @@ const AcceptCall = ({
         }
       });
     }
-  }, [accessToken, onMute, onVideoOn, roomId]);
+  }, [onMute, onVideoOn, roomId, identity]);
 
   const _onRoomDidConnect = () => {
     setStatus('connected');
