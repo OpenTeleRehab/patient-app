@@ -16,6 +16,7 @@ import _ from 'lodash';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!_.isEmpty(remoteMessage.data)) {
+    // Message with data handled in the background
     const callUUID = uuid.v4();
 
     if (remoteMessage.data.body.includes('missed')) {
@@ -81,6 +82,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
               'generic',
               remoteMessage.data.body.includes('video'),
             );
+
             RNCallKeep.addEventListener('answerCall', async () => {
               isOnCall = true;
               await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false', false);
@@ -100,12 +102,8 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
           });
       }
     }
-
-    console.log(
-      '++++ Message with data handled in the background! ++++',
-      remoteMessage,
-    );
   } else {
+    // Message without data handled in the background
     if (Platform.OS === 'ios') {
       PushNotificationIOS.getApplicationIconBadgeNumber((badgeNumber) => {
         let newBadgeNumber = badgeNumber || 0;
@@ -113,11 +111,6 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         PushNotificationIOS.setApplicationIconBadgeNumber(newBadgeNumber);
       });
     }
-
-    console.log(
-      '==== Message without data handled in the background! ====',
-      remoteMessage,
-    );
   }
 });
 
