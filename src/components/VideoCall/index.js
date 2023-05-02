@@ -18,7 +18,7 @@ const VideoCall = ({theme}) => {
   const {videoCall, secondaryVideoCall} = useSelector(
     (state) => state.rocketchat,
   );
-  const {profile} = useSelector((state) => state.user);
+  const {profile, accessToken} = useSelector((state) => state.user);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [isVideoOn, setIsVideoOn] = useState(false);
@@ -28,6 +28,7 @@ const VideoCall = ({theme}) => {
 
   useEffect(() => {
     if (
+      accessToken &&
       videoCall.rid &&
       [
         CALL_STATUS.VIDEO_STARTED,
@@ -40,7 +41,7 @@ const VideoCall = ({theme}) => {
     } else {
       setShowModal(false);
     }
-  }, [videoCall]);
+  }, [videoCall, accessToken]);
 
   useEffect(() => {
     if (
