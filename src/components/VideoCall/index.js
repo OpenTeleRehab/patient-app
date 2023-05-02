@@ -27,19 +27,21 @@ const VideoCall = ({theme}) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    setShowModal(false);
+
     if (
-      accessToken &&
       videoCall.rid &&
       [
         CALL_STATUS.VIDEO_STARTED,
         CALL_STATUS.AUDIO_STARTED,
-        CALL_STATUS.ACCEPTED,
         CALL_STATUS.BUSY,
       ].includes(videoCall.status)
     ) {
       setShowModal(true);
-    } else {
-      setShowModal(false);
+    }
+
+    if (CALL_STATUS.ACCEPTED === videoCall.status && accessToken) {
+      setShowModal(true);
     }
   }, [videoCall, accessToken]);
 
