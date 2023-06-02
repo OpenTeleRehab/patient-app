@@ -47,6 +47,7 @@ import {
 import {updateIndicatorList} from './src/store/indicator/actions';
 import messaging from '@react-native-firebase/messaging';
 import {getPhoneRequest} from './src/store/phone/actions';
+import {callPermission, notificationPermission} from './src/utils/permission';
 
 let chatSocket = null;
 let isAnswerCall = false;
@@ -83,14 +84,13 @@ const AppProvider = ({children}) => {
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
+    const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
+
     if (data) {
       setTimespan(data.timespan);
     }
 
-    const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
     setLanguage(lang);
-
-    await messaging().requestPermission();
   }, []);
 
   const answerCall = async () => {
@@ -131,25 +131,8 @@ const AppProvider = ({children}) => {
   };
 
   useEffect(() => {
-    const options = {
-      ios: {
-        appName: 'PatientApp',
-        imageName: 'sim_icon',
-        supportsVideo: true,
-        maximumCallGroups: '1',
-        maximumCallsPerCallGroup: '1',
-      },
-      android: {
-        alertTitle: 'Permissions required',
-        alertDescription:
-          'This application needs to access your phone accounts',
-        cancelButton: 'Cancel',
-        okButton: 'ok',
-        additionalPermissions: [],
-      },
-    };
-
-    RNCallKeep.setup(options);
+    // Request notification permission
+    notificationPermission();
   }, []);
 
   useEffect(() => {
@@ -228,6 +211,9 @@ const AppProvider = ({children}) => {
         profile.identity,
         profile.chat_password,
       );
+
+      // Request phone calls permission
+      callPermission();
     }
   }, [dispatch, isOnline, profile]);
 
