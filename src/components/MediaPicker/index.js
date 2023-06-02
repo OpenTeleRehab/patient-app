@@ -8,7 +8,6 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
-  PermissionsAndroid,
   Platform,
   Alert,
   SafeAreaView,
@@ -20,6 +19,7 @@ import _ from 'lodash';
 import styles from '../../assets/styles';
 import GridItem from './GridItem';
 import {isValidFileSize, nEveryRow, toMB} from '../../utils/helper';
+import {cameraRollPermission} from '../../utils/permission';
 
 const VIDEO_TYPE = 'Videos';
 const FIRST_LOAD_MEDIAS = 15;
@@ -67,20 +67,10 @@ const MediaPicker = (props) => {
     }
   }, [buttonOKLabel, selectedMedia, sizeErrorText]);
 
-  const hasAndroidPermission = async () => {
-    const permission = PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
-    const hasPermission = await PermissionsAndroid.check(permission);
-    if (hasPermission) {
-      return true;
-    }
-    const status = await PermissionsAndroid.request(permission);
-    return status === 'granted';
-  };
-
   const loadAlbums = async () => {
-    if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
-      return false;
-    }
+    // Request camera roll permission
+    cameraRollPermission();
+
     CameraRoll.getAlbums({assetType: 'All'})
       .then((dataAlbums) => {
         const fetchAlbums = [];
@@ -185,7 +175,7 @@ const MediaPicker = (props) => {
     <Modal
       visible={visible}
       animationType="fade"
-      onShow={() => loadAlbums()}
+      onShow={loadAlbums}
       onRequestClose={() => onClose(false)}>
       <SafeAreaView>
         <View style={styles.mpContainer}>
