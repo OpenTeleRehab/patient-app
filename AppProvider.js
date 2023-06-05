@@ -46,20 +46,16 @@ import {
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
 import messaging from '@react-native-firebase/messaging';
-import {getPhoneRequest} from './src/store/phone/actions';
+import {callPermission, notificationPermission} from './src/utils/permission';
 
 let chatSocket = null;
 let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
-  const {
-    accessToken,
-    firebaseToken,
-    profile,
-    isDataUpToDate,
-    phone,
-  } = useSelector((state) => state.user);
+  const {accessToken, profile, isDataUpToDate, phone} = useSelector(
+    (state) => state.user,
+  );
   const {messages} = useSelector((state) => state.translation);
   const {
     messages: chatMessages,
@@ -79,18 +75,16 @@ const AppProvider = ({children}) => {
   const [timespan, setTimespan] = useState('');
   const [language, setLanguage] = useState(undefined);
   const isOnline = useNetInfo().isConnected;
-  const [socket, setSocket] = useState(null);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
+    const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
+
     if (data) {
       setTimespan(data.timespan);
     }
 
-    const lang = await getLocalData(STORAGE_KEY.LANGUAGE);
     setLanguage(lang);
-
-    await messaging().requestPermission();
   }, []);
 
   const answerCall = async () => {
@@ -131,25 +125,8 @@ const AppProvider = ({children}) => {
   };
 
   useEffect(() => {
-    const options = {
-      ios: {
-        appName: 'PatientApp',
-        imageName: 'sim_icon',
-        supportsVideo: true,
-        maximumCallGroups: '1',
-        maximumCallsPerCallGroup: '1',
-      },
-      android: {
-        alertTitle: 'Permissions required',
-        alertDescription:
-          'This application needs to access your phone accounts',
-        cancelButton: 'Cancel',
-        okButton: 'ok',
-        additionalPermissions: [],
-      },
-    };
-
-    RNCallKeep.setup(options);
+    // Request notification permission
+    notificationPermission();
   }, []);
 
   useEffect(() => {
@@ -228,6 +205,9 @@ const AppProvider = ({children}) => {
         profile.identity,
         profile.chat_password,
       );
+
+      // Request phone calls permission
+      callPermission();
     }
   }, [dispatch, isOnline, profile]);
 
@@ -264,55 +244,41 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      if (socket === null) {
-        dispatch(getPhoneRequest({phone: phone})).then(() => {
-          setSocket(new WebSocket(store.getState().phone.chatWebsocketURL));
+      if (isOnline && profile && profile.id && chatSocket !== null) {
+        getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
+          getLocalData(STORAGE_KEY.REJECTED_CALL, false).then(
+            (rejectedCall) => {
+              if (rejectedCall === 'true') {
+                const message = {
+                  _id: callInfo._id,
+                  rid: callInfo.rid,
+                  msg: callInfo.body.includes('audio')
+                    ? CALL_STATUS.AUDIO_MISSED
+                    : CALL_STATUS.VIDEO_MISSED,
+                };
+
+                updateMessage(chatSocket, message, profile.id);
+
+                RNCallKeep.endCall(callInfo.callUUID);
+              } else {
+                if (!_.isEmpty(callInfo)) {
+                  const message = {
+                    _id: callInfo._id,
+                    rid: callInfo.rid,
+                    msg: CALL_STATUS.ACCEPTED,
+                  };
+
+                  isAnswerCall = true;
+
+                  updateMessage(chatSocket, message, profile.id);
+                }
+              }
+            },
+          );
         });
-      } else {
-        socket.onopen = () => {
-          if (
-            isOnline &&
-            profile &&
-            socket &&
-            !!socket.readyState &&
-            profile.id
-          ) {
-            getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-              getLocalData(STORAGE_KEY.REJECTED_CALL, false).then(
-                (rejectedCall) => {
-                  if (rejectedCall === 'true') {
-                    const message = {
-                      _id: callInfo._id,
-                      rid: callInfo.rid,
-                      msg: callInfo.body.includes('audio')
-                        ? CALL_STATUS.AUDIO_MISSED
-                        : CALL_STATUS.VIDEO_MISSED,
-                    };
-
-                    updateMessage(chatSocket, message, profile.id);
-
-                    RNCallKeep.endCall(callInfo.callUUID);
-                  } else {
-                    if (!_.isEmpty(callInfo)) {
-                      const message = {
-                        _id: callInfo._id,
-                        rid: callInfo.rid,
-                        msg: CALL_STATUS.ACCEPTED,
-                      };
-
-                      isAnswerCall = true;
-
-                      updateMessage(chatSocket, message, profile.id);
-                    }
-                  }
-                },
-              );
-            });
-          }
-        };
       }
     }
-  }, [profile, isOnline, dispatch, socket, phone]);
+  }, [dispatch, profile, isOnline, phone]);
 
   useEffect(() => {
     if (
@@ -354,16 +320,12 @@ const AppProvider = ({children}) => {
   }, [dispatch, accessToken, isOnline, offlineGoals]);
 
   useEffect(() => {
-    if (accessToken && (firebaseToken === undefined || firebaseToken === '')) {
-      messaging()
-        .getToken()
-        .then((fcmToken) => {
-          if (fcmToken && fcmToken !== firebaseToken) {
-            dispatch(createFirebaseToken(accessToken, fcmToken));
-          }
-        });
-    }
-  }, [dispatch, accessToken, firebaseToken]);
+    messaging()
+      .getToken()
+      .then((fcmToken) => {
+        dispatch(createFirebaseToken(accessToken, fcmToken));
+      });
+  }, [dispatch, accessToken]);
 
   return loading ? (
     <SplashScreen />
