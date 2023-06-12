@@ -34,18 +34,18 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-#ifdef FB_SONARKIT_ENABLED
-  InitializeFlipper(application);
-#endif
+  #ifdef FB_SONARKIT_ENABLED
+    InitializeFlipper(application);
+  #endif
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  
+
   [RNCallKeep setup:@{
-      @"appName": @"Awesome App",
-      @"maximumCallGroups": @3,
-      @"maximumCallsPerCallGroup": @1
-    }];
-  
+    @"appName": @"PatientApp",
+    @"maximumCallGroups": @3,
+    @"maximumCallsPerCallGroup": @1
+  }];
+
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"PatientApp"
                                             initialProperties:nil];

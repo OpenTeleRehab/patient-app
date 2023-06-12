@@ -15,9 +15,7 @@ import {storeLocalData} from '../../utils/local_storage';
 
 const VideoCall = ({theme}) => {
   const chatSocket = useContext(RocketchatContext);
-  const {videoCall, secondaryVideoCall} = useSelector(
-    (state) => state.rocketchat,
-  );
+  const {videoCall} = useSelector((state) => state.rocketchat);
   const {profile, accessToken} = useSelector((state) => state.user);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -30,6 +28,7 @@ const VideoCall = ({theme}) => {
     setShowModal(false);
 
     if (
+      videoCall &&
       videoCall.rid &&
       [
         CALL_STATUS.VIDEO_STARTED,
@@ -40,27 +39,10 @@ const VideoCall = ({theme}) => {
       setShowModal(true);
     }
 
-    if (CALL_STATUS.ACCEPTED === videoCall.status && accessToken) {
+    if (accessToken && videoCall && videoCall.status === CALL_STATUS.ACCEPTED) {
       setShowModal(true);
     }
   }, [videoCall, accessToken]);
-
-  useEffect(() => {
-    if (
-      secondaryVideoCall.rid &&
-      [CALL_STATUS.VIDEO_STARTED, CALL_STATUS.AUDIO_STARTED].includes(
-        secondaryVideoCall.status,
-      )
-    ) {
-      const message = {
-        _id: secondaryVideoCall._id,
-        rid: secondaryVideoCall.rid,
-        msg: CALL_STATUS.BUSY,
-      };
-      updateMessage(chatSocket, message, profile.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [secondaryVideoCall]);
 
   const onAcceptCall = () => {
     storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
