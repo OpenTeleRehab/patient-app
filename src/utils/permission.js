@@ -28,7 +28,9 @@ export const notificationPermission = () => {
   messaging().requestPermission();
 
   // Android - Requesting permissions
-  PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS').then();
+  if (Platform.OS === 'android') {
+    PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS').then();
+  }
 };
 
 export const cameraRollPermission = () => {
