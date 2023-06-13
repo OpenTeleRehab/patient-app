@@ -149,7 +149,7 @@ export const loadHistoryInRoom = (socket, roomId, patientId) => {
     msg: 'method',
     method: 'loadHistory',
     id: getUniqueId(patientId),
-    params: [roomId, null, 999999, {$date: new Date().getTime()}],
+    params: [roomId, null, 500, {$date: new Date().getTime()}],
   };
   socket.send(JSON.stringify(options));
 };
