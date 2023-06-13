@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {Platform} from 'react-native';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
+import {Platform, AppState} from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -53,7 +53,9 @@ let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
-  const {accessToken, profile, isDataUpToDate, phone} = useSelector(
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const {accessToken, profile, isDataUpToDate} = useSelector(
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
@@ -74,6 +76,7 @@ const AppProvider = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
   const [language, setLanguage] = useState(undefined);
+  const [socket, setSocket] = useState(null);
   const isOnline = useNetInfo().isConnected;
 
   const fetchLocalData = useCallback(async () => {
@@ -88,26 +91,29 @@ const AppProvider = ({children}) => {
   }, []);
 
   const answerCall = async () => {
-    const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-    if (!_.isEmpty(callInfo)) {
-      if (Platform.OS === 'android') {
-        RNCallKeep.backToForeground();
+    getLocalData(STORAGE_KEY.CALL_INFO, true).then((res) => {
+      if (!_.isEmpty(res)) {
+        isAnswerCall = true;
+
+        if (Platform.OS === 'android') {
+          RNCallKeep.backToForeground();
+
+          const message = {
+            _id: res._id,
+            rid: res.rid,
+            msg: CALL_STATUS.ACCEPTED,
+          };
+          updateMessage(chatSocket, message, profile.id);
+        }
+
+        RNCallKeep.endCall(res.callUUID);
       }
-      isAnswerCall = true;
-
-      const message = {
-        _id: callInfo._id,
-        rid: callInfo.rid,
-        msg: CALL_STATUS.ACCEPTED,
-      };
-      updateMessage(chatSocket, message, profile.id);
-
-      RNCallKeep.endCall(callInfo.callUUID);
-    }
+    });
   };
 
   const endCall = async () => {
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+
     if (!_.isEmpty(callInfo) && !_.isEmpty(profile) && !isAnswerCall) {
       const message = {
         _id: callInfo._id,
@@ -120,11 +126,19 @@ const AppProvider = ({children}) => {
       updateMessage(chatSocket, message, profile.id);
 
       RNCallKeep.endCall(callInfo.callUUID);
+
+      // Clean call info local data
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     }
   };
 
   useEffect(() => {
+    // Listen AppState change
+    AppState.addEventListener('change', (nextAppState) => {
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+
     // Request notification permission
     notificationPermission();
   }, []);
@@ -183,33 +197,51 @@ const AppProvider = ({children}) => {
   }, [loading, language, messages, dispatch]);
 
   useEffect(() => {
-    if (
-      isOnline &&
-      profile.identity &&
-      profile.chat_password &&
-      chatSocket === null
-    ) {
-      const subscribeIds = {
-        loginId: getUniqueId(profile.id),
-        roomMessageId: getUniqueId(profile.id),
-        notifyLoggedId: getUniqueId(profile.id),
-      };
+    if (isOnline && profile.identity && profile.chat_password) {
+      if (Platform.OS === 'ios' && appStateVisible === 'active') {
+        const subscribeIds = {
+          loginId: getUniqueId(profile.id),
+          roomMessageId: getUniqueId(profile.id),
+          notifyLoggedId: getUniqueId(profile.id),
+        };
 
-      dispatch(clearVideoCallStatus());
-      dispatch(clearSecondaryVideoCallStatus());
-      dispatch(setChatSubscribeIds(subscribeIds));
+        dispatch(clearVideoCallStatus());
+        dispatch(clearSecondaryVideoCallStatus());
+        dispatch(setChatSubscribeIds(subscribeIds));
 
-      chatSocket = initialChatSocket(
-        dispatch,
-        subscribeIds,
-        profile.identity,
-        profile.chat_password,
-      );
+        chatSocket = initialChatSocket(
+          dispatch,
+          subscribeIds,
+          profile.identity,
+          profile.chat_password,
+        );
+
+        setSocket(chatSocket);
+      }
+
+      if (Platform.OS === 'android' && chatSocket === null) {
+        const subscribeIds = {
+          loginId: getUniqueId(profile.id),
+          roomMessageId: getUniqueId(profile.id),
+          notifyLoggedId: getUniqueId(profile.id),
+        };
+
+        dispatch(clearVideoCallStatus());
+        dispatch(clearSecondaryVideoCallStatus());
+        dispatch(setChatSubscribeIds(subscribeIds));
+
+        chatSocket = initialChatSocket(
+          dispatch,
+          subscribeIds,
+          profile.identity,
+          profile.chat_password,
+        );
+      }
 
       // Request phone calls permission
       callPermission();
     }
-  }, [dispatch, isOnline, profile]);
+  }, [dispatch, isOnline, profile, appStateVisible]);
 
   useEffect(() => {
     if (chatAuth !== undefined) {
@@ -244,7 +276,13 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      if (isOnline && profile && profile.id && chatSocket !== null) {
+      if (
+        isOnline &&
+        profile &&
+        profile.id &&
+        chatSocket &&
+        chatSocket.readyState === chatSocket.OPEN
+      ) {
         getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
           getLocalData(STORAGE_KEY.REJECTED_CALL, false).then(
             (rejectedCall) => {
@@ -278,7 +316,32 @@ const AppProvider = ({children}) => {
         });
       }
     }
-  }, [dispatch, profile, isOnline, phone]);
+
+    if (Platform.OS === 'ios') {
+      if (
+        isOnline &&
+        isAnswerCall &&
+        accessToken &&
+        profile &&
+        profile.id &&
+        socket
+      ) {
+        getLocalData(STORAGE_KEY.CALL_INFO, true).then((res) => {
+          if (!_.isEmpty(res)) {
+            setTimeout(() => {
+              const message = {
+                _id: res._id,
+                rid: res.rid,
+                msg: CALL_STATUS.ACCEPTED,
+              };
+
+              updateMessage(socket, message, profile.id);
+            }, 1000);
+          }
+        });
+      }
+    }
+  }, [dispatch, profile, isOnline, socket, accessToken]);
 
   useEffect(() => {
     if (
