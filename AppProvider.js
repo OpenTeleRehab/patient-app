@@ -205,8 +205,6 @@ const AppProvider = ({children}) => {
           notifyLoggedId: getUniqueId(profile.id),
         };
 
-        dispatch(clearVideoCallStatus());
-        dispatch(clearSecondaryVideoCallStatus());
         dispatch(setChatSubscribeIds(subscribeIds));
 
         chatSocket = initialChatSocket(
@@ -217,6 +215,9 @@ const AppProvider = ({children}) => {
         );
 
         setSocket(chatSocket);
+
+        // Request phone calls permission
+        callPermission();
       }
 
       if (Platform.OS === 'android' && chatSocket === null) {
@@ -236,10 +237,10 @@ const AppProvider = ({children}) => {
           profile.identity,
           profile.chat_password,
         );
-      }
 
-      // Request phone calls permission
-      callPermission();
+        // Request phone calls permission
+        callPermission();
+      }
     }
   }, [dispatch, isOnline, profile, appStateVisible]);
 
