@@ -49,6 +49,7 @@ import messaging from '@react-native-firebase/messaging';
 import {callPermission, notificationPermission} from './src/utils/permission';
 
 let chatSocket = null;
+let patientId = null;
 let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
@@ -91,30 +92,30 @@ const AppProvider = ({children}) => {
   }, []);
 
   const answerCall = async () => {
-    getLocalData(STORAGE_KEY.CALL_INFO, true).then((res) => {
-      if (!_.isEmpty(res)) {
-        isAnswerCall = true;
+    const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
-        if (Platform.OS === 'android') {
-          RNCallKeep.backToForeground();
+    if (!_.isEmpty(callInfo) && patientId) {
+      isAnswerCall = true;
 
-          const message = {
-            _id: res._id,
-            rid: res.rid,
-            msg: CALL_STATUS.ACCEPTED,
-          };
-          updateMessage(chatSocket, message, profile.id);
-        }
+      if (Platform.OS === 'android') {
+        RNCallKeep.backToForeground();
 
-        RNCallKeep.endCall(res.callUUID);
+        const message = {
+          _id: callInfo._id,
+          rid: callInfo.rid,
+          msg: CALL_STATUS.ACCEPTED,
+        };
+        updateMessage(chatSocket, message, patientId);
       }
-    });
+
+      RNCallKeep.endCall(callInfo.callUUID);
+    }
   };
 
   const endCall = async () => {
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
-    if (!_.isEmpty(callInfo) && !_.isEmpty(profile) && !isAnswerCall) {
+    if (!_.isEmpty(callInfo) && patientId && !isAnswerCall) {
       const message = {
         _id: callInfo._id,
         rid: callInfo.rid,
@@ -123,13 +124,15 @@ const AppProvider = ({children}) => {
           : CALL_STATUS.VIDEO_MISSED,
       };
 
-      updateMessage(chatSocket, message, profile.id);
+      updateMessage(chatSocket, message, patientId);
 
       RNCallKeep.endCall(callInfo.callUUID);
 
       // Clean call info local data
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     }
+
+    isAnswerCall = false;
   };
 
   useEffect(() => {
@@ -151,8 +154,13 @@ const AppProvider = ({children}) => {
       RNCallKeep.removeEventListener('answerCall', answerCall);
       RNCallKeep.removeEventListener('endCall', endCall);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!_.isEmpty(profile)) {
+      patientId = profile.id;
+    }
+  }, [profile]);
 
   useEffect(() => {
     dispatch(updateIndicatorList({isOnlineMode: isOnline}));
@@ -205,8 +213,6 @@ const AppProvider = ({children}) => {
           notifyLoggedId: getUniqueId(profile.id),
         };
 
-        dispatch(clearVideoCallStatus());
-        dispatch(clearSecondaryVideoCallStatus());
         dispatch(setChatSubscribeIds(subscribeIds));
 
         chatSocket = initialChatSocket(
@@ -217,6 +223,9 @@ const AppProvider = ({children}) => {
         );
 
         setSocket(chatSocket);
+
+        // Request phone calls permission
+        callPermission();
       }
 
       if (Platform.OS === 'android' && chatSocket === null) {
@@ -236,10 +245,10 @@ const AppProvider = ({children}) => {
           profile.identity,
           profile.chat_password,
         );
-      }
 
-      // Request phone calls permission
-      callPermission();
+        // Request phone calls permission
+        callPermission();
+      }
     }
   }, [dispatch, isOnline, profile, appStateVisible]);
 
