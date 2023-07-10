@@ -8,6 +8,7 @@ import {useIsFocused} from '@react-navigation/native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
+import {Rocketchat} from '../../../services/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import settings from '../../../../config/settings';
 import {generateHash} from '../../../utils/helper';
@@ -69,6 +70,18 @@ const ChatPanel = ({navigation, theme}) => {
 
   useEffect(() => {
     if (isOnlineMode) {
+      if (isOnChatScreen) {
+        Rocketchat.markMessagesAsRead(
+          selectedRoom.rid,
+          chatAuth.userId,
+          chatAuth.token,
+        ).then((res) => {
+          if (res.success) {
+            dispatch(updateIndicatorList({hasUnreadMessage: false}));
+          }
+        });
+      }
+
       setAllMessages(messages);
     } else {
       const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
@@ -76,14 +89,15 @@ const ChatPanel = ({navigation, theme}) => {
         setAllMessages(chatRooms[fIndex].messages);
       }
     }
-  }, [dispatch, chatRooms, selectedRoom, messages, isOnlineMode]);
-
-  useEffect(() => {
-    const hasUnreadMessages = chatRooms.filter((item) => item.unreads > 0);
-    if (hasUnreadMessages.length === 0 && isOnlineMode) {
-      dispatch(updateIndicatorList({hasUnreadMessage: false}));
-    }
-  }, [dispatch, chatRooms, selectedRoom, isOnlineMode]);
+  }, [
+    dispatch,
+    chatRooms,
+    selectedRoom,
+    messages,
+    isOnlineMode,
+    chatAuth,
+    isOnChatScreen,
+  ]);
 
   useEffect(() => {
     const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
