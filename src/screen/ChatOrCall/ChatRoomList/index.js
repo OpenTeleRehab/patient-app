@@ -27,9 +27,9 @@ const ChatRoomList = ({navigation}) => {
   }, [dispatch]);
 
   const handleSelectRoom = (item) => {
-    isOnlineMode
-      ? dispatch(selectRoom(item))
-      : dispatch(mutation.selectRoomSuccess(item));
+    dispatch(
+      isOnlineMode ? selectRoom(item) : mutation.selectRoomSuccess(item),
+    );
     navigation.navigate(ROUTES.CHAT_PANEL);
   };
 

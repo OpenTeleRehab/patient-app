@@ -121,20 +121,13 @@ export const clearOfflineMessages = () => async (dispatch) => {
 };
 
 export const selectRoom = (payload) => async (dispatch, getState) => {
-  const {chatAuth, chatRooms} = getState().rocketchat;
-  const {token, userId} = chatAuth || {};
+  const {chatRooms} = getState().rocketchat;
   const fIndex = chatRooms.findIndex((cr) => cr.rid === payload.rid);
-  const markMessagesAsRead = await Rocketchat.markMessagesAsRead(
-    payload.rid,
-    userId,
-    token,
-  );
-  if (markMessagesAsRead.success) {
-    chatRooms[fIndex].unreads = 0;
-    dispatch(mutation.selectRoomSuccess(payload));
-    dispatch(mutation.getChatRoomsSuccess(chatRooms));
-    dispatch(mutation.getMessagesInRoomSuccess(payload.messages));
-  }
+
+  chatRooms[fIndex].unreads = 0;
+  dispatch(mutation.selectRoomSuccess(payload));
+  dispatch(mutation.getChatRoomsSuccess(chatRooms));
+  dispatch(mutation.getMessagesInRoomSuccess(payload.messages));
 };
 
 export const prependNewMessage = (payload) => async (dispatch, getState) => {
