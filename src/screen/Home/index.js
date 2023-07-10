@@ -46,7 +46,7 @@ const Home = ({navigation}) => {
   } = useSelector((state) => state.activity);
   const isDrawerOpen = useIsDrawerOpen();
   const [completedPercentage, setCompletedPercentage] = useState(0);
-  const [upComingAppointment, setUpComingAppointment] = useState();
+  const [upcomingAppointment, setUpcomingAppointment] = useState(undefined);
   const [todaySummary, setTodaySummary] = useState({
     all: 0,
     completed: 0,
@@ -151,8 +151,8 @@ const Home = ({navigation}) => {
   }, [dispatch, profile]);
 
   useEffect(() => {
-    // Filter up-coming appointments for offline data reason
-    const upComingAppointments = appointments.filter(
+    // Filter upcoming appointments for offline data reason
+    const upcomingAppointments = appointments.filter(
       (a) =>
         moment.utc(a.end_date) > moment.utc() &&
         ![a.therapist_status, a.patient_status].includes(
@@ -160,13 +160,16 @@ const Home = ({navigation}) => {
         ),
     );
 
-    if (upComingAppointments.length) {
-      setUpComingAppointment(upComingAppointments[0]);
+    if (upcomingAppointments.length) {
+      setUpcomingAppointment(upcomingAppointments[0]);
       // Filter today appointment
-      const appointmentsForToday = upComingAppointments.filter((a) =>
+      const appointmentsForToday = upcomingAppointments.filter((a) =>
         moment(a.end_date).isSame(moment(), 'day'),
       );
       setTodayAppointments(appointmentsForToday);
+    } else {
+      setUpcomingAppointment(undefined);
+      setTodayAppointments([]);
     }
   }, [appointments]);
 
@@ -178,7 +181,7 @@ const Home = ({navigation}) => {
         hasAppointment: todayAppointments.length > 0,
       }),
     );
-  }, [dispatch, todayAppointments, todaySummary, upComingAppointment]);
+  }, [dispatch, todayAppointments, todaySummary, upcomingAppointment]);
 
   return (
     <>
@@ -281,11 +284,11 @@ const Home = ({navigation}) => {
         )}
       </View>
 
-      {upComingAppointment && (
+      {upcomingAppointment && (
         <View style={styles.mainContainerPrimary}>
           <TouchableOpacity
             onPress={() => navigation.navigate(ROUTES.APPOINTMENT)}>
-            <AppointmentCard appointment={upComingAppointment} />
+            <AppointmentCard appointment={upcomingAppointment} />
           </TouchableOpacity>
         </View>
       )}
