@@ -179,7 +179,7 @@ const Activity = ({theme, navigation}) => {
     const treatmentFileName = treatment.name.replace(/\s+/g, '-').toLowerCase();
 
     RNFS.downloadFile({
-      fromUrl: apiBaseURL + '/treatment-plan/export/on-going',
+      fromUrl: apiBaseURL + '/treatment-plan/on-going/export',
       toFile: `${location}/${datetime}-${treatmentFileName}.pdf`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
