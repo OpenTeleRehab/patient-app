@@ -4,52 +4,20 @@
 import React from 'react';
 import {View, Image, ActivityIndicator} from 'react-native';
 import styles from '../../assets/styles';
-import {Text} from 'react-native-elements';
 
 import logoWhite from '../../assets/images/logo-white.png';
-import settings from '../../../config/settings';
 import hiLogo from '../../assets/images/hi-logo.png';
-import {useSelector} from 'react-redux';
-import {Translate} from 'react-localize-redux';
 
 const SplashScreen = () => {
-  const {partnerLogo} = useSelector((state) => state.partnerLogo);
-  const {adminApiBaseURL} = useSelector((state) => state.phone);
-
   return (
-    <View style={styles.flexColumn}>
-      <View style={styles.flexColumn}>
-        <View style={styles.splashScreenContainer}>
-          <Image source={logoWhite} style={styles.splashScreenLogo} />
-          <ActivityIndicator
-            size={60}
-            color="#06038D"
-            style={styles.splashScreenLoading}
-          />
-        </View>
-        <View style={styles.splashScreenPoweredByContainer}>
-          <View style={styles.splashScreenPoweredByWrapper}>
-            <Text style={[styles.fontWeightBold, styles.textLight]}>
-              <Translate id="common.powered_by" />
-            </Text>
-            <Image source={hiLogo} style={styles.splashScreenPoweredByLogo} />
-          </View>
-          <Text style={styles.textLight}>{settings.appVersion}</Text>
-        </View>
+    <View style={[styles.flexColumn, styles.mainContainerPrimary]}>
+      <View style={[styles.flexCenter, styles.justifyContentCenter]}>
+        <Image source={logoWhite} style={styles.splashScreenLogo} />
+        <ActivityIndicator size={60} color="#06038D" />
       </View>
-      {partnerLogo && (
-        <View style={styles.splashScreenSponsorsContainer}>
-          <Text style={[styles.fontWeightBold, styles.textPrimary]}>
-            <Translate id="common.supported_by" />
-          </Text>
-          <Image
-            style={styles.splashScreenSponsorLogos}
-            source={{
-              uri: adminApiBaseURL + '/file/' + partnerLogo.id,
-            }}
-          />
-        </View>
-      )}
+      <View style={styles.splashScreenPoweredByContainer}>
+        <Image source={hiLogo} style={styles.splashScreenPoweredByLogo} />
+      </View>
     </View>
   );
 };

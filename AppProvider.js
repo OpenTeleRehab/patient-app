@@ -36,7 +36,6 @@ import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from '@webessentials/react-native-callkeep';
 import {Alert} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {getPartnerLogoRequest} from './src/store/partnerLogo/actions';
 import store from './src/store';
 import {forceLogout} from './src/store/auth/actions';
 import {
@@ -167,7 +166,6 @@ const AppProvider = ({children}) => {
   }, [dispatch, isOnline]);
 
   useEffect(() => {
-    dispatch(getPartnerLogoRequest());
     fetchLocalData();
   }, [fetchLocalData, dispatch]);
 
@@ -186,23 +184,22 @@ const AppProvider = ({children}) => {
   }, [messages, dispatch]);
 
   useEffect(() => {
-    if (loading && language !== undefined) {
-      dispatch(getTranslations(language)).then((res) => {
-        // If it is fresh installed and not connection
-        if (!res && messages.local) {
-          Alert.alert(
-            messages['error.connection.alert_title'],
-            messages['error.connection.alert_content'],
-          );
-        } else {
-          // Delay of the splash screen so that partner logo is visible
-          setTimeout(() => {
-            setLoading(false);
-          }, 3000);
-        }
+    // If it has been freshly installed and is not establishing a connection
+    if (messages.local) {
+      Alert.alert(
+        messages['error.connection.alert_title'],
+        messages['error.connection.alert_content'],
+      );
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (loading) {
+      dispatch(getTranslations(language)).then(() => {
+        setLoading(false);
       });
     }
-  }, [loading, language, messages, dispatch]);
+  }, [dispatch, loading, language]);
 
   useEffect(() => {
     if (isOnline && profile.identity && profile.chat_password) {
