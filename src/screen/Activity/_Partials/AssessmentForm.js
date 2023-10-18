@@ -2,9 +2,12 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Modal, ScrollView, View} from 'react-native';
+import ScrollPicker from '@webessentials/react-native-picker-scrollview';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {Dimensions, ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
+import RNLocalize from 'react-native-localize';
 import {
   Button,
   Divider,
@@ -13,24 +16,20 @@ import {
   withTheme,
   Card,
 } from 'react-native-elements';
-
-import styles from '../../../assets/styles';
+import _ from 'lodash';
 
 import {
   completeActive,
   completeActivityOffline,
 } from '../../../store/activity/actions';
 import {ROUTES} from '../../../variables/constants';
-import {useNetInfo} from '@react-native-community/netinfo';
-import _ from 'lodash';
-import ScrollPicker from '@webessentials/react-native-picker-scrollview';
+import styles from '../../../assets/styles';
+
 import quackerPain012 from '../../../assets/images/quacker-pain-1.png';
 import quackerPain34 from '../../../assets/images/quacker-pain-2.png';
 import quackerPain56 from '../../../assets/images/quacker-pain-3.png';
 import quackerPain78 from '../../../assets/images/quacker-pain-4.png';
 import quackerPain910 from '../../../assets/images/quacker-pain-5.png';
-import quackerFeedBackSubmit from '../../../assets/images/quacker-feedback-submit.png';
-import RNLocalize from 'react-native-localize';
 
 const styleSetsAndRapsContainer = {
   marginVertical: 72,
@@ -67,7 +66,6 @@ const AssessmentForm = ({
   const {profile} = useSelector((state) => state.user);
   const [kidTheme, setKidTheme] = useState(false);
   const [painImage, setPainImage] = useState('');
-  const [showCompletedPopup, setShowCompletedPopup] = useState(false);
   const screenWidth = Dimensions.get('window').width;
   const painLevelValueWidth = 20;
   const left = (painLevel * (screenWidth - (60 - painLevelValueWidth))) / 11;
@@ -137,7 +135,7 @@ const AssessmentForm = ({
         }),
       ).then((res) => {
         if (res) {
-          setShowCompletedPopup(true);
+          navigation.navigate(ROUTES.ACTIVITY);
         }
       });
     } else {
@@ -150,17 +148,12 @@ const AssessmentForm = ({
         timezone: RNLocalize.getTimeZone(),
       });
       dispatch(completeActivityOffline(offlineActivitiesObj));
-      setShowCompletedPopup(true);
+      navigation.navigate(ROUTES.ACTIVITY);
     }
   };
 
   const handleNext = () => {
     setStep(step + 1);
-  };
-
-  const handleClose = () => {
-    setShowCompletedPopup(false);
-    navigation.navigate(ROUTES.ACTIVITY);
   };
 
   const handlePrevious = () => {
@@ -505,53 +498,6 @@ const AssessmentForm = ({
           </>
         )
       )}
-      <Modal
-        animationType={'fade'}
-        visible={showCompletedPopup}
-        transparent={true}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {kidTheme && (
-              <Card.Image
-                source={quackerFeedBackSubmit}
-                style={styles.activityCardImage}
-                resizeMode={'contain'}
-              />
-            )}
-            <Text
-              style={[
-                styles.fontWeightBold,
-                styles.textCenter,
-                styles.marginBottomMd,
-                styles.marginTopMd,
-              ]}>
-              {kidTheme
-                ? translate('activity.completed.kid_title')
-                : translate('activity.completed.title')}
-            </Text>
-            <Text style={styles.textCenter}>
-              {kidTheme
-                ? translate('activity.completed.kid_description')
-                : translate('activity.completed.description')}
-            </Text>
-            <View style={[styles.modalButtonWrapper, styles.marginTopLg]}>
-              <Button
-                title={
-                  kidTheme
-                    ? translate('activity.completed.kid_button_title')
-                    : translate('activity.completed.button_title')
-                }
-                onPress={handleClose}
-                containerStyle={[
-                  styles.modalButtonContainer,
-                  styles.borderRadius,
-                ]}
-                buttonStyle={[styles.paddingY, styles.borderRadius]}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
     </>
   );
 };
