@@ -8,11 +8,6 @@ export default {
     padding: 0,
     borderRadius: 5,
   },
-  activityCardImage: {
-    height: 250,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
   activityCardTitle: {
     margin: 10,
     fontSize: variables.fontSizeBase,
