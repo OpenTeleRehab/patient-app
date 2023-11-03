@@ -1,5 +1,8 @@
 ---
 
+- name: Change node version
+  shell: n 14.21.3
+
 - name: Run yarn to install node packages
   shell: yarn install
   args:
