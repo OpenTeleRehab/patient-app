@@ -28,9 +28,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showFromTimePicker, setShowFromTimePicker] = useState(false);
   const [showToTimePicker, setShowToTimePicker] = useState(false);
-  const [therapistId, setTherapistId] = useState(
-    appointment ? appointment.therapist_id : '',
-  );
+  const [therapistId, setTherapistId] = useState(profile.therapist_id);
   const [date, setDate] = useState(moment().toDate());
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
@@ -42,6 +40,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
 
   useEffect(() => {
     if (appointment) {
+      setTherapistId(appointment.therapist_id);
       setDate(moment.utc(appointment.start_date).local().toDate());
       setFromTime(moment.utc(appointment.start_date).local().toDate());
       setToTime(moment.utc(appointment.end_date).local().toDate());
@@ -55,7 +54,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   };
 
   const handleCloseOverlay = () => {
-    setTherapistId('');
+    setTherapistId(profile.therapist_id);
     setFromTime('');
     setToTime('');
     visible(false);
