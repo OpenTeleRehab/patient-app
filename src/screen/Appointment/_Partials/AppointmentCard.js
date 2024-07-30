@@ -185,6 +185,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
               }
               title={translate('appointment.invitation.accept')}
               titleStyle={styles.marginLeftSm}
+              size="md"
               disabled={
                 !netInfo.isConnected ||
                 appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED
@@ -204,6 +205,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
               containerStyle={styles.marginLeft}
               buttonStyle={styles.bgDanger}
               titleStyle={styles.marginLeftSm}
+              size="md"
               disabled={
                 !netInfo.isConnected ||
                 appointment.patient_status === APPOINTMENT_STATUS.REJECTED
