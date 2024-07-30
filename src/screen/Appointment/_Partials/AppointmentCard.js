@@ -1,18 +1,24 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Divider, Icon, ListItem, Text, withTheme, Button, Icon} from 'react-native-elements';
+import {
+  Divider,
+  Icon,
+  ListItem,
+  Text,
+  withTheme,
+  Button,
+} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {displayNotification} from '../../utils/appointmentNotification';
-import {
-  updateStatus,
-} from '../../store/appointment/actions';
+import {updateStatus} from '../../store/appointment/actions';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-import {View} from 'react-native';
+import {View, Alert} from 'react-native';
 import styles from '../../../assets/styles';
 import {getTherapistName} from '../../../utils/therapist';
 import {APPOINTMENT_STATUS, ROUTES} from '../../../variables/constants';
@@ -24,6 +30,8 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
   const {therapists} = useSelector((state) => state.therapist);
   const {therapist_status, patient_status} = appointment;
   const netInfo = useNetInfo();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   let additionDateStyle = {};
   let additionTextStyle = {};
@@ -52,10 +60,10 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
     Alert.alert(
       translate('appointment.invitation.accept_title'),
       translate('appointment.are_you_sure_to_accept_invitation'),
-        [
-          {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
-          {text: translate('common.cancel'), style: 'cancel'},
-        ],
+      [
+        {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
+        {text: translate('common.cancel'), style: 'cancel'},
+      ],
       {cancelable: false},
     );
   };
@@ -64,10 +72,10 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
     Alert.alert(
       translate('appointment.invitation.reject_title'),
       translate('appointment.are_you_sure_to_reject_invitation'),
-        [
-          {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
-          {text: translate('common.cancel'), style: 'cancel'},
-        ],
+      [
+        {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
+        {text: translate('common.cancel'), style: 'cancel'},
+      ],
       {cancelable: false},
     );
   };
@@ -78,7 +86,7 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
         status: APPOINTMENT_STATUS.ACCEPTED,
       }),
     ).then((res) => {
-    setIsLoading(false);
+      setIsLoading(false);
       if (res) {
         displayNotification(appointment, therapists, translate);
         navigation.navigate(ROUTES.APPOINTMENT);
@@ -92,7 +100,7 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
         status: APPOINTMENT_STATUS.REJECTED,
       }),
     ).then((res) => {
-    setIsLoading(false);
+      setIsLoading(false);
       if (res) {
         navigation.navigate(ROUTES.APPOINTMENT);
       }
@@ -214,6 +222,12 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
             />
           </View>
         )}
+        <Spinner
+          visible={isLoading}
+          textContent={translate('common.loading')}
+          overlayColor="rgba(0, 0, 0, 0.75)"
+          textStyle={styles.textLight}
+        />
       </ListItem.Content>
     </ListItem>
   );
