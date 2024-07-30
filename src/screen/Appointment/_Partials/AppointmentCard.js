@@ -4,20 +4,26 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Divider, Icon, ListItem, Text, withTheme} from 'react-native-elements';
+import {Divider, Icon, ListItem, Text, withTheme, Button, Icon} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {displayNotification} from '../../utils/appointmentNotification';
+import {
+  updateStatus,
+} from '../../store/appointment/actions';
 
 import {View} from 'react-native';
 import styles from '../../../assets/styles';
 import {getTherapistName} from '../../../utils/therapist';
-import {APPOINTMENT_STATUS} from '../../../variables/constants';
+import {APPOINTMENT_STATUS, ROUTES} from '../../../variables/constants';
 import {getAssistiveTechnologyName} from '../../../utils/assistiveTechnology';
 
-const AppointmentCard = ({appointment, style, theme}) => {
+const AppointmentCard = ({appointment, style, theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {therapists} = useSelector((state) => state.therapist);
   const {therapist_status, patient_status} = appointment;
+  const netInfo = useNetInfo();
 
   let additionDateStyle = {};
   let additionTextStyle = {};
@@ -35,6 +41,63 @@ const AppointmentCard = ({appointment, style, theme}) => {
     statusTextStyle = {color: theme.colors.orange};
     statusText = 'appointment.status.cancel';
   }
+  useEffect(() => {
+    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    return () => {
+      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    };
+  }, [navigation]);
+
+  const handleAcceptPress = (id) => {
+    Alert.alert(
+      translate('appointment.invitation.accept_title'),
+      translate('appointment.are_you_sure_to_accept_invitation'),
+        [
+          {text: translate('common.ok'), onPress: () => handleAcceptConfirm(id)},
+          {text: translate('common.cancel'), style: 'cancel'},
+        ],
+      {cancelable: false},
+    );
+  };
+
+  const handleRejectPress = (id) => {
+    Alert.alert(
+      translate('appointment.invitation.reject_title'),
+      translate('appointment.are_you_sure_to_reject_invitation'),
+        [
+          {text: translate('common.ok'), onPress: () => handleRejectConfirm(id)},
+          {text: translate('common.cancel'), style: 'cancel'},
+        ],
+      {cancelable: false},
+    );
+  };
+
+  const handleAcceptConfirm = (id) => {
+    dispatch(
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.ACCEPTED,
+      }),
+    ).then((res) => {
+    setIsLoading(false);
+      if (res) {
+        displayNotification(appointment, therapists, translate);
+        navigation.navigate(ROUTES.APPOINTMENT);
+      }
+    });
+  };
+
+  const handleRejectConfirm = (id) => {
+    dispatch(
+      updateStatus(id, {
+        status: APPOINTMENT_STATUS.REJECTED,
+      }),
+    ).then((res) => {
+    setIsLoading(false);
+      if (res) {
+        navigation.navigate(ROUTES.APPOINTMENT);
+      }
+    });
+  };
 
   return (
     <ListItem
@@ -108,6 +171,47 @@ const AppointmentCard = ({appointment, style, theme}) => {
         {appointment.note && appointment.note.trim() !== '' && (
           <View style={[styles.alignSelfEnd, styles.marginRight]}>
             <Icon name="event-note" size={22} />
+          </View>
+        )}
+        <Divider style={styles.marginY} />
+        {appointment.created_by_therapist && (
+          <View style={[styles.flexRow]}>
+            <Button
+              icon={
+                <Icon
+                  name="calendar-check"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
+              title={translate('appointment.invitation.accept')}
+              titleStyle={styles.marginLeftSm}
+              disabled={
+                !netInfo.isConnected ||
+                appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED
+              }
+              onPress={() => handleAcceptPress(appointment.id)}
+            />
+            <Button
+              icon={
+                <Icon
+                  name="calendar-times"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
+              title={translate('appointment.invitation.reject')}
+              containerStyle={styles.marginLeft}
+              buttonStyle={styles.bgDanger}
+              titleStyle={styles.marginLeftSm}
+              disabled={
+                !netInfo.isConnected ||
+                appointment.patient_status === APPOINTMENT_STATUS.REJECTED
+              }
+              onPress={() => handleRejectPress(appointment.id)}
+            />
           </View>
         )}
       </ListItem.Content>
