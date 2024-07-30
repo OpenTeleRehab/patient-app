@@ -167,7 +167,11 @@ const AppointmentDetail = ({route, navigation}) => {
               }
               title={translate('common.edit')}
               titleStyle={styles.marginLeftSm}
-              disabled={appointment.created_by_therapist}
+              disabled={
+                appointment.created_by_therapist ||
+                appointment.therapist_status === APPOINTMENT_STATUS.ACCEPTED ||
+                appointment.therapist_status === APPOINTMENT_STATUS.REJECTE
+              }
               onPress={() => setShowRequestOverlay(true)}
             />
             <Button
@@ -179,7 +183,12 @@ const AppointmentDetail = ({route, navigation}) => {
                   color="white"
                 />
               }
-              title={translate('common.delete')}
+              title={
+                appointment.therapist_status === APPOINTMENT_STATUS.ACCEPTED ||
+                appointment.therapist_status === APPOINTMENT_STATUS.REJECTE
+                  ? translate('common.cancel')
+                  : translate('common.delete')
+              }
               containerStyle={styles.marginLeft}
               buttonStyle={styles.bgDanger}
               titleStyle={styles.marginLeftSm}
