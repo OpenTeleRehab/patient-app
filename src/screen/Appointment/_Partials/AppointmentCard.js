@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {
@@ -21,10 +21,10 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {View, Alert} from 'react-native';
 import styles from '../../../assets/styles';
 import {getTherapistName} from '../../../utils/therapist';
-import {APPOINTMENT_STATUS, ROUTES} from '../../../variables/constants';
+import {APPOINTMENT_STATUS} from '../../../variables/constants';
 import {getAssistiveTechnologyName} from '../../../utils/assistiveTechnology';
 
-const AppointmentCard = ({appointment, style, theme, navigation}) => {
+const AppointmentCard = ({appointment, style, theme}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {therapists} = useSelector((state) => state.therapist);
@@ -49,12 +49,6 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
     statusTextStyle = {color: theme.colors.orange};
     statusText = 'appointment.status.cancel';
   }
-  useEffect(() => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
 
   const handleAcceptPress = (id) => {
     Alert.alert(
@@ -89,7 +83,6 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
       setIsLoading(false);
       if (res) {
         displayNotification(appointment, therapists, translate);
-        navigation.navigate(ROUTES.APPOINTMENT);
       }
     });
   };
@@ -101,9 +94,6 @@ const AppointmentCard = ({appointment, style, theme, navigation}) => {
       }),
     ).then((res) => {
       setIsLoading(false);
-      if (res) {
-        navigation.navigate(ROUTES.APPOINTMENT);
-      }
     });
   };
 
