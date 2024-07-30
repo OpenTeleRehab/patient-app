@@ -14,8 +14,8 @@ import {
 } from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {displayNotification} from '../../utils/appointmentNotification';
-import {updateStatus} from '../../store/appointment/actions';
+import {displayNotification} from '../../../utils/appointmentNotification';
+import {updateStatus} from '../../../store/appointment/actions';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import {View, Alert} from 'react-native';
