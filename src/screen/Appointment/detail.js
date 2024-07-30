@@ -215,7 +215,7 @@ const AppointmentDetail = ({route, navigation}) => {
                   color="white"
                 />
               }
-              title={translate('appointment.invitation.reject')}
+              title={translate('appointment.invitation.decline')}
               containerStyle={styles.marginLeft}
               buttonStyle={styles.bgDanger}
               titleStyle={styles.marginLeftSm}
