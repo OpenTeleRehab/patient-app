@@ -150,4 +150,8 @@ export default {
   width70: {
     width: '70%',
   },
+  reject: {
+    backgroundColor: variables.danger,
+    paddingHorizontal: variables.spacingMd,
+  },
 };
