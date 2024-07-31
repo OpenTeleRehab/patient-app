@@ -115,7 +115,7 @@ if (settings.isDebugMode) {
       action: () => '#0077C8',
       prevState: () => '#5BC2E7',
       nextState: () => '#039995',
-      error: () => '#E35205',
+      error: () => '#E5231E',
     },
   });
   middlewares.push(logger);
