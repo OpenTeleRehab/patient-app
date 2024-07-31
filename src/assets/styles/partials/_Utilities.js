@@ -95,6 +95,9 @@ export default {
   paddingYMd: {
     paddingVertical: variables.spacingMd,
   },
+  paddingYSm: {
+    paddingHorizontal: variables.spacingBase,
+  },
   paddingXMd: {
     paddingHorizontal: variables.spacingMd,
   },
@@ -152,6 +155,6 @@ export default {
   },
   reject: {
     backgroundColor: variables.danger,
-    paddingHorizontal: variables.spacingMd,
+    paddingHorizontal: variables.spacingBase,
   },
 };

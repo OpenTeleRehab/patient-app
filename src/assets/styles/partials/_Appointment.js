@@ -8,7 +8,6 @@ export default {
     borderRadius: 10,
     padding: 1,
     borderColor: variables.white,
-    backgroundColor: variables.grey7,
   },
   appointmentListLeftContent: {
     backgroundColor: variables.primary,
