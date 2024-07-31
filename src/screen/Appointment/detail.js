@@ -40,8 +40,8 @@ const AppointmentDetail = ({route, navigation}) => {
 
   const handleRemove = () => {
     Alert.alert(
-      translate('appointment.alert.title'),
-      translate('appointment.alert.content'),
+      translate('appointment.cancel.title'),
+      translate('appointment.cancel.content'),
       [
         {
           text: translate('common.cancel'),
@@ -183,12 +183,7 @@ const AppointmentDetail = ({route, navigation}) => {
                   color="white"
                 />
               }
-              title={
-                appointment.therapist_status === APPOINTMENT_STATUS.ACCEPTED ||
-                appointment.therapist_status === APPOINTMENT_STATUS.REJECTE
-                  ? translate('common.cancel')
-                  : translate('common.delete')
-              }
+              title={translate('common.cancel')}
               containerStyle={styles.marginLeft}
               buttonStyle={styles.bgDanger}
               titleStyle={styles.marginLeftSm}
