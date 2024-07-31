@@ -154,16 +154,6 @@ const AppointmentCard = ({appointment, style, theme}) => {
             <Text style={[styles.fontWeightBold, statusTextStyle]}>
               {translate(statusText)}
             </Text>
-            {!appointment.created_by_therapist && (
-              <Text>
-                <Icon
-                  name="person"
-                  size={20}
-                  type="material"
-                  color={theme.colors.primary}
-                />
-              </Text>
-            )}
           </View>
         </View>
         {appointment.note && appointment.note.trim() !== '' && (
