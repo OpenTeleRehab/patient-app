@@ -185,7 +185,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
               }
               title={translate('appointment.invitation.accept')}
               titleStyle={styles.marginLeftSm}
-              buttonStyle={styles.paddingXMd}
+              buttonStyle={styles.paddingYSm}
               disabled={
                 !netInfo.isConnected ||
                 appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED
@@ -201,10 +201,11 @@ const AppointmentCard = ({appointment, style, theme}) => {
                   color="white"
                 />
               }
-              title={translate('appointment.invitation.decline')}
+              title="Decline"
               containerStyle={styles.marginLeft}
               buttonStyle={styles.reject}
               titleStyle={styles.marginLeftSm}
+              textStyle={styles.textLight}
               disabled={
                 !netInfo.isConnected ||
                 appointment.patient_status === APPOINTMENT_STATUS.REJECTED
