@@ -170,7 +170,7 @@ const AppointmentDetail = ({route, navigation}) => {
               disabled={
                 appointment.created_by_therapist ||
                 appointment.therapist_status === APPOINTMENT_STATUS.ACCEPTED ||
-                appointment.therapist_status === APPOINTMENT_STATUS.REJECTE
+                appointment.therapist_status === APPOINTMENT_STATUS.REJECTED
               }
               onPress={() => setShowRequestOverlay(true)}
             />
