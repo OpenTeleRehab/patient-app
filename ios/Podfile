@@ -3,6 +3,10 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
+# Firebase compatibility
+use_frameworks! :linkage => :static
+$RNFirebaseAsStaticFramework = true
+
 target 'PatientApp' do
   config = use_native_modules!
 
