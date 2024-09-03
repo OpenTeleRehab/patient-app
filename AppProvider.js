@@ -184,16 +184,6 @@ const AppProvider = ({children}) => {
   }, [messages, dispatch]);
 
   useEffect(() => {
-    // If it has been freshly installed and is not establishing a connection
-    if (messages.local) {
-      Alert.alert(
-        messages['error.connection.alert_title'],
-        messages['error.connection.alert_content'],
-      );
-    }
-  }, [messages]);
-
-  useEffect(() => {
     if (loading) {
       dispatch(getTranslations(language)).then(() => {
         setLoading(false);
