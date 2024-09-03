@@ -25,7 +25,6 @@ import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import formatPhoneNumber from '../../../utils/phoneNumber';
-import {getPhoneRequest} from '../../../store/phone/actions';
 
 const containerStyle = {
   height: '100%',
@@ -42,32 +41,26 @@ const Login = ({navigation}) => {
   const [errorCode, setErrorCode] = useState(false);
 
   const handleLogin = (passCode) => {
-    dispatch(getPhoneRequest({phone: phone})).then((result) => {
-      if (result) {
-        dispatch(loginRequest(phone, passCode, countryCode)).then(
-          (loginResult) => {
-            if (loginResult.success) {
-              if (
-                !loginResult.acceptedTermOfService ||
-                !loginResult.acceptedPrivacyPolicy
-              ) {
-                navigation.navigate(ROUTES.TERM_OF_SERVICE);
-              }
-            } else {
-              if (passCode === pin) {
-                dispatch(generateFakeAccessToken());
-              } else {
-                Alert.alert(
-                  translate('common.login.fail'),
-                  translate('wrong.pin'),
-                  [{text: translate('common.ok'), onPress: () => reset()}],
-                  {cancelable: false},
-                );
-                setErrorCode(true);
-              }
-            }
-          },
-        );
+    dispatch(loginRequest(phone, passCode, countryCode)).then((loginResult) => {
+      if (loginResult.success) {
+        if (
+          !loginResult.acceptedTermOfService ||
+          !loginResult.acceptedPrivacyPolicy
+        ) {
+          navigation.navigate(ROUTES.TERM_OF_SERVICE);
+        }
+      } else {
+        if (passCode === pin) {
+          dispatch(generateFakeAccessToken());
+        } else {
+          Alert.alert(
+            translate('common.login.fail'),
+            translate('wrong.pin'),
+            [{text: translate('common.ok'), onPress: () => reset()}],
+            {cancelable: false},
+          );
+          setErrorCode(true);
+        }
       }
     });
   };
