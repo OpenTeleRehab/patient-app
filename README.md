@@ -65,7 +65,7 @@ __Note:__ If you previously installed a global `react-native-cli`, please remove
 5. Decrypt `Firebase google services`
 
      ```bash
-    ansible-vault decrypt config/ansible/roles/deploy/files/google-services.json.valut --output=android/app/google-services.json
+    ansible-vault decrypt config/ansible/roles/deploy/files/google-services.json.vault --output=android/app/google-services.json
     ansible-vault decrypt config/ansible/roles/deploy/files/GoogleService-Info.plist.vault --output=ios/GoogleService-Info.plist
     ```
 
