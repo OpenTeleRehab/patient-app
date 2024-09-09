@@ -87,7 +87,7 @@ const AppProvider = ({children}) => {
       setTimespan(data.timespan);
     }
 
-    setLanguage(lang);
+    setLanguage(lang || 1);
   }, []);
 
   const answerCall = async () => {
@@ -136,13 +136,17 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     // Listen AppState change
-    AppState.addEventListener('change', (nextAppState) => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
       appState.current = nextAppState;
       setAppStateVisible(appState.current);
     });
 
     // Request notification permission
     notificationPermission();
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -184,7 +188,7 @@ const AppProvider = ({children}) => {
   }, [messages, dispatch]);
 
   useEffect(() => {
-    if (loading) {
+    if (loading && language) {
       dispatch(getTranslations(language)).then(() => {
         setLoading(false);
       });
