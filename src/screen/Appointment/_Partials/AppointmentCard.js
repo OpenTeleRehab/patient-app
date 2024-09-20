@@ -97,6 +97,13 @@ const AppointmentCard = ({appointment, style, theme}) => {
     });
   };
 
+  const acceptDisabled =
+    !netInfo.isConnected ||
+    appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED;
+  const rejectDisabled =
+    !netInfo.isConnected ||
+    appointment.patient_status === APPOINTMENT_STATUS.REJECTED;
+
   return (
     <ListItem
       bottomDivider
@@ -162,44 +169,26 @@ const AppointmentCard = ({appointment, style, theme}) => {
           </View>
         )}
         <Divider style={styles.marginY} />
-        {appointment.created_by_therapist && (
+        {appointment.created_by_therapist && !rejectDisabled && (
           <View style={[styles.flexRow]}>
             <Button
-              icon={
-                <Icon
-                  name="calendar-check"
-                  size={15}
-                  type="font-awesome-5"
-                  color="white"
-                />
+              containerStyle={
+                acceptDisabled
+                  ? [styles.opacity0, {pointerEvent: 'none'}]
+                  : null
               }
               title={translate('appointment.invitation.accept')}
               titleStyle={styles.marginLeftSm}
               buttonStyle={styles.paddingYSm}
-              disabled={
-                !netInfo.isConnected ||
-                appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED
-              }
+              disabled={acceptDisabled}
               onPress={() => handleAcceptPress(appointment.id)}
             />
             <Button
-              icon={
-                <Icon
-                  name="calendar-times"
-                  size={15}
-                  type="font-awesome-5"
-                  color="white"
-                />
-              }
               title="Decline"
               containerStyle={styles.marginLeft}
               buttonStyle={styles.reject}
               titleStyle={styles.marginLeftSm}
               textStyle={styles.textLight}
-              disabled={
-                !netInfo.isConnected ||
-                appointment.patient_status === APPOINTMENT_STATUS.REJECTED
-              }
               onPress={() => handleRejectPress(appointment.id)}
             />
           </View>
