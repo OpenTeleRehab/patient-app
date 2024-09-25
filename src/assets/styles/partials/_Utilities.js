@@ -157,4 +157,7 @@ export default {
     backgroundColor: variables.danger,
     paddingHorizontal: variables.spacingBase,
   },
+  opacity0: {
+    opacity: 0,
+  },
 };
