@@ -121,11 +121,11 @@ const AppointmentDetail = ({route, navigation}) => {
   };
 
   const acceptDisabled =
-      !netInfo.isConnected ||
-      appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED;
+    !netInfo.isConnected ||
+    appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED;
   const rejectDisabled =
-      !netInfo.isConnected ||
-      appointment.patient_status === APPOINTMENT_STATUS.REJECTED;
+    !netInfo.isConnected ||
+    appointment.patient_status === APPOINTMENT_STATUS.REJECTED;
 
   return (
     <>
@@ -201,6 +201,14 @@ const AppointmentDetail = ({route, navigation}) => {
         {appointment.created_by_therapist && !rejectDisabled && (
           <View style={[styles.flexRow]}>
             <Button
+              icon={
+                <Icon
+                  name="calendar-check"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
               containerStyle={
                 acceptDisabled
                   ? [styles.opacity0, {pointerEvent: 'none'}]
@@ -212,6 +220,14 @@ const AppointmentDetail = ({route, navigation}) => {
               onPress={() => handleAcceptPress(appointment.id)}
             />
             <Button
+              icon={
+                <Icon
+                  name="calendar-times"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
               title={translate('appointment.invitation.decline')}
               containerStyle={styles.marginLeft}
               buttonStyle={styles.bgDanger}
