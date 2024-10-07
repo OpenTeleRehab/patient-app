@@ -172,6 +172,14 @@ const AppointmentCard = ({appointment, style, theme}) => {
         {appointment.created_by_therapist && !rejectDisabled && (
           <View style={[styles.flexRow]}>
             <Button
+              icon={
+                <Icon
+                  name="calendar-check"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
               containerStyle={
                 acceptDisabled
                   ? [styles.opacity0, {pointerEvent: 'none'}]
@@ -184,6 +192,14 @@ const AppointmentCard = ({appointment, style, theme}) => {
               onPress={() => handleAcceptPress(appointment.id)}
             />
             <Button
+              icon={
+                <Icon
+                  name="calendar-times"
+                  size={15}
+                  type="font-awesome-5"
+                  color="white"
+                />
+              }
               title="Decline"
               containerStyle={styles.marginLeft}
               buttonStyle={styles.reject}
