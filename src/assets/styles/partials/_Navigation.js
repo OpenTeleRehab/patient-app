@@ -26,8 +26,11 @@ export default {
     paddingTop: variables.spacingLg,
     paddingBottom: variables.spacingMd,
   },
-  navDrawerBottom: {
+  navDrawerBottomContainer: {
     marginHorizontal: variables.spacingMd,
+  },
+  navDrawerBottom: {
+    marginTop: variables.spacingMd,
   },
   navKidThemeWrapper: {
     backgroundColor: variables.grey6,

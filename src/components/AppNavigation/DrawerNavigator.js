@@ -73,10 +73,17 @@ const DrawerNavigator = ({navProps}) => {
           return null;
         })}
       </DrawerContentScrollView>
-      <View style={styles.navDrawerBottom}>
+      <View style={styles.navDrawerBottomContainer}>
         <Button
+          containerStyle={styles.navDrawerBottom}
           title={translate('common.logout')}
           onPress={() => handleLogout()}
+        />
+        <Button
+          type="outline"
+          containerStyle={styles.navDrawerBottom}
+          title={translate('common.back')}
+          onPress={() => navigation.closeDrawer()}
         />
       </View>
     </View>

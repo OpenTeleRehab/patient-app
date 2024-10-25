@@ -206,12 +206,14 @@ const Home = ({navigation}) => {
         ]}>
         {kidTheme ? (
           <TouchableOpacity
+            accessibilityLabel={translate('common.home.mascot')}
             onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
             <Image source={quackerWave} style={kidThemeImageStyle} />
           </TouchableOpacity>
         ) : todaySummary.all ? (
           <>
             <TouchableOpacity
+              accessibilityLabel={translate('common.activities.progress')}
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
               <AnimatedCircularProgress
                 size={250}
@@ -242,7 +244,7 @@ const Home = ({navigation}) => {
             </TouchableOpacity>
           </>
         ) : (
-          <Text />
+          <Text accessible={false} />
         )}
         <Text style={[styles.textLightBold, styles.marginTopMd]}>
           {translate('common.hi')}, {profile.first_name}!
