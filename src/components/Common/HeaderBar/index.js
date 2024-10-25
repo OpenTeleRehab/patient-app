@@ -46,6 +46,8 @@ const HeaderBar = (props) => {
       return (
         <Button
           title=""
+          accessible={true}
+          accessibilityLabel={translate('common.back')}
           icon={
             <Icon
               type="feather"
@@ -74,6 +76,8 @@ const HeaderBar = (props) => {
       if (label) {
         return (
           <Text
+            accessible={true}
+            accessibilityLabel={label}
             numberOfLines={1}
             style={
               backgroundPrimary
@@ -87,7 +91,10 @@ const HeaderBar = (props) => {
       return leftContent;
     }
     return (
-      <Text style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
+      <Text
+        accessible={false}
+        accessibilityElementsHidden={true}
+        style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
         Empty
       </Text>
     );
@@ -97,6 +104,8 @@ const HeaderBar = (props) => {
     if (title) {
       return (
         <Text
+          accessible={true}
+          accessibilityLabel={title}
           style={
             backgroundPrimary
               ? styles.headerCenterTitleLight
@@ -113,6 +122,8 @@ const HeaderBar = (props) => {
       const {icon, iconType, iconSize, label, onPress, disabled} = rightContent;
       return (
         <Button
+          accessible={true}
+          accessibilityLabel={label}
           title={label}
           icon={
             icon
@@ -145,6 +156,8 @@ const HeaderBar = (props) => {
       return (
         <View style={[styles.flexRow, styles.flexCenter]}>
           <Button
+            accessible={true}
+            accessibilityLabel={translate('common.go.to.achievement')}
             title=""
             icon={
               <Icon
@@ -161,6 +174,8 @@ const HeaderBar = (props) => {
             buttonStyle={[styles.marginLeftLg, styles.noPadding]}
           />
           <Button
+            accessible={true}
+            accessibilityLabel={translate('common.go.to.settings')}
             title=""
             icon={
               <Icon
@@ -182,6 +197,8 @@ const HeaderBar = (props) => {
     if (setting && setting.hasSetting) {
       return (
         <Button
+          accessible={true}
+          accessibilityLabel={translate('common.go.to.settings')}
           title=""
           icon={
             <Icon
@@ -202,6 +219,8 @@ const HeaderBar = (props) => {
     if (achievement && achievement.hasAchievement) {
       return (
         <Button
+          accessible={true}
+          accessibilityLabel={translate('common.go.to.achievement')}
           title=""
           icon={
             <Icon
@@ -220,7 +239,10 @@ const HeaderBar = (props) => {
       );
     }
     return (
-      <Text style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
+      <Text
+        accessible={false}
+        accessibilityElementsHidden={true}
+        style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
         Empty
       </Text>
     );
@@ -229,7 +251,12 @@ const HeaderBar = (props) => {
   return (
     <>
       {!isOnline && (
-        <Text style={styles.offlineText}>{translate('common.offline')}</Text>
+        <Text
+          accessible={true}
+          accessibilityLabel={translate('common.offline')}
+          style={styles.offlineText}>
+          {translate('common.offline')}
+        </Text>
       )}
       <Header
         statusBarProps={{barStyle: 'light-content'}}

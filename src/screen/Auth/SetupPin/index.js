@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {ScrollView, View, Alert} from 'react-native';
+import {ScrollView, View, Alert, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles/index';
@@ -120,51 +120,69 @@ const SetupPin = ({navigation, route}) => {
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View
             style={[styles.paddingY, styles.marginTopMd, styles.marginBottom]}>
-            <Text style={styles.formLabel}>{translate('pin.setup.title')}</Text>
+            <Text
+              accessibilityLabel={translate('pin.setup.title')}
+              style={styles.formLabel}>
+              {translate('pin.setup.title')}
+            </Text>
           </View>
           <View>
-            <Text style={styles.formLabel}>{translate('pin.new.number')}</Text>
-            <SmoothPinCodeInput
-              password
-              value={code}
-              onTextChange={(value) => setCode(value)}
-              animated={false}
-              textStyle={styles.formPinText}
-              cellSpacing={10}
-              containerStyle={styles.formPinContainer}
-              cellStyle={[
-                styles.formPinCell,
-                errorCode && styles.formPinCellError,
-              ]}
-              cellStyleFocused={!errorCode && styles.formPinCellFocused}
-              cellStyleFilled={styles.formPinCellFilled}
-              mask={<View style={styles.formPinCustomMask} />}
-            />
+            <Text
+              accessibilityLabel={translate('pin.new.number')}
+              style={styles.formLabel}>
+              {translate('pin.new.number')}
+            </Text>
+            <TouchableOpacity
+              accessible={true}
+              accessibilityLabel={translate('enter.pin.new.number')}>
+              <SmoothPinCodeInput
+                password
+                value={code}
+                onTextChange={(value) => setCode(value)}
+                animated={false}
+                textStyle={styles.formPinText}
+                cellSpacing={10}
+                containerStyle={styles.formPinContainer}
+                cellStyle={[
+                  styles.formPinCell,
+                  errorCode && styles.formPinCellError,
+                ]}
+                cellStyleFocused={!errorCode && styles.formPinCellFocused}
+                cellStyleFilled={styles.formPinCellFilled}
+                mask={<View style={styles.formPinCustomMask} />}
+              />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
-            <Text style={styles.formLabel}>
+            <Text
+              accessibilityLabel={translate('pin.confirm.number')}
+              style={styles.formLabel}>
               {translate('pin.confirm.number')}
             </Text>
-            <SmoothPinCodeInput
-              password
-              value={confirmCode}
-              onTextChange={(value) => setConfirmCode(value)}
-              textStyle={styles.formPinText}
-              animated={false}
-              cellSpacing={10}
-              containerStyle={styles.formPinContainer}
-              cellStyle={[
-                styles.formPinCell,
-                errorCode && styles.formPinCellError,
-              ]}
-              cellStyleFocused={!errorCode && styles.formPinCellFocused}
-              cellStyleFilled={styles.formPinCellFilled}
-              mask={<View style={styles.formPinCustomMask} />}
-              editable={code.length === 4}
-              onFulfill={(passCode) => handlerSave(passCode)}
-            />
+            <TouchableOpacity
+              accessible={true}
+              accessibilityLabel={translate('enter.pin.confirm.number')}>
+              <SmoothPinCodeInput
+                password
+                value={confirmCode}
+                onTextChange={(value) => setConfirmCode(value)}
+                textStyle={styles.formPinText}
+                animated={false}
+                cellSpacing={10}
+                containerStyle={styles.formPinContainer}
+                cellStyle={[
+                  styles.formPinCell,
+                  errorCode && styles.formPinCellError,
+                ]}
+                cellStyleFocused={!errorCode && styles.formPinCellFocused}
+                cellStyleFilled={styles.formPinCellFilled}
+                mask={<View style={styles.formPinCustomMask} />}
+                editable={code.length === 4}
+                onFulfill={(passCode) => handlerSave(passCode)}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

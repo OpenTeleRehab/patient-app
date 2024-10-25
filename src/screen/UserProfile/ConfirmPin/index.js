@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {Alert, ScrollView, Text, View} from 'react-native';
+import {Alert, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Button} from 'react-native-elements';
@@ -83,19 +83,23 @@ const ConfirmPin = ({navigation}) => {
             <Text style={styles.formLabel}>
               {translate('pin.enter.number')}
             </Text>
-            <SmoothPinCodeInput
-              password
-              value={pin}
-              onTextChange={(value) => setPin(value)}
-              animated={false}
-              cellSpacing={10}
-              textStyle={styles.formPinText}
-              containerStyle={styles.formPinContainer}
-              cellStyle={styles.formPinCell}
-              cellStyleFocused={styles.formPinCellFocused}
-              cellStyleFilled={styles.formPinCellFilled}
-              mask={<View style={styles.formPinCustomMask} />}
-            />
+            <TouchableOpacity
+              accessible={true}
+              accessibilityLabel={translate('pin.enter.number')}>
+              <SmoothPinCodeInput
+                password
+                value={pin}
+                onTextChange={(value) => setPin(value)}
+                animated={false}
+                cellSpacing={10}
+                textStyle={styles.formPinText}
+                containerStyle={styles.formPinContainer}
+                cellStyle={styles.formPinCell}
+                cellStyleFocused={styles.formPinCellFocused}
+                cellStyleFilled={styles.formPinCellFilled}
+                mask={<View style={styles.formPinCustomMask} />}
+              />
+            </TouchableOpacity>
           </>
         </View>
         <View style={[styles.paddingMd, customStyles.marginTopXXL]}>

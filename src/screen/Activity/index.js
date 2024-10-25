@@ -338,7 +338,7 @@ const Activity = ({theme, navigation}) => {
       {activities?.length ? (
         <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
           <View style={[styles.mainContainerLight, styles.noPadding]}>
-            <View style={styles.activityTotalNumberContainer}>
+            <View accessible={true} style={styles.activityTotalNumberContainer}>
               <Text
                 style={[
                   {color: theme.colors.orangeDark},
