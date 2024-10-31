@@ -38,7 +38,7 @@ const stylePaginationDot = {
   borderRadius: 5,
 };
 
-const RenderMediaItem = ({item, index}, setShowMedia) => {
+const RenderMediaItem = ({item, index}, setShowMedia, translate) => {
   let uri = store.getState().phone.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
 
@@ -53,6 +53,7 @@ const RenderMediaItem = ({item, index}, setShowMedia) => {
   return (
     <TouchableOpacity onPress={() => setShowMedia(index)}>
       <Image
+        accessibilityLabel={translate('common.media')}
         source={{uri}}
         style={styleMedia}
         PlaceholderContent={<ActivityIndicator size={50} />}
@@ -145,7 +146,9 @@ const TaskDetail = ({
         <View>
           <Carousel
             data={activity.files}
-            renderItem={(props) => RenderMediaItem(props, setShowMedia)}
+            renderItem={(props) =>
+              RenderMediaItem(props, setShowMedia, translate)
+            }
             sliderWidth={SLIDER_WIDTH}
             itemWidth={ITEM_WIDTH}
             inactiveSlideScale={1}

@@ -22,6 +22,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
           {...chatData}
           icon={() => (
             <Icon
+              accessibilityLabel={translate('common.attach.photos')}
               name="paperclip"
               size={26}
               type="feather"

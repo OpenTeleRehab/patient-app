@@ -94,29 +94,36 @@ const Login = ({navigation}) => {
                 styles.marginTopMd,
                 styles.textCenter,
                 styles.textDefaultBold,
-              ]}>
+              ]}
+              accessibilityLabel={translate('pin.enter.number')}>
               {translate('pin.enter.number')}
             </Text>
-            <SmoothPinCodeInput
-              password
-              value={code}
-              onTextChange={(value) => setCode(value)}
-              textStyle={styles.formPinText}
-              cellStyleFocused={!errorCode && styles.formPinCellFocused}
-              containerStyle={styles.formPinContainer}
-              cellStyleFilled={styles.formPinCellFilled}
-              cellStyle={[
-                styles.formPinCell,
-                errorCode && styles.formPinCellError,
-              ]}
-              cellSpacing={10}
-              animated={false}
-              mask={<View style={styles.formPinCustomMask} />}
-              onFulfill={(passCode) => handleLogin(passCode)}
-            />
+            <TouchableOpacity
+              accessible={true}
+              accessibilityLabel={translate('pin.enter.number')}>
+              <SmoothPinCodeInput
+                password
+                value={code}
+                onTextChange={(value) => setCode(value)}
+                textStyle={styles.formPinText}
+                cellStyleFocused={!errorCode && styles.formPinCellFocused}
+                containerStyle={styles.formPinContainer}
+                cellStyleFilled={styles.formPinCellFilled}
+                cellStyle={[
+                  styles.formPinCell,
+                  errorCode && styles.formPinCellError,
+                ]}
+                cellSpacing={10}
+                animated={false}
+                mask={<View style={styles.formPinCustomMask} />}
+                onFulfill={(passCode) => handleLogin(passCode)}
+              />
+            </TouchableOpacity>
             <TouchableOpacity
               style={[styles.marginTop, styles.flexCenter]}
-              onPress={() => navigation.navigate(ROUTES.REGISTER)}>
+              onPress={() => navigation.navigate(ROUTES.REGISTER)}
+              accessible={true}
+              accessibilityLabel={translate('pin.forget')}>
               <Text style={styles.hyperlink}>{translate('pin.forget')}</Text>
             </TouchableOpacity>
             {dial_code && phone && (
@@ -126,13 +133,16 @@ const Login = ({navigation}) => {
                   styles.textDefault,
                   styles.textCenter,
                   styles.marginTopLg,
-                ]}>
+                ]}
+                accessibilityLabel={translate('phone.number')}>
                 {formatPhoneNumber(dial_code, phone)}
               </Text>
             )}
             <TouchableOpacity
               style={styles.marginY}
-              onPress={() => navigation.navigate(ROUTES.REGISTER)}>
+              onPress={() => navigation.navigate(ROUTES.REGISTER)}
+              accessible={true}
+              accessibilityLabel={translate('phone.login.other.number')}>
               <Text style={[styles.hyperlink, styles.textCenter]}>
                 {translate('phone.login.other.number')}
               </Text>

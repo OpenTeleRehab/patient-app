@@ -11,7 +11,6 @@ import {
   ListItem,
   Text,
   Icon,
-  Overlay,
   withTheme,
 } from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,6 +18,7 @@ import {getAchievementRequest} from '../../store/achievement/actions';
 import settings from '../../../config/settings';
 import {getTranslate} from 'react-localize-redux';
 import styles from '../../assets/styles';
+import CommonOverlay from '../../components/Common/Overlay';
 
 const Achievement = ({theme, navigation}) => {
   const dispatch = useDispatch();
@@ -81,57 +81,57 @@ const Achievement = ({theme, navigation}) => {
       </ScrollView>
 
       {achievement && (
-        <Overlay
-          isVisible={showAchievementOverlay}
-          backdropStyle={styles.overlayBackdrop}
-          overlayStyle={styles.overlay}
-          onBackdropPress={handleCloseAchievement}>
-          <View style={styles.alignSelfCenter}>
-            <Image
-              source={{uri: settings.apiBaseURL + achievement.icon}}
-              style={styles.overlayBadge}
-            />
-          </View>
-
-          {!achievement.obtained && (
-            <View style={styles.marginTopMd}>
-              <Text style={styles.textCenter}>
-                {achievement.init_streak_number} /{' '}
-                {achievement.max_streak_number}
-              </Text>
-            </View>
-          )}
-
-          <Text
-            style={[
-              styles.fontWeightBold,
-              styles.marginTopMd,
-              styles.marginBottomMd,
-              styles.textCenter,
-            ]}>
-            {translate(achievement.title)}
-          </Text>
-
-          <View style={[styles.textWithIcon, styles.alignSelfCenter]}>
-            <Text style={styles.marginRight}>
-              {translate(achievement.subtitle)}
-            </Text>
-            {achievement.obtained && (
-              <Icon
-                name="checkcircle"
-                type="antdesign"
-                color={theme.colors.lightgreen}
+        <CommonOverlay
+          visible={showAchievementOverlay}
+          onClose={handleCloseAchievement}>
+          <View>
+            <View style={styles.alignSelfCenter}>
+              <Image
+                source={{uri: settings.apiBaseURL + achievement.icon}}
+                style={styles.overlayBadge}
               />
-            )}
-          </View>
+            </View>
 
-          <View style={[styles.marginTopLg, styles.alignSelfCenter]}>
-            <Button
-              title={translate('common.close')}
-              onPress={handleCloseAchievement}
-            />
+            {!achievement.obtained && (
+              <View style={styles.marginTopMd}>
+                <Text style={styles.textCenter}>
+                  {achievement.init_streak_number} /{' '}
+                  {achievement.max_streak_number}
+                </Text>
+              </View>
+            )}
+
+            <Text
+              style={[
+                styles.fontWeightBold,
+                styles.marginTopMd,
+                styles.marginBottomMd,
+                styles.textCenter,
+              ]}>
+              {translate(achievement.title)}
+            </Text>
+
+            <View style={[styles.textWithIcon, styles.alignSelfCenter]}>
+              <Text style={styles.marginRight}>
+                {translate(achievement.subtitle)}
+              </Text>
+              {achievement.obtained && (
+                <Icon
+                  name="checkcircle"
+                  type="antdesign"
+                  color={theme.colors.lightgreen}
+                />
+              )}
+            </View>
+
+            <View style={[styles.marginTopLg, styles.alignSelfCenter]}>
+              <Button
+                title={translate('common.close')}
+                onPress={handleCloseAchievement}
+              />
+            </View>
           </View>
-        </Overlay>
+        </CommonOverlay>
       )}
     </>
   );

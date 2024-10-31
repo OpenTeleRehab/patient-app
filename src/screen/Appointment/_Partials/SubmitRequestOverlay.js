@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Divider, Overlay, Text, Input} from 'react-native-elements';
+import {Button, Divider, Text, Input} from 'react-native-elements';
 import {Alert, Platform, ToastAndroid, View} from 'react-native';
 import styles from '../../../assets/styles';
 import SelectPicker from '../../../components/Common/SelectPicker';
@@ -17,6 +17,7 @@ import {
 } from '../../../store/appointment/actions';
 import settings from '../../../../config/settings';
 import {ROUTES} from '../../../variables/constants';
+import CommonOverlay from '../../../components/Common/Overlay';
 
 const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const dispatch = useDispatch();
@@ -220,13 +221,15 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   };
 
   return (
-    <Overlay
-      isVisible={true}
-      backdropStyle={styles.overlayBackdrop}
-      overlayStyle={styles.overlay}
-      onBackdropPress={handleCloseOverlay}>
+    <CommonOverlay visible={true} onClose={handleCloseOverlay}>
       <View>
         <Text
+          accessible={true}
+          accessibilityLabel={translate(
+            appointment
+              ? 'appointment.edit_appointment'
+              : 'appointment.request_appointment',
+          )}
           style={[
             styles.fontWeightBold,
             styles.leadText,
@@ -276,6 +279,8 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         </View>
         <View style={styles.formGroup}>
           <Input
+            accessible={true}
+            accessibilityLabel={translate('appointment.label.date')}
             placeholder={translate('appointment.placeholder.date')}
             label={translate('appointment.label.date')}
             labelStyle={styles.formLabel}
@@ -296,6 +301,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         </View>
         {showDatePicker && (
           <DateTimePicker
+            accessible={true}
             value={date}
             minimumDate={moment().toDate()}
             mode="date"
@@ -394,7 +400,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           </View>
         </View>
       </View>
-    </Overlay>
+    </CommonOverlay>
   );
 };
 

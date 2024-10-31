@@ -171,11 +171,15 @@ const Register = ({theme, navigation}) => {
         keyboardShouldPersistTaps="handled"
         style={[styles.mainContainerLight, contentContainer]}>
         <View style={styles.paddingMd}>
-          <Text style={styles.marginBottomMd}>
+          <Text
+            style={styles.marginBottomMd}
+            accessibilityLabel={translate('register.intro_text')}>
             {translate('register.intro_text')}
           </Text>
           <View>
-            <Text style={[styles.formLabel, styles.fontWeightBold]}>
+            <Text
+              style={[styles.formLabel, styles.fontWeightBold]}
+              accessibilityLabel={translate('register.language.label')}>
               {translate('register.language.label')}
             </Text>
             <View
@@ -183,7 +187,9 @@ const Register = ({theme, navigation}) => {
                 styles.formControl,
                 styles.bgGreyLight,
                 {borderColor: theme.colors.grey9},
-              ]}>
+              ]}
+              accessible={true}
+              accessibilityLabel={translate('register.language.label')}>
               <SelectPicker
                 placeholder={{}}
                 value={language}
@@ -196,6 +202,7 @@ const Register = ({theme, navigation}) => {
                       }))
                     : []
                 }
+                accessibilityLabel={translate('register.language.label')}
               />
             </View>
           </View>
@@ -204,7 +211,8 @@ const Register = ({theme, navigation}) => {
               styles.formLabel,
               styles.marginTopMd,
               styles.fontWeightBold,
-            ]}>
+            ]}
+            accessibilityLabel={translate('register.phone.label')}>
             {translate('register.phone.label')}
           </Text>
           <View style={styles.flexRow}>
@@ -214,7 +222,9 @@ const Register = ({theme, navigation}) => {
                 styles.formControl,
                 styles.bgGreyLight,
                 {borderColor: theme.colors.grey9},
-              ]}>
+              ]}
+              accessible={true}
+              accessibilityLabel={translate('register.phone.country_code')}>
               <SelectPicker
                 placeholder={{}}
                 value={countryPhoneCode}
@@ -228,6 +238,7 @@ const Register = ({theme, navigation}) => {
                       }))
                     : []
                 }
+                accessibilityLabel={translate('register.phone.country_code')}
               />
             </View>
             <View
@@ -236,19 +247,24 @@ const Register = ({theme, navigation}) => {
                 styles.bgGreyLight,
                 styles.formControl,
                 {borderColor: theme.colors.grey9},
-              ]}>
+              ]}
+              accessible={true}
+              accessibilityLabel={translate('register.phone.placeholder')}>
               <Input
                 placeholder={translate('register.placeholder.phone')}
                 keyboardType="phone-pad"
                 value={phoneNumber}
                 onChangeText={(number) => setPhoneNumber(number)}
                 inputContainerStyle={inputPhoneContainerStyle}
+                accessibilityLabel={translate('register.phone.placeholder')}
               />
             </View>
           </View>
           {errorPhoneNumber && (
             <View style={styles.marginBottom}>
-              <Text style={styles.textDanger}>
+              <Text
+                style={styles.textDanger}
+                accessibilityLabel={translate('error.message.phone.created')}>
                 {translate('error.message.phone.created')}
               </Text>
             </View>
@@ -258,6 +274,7 @@ const Register = ({theme, navigation}) => {
             title={translate('common.next')}
             containerStyle={styles.marginTopLg}
             disabled={isLoading || !phoneNumber}
+            accessibilityLabel={translate('common.next')}
           />
         </View>
       </ScrollView>

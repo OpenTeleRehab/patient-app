@@ -13,6 +13,8 @@ import Carousel, {Pagination} from 'react-native-snap-carousel';
 import music from '../../../assets/images/music.png';
 import styles from '../../../assets/styles';
 import store from '../../../store';
+import {getTranslate} from 'react-localize-redux';
+import {useSelector} from 'react-redux';
 
 const styleToggleScreenBtn = {
   position: 'absolute',
@@ -90,6 +92,8 @@ const RenderMediaItem = ({item, index}, activeItem) => {
 };
 
 const MediaView = ({theme, activity, showMedia, onClose}) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const [screenOrientation, setScreenOrientation] = useState(PORTRAIT);
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [sliderWidth, setSliderWidth] = useState(SCREEN_WIDTH);
@@ -116,6 +120,7 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
       <SafeAreaView style={[styles.flexCenter, styles.bgPrimary]}>
         <View style={styles.flexRow}>
           <Button
+            accessibilityLabel={translate('common.zoom.in.out')}
             type="clear"
             icon={{
               name: `${screenOrientation === PORTRAIT ? 'expand' : 'compress'}`,
@@ -127,6 +132,7 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
             containerStyle={styleToggleScreenBtn}
           />
           <Button
+            accessibilityLabel={translate('common.close')}
             type="clear"
             icon={{
               name: 'times-circle',
