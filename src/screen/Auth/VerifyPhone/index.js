@@ -150,29 +150,33 @@ const VerifyPhone = ({navigation}) => {
                 phone: formatPhoneNumber(dialCode, formattedNumber),
               })}
             </Text>
-            <SmoothPinCodeInput
-              codeLength={codeLength}
-              value={code}
-              onTextChange={(pinCode) => [
-                setCode(pinCode),
-                setErrorCode(false),
-              ]}
-              animated={false}
-              cellSpacing={10}
-              textStyle={
-                errorCode ? styles.formPinTextError : styles.formPinText
-              }
-              containerStyle={[styles.formPinContainer, styles.marginBottom]}
-              cellStyle={[
-                styles.formPinCell,
-                errorCode && styles.formPinCellError,
-              ]}
-              cellStyleFocused={!errorCode && styles.formPinCellFocused}
-              cellStyleFilled={
-                errorCode ? styles.formPinCellError : styles.formPinCellFilled
-              }
-              onFulfill={(verifyCode) => onConfirm(verifyCode)}
-            />
+            <TouchableOpacity
+              accessible={true}
+              accessibilityLabel={translate('enter.verify.code')}>
+              <SmoothPinCodeInput
+                codeLength={codeLength}
+                value={code}
+                onTextChange={(pinCode) => [
+                  setCode(pinCode),
+                  setErrorCode(false),
+                ]}
+                animated={false}
+                cellSpacing={10}
+                textStyle={
+                  errorCode ? styles.formPinTextError : styles.formPinText
+                }
+                containerStyle={[styles.formPinContainer, styles.marginBottom]}
+                cellStyle={[
+                  styles.formPinCell,
+                  errorCode && styles.formPinCellError,
+                ]}
+                cellStyleFocused={!errorCode && styles.formPinCellFocused}
+                cellStyleFilled={
+                  errorCode ? styles.formPinCellError : styles.formPinCellFilled
+                }
+                onFulfill={(verifyCode) => onConfirm(verifyCode)}
+              />
+            </TouchableOpacity>
             {showEmail && (
               <>
                 <Input

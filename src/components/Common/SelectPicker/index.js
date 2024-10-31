@@ -5,6 +5,8 @@ import React from 'react';
 import {Platform} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 
 const pickerStyles = {
   inputIOS: {
@@ -24,6 +26,9 @@ const pickerStyles = {
 };
 
 const SelectPicker = (props) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+
   return (
     <RNPickerSelect
       fixAndroidTouchableBug
@@ -31,6 +36,10 @@ const SelectPicker = (props) => {
       Icon={() => <FAIcon name="caret-down" size={20} />}
       style={pickerStyles}
       {...props}
+      touchableWrapperProps={{
+        accessible: true,
+        accessibilityLabel: translate('common.dropdown'),
+      }}
     />
   );
 };
