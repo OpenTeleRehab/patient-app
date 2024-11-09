@@ -16,6 +16,7 @@ import {translation} from './translation/reducers';
 import {staticPage} from './staticPage/reducers';
 import {rocketchat} from './rocketchat/reducers';
 import {therapist} from './therapist/reducers';
+import {clinic} from './clinic/reducers';
 import {profession} from './profession/reducers';
 import {phone} from './phone/reducers';
 import {assistiveTechnology} from './assistiveTechnology/reducers';
@@ -40,6 +41,7 @@ const rootReducers = {
   staticPage,
   rocketchat,
   therapist,
+  clinic,
   profession,
   phone,
   appSettings,
