@@ -16,6 +16,7 @@ import SetupPinScreen from '../screen/Auth/SetupPin';
 import HomeScreen from '../screen/Home';
 import UserProfileEditScreen from '../screen/UserProfile/edit';
 import AboutScreen from '../screen/About';
+import HelpScreen from '../screen/Help';
 import FaqScreen from '../screen/Faq';
 import TermConditionScreen from '../screen/TermCondition';
 import PrivacyPolicyScreen from '../screen/PrivacyPolicy';
@@ -69,6 +70,12 @@ const drawer = [
     screen: AboutScreen,
     label: 'menu.about.app',
     icon: 'info',
+  },
+  {
+    name: ROUTES.HELP,
+    screen: HelpScreen,
+    label: 'menu.help',
+    icon: 'help-circle',
   },
 ];
 
