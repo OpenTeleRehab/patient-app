@@ -52,6 +52,9 @@ export default {
     justifyContent: 'center',
     marginLeft: 5,
   },
+  activityPaginationInfoContainer: {
+    marginTop: 17,
+  },
   activityPaginationIconContainer: {
     height: 20,
   },
@@ -69,7 +72,6 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 17,
   },
   activityTotalNumberText: {
     fontSize: 18,

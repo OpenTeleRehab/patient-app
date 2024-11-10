@@ -59,4 +59,8 @@ export default {
     top: 5,
     right: 10,
   },
+  calendarIconStyle: {
+    width: 30,
+    height: 20,
+  },
 };
