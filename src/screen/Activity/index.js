@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   ToastAndroid,
+  TouchableOpacity,
 } from 'react-native';
 import {Button, Text, Icon, withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -211,6 +212,18 @@ const Activity = ({theme, navigation}) => {
       });
   };
 
+  const handleNext = () => {
+    if (carouselRef) {
+      carouselRef.snapToNext();
+    }
+  };
+
+  const handlePrevious = () => {
+    if (carouselRef) {
+      carouselRef.snapToPrev();
+    }
+  };
+
   useEffect(() => {
     if (languages.length && profile) {
       const languageIndex = _.findIndex(languages, {
@@ -328,8 +341,8 @@ const Activity = ({theme, navigation}) => {
           calendarHeaderStyle={styles.calendarHeader}
           calendarHeaderContainerStyle={styles.calendarHeaderContainer}
           customDatesStyles={customDatesStylesFunc}
-          leftSelector={[]}
-          rightSelector={[]}
+          iconLeftStyle={styles.calendarIconStyle}
+          iconRightStyle={styles.calendarIconStyle}
           onDateSelected={(date) => setSelectedDate(date)}
           //TODO: Change locale based on user selected language
           // locale={locale}
@@ -338,22 +351,59 @@ const Activity = ({theme, navigation}) => {
       {activities?.length ? (
         <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
           <View style={[styles.mainContainerLight, styles.noPadding]}>
-            <View accessible={true} style={styles.activityTotalNumberContainer}>
-              <Text
-                style={[
-                  {color: theme.colors.orangeDark},
-                  styles.activityTotalNumberText,
-                ]}>
-                {activePaginationIndex + 1}
-              </Text>
-              <Text style={styles.activityTotalNumberText}>
-                {translate('common.of_total_number', {
-                  number: activities.length,
-                })}
-              </Text>
-              <Text style={styles.activityTotalNumberText}>
-                {translate('common.tasks_done')}
-              </Text>
+            <View
+              style={[
+                styles.flexRow,
+                styles.flexCenter,
+                styles.activityPaginationInfoContainer,
+              ]}>
+              <TouchableOpacity
+                onPress={handlePrevious}
+                disabled={activePaginationIndex === 0}>
+                <Icon
+                  color={
+                    activePaginationIndex === 0
+                      ? theme.colors.white
+                      : theme.colors.black
+                  }
+                  type="feather"
+                  name="chevron-left"
+                  size={28}
+                />
+              </TouchableOpacity>
+              <View
+                accessible={true}
+                style={styles.activityTotalNumberContainer}>
+                <Text
+                  style={[
+                    {color: theme.colors.orangeDark},
+                    styles.activityTotalNumberText,
+                  ]}>
+                  {activePaginationIndex + 1}
+                </Text>
+                <Text style={styles.activityTotalNumberText}>
+                  {translate('common.of_total_number', {
+                    number: activities.length,
+                  })}
+                </Text>
+                <Text style={styles.activityTotalNumberText}>
+                  {translate('common.tasks_done')}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={handleNext}
+                disabled={activePaginationIndex === activities.length - 1}>
+                <Icon
+                  color={
+                    activePaginationIndex === activities.length - 1
+                      ? theme.colors.white
+                      : theme.colors.black
+                  }
+                  type="feather"
+                  name="chevron-right"
+                  size={28}
+                />
+              </TouchableOpacity>
             </View>
             <Pagination
               dotsLength={activities.length}
