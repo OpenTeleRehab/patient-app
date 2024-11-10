@@ -11,6 +11,7 @@ import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {tagsStyles} from '../../variables/tagsStyles';
+import TTSButton from '../../components/TTSButton';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -43,6 +44,18 @@ const TermCondition = ({navigation}) => {
     dispatch(fetchTermOfServiceRequest());
   }, [dispatch]);
 
+  const getTextsToSpeech = () => {
+    const texts = [];
+
+    if (termOfService && termOfService.content) {
+      let content = termOfService.content;
+      content = content.replace(/<\/?[^>]+(>|$)/g, '');
+      texts.push(content);
+    }
+
+    return texts;
+  };
+
   return (
     <>
       <HeaderBar
@@ -54,6 +67,10 @@ const TermCondition = ({navigation}) => {
         {!_.isEmpty(termOfService) && (
           <>
             <View style={[styles.paddingMd, styles.flexColumn]}>
+              <TTSButton
+                textsToSpeech={getTextsToSpeech()}
+                style={styles.marginLeft}
+              />
               <HTML
                 source={{html: termOfService.content}}
                 contentWidth={contentWidth}

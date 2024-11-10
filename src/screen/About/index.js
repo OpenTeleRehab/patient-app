@@ -13,6 +13,7 @@ import styles from '../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 import {tagsStyles} from '../../variables/tagsStyles';
+import TTSButton from '../../components/TTSButton';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -72,6 +73,27 @@ const About = ({navigation}) => {
   useEffect(() => {
     dispatch(getAboutPageRequest());
   }, [language, dispatch]);
+
+  const getTextsToSpeech = () => {
+    if (aboutPage) {
+      const texts = [aboutPage.title];
+
+      if (aboutPage.content) {
+        let content = aboutPage.content;
+        content = content.replace(/<\/?[^>]+(>|$)/g, '');
+        texts.push(content);
+      }
+
+      if (settings.appVersion) {
+        texts.push(translate('app.version') + ' ' + settings.appVersion);
+      }
+
+      return texts;
+    }
+
+    return [];
+  };
+
   return (
     <>
       <HeaderBar
@@ -84,6 +106,10 @@ const About = ({navigation}) => {
           <>
             {aboutPage.file ? (
               <View>
+                <TTSButton
+                  textsToSpeech={getTextsToSpeech()}
+                  style={styles.marginLeft}
+                />
                 <Image source={{uri}} style={imageStyle} />
                 <Text style={[titleStyle, styles.textLight, styles.fontSizeMd]}>
                   {aboutPage.title}
@@ -91,6 +117,10 @@ const About = ({navigation}) => {
               </View>
             ) : (
               <View>
+                <TTSButton
+                  textsToSpeech={getTextsToSpeech()}
+                  style={styles.marginLeft}
+                />
                 <Text
                   style={[
                     styles.fontSizeMd,
