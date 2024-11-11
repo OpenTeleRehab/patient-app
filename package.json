@@ -20,6 +20,7 @@
     "@react-native-community/netinfo": "5.0.1",
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-firebase/app": "^15.1.1",
+    "@react-native-firebase/crashlytics": "^15.1.1",
     "@react-native-firebase/messaging": "^15.1.1",
     "@react-native-picker/picker": "^1.14.0",
     "@react-navigation/bottom-tabs": "^5.11.2",
