@@ -3,12 +3,13 @@
 buildscript {
     ext {
         androidXCore = "1.6.0"
-        buildToolsVersion = "30.0.2"
-        minSdkVersion = 26
-        compileSdkVersion = 31
-        targetSdkVersion = 33
-        ndkVersion = "21.0.6113669"
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 31
+        compileSdkVersion = 35
+        targetSdkVersion = 34
+        ndkVersion = "26.1.10909125"
         playServiceVersion = "19.0.0"
+        kotlinVersion = "1.9.24"
 
         // APK release version
         majorApkVersion = {{ major_release_version }}
@@ -18,10 +19,13 @@ buildscript {
     }
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.1")
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("com.google.gms:google-services:4.3.13")
 
         // Add the dependency for the Performance Monitoring Gradle plugin
@@ -37,6 +41,7 @@ def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs')
 allprojects {
     repositories {
         mavenLocal()
+        mavenCentral()
         google()
         jcenter()
         maven {
@@ -58,3 +63,5 @@ allprojects {
         }
     }
 }
+
+apply plugin: "com.facebook.react.rootproject"

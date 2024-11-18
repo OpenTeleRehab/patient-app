@@ -60,6 +60,48 @@ const contentStyle = {
   paddingBottom: 50,
 };
 
+const olRenderer = (
+  _htmlAttribs,
+  _children,
+  _convertedCSSStyles,
+  passProps,
+  aboutPage,
+) => {
+  return (
+    <Text
+      style={[
+        olStyle,
+        listStyle,
+        {
+          color: aboutPage.text_color,
+        },
+      ]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = (
+  _htmlAttribs,
+  _children,
+  _convertedCSSStyles,
+  passProps,
+  aboutPage,
+) => {
+  return (
+    <Text
+      style={[
+        ulStyle,
+        listStyle,
+        {
+          color: aboutPage.text_color,
+        },
+      ]}>
+      .
+    </Text>
+  );
+};
+
 const About = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -151,39 +193,25 @@ const About = ({navigation}) => {
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text
-                          style={[
-                            olStyle,
-                            listStyle,
-                            {
-                              color: aboutPage.text_color,
-                            },
-                          ]}>
-                          {passProps.index + 1}.
-                        </Text>
-                      );
-                    },
+                    ) => olRenderer(
+                      _htmlAttribs,
+                      _children,
+                      _convertedCSSStyles,
+                      passProps,
+                      aboutPage,
+                    ),
                     ul: (
                       _htmlAttribs,
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text
-                          style={[
-                            ulStyle,
-                            listStyle,
-                            {
-                              color: aboutPage.text_color,
-                            },
-                          ]}>
-                          .
-                        </Text>
-                      );
-                    },
+                    ) => ulRenderer(
+                      _htmlAttribs,
+                      _children,
+                      _convertedCSSStyles,
+                      passProps,
+                      aboutPage,
+                    ),
                   }}
                 />
               </View>

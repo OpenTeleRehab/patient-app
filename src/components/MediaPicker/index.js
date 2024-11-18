@@ -13,13 +13,24 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {withTheme, Icon, Text, Input} from 'react-native-elements';
-import CameraRoll from '@react-native-community/cameraroll';
+import CameraRoll from '@react-native-camera-roll/camera-roll';
 import RNPickerSelect from 'react-native-picker-select';
 import _ from 'lodash';
 import styles from '../../assets/styles';
 import GridItem from './GridItem';
 import {isValidFileSize, nEveryRow, toMB} from '../../utils/helper';
 import {cameraRollPermission} from '../../utils/permission';
+
+const iconRenderer = (theme) => {
+  return (
+    <Icon
+      type="feather"
+      name="chevron-down"
+      color={theme.colors.black}
+      size={22}
+    />
+  );
+};
 
 const VIDEO_TYPE = 'Videos';
 const FIRST_LOAD_MEDIAS = 15;
@@ -203,16 +214,7 @@ const MediaPicker = (props) => {
                       : styles.pickerSelectInputAndroid,
                 }}
                 useNativeAndroidPickerStyle={true}
-                Icon={() => {
-                  return (
-                    <Icon
-                      type="feather"
-                      name="chevron-down"
-                      color={theme.colors.black}
-                      size={22}
-                    />
-                  );
-                }}
+                Icon={iconRenderer(theme)}
               />
             </View>
           </View>

@@ -1,5 +1,5 @@
 import {PermissionsAndroid, Platform} from 'react-native';
-import RNCallKeep from '@webessentials/react-native-callkeep';
+import RNCallKeep from 'react-native-callkeep';
 import messaging from '@react-native-firebase/messaging';
 
 export const callPermission = () => {
@@ -16,7 +16,9 @@ export const callPermission = () => {
       alertDescription: 'This application needs to access your phone accounts',
       cancelButton: 'Cancel',
       okButton: 'ok',
-      additionalPermissions: [],
+      additionalPermissions: [
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      ],
     },
   };
 

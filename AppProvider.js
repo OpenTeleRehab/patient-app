@@ -33,7 +33,7 @@ import {
   setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
-import RNCallKeep from '@webessentials/react-native-callkeep';
+import RNCallKeep from 'react-native-callkeep';
 import {Alert} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import store from './src/store';
@@ -150,12 +150,12 @@ const AppProvider = ({children}) => {
   }, []);
 
   useEffect(() => {
-    RNCallKeep.addEventListener('answerCall', answerCall);
-    RNCallKeep.addEventListener('endCall', endCall);
+    const answerCallListener = RNCallKeep.addEventListener('answerCall', answerCall);
+    const endCallListener = RNCallKeep.addEventListener('endCall', endCall);
 
     return () => {
-      RNCallKeep.removeEventListener('answerCall', answerCall);
-      RNCallKeep.removeEventListener('endCall', endCall);
+      answerCallListener.remove();
+      endCallListener.remove();
     };
   }, []);
 
