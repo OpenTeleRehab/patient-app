@@ -83,8 +83,8 @@ const AuthStackNavigator = () => {
   return (
     <AuthStack.Navigator
       headerMode="none"
-      initialRouteName={initialRouteName}
-      screenOptions={{gestureEnabled: false}}>
+      initialRouteName={initialRouteName || ROUTES.REGISTER}
+      screenOptions={{gestureEnabled: false, headerShown: false}}>
       {auths.map((route, index) => {
         return (
           <AuthStack.Screen
@@ -114,6 +114,7 @@ const AppTabNavigator = (props) => {
   return (
     <AppTab.Navigator
       initialRouteName={ROUTES.HOME}
+      screenOptions={{ headerShown: false }}
       tabBarOptions={{
         keyboardHidesTabBar: true,
         activeTintColor: theme.colors.primary,

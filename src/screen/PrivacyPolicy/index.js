@@ -37,6 +37,20 @@ const contentStyle = {
   paddingBottom: 50,
 };
 
+const olRenderer = (
+  passProps,
+) => {
+  return (
+    <Text style={[olStyle, listStyle]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = () => {
+  return <Text style={[ulStyle, listStyle]}>.</Text>;
+};
+
 const PrivacyPolicy = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -85,21 +99,13 @@ const PrivacyPolicy = ({navigation}) => {
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text style={[olStyle, listStyle]}>
-                          {passProps.index + 1}.
-                        </Text>
-                      );
-                    },
+                    ) => olRenderer(passProps),
                     ul: (
                       _htmlAttribs,
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return <Text style={[ulStyle, listStyle]}>.</Text>;
-                    },
+                    ) => ulRenderer(),
                   }}
                 />
               </View>

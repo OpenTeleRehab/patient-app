@@ -25,6 +25,8 @@ const pickerStyles = {
   chevron: {display: 'none'},
 };
 
+const iconRenderer = () => <FAIcon name="caret-down" size={20} />;
+
 const SelectPicker = (props) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -33,7 +35,7 @@ const SelectPicker = (props) => {
     <RNPickerSelect
       fixAndroidTouchableBug
       useNativeAndroidPickerStyle={false}
-      Icon={() => <FAIcon name="caret-down" size={20} />}
+      Icon={() => iconRenderer()}
       style={pickerStyles}
       {...props}
       touchableWrapperProps={{

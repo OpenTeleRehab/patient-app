@@ -18,7 +18,7 @@ const MessageTab = () => {
       initialRouteName={
         chatRooms.length > 1 ? ROUTES.CHAT_ROOM_LIST : ROUTES.CHAT_PANEL
       }
-      screenOptions={{gestureEnabled: false}}>
+      screenOptions={{gestureEnabled: false, headerShown: false}}>
       {messages.map((route, index) => {
         return (
           <Stack.Screen

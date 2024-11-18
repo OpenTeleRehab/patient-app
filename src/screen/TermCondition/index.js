@@ -34,6 +34,20 @@ const ulStyle = {
   fontSize: 30,
 };
 
+const olRenderer = (
+  passProps,
+) => {
+  return (
+    <Text style={[olStyle, listStyle]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = () => {
+  return <Text style={[ulStyle, listStyle]}>.</Text>;
+};
+
 const TermCondition = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -81,21 +95,13 @@ const TermCondition = ({navigation}) => {
                     _children,
                     _convertedCSSStyles,
                     passProps,
-                  ) => {
-                    return (
-                      <Text style={[olStyle, listStyle]}>
-                        {passProps.index + 1}.
-                      </Text>
-                    );
-                  },
+                  ) => olRenderer(passProps),
                   ul: (
                     _htmlAttribs,
                     _children,
                     _convertedCSSStyles,
                     passProps,
-                  ) => {
-                    return <Text style={[ulStyle, listStyle]}>.</Text>;
-                  },
+                  ) => ulRenderer(),
                 }}
               />
             </View>

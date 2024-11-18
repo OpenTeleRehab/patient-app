@@ -11,7 +11,7 @@ import colors from '../../assets/styles/variables/colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {getTranslate} from 'react-localize-redux';
-import {useIsDrawerOpen} from '@react-navigation/drawer';
+import {useDrawerStatus} from '@react-navigation/drawer';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import {getAppointmentsListRequest} from '../../store/appointment/actions';
 import AppointmentCard from '../Appointment/_Partials/AppointmentCard';
@@ -44,7 +44,7 @@ const Home = ({navigation}) => {
     offlineActivities,
     offlineGoals,
   } = useSelector((state) => state.activity);
-  const isDrawerOpen = useIsDrawerOpen();
+  const isDrawerOpen = useDrawerStatus() === 'open';
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [upcomingAppointment, setUpcomingAppointment] = useState(undefined);
   const [todaySummary, setTodaySummary] = useState({
@@ -69,7 +69,7 @@ const Home = ({navigation}) => {
   }, [languages, profile]);
 
   useEffect(() => {
-    const tabNav = navigation.dangerouslyGetParent();
+    const tabNav = navigation.getParent();
     if (isDrawerOpen) {
       tabNav.setOptions({tabBarVisible: false});
     }

@@ -53,6 +53,48 @@ const contentStyle = {
   paddingBottom: 50,
 };
 
+const olRenderer = (
+  _htmlAttribs,
+  _children,
+  _convertedCSSStyles,
+  passProps,
+  faqPage,
+) => {
+  return (
+    <Text
+      style={[
+        olStyle,
+        listStyle,
+        {
+          color: faqPage.text_color,
+        },
+      ]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = (
+  _htmlAttribs,
+  _children,
+  _convertedCSSStyles,
+  passProps,
+  faqPage,
+) => {
+  return (
+    <Text
+      style={[
+        ulStyle,
+        listStyle,
+        {
+          color: faqPage.text_color,
+        },
+      ]}>
+      .
+    </Text>
+  );
+};
+
 const Faq = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -140,39 +182,25 @@ const Faq = ({navigation}) => {
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text
-                          style={[
-                            olStyle,
-                            listStyle,
-                            {
-                              color: faqPage.text_color,
-                            },
-                          ]}>
-                          {passProps.index + 1}.
-                        </Text>
-                      );
-                    },
+                    ) => olRenderer(
+                      _htmlAttribs,
+                      _children,
+                      _convertedCSSStyles,
+                      passProps,
+                      faqPage,
+                    ),
                     ul: (
                       _htmlAttribs,
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text
-                          style={[
-                            ulStyle,
-                            listStyle,
-                            {
-                              color: faqPage.text_color,
-                            },
-                          ]}>
-                          .
-                        </Text>
-                      );
-                    },
+                    ) => ulRenderer(
+                      _htmlAttribs,
+                      _children,
+                      _convertedCSSStyles,
+                      passProps,
+                      faqPage,
+                    ),
                   }}
                 />
               </View>

@@ -9,7 +9,7 @@ import {
   TwilioVideoLocalView,
   TwilioVideoParticipantView,
   TwilioVideo,
-} from '@webessentials/react-native-twilio-video-webrtc';
+} from 'react-native-twilio-video-webrtc';
 import _ from 'lodash';
 import {getLocalData} from '../../../utils/local_storage';
 import {User} from '../../../services/user';
