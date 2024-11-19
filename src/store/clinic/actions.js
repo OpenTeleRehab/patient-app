@@ -7,7 +7,7 @@ import {mutation} from './mutations';
 export const getClinicRequest = (payload) => async (dispatch) => {
   dispatch(mutation.clinicFetchRequest);
   const data = await Clinic.getClinic(payload);
-  if (data.success) {
+  if (data.data) {
     dispatch(mutation.clinicFetchSuccess(data.data));
   } else {
     dispatch(mutation.clinicFetchFailure());
