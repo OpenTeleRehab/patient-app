@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2024 Web Essentials Co., Ltd
  */
-import {callApi} from '../utils/request';
+import {callGlobalAdminApi} from '../utils/request';
 
 const getClinic = async (id) => {
-  return await callApi(`/clinic/${id}`, '');
+  return await callGlobalAdminApi(`/clinic/get-by-id/${id}`, '');
 };
 
 export const Clinic = {
