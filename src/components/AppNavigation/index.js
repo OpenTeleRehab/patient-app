@@ -4,7 +4,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Image, Linking, PermissionsAndroid, Platform} from 'react-native';
-import {withTheme} from 'react-native-elements';
+import {Text, withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -68,6 +68,15 @@ const tabs = [
   },
 ];
 
+const iconRenderer = (route, focused) => (
+  <Image
+    source={focused ? route.activeIcon : route.icon}
+    style={styles.navTabIcon}
+  />
+);
+
+const renderText = (label) => <Text maxFontSizeMultiplier={1}>{label}</Text>;
+
 const AuthStackNavigator = () => {
   const initialRouteName = useSelector((state) => state.user.initialRouteName);
 
@@ -107,7 +116,6 @@ const AppTabNavigator = (props) => {
       initialRouteName={ROUTES.HOME}
       tabBarOptions={{
         keyboardHidesTabBar: true,
-        allowFontScaling: true,
         activeTintColor: theme.colors.primary,
         inactiveTintColor: theme.colors.grey,
         labelStyle: styles.navTabLabel,
@@ -121,13 +129,8 @@ const AppTabNavigator = (props) => {
             name={route.name}
             component={route.screen}
             options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Image
-                  source={focused ? route.activeIcon : route.icon}
-                  style={styles.navTabIcon}
-                />
-              ),
-              tabBarLabel: translate(route.label),
+              tabBarIcon: ({focused}) => iconRenderer(route, focused),
+              tabBarLabel: ({focused}) => renderText(translate(route.label)),
               tabBarBadge: hasBadge(route.badge),
               tabBarBadgeStyle: styles.navTabBadge,
             }}
