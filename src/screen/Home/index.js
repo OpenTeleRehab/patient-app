@@ -257,7 +257,11 @@ const Home = ({navigation}) => {
               })}
             </Text>
             <Button
-              title={translate('common.start')}
+              title={
+                <Text style={[styles.textPrimaryBold]}>
+                  {translate('common.start')}
+                </Text>
+              }
               titleStyle={[styles.textPrimary, styles.fontWeightBold]}
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}
               containerStyle={[styles.marginTopMd]}

@@ -320,7 +320,7 @@ const Activity = ({theme, navigation}) => {
       <View style={styles.backgroundWhite}>
         <Button
           type="outline"
-          title={translate('common.today')}
+          title={<Text style={[styles.textPrimaryBold]}>{translate('common.today')}</Text>}
           titleStyle={styles.textPrimary}
           buttonStyle={styles.headerButton(true)}
           containerStyle={styles.todayButton}
@@ -343,6 +343,7 @@ const Activity = ({theme, navigation}) => {
           customDatesStyles={customDatesStylesFunc}
           iconLeftStyle={styles.calendarIconStyle}
           iconRightStyle={styles.calendarIconStyle}
+          dayComponentHeight={65}
           onDateSelected={(date) => setSelectedDate(date)}
           //TODO: Change locale based on user selected language
           // locale={locale}

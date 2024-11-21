@@ -282,7 +282,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             accessible={true}
             accessibilityLabel={translate('appointment.label.date')}
             placeholder={translate('appointment.placeholder.date')}
-            label={translate('appointment.label.date')}
+            label={<Text>{translate('appointment.label.date')}</Text>}
             labelStyle={styles.formLabel}
             disabled
             value={date ? formatDate(date) : ''}
@@ -312,7 +312,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         <View style={styles.formGroup}>
           <Input
             placeholder={translate('appointment.placeholder.start')}
-            label={translate('appointment.label.from')}
+            label={<Text>{translate('appointment.label.from')}</Text>}
             labelStyle={styles.formLabel}
             disabled
             value={fromTime ? formatTime(fromTime) : ''}
@@ -348,7 +348,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         <View style={styles.formGroup}>
           <Input
             placeholder={translate('appointment.placeholder.end')}
-            label={translate('appointment.label.to')}
+            label={<Text>{translate('appointment.label.to')}</Text>}
             labelStyle={styles.formLabel}
             disabled
             value={toTime ? formatTime(toTime) : ''}

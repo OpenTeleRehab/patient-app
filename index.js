@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, Platform, PermissionsAndroid} from 'react-native';
+import {AppRegistry, Platform, PermissionsAndroid, TextInput} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
@@ -13,6 +13,17 @@ import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import {STORAGE_KEY} from './src/variables/constants';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import _ from 'lodash';
+import {Text} from 'react-native-elements';
+
+Text.defaultProps = {
+  ...Text.defaultProps,
+  maxFontSizeMultiplier: 1.4,
+};
+
+TextInput.defaultProps = {
+  ...TextInput.defaultProps,
+  maxFontSizeMultiplier: 1.4,
+};
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!_.isEmpty(remoteMessage.data)) {
