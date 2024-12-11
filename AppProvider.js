@@ -211,6 +211,9 @@ const AppProvider = ({children}) => {
           subscribeIds,
           profile.identity,
           profile.chat_password,
+          (newSocket) => {
+            chatSocket = newSocket; // Update the reference
+          }
         );
 
         setSocket(chatSocket);
@@ -235,6 +238,9 @@ const AppProvider = ({children}) => {
           subscribeIds,
           profile.identity,
           profile.chat_password,
+          (newSocket) => {
+            chatSocket = newSocket; // Update the reference
+          }
         );
 
         // Request phone calls permission

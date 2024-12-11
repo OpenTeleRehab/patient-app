@@ -1,0 +1,1058 @@
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..d52703b
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..13b35ad
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..ffdd34a
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..b27be11
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..154de9b
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..b6cf045
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..b9ef166
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..d3a4c91
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..c6833d0
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..58f8927
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..2bdb1c6
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..9752842
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..4441dbf
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..ee1e078
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..413f5ea
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/debug/com/twiliorn/library/BuildConfig.java b/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/debug/com/twiliorn/library/BuildConfig.java
+new file mode 100644
+index 0000000..d02b7c6
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/debug/com/twiliorn/library/BuildConfig.java
+@@ -0,0 +1,10 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package com.twiliorn.library;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = Boolean.parseBoolean("true");
++  public static final String LIBRARY_PACKAGE_NAME = "com.twiliorn.library";
++  public static final String BUILD_TYPE = "debug";
++}
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/release/com/twiliorn/library/BuildConfig.java b/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/release/com/twiliorn/library/BuildConfig.java
+new file mode 100644
+index 0000000..eccd8ca
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/release/com/twiliorn/library/BuildConfig.java
+@@ -0,0 +1,10 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package com.twiliorn.library;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = false;
++  public static final String LIBRARY_PACKAGE_NAME = "com.twiliorn.library";
++  public static final String BUILD_TYPE = "release";
++}
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..5c0b90a
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.twiliorn.library" >
++
++    <uses-sdk android:minSdkVersion="31" />
++
++    <uses-feature android:name="android.hardware.camera" />
++    <uses-feature android:name="android.hardware.camera.autofocus" />
++    <uses-feature
++        android:glEsVersion="0x00020000"
++        android:required="true" />
++
++    <uses-permission android:name="android.permission.CAMERA" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++    <uses-permission android:name="android.permission.BLUETOOTH" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..6feca99
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "com.twiliorn.library",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/release/processReleaseManifest/aapt/AndroidManifest.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/release/processReleaseManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..5c0b90a
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/release/processReleaseManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.twiliorn.library" >
++
++    <uses-sdk android:minSdkVersion="31" />
++
++    <uses-feature android:name="android.hardware.camera" />
++    <uses-feature android:name="android.hardware.camera.autofocus" />
++    <uses-feature
++        android:glEsVersion="0x00020000"
++        android:required="true" />
++
++    <uses-permission android:name="android.permission.CAMERA" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++    <uses-permission android:name="android.permission.BLUETOOTH" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/release/processReleaseManifest/aapt/output-metadata.json b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/release/processReleaseManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..a0ffbd7
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aapt_friendly_merged_manifests/release/processReleaseManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "com.twiliorn.library",
++  "variantName": "release",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..1211b1e
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aar_metadata/release/writeReleaseAarMetadata/aar-metadata.properties b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aar_metadata/release/writeReleaseAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..1211b1e
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/aar_metadata/release/writeReleaseAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/annotation_processor_list/release/javaPreCompileRelease/annotationProcessors.json b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/annotation_processor_list/release/javaPreCompileRelease/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/annotation_processor_list/release/javaPreCompileRelease/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
+new file mode 100644
+index 0000000..71e806b
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar
+new file mode 100644
+index 0000000..53d70da
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
+new file mode 100644
+index 0000000..699a175
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar
+new file mode 100644
+index 0000000..699a175
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_symbol_list/release/generateReleaseRFile/R.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_symbol_list/release/generateReleaseRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..862c0bd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Tue Dec 10 15:47:43 ICT 2024
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..59b813a
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..f9ef4dd
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/debug/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+new file mode 100644
+index 0000000..94f23ce
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/debug/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..dc3824e
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/jniLibs"/></dataSet><dataSet config="release" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/release/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeReleaseShaders/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeReleaseShaders/merger.xml
+new file mode 100644
+index 0000000..e60af04
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/mergeReleaseShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/shaders"/></dataSet><dataSet config="release" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/release/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/packageDebugAssets/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+new file mode 100644
+index 0000000..d8561a3
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/shader_assets/debug/compileDebugShaders/out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/packageReleaseAssets/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/packageReleaseAssets/merger.xml
+new file mode 100644
+index 0000000..6b716d9
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/packageReleaseAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/assets"/></dataSet><dataSet config="release" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/release/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/shader_assets/release/compileReleaseShaders/out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/release/packageReleaseResources/compile-file-map.properties b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/release/packageReleaseResources/compile-file-map.properties
+new file mode 100644
+index 0000000..83ec80b
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/release/packageReleaseResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Tue Dec 10 11:45:56 ICT 2024
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/release/packageReleaseResources/merger.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/release/packageReleaseResources/merger.xml
+new file mode 100644
+index 0000000..51c6add
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/incremental/release/packageReleaseResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="release$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/release/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="release" generated-set="release$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/release/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/build/generated/res/resValues/release"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/build/generated/res/resValues/release"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class
+new file mode 100644
+index 0000000..44c337b
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class
+new file mode 100644
+index 0000000..e382302
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class
+new file mode 100644
+index 0000000..5540285
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class
+new file mode 100644
+index 0000000..99a8c03
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class
+new file mode 100644
+index 0000000..a70dc6d
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class
+new file mode 100644
+index 0000000..de27173
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class
+new file mode 100644
+index 0000000..7369790
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class
+new file mode 100644
+index 0000000..fc56535
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class
+new file mode 100644
+index 0000000..bbfe8eb
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class
+new file mode 100644
+index 0000000..2f9576d
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class
+new file mode 100644
+index 0000000..c8be105
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class
+new file mode 100644
+index 0000000..a954bee
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class
+new file mode 100644
+index 0000000..d0137fc
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class
+new file mode 100644
+index 0000000..866c7b3
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class
+new file mode 100644
+index 0000000..f0dfc2e
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class
+new file mode 100644
+index 0000000..b308478
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class
+new file mode 100644
+index 0000000..56ab250
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class
+new file mode 100644
+index 0000000..bf35b6a
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class
+new file mode 100644
+index 0000000..4679278
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class
+new file mode 100644
+index 0000000..45ef7d5
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class
+new file mode 100644
+index 0000000..6328d9f
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class
+new file mode 100644
+index 0000000..90b38eb
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class
+new file mode 100644
+index 0000000..5fd4a47
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class
+new file mode 100644
+index 0000000..e382302
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class
+new file mode 100644
+index 0000000..10bd0f5
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class
+new file mode 100644
+index 0000000..953fadc
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class
+new file mode 100644
+index 0000000..1a184c0
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class
+new file mode 100644
+index 0000000..89c1c75
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class
+new file mode 100644
+index 0000000..1b24bca
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class
+new file mode 100644
+index 0000000..fc56535
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class
+new file mode 100644
+index 0000000..bbfe8eb
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class
+new file mode 100644
+index 0000000..dcbd812
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class
+new file mode 100644
+index 0000000..c8be105
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class
+new file mode 100644
+index 0000000..a954bee
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class
+new file mode 100644
+index 0000000..d0137fc
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class
+new file mode 100644
+index 0000000..866c7b3
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class
+new file mode 100644
+index 0000000..f0dfc2e
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class
+new file mode 100644
+index 0000000..b308478
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class
+new file mode 100644
+index 0000000..56ab250
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class
+new file mode 100644
+index 0000000..bf35b6a
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class
+new file mode 100644
+index 0000000..4679278
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class
+new file mode 100644
+index 0000000..45ef7d5
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class
+new file mode 100644
+index 0000000..6328d9f
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class
+new file mode 100644
+index 0000000..90b38eb
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/release/parseReleaseLocalResources/R-def.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/release/parseReleaseLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/release/parseReleaseLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..356f761
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,45 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="com.twiliorn.library" >
++4
++5    <uses-sdk android:minSdkVersion="31" />
++6
++7    <uses-feature android:name="android.hardware.camera" />
++7-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:5-59
++7-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:19-57
++8    <uses-feature android:name="android.hardware.camera.autofocus" />
++8-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:5-69
++8-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:19-67
++9    <uses-feature
++9-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:7:5-9:34
++10        android:glEsVersion="0x00020000"
++10-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:8:9-41
++11        android:required="true" />
++11-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:9:9-32
++12
++13    <uses-permission android:name="android.permission.CAMERA" />
++13-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:5-64
++13-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:22-62
++14    <uses-permission android:name="android.permission.INTERNET" />
++14-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:5-66
++14-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:22-64
++15    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++15-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:5-70
++15-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:22-68
++16    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++16-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:5-79
++16-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:22-77
++17    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++17-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:5-78
++17-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:22-76
++18    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++18-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:5-75
++18-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:22-73
++19    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++19-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:5-73
++19-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:22-71
++20    <uses-permission android:name="android.permission.BLUETOOTH" />
++20-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:5-67
++20-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:22-65
++21
++22</manifest>
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/manifest_merge_blame_file/release/processReleaseManifest/manifest-merger-blame-release-report.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/manifest_merge_blame_file/release/processReleaseManifest/manifest-merger-blame-release-report.txt
+new file mode 100644
+index 0000000..356f761
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/manifest_merge_blame_file/release/processReleaseManifest/manifest-merger-blame-release-report.txt
+@@ -0,0 +1,45 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="com.twiliorn.library" >
++4
++5    <uses-sdk android:minSdkVersion="31" />
++6
++7    <uses-feature android:name="android.hardware.camera" />
++7-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:5-59
++7-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:19-57
++8    <uses-feature android:name="android.hardware.camera.autofocus" />
++8-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:5-69
++8-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:19-67
++9    <uses-feature
++9-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:7:5-9:34
++10        android:glEsVersion="0x00020000"
++10-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:8:9-41
++11        android:required="true" />
++11-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:9:9-32
++12
++13    <uses-permission android:name="android.permission.CAMERA" />
++13-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:5-64
++13-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:22-62
++14    <uses-permission android:name="android.permission.INTERNET" />
++14-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:5-66
++14-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:22-64
++15    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++15-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:5-70
++15-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:22-68
++16    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++16-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:5-79
++16-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:22-77
++17    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++17-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:5-78
++17-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:22-76
++18    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++18-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:5-75
++18-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:22-73
++19    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++19-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:5-73
++19-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:22-71
++20    <uses-permission android:name="android.permission.BLUETOOTH" />
++20-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:5-67
++20-->/home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:22-65
++21
++22</manifest>
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..5c0b90a
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.twiliorn.library" >
++
++    <uses-sdk android:minSdkVersion="31" />
++
++    <uses-feature android:name="android.hardware.camera" />
++    <uses-feature android:name="android.hardware.camera.autofocus" />
++    <uses-feature
++        android:glEsVersion="0x00020000"
++        android:required="true" />
++
++    <uses-permission android:name="android.permission.CAMERA" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++    <uses-permission android:name="android.permission.BLUETOOTH" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..5c0b90a
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.twiliorn.library" >
++
++    <uses-sdk android:minSdkVersion="31" />
++
++    <uses-feature android:name="android.hardware.camera" />
++    <uses-feature android:name="android.hardware.camera.autofocus" />
++    <uses-feature
++        android:glEsVersion="0x00020000"
++        android:required="true" />
++
++    <uses-permission android:name="android.permission.CAMERA" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
++    <uses-permission android:name="android.permission.BLUETOOTH" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/navigation_json/release/extractDeepLinksRelease/navigation.json b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/navigation_json/release/extractDeepLinksRelease/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/navigation_json/release/extractDeepLinksRelease/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/nested_resources_validation_report/release/generateReleaseResources/nestedResourcesValidationReport.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/nested_resources_validation_report/release/generateReleaseResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/nested_resources_validation_report/release/generateReleaseResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
+new file mode 100644
+index 0000000..0f5791c
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar
+new file mode 100644
+index 0000000..a4f77a6
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..6f1f187
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++com.twiliorn.library
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/release/generateReleaseRFile/package-aware-r.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/release/generateReleaseRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..6f1f187
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/release/generateReleaseRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++com.twiliorn.library
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/react-native-twilio-video-webrtc/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..a5704e9
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,63 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:1:1-19:12
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:1:1-19:12
++	package
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:3:5-35
++		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:2:5-63
++uses-feature#android.hardware.camera
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:5-59
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:19-57
++uses-feature#android.hardware.camera.autofocus
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:5-69
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:19-67
++uses-feature#0x00020000
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:7:5-9:34
++	android:glEsVersion
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:8:9-41
++	android:required
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:9:9-32
++uses-permission#android.permission.CAMERA
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:5-64
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:22-62
++uses-permission#android.permission.INTERNET
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:5-66
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:22-64
++uses-permission#android.permission.RECORD_AUDIO
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:5-70
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:22-68
++uses-permission#android.permission.MODIFY_AUDIO_SETTINGS
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:5-79
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:22-77
++uses-permission#android.permission.ACCESS_NETWORK_STATE
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:5-78
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:22-76
++uses-permission#android.permission.ACCESS_WIFI_STATE
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:5-75
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:22-73
++uses-permission#android.permission.BLUETOOTH_ADMIN
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:5-73
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:22-71
++uses-permission#android.permission.BLUETOOTH
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:5-67
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:22-65
++uses-sdk
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/outputs/logs/manifest-merger-release-report.txt b/node_modules/react-native-twilio-video-webrtc/android/build/outputs/logs/manifest-merger-release-report.txt
+new file mode 100644
+index 0000000..a5704e9
+--- /dev/null
++++ b/node_modules/react-native-twilio-video-webrtc/android/build/outputs/logs/manifest-merger-release-report.txt
+@@ -0,0 +1,63 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:1:1-19:12
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:1:1-19:12
++	package
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:3:5-35
++		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:2:5-63
++uses-feature#android.hardware.camera
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:5-59
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:5:19-57
++uses-feature#android.hardware.camera.autofocus
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:5-69
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:6:19-67
++uses-feature#0x00020000
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:7:5-9:34
++	android:glEsVersion
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:8:9-41
++	android:required
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:9:9-32
++uses-permission#android.permission.CAMERA
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:5-64
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:11:22-62
++uses-permission#android.permission.INTERNET
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:5-66
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:12:22-64
++uses-permission#android.permission.RECORD_AUDIO
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:5-70
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:13:22-68
++uses-permission#android.permission.MODIFY_AUDIO_SETTINGS
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:5-79
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:14:22-77
++uses-permission#android.permission.ACCESS_NETWORK_STATE
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:5-78
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:15:22-76
++uses-permission#android.permission.ACCESS_WIFI_STATE
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:5-75
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:16:22-73
++uses-permission#android.permission.BLUETOOTH_ADMIN
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:5-73
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:17:22-71
++uses-permission#android.permission.BLUETOOTH
++ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:5-67
++	android:name
++		ADDED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml:18:22-65
++uses-sdk
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..4d322bf
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..66f436a
+Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin differ
+diff --git a/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java b/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java
+index 9904eb8..3f83f10 100644
+--- a/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java
++++ b/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java
+@@ -40,7 +40,7 @@ import com.twilio.video.AudioTrackPublication;
+ import com.twilio.video.BaseTrackStats;
+ import com.twilio.video.CameraCapturer;
+ import com.twilio.video.ConnectOptions;
+-import com.twilio.video.LocalAudioTrack;
++    import com.twilio.video.LocalAudioTrack;
+ import com.twilio.video.LocalAudioTrackPublication;
+ import com.twilio.video.LocalAudioTrackStats;
+ import com.twilio.video.LocalDataTrackPublication;
+@@ -717,11 +717,21 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
+ 
+         if (localVideoTrack != null) {
+             localVideoTrack.enable(enabled);
+-            publishLocalVideo(enabled);
++            // Fix issue video static frame when the internet connection is not available and user disabled and enabled the video.
++            // Fix issue when toggle off/on multiple times
++            // Refer to this issue: https://github.com/blackuy/react-native-twilio-video-webrtc/pull/692
++            try {
++                publishLocalVideo(enabled);
++            } catch (Exception e) {}
+ 
+             WritableMap event = new WritableNativeMap();
+             event.putBoolean("videoEnabled", enabled);
+             pushEvent(CustomTwilioVideoView.this, ON_VIDEO_CHANGED, event);
++
++            if (!enabled) {
++                localVideoTrack = null;
++                cameraCapturer = null;
++            }
+         }
+     }
+ 
+@@ -1160,12 +1170,14 @@ public class CustomTwilioVideoView extends View implements LifecycleEventListene
+ 
+             @Override
+             public void onVideoTrackPublished(RemoteParticipant participant, RemoteVideoTrackPublication publication) {
+-
++                WritableMap event = buildParticipantVideoEvent(participant, publication);
++                pushEvent(CustomTwilioVideoView.this, ON_PARTICIPANT_ENABLED_VIDEO_TRACK, event);
+             }
+ 
+             @Override
+             public void onVideoTrackUnpublished(RemoteParticipant participant, RemoteVideoTrackPublication publication) {
+-
++                WritableMap event = buildParticipantVideoEvent(participant, publication);
++                pushEvent(CustomTwilioVideoView.this, ON_PARTICIPANT_DISABLED_VIDEO_TRACK, event);
+             }
+ 
+             @Override

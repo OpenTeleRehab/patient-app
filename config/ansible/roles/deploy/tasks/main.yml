@@ -8,6 +8,11 @@
   args:
     chdir: '{{ workspace }}'
 
+- name: Run yarn patch node packages
+  shell: yarn patch-package
+  args:
+    chdir: '{{ workspace }}'
+
 - name: Configure properties
   template:
     src: '{{ item.src }}'
