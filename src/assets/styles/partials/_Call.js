@@ -115,4 +115,15 @@ export default {
   optionButton: {
     marginHorizontal: variables.spacingMd,
   },
+  callMessage: {
+    color: variables.white,
+    textAlign: 'center',
+    paddingVertical: 20,
+    position: 'absolute',
+    left: 0,
+    top: 300,
+    width: '100%',
+    elevation: 99,
+    zIndex: 99,
+  },
 };

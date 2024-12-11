@@ -22,126 +22,153 @@ export const initialChatSocket = (
   subscribeIds,
   username,
   password,
+  updateSocketRef, // New callback to update the socket reference
 ) => {
   let userId = '';
   let authToken = '';
   const {loginId, roomMessageId, notifyLoggedId} = subscribeIds;
 
-  // register websocket
-  const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
+  let reconnectAttempts = 0;
+  let reconnectTimeout;
 
-  socket.addEventListener('open', (e) => {
-    const options = {
-      msg: 'connect',
-      version: '1',
-      support: ['1'],
-    };
-    socket.send(JSON.stringify(options));
-  });
+  const connectSocket = () => {
+    const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
 
-  // observer
-  socket.addEventListener('message', (e) => {
-    const response = JSON.parse(e.data);
-    const {id, result, error, collection, fields} = response;
-    const resMessage = response.msg;
+    updateSocketRef(socket);
 
-    if (resMessage === 'ping') {
-      // Keep connection alive
-      socket.send(JSON.stringify({msg: 'pong'}));
-    } else if (resMessage === 'connected') {
-      // connection success => login
-      dispatch(updateIndicatorList({isChatConnected: true}));
+    socket.addEventListener('open', (e) => {
+      reconnectAttempts = 0; // Reset retry attempts on successful connection
+      const options = {
+        msg: 'connect',
+        version: '1',
+        support: ['1'],
+      };
+      socket.send(JSON.stringify(options));
+    });
 
-      Rocketchat.login(username, {digest: password, algorithm: 'sha-256'}).then(
-        (res) => {
-          if (res.data) {
-            const options = {
-              msg: 'method',
-              method: 'login',
-              id: loginId,
-              params: [
-                {
-                  resume: res.data.authToken,
-                },
-              ],
-            };
-            socket.send(JSON.stringify(options));
-          }
-        },
-      );
-    } else if (resMessage === 'result') {
-      if (error !== undefined) {
-        console.error(`Websocket: ${error.reason}`);
-      } else if (id === loginId && result) {
-        // login success, and set auth token
-        const {token, tokenExpires} = result;
-        const expiredAt = new Date(tokenExpires.$date);
-        userId = result.id;
-        authToken = token;
-        dispatch(authenticateChatUser({userId, token, expiredAt}));
+    socket.addEventListener('message', (e) => {
+      const response = JSON.parse(e.data);
+      const {id, result, error, collection, fields} = response;
+      const resMessage = response.msg;
 
-        // subscribe chat room message
-        subscribeChatRoomMessage(socket, roomMessageId);
+      if (resMessage === 'ping') {
+        // Keep connection alive
+        socket.send(JSON.stringify({msg: 'pong'}));
+      } else if (resMessage === 'connected') {
+        // Connection success => login
+        dispatch(updateIndicatorList({isChatConnected: true}));
 
-        // subscribe to user logged status (patient)
-        setTimeout(() => {
-          subscribeUserLoggedStatus(socket, notifyLoggedId);
-        }, 1000);
-      } else if (result && result.messages) {
-        // load messages in a room
-        const allMessages = [];
-        result.messages.forEach((message) => {
-          const data = getChatMessage(message, userId, authToken);
-          allMessages.push(data);
-        });
-        dispatch(getMessagesInRoom(allMessages));
-      }
-    } else if (resMessage === 'changed') {
-      if (collection === 'stream-room-messages') {
-        // trigger change in chat room
-        const {_id, msg, rid, u} = fields.args[0];
-        if (msg !== '') {
-          if (
-            msg === CALL_STATUS.AUDIO_STARTED ||
-            msg === CALL_STATUS.VIDEO_STARTED ||
-            msg === CALL_STATUS.ACCEPTED
-          ) {
-            dispatch(updateVideoCallStatus({_id, rid, status: msg, u}));
-          }
-          if (
-            msg === CALL_STATUS.AUDIO_ENDED ||
-            msg === CALL_STATUS.VIDEO_ENDED ||
-            msg === CALL_STATUS.AUDIO_MISSED ||
-            msg === CALL_STATUS.VIDEO_MISSED
-          ) {
-            dispatch(clearVideoCallStatus());
-          }
-          if (msg === CALL_STATUS.BUSY) {
-            dispatch(clearSecondaryVideoCallStatus());
-          }
+        Rocketchat.login(username, {digest: password, algorithm: 'sha-256'}).then(
+          (res) => {
+            if (res.data) {
+              const options = {
+                msg: 'method',
+                method: 'login',
+                id: loginId,
+                params: [
+                  {
+                    resume: res.data.authToken,
+                  },
+                ],
+              };
+              socket.send(JSON.stringify(options));
+            }
+          },
+        );
+      } else if (resMessage === 'result') {
+        if (error !== undefined) {
+          console.error(`WebSocket: ${error.reason}`);
+        } else if (id === loginId && result) {
+          // Login success, and set auth token
+          const {token, tokenExpires} = result;
+          const expiredAt = new Date(tokenExpires.$date);
+          userId = result.id;
+          authToken = token;
+          dispatch(authenticateChatUser({userId, token, expiredAt}));
+
+          // Subscribe chat room message
+          subscribeChatRoomMessage(socket, roomMessageId);
+
+          // Subscribe to user logged status (patient)
+          setTimeout(() => {
+            subscribeUserLoggedStatus(socket, notifyLoggedId);
+          }, 1000);
+        } else if (result && result.messages) {
+          // Load messages in a room
+          const allMessages = [];
+          result.messages.forEach((message) => {
+            const data = getChatMessage(message, userId, authToken);
+            allMessages.push(data);
+          });
+          dispatch(getMessagesInRoom(allMessages));
         }
-        const newMessage = getChatMessage(fields.args[0], userId, authToken);
-        dispatch(prependNewMessage(newMessage));
-        dispatch(updateUnreadMessageIndicator());
-      } else if (collection === 'stream-notify-logged') {
-        // trigger therapist logged status
-        const res = fields.args[0];
-        const data = {
-          _id: res[0],
-          username: res[1],
-          status: CHAT_USER_STATUS[res[2]],
-        };
-        dispatch(updateChatUserStatus(data));
+      } else if (resMessage === 'changed') {
+        if (collection === 'stream-room-messages') {
+          // Trigger change in chat room
+          const {_id, msg, rid, u} = fields.args[0];
+          if (msg !== '') {
+            if (
+              msg === CALL_STATUS.AUDIO_STARTED ||
+              msg === CALL_STATUS.VIDEO_STARTED ||
+              msg === CALL_STATUS.ACCEPTED
+            ) {
+              dispatch(updateVideoCallStatus({_id, rid, status: msg, u}));
+            }
+            if (
+              msg === CALL_STATUS.AUDIO_ENDED ||
+              msg === CALL_STATUS.VIDEO_ENDED ||
+              msg === CALL_STATUS.AUDIO_MISSED ||
+              msg === CALL_STATUS.VIDEO_MISSED
+            ) {
+              dispatch(clearVideoCallStatus());
+            }
+            if (msg === CALL_STATUS.BUSY) {
+              dispatch(clearSecondaryVideoCallStatus());
+            }
+          }
+          const newMessage = getChatMessage(fields.args[0], userId, authToken);
+          dispatch(prependNewMessage(newMessage));
+          dispatch(updateUnreadMessageIndicator());
+        } else if (collection === 'stream-notify-logged') {
+          // Trigger therapist logged status
+          const res = fields.args[0];
+          const data = {
+            _id: res[0],
+            username: res[1],
+            status: CHAT_USER_STATUS[res[2]],
+          };
+          dispatch(updateChatUserStatus(data));
+        }
+      } else if (resMessage === 'removed' && collection === 'users') {
+        // Close connection on logout
+        socket.close();
+        dispatch(updateIndicatorList({isChatConnected: false}));
+        dispatch(clearChatData());
       }
-    } else if (resMessage === 'removed' && collection === 'users') {
-      // close connection on logout
-      socket.close();
-      dispatch(updateIndicatorList({isChatConnected: false}));
-      dispatch(clearChatData());
-    }
-  });
+    });
 
-  return socket;
+    socket.addEventListener('close', () => {
+      dispatch(updateIndicatorList({isChatConnected: false}));
+      attemptReconnect();
+    });
+
+    return socket;
+  };
+
+  const attemptReconnect = () => {
+    if (reconnectTimeout) {return;} // Avoid multiple reconnection attempts
+
+    const reconnectDelay = Math.min(1000 * reconnectAttempts, 30000); // Exponential backoff, max 30 seconds
+    reconnectTimeout = setTimeout(() => {
+      reconnectTimeout = null;
+      reconnectAttempts += 1;
+      console.log(`Reconnect attempt #${reconnectAttempts}`);
+      connectSocket();
+    }, reconnectDelay);
+  };
+
+  // Initiate connection
+  return connectSocket();
 };
 
 export const loadHistoryInRoom = (socket, roomId, patientId) => {
