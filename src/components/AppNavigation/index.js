@@ -29,6 +29,7 @@ import messageActiveIcon from '../../assets/images/message-active-icon.png';
 import CommonPopup from '../Common/Popup';
 import {getAppSettingsRequest} from '../../store/appSetting/actions';
 import {mutation} from '../../store/appSetting/mutations';
+import Survey from '../Survey';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -227,7 +228,13 @@ const AppNavigation = (props) => {
               }
         }
       />
-      {accessToken ? <AppTabNavigator {...props} /> : <AuthStackNavigator />}
+      {accessToken ? (
+        <>
+          <AppTabNavigator {...props} />
+          <Survey />
+        </>
+      )
+        : <AuthStackNavigator />}
     </NavigationContainer>
   );
 };

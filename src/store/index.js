@@ -20,6 +20,7 @@ import {clinic} from './clinic/reducers';
 import {profession} from './profession/reducers';
 import {phone} from './phone/reducers';
 import {assistiveTechnology} from './assistiveTechnology/reducers';
+import {survey} from './survey/reducers';
 import settings from '../../config/settings';
 import {persistReducer, persistStore, createTransform} from 'redux-persist';
 import CryptoJS from 'react-native-crypto-js';
@@ -46,6 +47,7 @@ const rootReducers = {
   phone,
   appSettings,
   assistiveTechnology,
+  survey,
 };
 
 const blacklistTransform = createTransform(

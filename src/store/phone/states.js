@@ -11,4 +11,5 @@ export const initialState = {
   chatWebsocketURL: settings.chatWebsocketURL,
   phoneNumber: null,
   clinicId: null,
+  organization: null,
 };
