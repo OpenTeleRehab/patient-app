@@ -25,21 +25,30 @@ const Survey = ({theme}) => {
   const [answers, setAnswers] = useState({});
   const [currentQuestion, setCurrentQuestion] = useState();
   const [validationError, setValidationError] = useState(false);
+  const [surveyPhase, setSurveyPhase] = useState('');
   const isOnline = useNetInfo().isConnected;
+
+  useEffect(() => {
+    if (isOnline) {
+      dispatch(getTreatmentPlanRequest());
+    }
+  }, [dispatch, isOnline]);
 
   useEffect(() => {
     if (isOnline) {
       dispatch(getPublishSurvey({
         organization: organization,
         type: 'patient',
+        user_id: profile.id,
         country_id: profile.country_id,
         clinic_id: profile.clinic_id,
         lang: profile.language_id ? profile.language_id : languages.length ? languages[0].id : '',
         location: profile.location,
+        treatment_plan_id: treatmentPlan.id,
+        survey_phase: surveyPhase,
       }));
-      dispatch(getTreatmentPlanRequest());
     }
-  }, [profile, dispatch, isOnline, organization, languages]);
+  }, [profile, dispatch, isOnline, organization, languages, treatmentPlan, surveyPhase]);
 
   useEffect(() => {
     if (!publishSurvey?.questionnaire) {return;}
@@ -53,6 +62,18 @@ const Survey = ({theme}) => {
   }, [publishSurvey]);
 
   useEffect(() => {
+    if (treatmentPlan.id) {
+      const currentDate = moment.utc();
+      const treatmentEndDate = moment.utc(treatmentPlan.end_date, 'DD/MM/YYYY', true);
+      if (currentDate.isBefore(treatmentEndDate, 'day')) {
+        setSurveyPhase('start');
+      } else {
+        setSurveyPhase('end');
+      }
+    }
+  }, [treatmentPlan]);
+
+  useEffect(() => {
     if (publishSurvey && publishSurvey.questionnaire && publishSurvey.questionnaire.questions) {
       setCurrentQuestion(publishSurvey.questionnaire.questions[currentIndex]);
     }
@@ -62,21 +83,24 @@ const Survey = ({theme}) => {
     try {
       const lastSurveyShownDate = await AsyncStorage.getItem('lastSurveyShownDate');
       const currentDate = moment.utc();
-      const treatmentStartDate = moment.utc(treatmentPlan.start_date, 'DD/MM/YYYY', true);
-      const treatmentEndDate = moment.utc(treatmentPlan.end_date, 'DD/MM/YYYY', true);
 
-      if (!treatmentPlan.id) {
+      if ((publishSurvey.include_at_the_start || publishSurvey.include_at_the_end) && !treatmentPlan.id) {
         return false;
       }
 
-      if (!treatmentStartDate.isValid() || !treatmentEndDate.isValid()) {
-        return false;
-      }
+      if ((publishSurvey.include_at_the_start || publishSurvey.include_at_the_end)) {
+        const treatmentStartDate = moment.utc(treatmentPlan.start_date, 'DD/MM/YYYY', true);
+        const treatmentEndDate = moment.utc(treatmentPlan.end_date, 'DD/MM/YYYY', true);
 
-      const waitForShowAtStart = publishSurvey.include_at_the_start && currentDate.isBefore(treatmentStartDate);
-      const waitForShowAtEnd = publishSurvey.include_at_the_end && currentDate.isBefore(treatmentEndDate);
-      if (waitForShowAtStart && waitForShowAtEnd) {
-        return false;
+        if (!treatmentStartDate.isValid() || !treatmentEndDate.isValid()) {
+          return false;
+        }
+
+        const waitForShowAtStart = publishSurvey.include_at_the_start && currentDate.isBefore(treatmentStartDate);
+        const waitForShowAtEnd = publishSurvey.include_at_the_end && currentDate.isBefore(treatmentEndDate);
+        if (waitForShowAtStart && waitForShowAtEnd) {
+          return false;
+        }
       }
 
       // Handle frequency logic only if `lastSurveyShownDate` exists
@@ -150,6 +174,8 @@ const Survey = ({theme}) => {
       survey_id: publishSurvey.id,
       answers: JSON.stringify(formattedAnswers),
       user_id: profile.id,
+      treatment_plan_id: treatmentPlan.id,
+      survey_phase: surveyPhase,
     };
 
     dispatch(submitSurvey(payload, accessToken)).then(result => {
