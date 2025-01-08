@@ -1,7 +1,7 @@
 ---
 
 - name: Change node version
-  shell: n 14.21.3
+  shell: n 18.20.5
 
 - name: Run yarn to install node packages
   shell: yarn install
