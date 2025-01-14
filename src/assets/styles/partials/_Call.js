@@ -100,6 +100,23 @@ export default {
     elevation: 99,
     zIndex: 99,
   },
+  callTranscriptWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    position: 'absolute',
+    left: 0,
+    bottom: 140,
+    width: '100%',
+    elevation: 99,
+    zIndex: 99,
+  },
+  callTranscript: {
+    backgroundColor: variables.dark,
+    color: variables.white,
+    textAlign: 'center',
+  },
   callOptions: {
     flexDirection: 'row',
     alignItems: 'center',
