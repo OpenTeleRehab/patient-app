@@ -51,6 +51,8 @@ const AcceptCall = ({
   const [permissionMessagePopup, setPermissionMessagePopup] = useState('');
   const [forcePermissionMessagePopup, setForcePermissionMessagePopup] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true); // Prevent duplicate connections.
+  const [isTranscripting, setIsTranscripting] = useState(false);
+  const [transcriptedText, setTranscriptedText] = useState('');
 
   useEffect(() => {
     if (_.isEmpty(videoCall)) {
@@ -201,11 +203,15 @@ const AcceptCall = ({
       .then((isEnabled) => setIsVideoEnabled(isEnabled));
   };
 
-  const _onRoomDidDisconnect = (disconnected) => {
+  const _onClosedCaptionClick = async () => {
+    setIsTranscripting(!isTranscripting);
+  };
+
+  const _onRoomDidDisconnect = () => {
     setStatus('disconnected');
   };
 
-  const _onRoomDidFailToConnect = (failed) => {
+  const _onRoomDidFailToConnect = () => {
     setStatus('disconnected');
   };
 
@@ -226,6 +232,12 @@ const AcceptCall = ({
 
   const _onParticipantRemovedVideoTrack = () => {
     setVideoTracks(new Map());
+  };
+
+  const _onDataTrackMessageReceived = (data) => {
+    if (data?.message) {
+      setTranscriptedText(data?.message);
+    }
   };
 
   const handleConfirmPermissionPopup = () => {
@@ -300,7 +312,15 @@ const AcceptCall = ({
       )}
 
       {(status === 'connected' || status === 'connecting') && (
-        <View style={styles.callOptions}>
+        <>
+          {isTranscripting && (
+            <View style={styles.callTranscriptWrapper}>
+              <Text style={styles.callTranscript}>
+                {transcriptedText}
+              </Text>
+            </View>
+          )}
+          <View style={styles.callOptions}>
           <TouchableOpacity
             style={styles.optionButton}
             onPress={_onMuteButtonPress}>
@@ -342,7 +362,23 @@ const AcceptCall = ({
               ]}
             />
           </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={_onClosedCaptionClick}
+            style={styles.optionButton}>
+            <Icon
+              type="material-icons"
+              name={isTranscripting ? 'closed-caption' : 'closed-caption-disabled'}
+              color={theme.colors.white}
+              size={22}
+              style={[
+                styles.callOptionIcon,
+                isTranscripting ? styles.bgDark : styles.bgDanger,
+              ]}
+            />
+          </TouchableOpacity>
         </View>
+        </>
       )}
 
       <TwilioVideo
@@ -352,6 +388,7 @@ const AcceptCall = ({
         onRoomDidFailToConnect={_onRoomDidFailToConnect}
         onParticipantAddedVideoTrack={_onParticipantAddedVideoTrack}
         onParticipantRemovedVideoTrack={_onParticipantRemovedVideoTrack}
+        onDataTrackMessageReceived={_onDataTrackMessageReceived}
       />
     </View>
   );
