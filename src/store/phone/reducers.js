@@ -14,7 +14,7 @@ export const phone = (state = initialState, action) => {
         chatWebsocketURL: action.data.chat_websocket_url,
         phoneNumber: action.data.phone,
         clinicId: action.data.clinic_id,
-        organization: action.data.organization_name,
+        organization: action.data.sub_domain,
       });
     default:
       return state;
