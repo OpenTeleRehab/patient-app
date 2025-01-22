@@ -6,16 +6,17 @@ import {
   AppState,
   Linking,
   PermissionsAndroid,
+  ScrollView,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Avatar, Icon, Text} from 'react-native-elements';
 import {
   TwilioVideoLocalView,
   TwilioVideoParticipantView,
   TwilioVideo,
 } from 'react-native-twilio-video-webrtc';
+import {useDispatch, useSelector} from 'react-redux';
+import {Avatar, Icon, Text} from 'react-native-elements';
 import _ from 'lodash';
 import {getLocalData} from '../../../utils/local_storage';
 import {User} from '../../../services/user';
@@ -34,7 +35,6 @@ const AcceptCall = ({
   onMute,
   identity,
   roomId,
-  callName,
 }) => {
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
@@ -44,7 +44,7 @@ const AcceptCall = ({
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [status, setStatus] = useState('disconnected');
-  const [videoTracks, setVideoTracks] = useState(new Map());
+  const [participants, setParticipants] = useState(new Map());
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [permissionSettingPopup, setPermissionSettingPopup] = useState(false);
@@ -215,23 +215,25 @@ const AcceptCall = ({
     setStatus('disconnected');
   };
 
-  const _onParticipantAddedVideoTrack = ({participant, track}) => {
-    setVideoTracks(
-      new Map([
-        ...videoTracks,
-        [
-          track.trackSid,
-          {
-            participantSid: participant.sid,
-            videoTrackSid: track.trackSid,
-          },
-        ],
-      ]),
-    );
+  const _onRoomParticipantDidConnect = participant => {
+    setParticipants((prevParticipants) => [...prevParticipants, participant]);
   };
 
-  const _onParticipantRemovedVideoTrack = () => {
-    setVideoTracks(new Map());
+  const _onRoomParticipantDidDisconnect = participant => {
+    setParticipants((prevParticipants) => prevParticipants.filter(item => item.participant.identity !== participant.participant.identity));
+  };
+
+  const _onParticipantAddedVideoTrack = participant => {
+    setParticipants((prevParticipants) => [
+      ...prevParticipants.filter(item => item.participant.identity !== participant.participant.identity),
+      participant,
+    ]);
+  };
+
+  const _onParticipantRemovedVideoTrack = participant => {
+    participants.forEach(item => item.participant.identity === participant.participant.identity && delete item.track);
+
+    setParticipants(participants);
   };
 
   const _onDataTrackMessageReceived = (data) => {
@@ -267,31 +269,6 @@ const AcceptCall = ({
       />
       {status === 'connected' && (
         <>
-          <View style={styles.participantContainer}>
-            {!isChatConnected && (
-              <Text style={styles.callMessage}>
-                {translate('call_message.trying_to_reconnect')}
-              </Text>
-            )}
-
-            <Avatar
-              size={100}
-              rounded
-              title={callName?.charAt(0)}
-              containerStyle={{backgroundColor: theme.colors.primary}}
-            />
-
-            {Array.from(videoTracks, ([trackSid, trackIdentifier]) => {
-              return (
-                <TwilioVideoParticipantView
-                  key={trackSid}
-                  trackIdentifier={trackIdentifier}
-                  style={styles.participantView}
-                />
-              );
-            })}
-          </View>
-
           <View style={styles.localVideoContainer}>
             {isVideoEnabled ? (
               <TwilioVideoLocalView
@@ -308,6 +285,34 @@ const AcceptCall = ({
               />
             )}
           </View>
+
+          <ScrollView horizontal style={styles.participantContainer}>
+            {Array.from(participants, ({participant, track}) => (
+              <View key={participant.identity} style={styles.participantItem}>
+                {!isChatConnected && (
+                  <Text style={styles.callMessage}>
+                    {translate('call_message.trying_to_reconnect')}
+                  </Text>
+                )}
+                {track ? (
+                  <TwilioVideoParticipantView
+                    trackIdentifier={{
+                      participantSid: participant.sid,
+                      videoTrackSid: track.trackSid,
+                    }}
+                    style={styles.participantView}
+                  />
+                ) : (
+                  <Avatar
+                    size={50}
+                    rounded
+                    title={participant.identity?.charAt(0)}
+                    containerStyle={{backgroundColor: theme.colors.primary}}
+                  />
+                )}
+              </View>
+            ))}
+          </ScrollView>
         </>
       )}
 
@@ -321,63 +326,63 @@ const AcceptCall = ({
             </View>
           )}
           <View style={styles.callOptions}>
-          <TouchableOpacity
-            style={styles.optionButton}
-            onPress={_onMuteButtonPress}>
-            <Icon
-              type="feather"
-              name={isAudioEnabled ? 'mic' : 'mic-off'}
-              color={theme.colors.white}
-              size={22}
-              style={[
-                styles.callOptionIcon,
-                isAudioEnabled ? styles.bgDark : styles.bgDanger,
-              ]}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={_onMuteButtonPress}>
+              <Icon
+                type="feather"
+                name={isAudioEnabled ? 'mic' : 'mic-off'}
+                color={theme.colors.white}
+                size={22}
+                style={[
+                  styles.callOptionIcon,
+                  isAudioEnabled ? styles.bgDark : styles.bgDanger,
+                ]}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.optionButton}
-            onPress={_onEndButtonPress}>
-            <Icon
-              type="material-icons"
-              name="call-end"
-              color={theme.colors.white}
-              size={32}
-              style={[styles.callActionIcon, styles.bgDanger]}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={_onEndButtonPress}>
+              <Icon
+                type="material-icons"
+                name="call-end"
+                color={theme.colors.white}
+                size={32}
+                style={[styles.callActionIcon, styles.bgDanger]}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={_onCameraDidStart}
-            style={styles.optionButton}>
-            <Icon
-              type="feather"
-              name={isVideoEnabled ? 'video' : 'video-off'}
-              color={theme.colors.white}
-              size={22}
-              style={[
-                styles.callOptionIcon,
-                isVideoEnabled ? styles.bgDark : styles.bgDanger,
-              ]}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={_onCameraDidStart}
+              style={styles.optionButton}>
+              <Icon
+                type="feather"
+                name={isVideoEnabled ? 'video' : 'video-off'}
+                color={theme.colors.white}
+                size={22}
+                style={[
+                  styles.callOptionIcon,
+                  isVideoEnabled ? styles.bgDark : styles.bgDanger,
+                ]}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={_onClosedCaptionClick}
-            style={styles.optionButton}>
-            <Icon
-              type="material-icons"
-              name={isTranscripting ? 'closed-caption' : 'closed-caption-disabled'}
-              color={theme.colors.white}
-              size={22}
-              style={[
-                styles.callOptionIcon,
-                isTranscripting ? styles.bgDark : styles.bgDanger,
-              ]}
-            />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={_onClosedCaptionClick}
+              style={styles.optionButton}>
+              <Icon
+                type="material-icons"
+                name={isTranscripting ? 'closed-caption' : 'closed-caption-disabled'}
+                color={theme.colors.white}
+                size={22}
+                style={[
+                  styles.callOptionIcon,
+                  isTranscripting ? styles.bgDark : styles.bgDanger,
+                ]}
+              />
+            </TouchableOpacity>
+          </View>
         </>
       )}
 
@@ -385,6 +390,8 @@ const AcceptCall = ({
         ref={twilioRef}
         onRoomDidConnect={_onRoomDidConnect}
         onRoomDidDisconnect={_onRoomDidDisconnect}
+        onRoomParticipantDidConnect={_onRoomParticipantDidConnect}
+        onRoomParticipantDidDisconnect={_onRoomParticipantDidDisconnect}
         onRoomDidFailToConnect={_onRoomDidFailToConnect}
         onParticipantAddedVideoTrack={_onParticipantAddedVideoTrack}
         onParticipantRemovedVideoTrack={_onParticipantRemovedVideoTrack}

@@ -98,8 +98,7 @@ const VideoCall = ({theme}) => {
           onSpeakerOn={isSpeakerOn}
           onMute={isMute}
           identity={profile.identity}
-          roomId={videoCall?.rid}
-          callName={videoCall?.u?.name}
+          roomId={videoCall?.u?._id}
         />
       )}
     </Modal>
