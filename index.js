@@ -12,6 +12,7 @@ import uuid from 'react-native-uuid';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import {STORAGE_KEY} from './src/variables/constants';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import BackgroundTimer from 'react-native-background-timer';
 import _ from 'lodash';
 import {Text} from 'react-native-elements';
 
@@ -108,6 +109,11 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
                 RNCallKeep.backToForeground();
               }
             });
+
+            BackgroundTimer.setTimeout(() => {
+              isOnCall = true;
+              RNCallKeep.endCall(callUUID);
+            }, 60000);
           })
           .catch((e) => {
             console.log('Error while initializing call keep: ', e);
