@@ -33,7 +33,7 @@
     "@webessentials/react-native-picker-scrollview": "webessentials/react-native-picker-scrollview#master",
     "add": "^2.0.6",
     "lodash": "^4.17.20",
-    "moment": "^2.29.1",
+    "moment": "^2.30.1",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "react": "18.3.1",
