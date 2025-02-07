@@ -23,6 +23,7 @@
     - {src: 'build.gradle.j2', dest: '{{ workspace }}/android/build.gradle'}
     - {src: 'local.properties.j2', dest: '{{ workspace }}/android/local.properties'}
     - {src: 'gradle.properties.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/gradle.properties'}
+    - {src: 'AndroidManifest.xml.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/src/main/AndroidManifest.xml'}
 
 - name: Configure firebase google services for development
   copy:
