@@ -5742,6 +5742,11 @@ iterator.prototype@^1.1.3:
     reflect.getprototypeof "^1.0.4"
     set-function-name "^2.0.1"
 
+jail-monkey@^2.8.3:
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/jail-monkey/-/jail-monkey-2.8.3.tgz#f3b92b5c517c177340744d7bdf157386dc5b9da5"
+  integrity sha512-+MMjFZ45svBkPurEn/QLZ4K8+Dc7XRWta3gofjSqiJemdIfD7MZeR2z5g6T3D2IlNUDqJ7lISYM21YWmSIoDZA==
+
 jest-changed-files@^25.5.0:
   version "25.5.0"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-25.5.0.tgz#141cc23567ceb3f534526f8614ba39421383634c"

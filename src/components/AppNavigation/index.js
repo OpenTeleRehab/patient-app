@@ -30,6 +30,7 @@ import CommonPopup from '../Common/Popup';
 import {getAppSettingsRequest} from '../../store/appSetting/actions';
 import {mutation} from '../../store/appSetting/mutations';
 import Survey from '../Survey';
+import JailMonkey from 'jail-monkey';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -150,6 +151,7 @@ const AppNavigation = (props) => {
   const {appVersion, skipVersion} = useSelector((state) => state.appSettings);
   const [appOutdatedPopup, setAppOutdatedPopup] = useState(false);
   const [appForceUpdate, setAppForceUpdate] = useState(false);
+  const [isJailedBroken, setIsJailedBroken] = useState(false);
   const translate = getTranslate(localize);
 
   // check required permission(s) on android
@@ -163,6 +165,11 @@ const AppNavigation = (props) => {
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       ]);
     }
+  }, []);
+
+  useEffect(() => {
+    // Check if device is jail-broken or rooted
+    setIsJailedBroken(JailMonkey.isJailBroken());
   }, []);
 
   useEffect(() => {
@@ -199,42 +206,53 @@ const AppNavigation = (props) => {
   return (
     <NavigationContainer>
       <CommonPopup
-        popup={appOutdatedPopup}
+        popup={isJailedBroken}
         iconType="material"
-        iconName="update"
-        onConfirm={() =>
-          Platform.OS === 'android'
-            ? Linking.openURL('market://details?id=org.hi.patient')
-            : Linking.openURL(
-                'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
-              )
-        }
-        tittle={translate('app.update.title')}
-        message={translate(
-          appForceUpdate ? 'app.update.message.force' : 'app.update.message',
-        )}
-        onCancel={
-          appForceUpdate
-            ? null
-            : () => {
-                setAppOutdatedPopup(false);
-                appVersion &&
+        iconName="warning"
+        tittle={translate('device.root.detected')}
+        message={translate('device.root.detected.message')}
+      />
+      {!isJailedBroken && (
+        <>
+          <CommonPopup
+            popup={appOutdatedPopup}
+            iconType="material"
+            iconName="update"
+            onConfirm={() =>
+              Platform.OS === 'android'
+                ? Linking.openURL('market://details?id=org.hi.patient')
+                : Linking.openURL(
+                  'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
+                )
+            }
+            tittle={translate('app.update.title')}
+            message={translate(
+              appForceUpdate ? 'app.update.message.force' : 'app.update.message',
+            )}
+            onCancel={
+              appForceUpdate
+                ? null
+                : () => {
+                  setAppOutdatedPopup(false);
+                  appVersion &&
                   appVersion.length > 0 &&
                   dispatch(
                     mutation.appSettingsUpdateSkipVersion(
                       parseInt(appVersion, 10),
                     ),
                   );
-              }
-        }
-      />
-      {accessToken ? (
-        <>
-          <AppTabNavigator {...props} />
-          <Survey />
+                }
+            }
+          />
+          {accessToken ? (
+              <>
+                <AppTabNavigator {...props} />
+                <Survey />
+              </>
+            )
+            : <AuthStackNavigator />}
         </>
-      )
-        : <AuthStackNavigator />}
+      )}
     </NavigationContainer>
   );
 };
