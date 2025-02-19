@@ -26,6 +26,14 @@ export default {
     color: variables.black,
     fontWeight: variables.fontWeightBold,
   },
+  textPrimaryBold: {
+    color: variables.primary,
+    fontWeight: variables.fontWeightBold,
+  },
+  textInheritBold: {
+    color: 'inherit',
+    fontWeight: variables.fontWeightBold,
+  },
   textLightBold: {
     color: variables.white,
     fontWeight: variables.fontWeightBold,

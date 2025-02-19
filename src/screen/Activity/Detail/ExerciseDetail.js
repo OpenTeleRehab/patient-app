@@ -28,9 +28,9 @@ const ExerciseDetail = ({theme, route, navigation}) => {
   const [step, setStep] = useState(1);
 
   useEffect(() => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    navigation.getParent().setOptions({tabBarVisible: false});
     return () => {
-      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+      navigation.getParent().setOptions({tabBarVisible: true});
     };
   }, [navigation]);
 

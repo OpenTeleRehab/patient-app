@@ -21,7 +21,7 @@ import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
-import {useIsDrawerOpen} from '@react-navigation/drawer';
+import {useDrawerStatus} from '@react-navigation/drawer';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const Appointment = ({navigation}) => {
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
-  const isDrawerOpen = useIsDrawerOpen();
+  const isDrawerOpen = useDrawerStatus() === 'open';
 
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
@@ -45,7 +45,7 @@ const Appointment = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const tabNav = navigation.dangerouslyGetParent();
+    const tabNav = navigation.getParent();
     if (isDrawerOpen) {
       tabNav.setOptions({tabBarVisible: false});
     }

@@ -198,7 +198,7 @@ const UserProfileEdit = ({navigation}) => {
         <View style={styles.mainContainerLight}>
           <View style={styles.formGroup}>
             <Input
-              label={translate('first.name')}
+              label={<Text>{translate('first.name')}</Text>}
               labelStyle={[styles.formLabel, styles.marginTop]}
               inputContainerStyle={styles.noneBorderBottom}
               containerStyle={styles.inputContainer}
@@ -217,7 +217,7 @@ const UserProfileEdit = ({navigation}) => {
               ]}
             />
             <Input
-              label={translate('last.name')}
+              label={<Text>{translate('last.name')}</Text>}
               labelStyle={[styles.formLabel, styles.marginTop]}
               inputContainerStyle={styles.noneBorderBottom}
               containerStyle={styles.inputContainer}
@@ -250,7 +250,7 @@ const UserProfileEdit = ({navigation}) => {
             <Divider />
           </View>
           <DatePicker
-            label={translate('date.of.birth')}
+            label={<Text>{translate('date.of.birth')}</Text>}
             value={contractDate}
             mode="date"
             onSetDate={onSetDate}

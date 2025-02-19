@@ -5,8 +5,8 @@ import variables from '../variables';
 
 export default {
   calendarContainer: {
-    height: 120,
-    paddingTop: 10,
+    height: 130,
+    paddingTop: 15,
   },
   calendarHeader: {
     fontWeight: variables.fontWeightDefault,
@@ -58,5 +58,9 @@ export default {
     zIndex: 1,
     top: 5,
     right: 10,
+  },
+  calendarIconStyle: {
+    width: 48,
+    height: 20,
   },
 };

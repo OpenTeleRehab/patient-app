@@ -48,9 +48,9 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const {adminApiBaseURL} = useSelector((state) => state.phone);
 
   useEffect(() => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    navigation.getParent().setOptions({tabBarVisible: false});
     return () => {
-      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+      navigation.getParent().setOptions({tabBarVisible: true});
     };
   }, [navigation]);
 

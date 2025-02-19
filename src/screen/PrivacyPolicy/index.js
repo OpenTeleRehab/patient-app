@@ -11,6 +11,7 @@ import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {tagsStyles} from '../../variables/tagsStyles';
+import TTSButton from '../../components/TTSButton';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -36,6 +37,20 @@ const contentStyle = {
   paddingBottom: 50,
 };
 
+const olRenderer = (
+  passProps,
+) => {
+  return (
+    <Text style={[olStyle, listStyle]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = () => {
+  return <Text style={[ulStyle, listStyle]}>.</Text>;
+};
+
 const PrivacyPolicy = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -45,6 +60,18 @@ const PrivacyPolicy = ({navigation}) => {
   useEffect(() => {
     dispatch(fetchPrivacyPolicyRequest());
   }, [dispatch]);
+
+  const getTextsToSpeech = () => {
+    const texts = [];
+
+    if (privacyPolicy && privacyPolicy.content) {
+      let content = privacyPolicy.content;
+      content = content.replace(/<\/?[^>]+(>|$)/g, '');
+      texts.push(content);
+    }
+
+    return texts;
+  };
 
   return (
     <>
@@ -58,6 +85,10 @@ const PrivacyPolicy = ({navigation}) => {
           <>
             <View style={[styles.paddingMd, styles.flexColumn, contentStyle]}>
               <View>
+                <TTSButton
+                  textsToSpeech={getTextsToSpeech()}
+                  style={styles.marginLeft}
+                />
                 <HTML
                   source={{html: privacyPolicy.content}}
                   contentWidth={contentWidth}
@@ -68,21 +99,13 @@ const PrivacyPolicy = ({navigation}) => {
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text style={[olStyle, listStyle]}>
-                          {passProps.index + 1}.
-                        </Text>
-                      );
-                    },
+                    ) => olRenderer(passProps),
                     ul: (
                       _htmlAttribs,
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return <Text style={[ulStyle, listStyle]}>.</Text>;
-                    },
+                    ) => ulRenderer(),
                   }}
                 />
               </View>

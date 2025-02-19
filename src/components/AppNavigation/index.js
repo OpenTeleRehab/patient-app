@@ -4,7 +4,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Image, Linking, PermissionsAndroid, Platform} from 'react-native';
-import {withTheme} from 'react-native-elements';
+import {Text, withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -29,6 +29,8 @@ import messageActiveIcon from '../../assets/images/message-active-icon.png';
 import CommonPopup from '../Common/Popup';
 import {getAppSettingsRequest} from '../../store/appSetting/actions';
 import {mutation} from '../../store/appSetting/mutations';
+import Survey from '../Survey';
+import JailMonkey from 'jail-monkey';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -68,14 +70,23 @@ const tabs = [
   },
 ];
 
+const iconRenderer = (route, focused) => (
+  <Image
+    source={focused ? route.activeIcon : route.icon}
+    style={styles.navTabIcon}
+  />
+);
+
+const renderText = (label) => <Text maxFontSizeMultiplier={1}>{label}</Text>;
+
 const AuthStackNavigator = () => {
   const initialRouteName = useSelector((state) => state.user.initialRouteName);
 
   return (
     <AuthStack.Navigator
       headerMode="none"
-      initialRouteName={initialRouteName}
-      screenOptions={{gestureEnabled: false}}>
+      initialRouteName={initialRouteName || ROUTES.REGISTER}
+      screenOptions={{gestureEnabled: false, headerShown: false}}>
       {auths.map((route, index) => {
         return (
           <AuthStack.Screen
@@ -105,9 +116,9 @@ const AppTabNavigator = (props) => {
   return (
     <AppTab.Navigator
       initialRouteName={ROUTES.HOME}
+      screenOptions={{ headerShown: false }}
       tabBarOptions={{
         keyboardHidesTabBar: true,
-        allowFontScaling: true,
         activeTintColor: theme.colors.primary,
         inactiveTintColor: theme.colors.grey,
         labelStyle: styles.navTabLabel,
@@ -121,13 +132,8 @@ const AppTabNavigator = (props) => {
             name={route.name}
             component={route.screen}
             options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Image
-                  source={focused ? route.activeIcon : route.icon}
-                  style={styles.navTabIcon}
-                />
-              ),
-              tabBarLabel: translate(route.label),
+              tabBarIcon: ({focused}) => iconRenderer(route, focused),
+              tabBarLabel: ({focused}) => renderText(translate(route.label)),
               tabBarBadge: hasBadge(route.badge),
               tabBarBadgeStyle: styles.navTabBadge,
             }}
@@ -145,6 +151,7 @@ const AppNavigation = (props) => {
   const {appVersion, skipVersion} = useSelector((state) => state.appSettings);
   const [appOutdatedPopup, setAppOutdatedPopup] = useState(false);
   const [appForceUpdate, setAppForceUpdate] = useState(false);
+  const [isJailedBroken, setIsJailedBroken] = useState(false);
   const translate = getTranslate(localize);
 
   // check required permission(s) on android
@@ -158,6 +165,11 @@ const AppNavigation = (props) => {
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       ]);
     }
+  }, []);
+
+  useEffect(() => {
+    // Check if device is jail-broken or rooted
+    setIsJailedBroken(JailMonkey.isJailBroken());
   }, []);
 
   useEffect(() => {
@@ -194,36 +206,53 @@ const AppNavigation = (props) => {
   return (
     <NavigationContainer>
       <CommonPopup
-        popup={appOutdatedPopup}
+        popup={isJailedBroken}
         iconType="material"
-        iconName="update"
-        onConfirm={() =>
-          Platform.OS === 'android'
-            ? Linking.openURL('market://details?id=org.hi.patient')
-            : Linking.openURL(
-                'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
-              )
-        }
-        tittle={translate('app.update.title')}
-        message={translate(
-          appForceUpdate ? 'app.update.message.force' : 'app.update.message',
-        )}
-        onCancel={
-          appForceUpdate
-            ? null
-            : () => {
-                setAppOutdatedPopup(false);
-                appVersion &&
+        iconName="warning"
+        tittle={translate('device.root.detected')}
+        message={translate('device.root.detected.message')}
+      />
+      {!isJailedBroken && (
+        <>
+          <CommonPopup
+            popup={appOutdatedPopup}
+            iconType="material"
+            iconName="update"
+            onConfirm={() =>
+              Platform.OS === 'android'
+                ? Linking.openURL('market://details?id=org.hi.patient')
+                : Linking.openURL(
+                  'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
+                )
+            }
+            tittle={translate('app.update.title')}
+            message={translate(
+              appForceUpdate ? 'app.update.message.force' : 'app.update.message',
+            )}
+            onCancel={
+              appForceUpdate
+                ? null
+                : () => {
+                  setAppOutdatedPopup(false);
+                  appVersion &&
                   appVersion.length > 0 &&
                   dispatch(
                     mutation.appSettingsUpdateSkipVersion(
                       parseInt(appVersion, 10),
                     ),
                   );
-              }
-        }
-      />
-      {accessToken ? <AppTabNavigator {...props} /> : <AuthStackNavigator />}
+                }
+            }
+          />
+          {accessToken ? (
+              <>
+                <AppTabNavigator {...props} />
+                <Survey />
+              </>
+            )
+            : <AuthStackNavigator />}
+        </>
+      )}
     </NavigationContainer>
   );
 };

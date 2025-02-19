@@ -6,6 +6,17 @@ import {Actions, Composer, InputToolbar, Send} from 'react-native-gifted-chat';
 import styles from '../../../assets/styles';
 import {Icon} from 'react-native-elements';
 
+const iconRenderer = (translate, theme, onShowPicker) => (
+  <Icon
+    accessibilityLabel={translate('common.attach.photos')}
+    name="paperclip"
+    size={26}
+    type="feather"
+    color={theme.colors.grey3}
+    onPress={() => onShowPicker(true)}
+  />
+);
+
 const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
   return (
     <InputToolbar
@@ -20,16 +31,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
       renderActions={() => (
         <Actions
           {...chatData}
-          icon={() => (
-            <Icon
-              accessibilityLabel={translate('common.attach.photos')}
-              name="paperclip"
-              size={26}
-              type="feather"
-              color={theme.colors.grey3}
-              onPress={() => onShowPicker(true)}
-            />
-          )}
+          icon={() => iconRenderer(translate, theme, onShowPicker)}
           containerStyle={styles.chatAttachment}
         />
       )}

@@ -21,16 +21,16 @@ const TTSButton = ({textsToSpeech, style}) => {
   const [ttsStatus, setTtsStatus] = useState('');
 
   useEffect(() => {
-    Tts.addEventListener('tts-start', () => {
+    const startEventListener = Tts.addEventListener('tts-start', () => {
       setTtsStatus('started');
     });
-    Tts.addEventListener('tts-finish', () => {
+    const finishEventListener = Tts.addEventListener('tts-finish', () => {
       setTtsStatus('finished');
     });
     return () => {
       Tts.stop();
-      Tts.removeEventListener('tts-start', () => {});
-      Tts.removeEventListener('tts-finish', () => {});
+      startEventListener.remove();
+      finishEventListener.remove();
     };
   }, []);
 
@@ -70,7 +70,7 @@ const TTSButton = ({textsToSpeech, style}) => {
   }, [languages, profile]);
 
   useEffect(() => {
-    if (textsToSpeech.leading && !ttsIsInitialized) {
+    if (textsToSpeech.length && !ttsIsInitialized) {
       Tts.getInitStatus().then(initTextToSpeech());
     }
   }, [textsToSpeech, ttsIsInitialized, initTextToSpeech]);

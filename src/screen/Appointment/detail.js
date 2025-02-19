@@ -32,9 +32,9 @@ const AppointmentDetail = ({route, navigation}) => {
   const netInfo = useNetInfo();
 
   useEffect(() => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    navigation.getParent().setOptions({tabBarVisible: false});
     return () => {
-      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+      navigation.getParent().setOptions({tabBarVisible: true});
     };
   }, [navigation]);
 
@@ -116,7 +116,7 @@ const AppointmentDetail = ({route, navigation}) => {
   };
 
   const handleGoBack = () => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    navigation.getParent().setOptions({tabBarVisible: true});
     navigation.navigate(ROUTES.APPOINTMENT);
   };
 

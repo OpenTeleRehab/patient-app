@@ -11,6 +11,7 @@ import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {tagsStyles} from '../../variables/tagsStyles';
+import TTSButton from '../../components/TTSButton';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -33,6 +34,20 @@ const ulStyle = {
   fontSize: 30,
 };
 
+const olRenderer = (
+  passProps,
+) => {
+  return (
+    <Text style={[olStyle, listStyle]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = () => {
+  return <Text style={[ulStyle, listStyle]}>.</Text>;
+};
+
 const TermCondition = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -42,6 +57,18 @@ const TermCondition = ({navigation}) => {
   useEffect(() => {
     dispatch(fetchTermOfServiceRequest());
   }, [dispatch]);
+
+  const getTextsToSpeech = () => {
+    const texts = [];
+
+    if (termOfService && termOfService.content) {
+      let content = termOfService.content;
+      content = content.replace(/<\/?[^>]+(>|$)/g, '');
+      texts.push(content);
+    }
+
+    return texts;
+  };
 
   return (
     <>
@@ -54,6 +81,10 @@ const TermCondition = ({navigation}) => {
         {!_.isEmpty(termOfService) && (
           <>
             <View style={[styles.paddingMd, styles.flexColumn]}>
+              <TTSButton
+                textsToSpeech={getTextsToSpeech()}
+                style={styles.marginLeft}
+              />
               <HTML
                 source={{html: termOfService.content}}
                 contentWidth={contentWidth}
@@ -64,21 +95,13 @@ const TermCondition = ({navigation}) => {
                     _children,
                     _convertedCSSStyles,
                     passProps,
-                  ) => {
-                    return (
-                      <Text style={[olStyle, listStyle]}>
-                        {passProps.index + 1}.
-                      </Text>
-                    );
-                  },
+                  ) => olRenderer(passProps),
                   ul: (
                     _htmlAttribs,
                     _children,
                     _convertedCSSStyles,
                     passProps,
-                  ) => {
-                    return <Text style={[ulStyle, listStyle]}>.</Text>;
-                  },
+                  ) => ulRenderer(),
                 }}
               />
             </View>

@@ -23,7 +23,7 @@ const AppointmentTab = (props) => {
         inactiveTintColor: props.theme.colors.grey,
         activeTintColor: props.theme.colors.primary,
       }}
-      screenOptions={{swipeEnabled: false}}>
+      screenOptions={{swipeEnabled: false, headerShown: false, drawerPosition: 'right'}}>
       {appointments.map((route, index) => {
         return (
           <Drawer.Screen

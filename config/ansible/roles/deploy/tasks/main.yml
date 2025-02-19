@@ -1,10 +1,15 @@
 ---
 
 - name: Change node version
-  shell: n 14.21.3
+  shell: n 18.20.5
 
 - name: Run yarn to install node packages
   shell: yarn install
+  args:
+    chdir: '{{ workspace }}'
+
+- name: Run yarn patch node packages
+  shell: yarn patch-package
   args:
     chdir: '{{ workspace }}'
 
@@ -18,6 +23,7 @@
     - {src: 'build.gradle.j2', dest: '{{ workspace }}/android/build.gradle'}
     - {src: 'local.properties.j2', dest: '{{ workspace }}/android/local.properties'}
     - {src: 'gradle.properties.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/gradle.properties'}
+    - {src: 'AndroidManifest.xml.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/src/main/AndroidManifest.xml'}
 
 - name: Configure firebase google services for development
   copy:
@@ -45,7 +51,7 @@
     dest: '{{ workspace }}/{{ android_build_path }}/app/release-key.keystore'
 
 - name: Build Android apk release app
-  shell: 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 ./gradlew {{ item }}'
+  shell: 'JAVA_HOME=/usr/lib/jvm/jdk-17 ./gradlew {{ item }}'
   args:
     chdir: '{{ workspace }}/{{ android_build_path }}'
   loop:
