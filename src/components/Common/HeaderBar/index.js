@@ -124,7 +124,7 @@ const HeaderBar = (props) => {
         <Button
           accessible={true}
           accessibilityLabel={label}
-          title={label}
+          title={<Text style={[styles.textInheritBold]}>{label}</Text>}
           icon={
             icon
               ? {

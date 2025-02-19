@@ -3,16 +3,28 @@
  */
 
 import React from 'react';
-import {AppRegistry, Platform, PermissionsAndroid} from 'react-native';
+import {AppRegistry, Platform, PermissionsAndroid, TextInput} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
-import RNCallKeep from '@webessentials/react-native-callkeep';
+import RNCallKeep from 'react-native-callkeep';
 import uuid from 'react-native-uuid';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import {STORAGE_KEY} from './src/variables/constants';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import BackgroundTimer from 'react-native-background-timer';
 import _ from 'lodash';
+import {Text} from 'react-native-elements';
+
+Text.defaultProps = {
+  ...Text.defaultProps,
+  maxFontSizeMultiplier: 1.4,
+};
+
+TextInput.defaultProps = {
+  ...TextInput.defaultProps,
+  maxFontSizeMultiplier: 1.4,
+};
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!_.isEmpty(remoteMessage.data)) {
@@ -59,6 +71,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             additionalPermissions: [
               PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
               PermissionsAndroid.PERMISSIONS.READ_PHONE_NUMBERS,
+              PermissionsAndroid.PERMISSIONS.CAMERA,
             ],
             foregroundService: {
               channelId: 'org.hi.patient',
@@ -96,6 +109,11 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
                 RNCallKeep.backToForeground();
               }
             });
+
+            BackgroundTimer.setTimeout(() => {
+              isOnCall = true;
+              RNCallKeep.endCall(callUUID);
+            }, 60000);
           })
           .catch((e) => {
             console.log('Error while initializing call keep: ', e);

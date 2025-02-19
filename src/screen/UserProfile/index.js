@@ -30,6 +30,28 @@ import RNLocalize from 'react-native-localize';
 import formatPhoneNumber from '../../utils/phoneNumber';
 import moment from 'moment';
 
+const RenderListItem = ({translate, label, value, rightContentValue}) => {
+  return (
+    <>
+      <ListItem bottomDivider containerStyle={styles.listBackground}>
+        <ListItem.Content>
+          <ListItem.Title>
+            {translate(label).toLocaleUpperCase()}
+          </ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
+      <ListItem bottomDivider>
+        <ListItem.Content>
+          <ListItem.Title style={styles.fontWeightBold}>
+            {value}
+          </ListItem.Title>
+        </ListItem.Content>
+        <Text style={styles.listStyle}>{rightContentValue}</Text>
+      </ListItem>
+    </>
+  );
+};
+
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -150,28 +172,6 @@ const UserProfile = ({navigation}) => {
     });
   };
 
-  const RenderListItem = (user) => {
-    return (
-      <>
-        <ListItem bottomDivider containerStyle={styles.listBackground}>
-          <ListItem.Content>
-            <ListItem.Title>
-              {translate(user.label).toLocaleUpperCase()}
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem bottomDivider>
-          <ListItem.Content>
-            <ListItem.Title style={styles.fontWeightBold}>
-              {user.value}
-            </ListItem.Title>
-          </ListItem.Content>
-          <Text style={styles.listStyle}>{user.rightContentValue}</Text>
-        </ListItem>
-      </>
-    );
-  };
-
   return (
     <>
       <HeaderBar
@@ -187,7 +187,7 @@ const UserProfile = ({navigation}) => {
       />
       <ScrollView contentContainerStyle={styles.mainContainerLight}>
         {userInfo.map((user, index) => (
-          <RenderListItem {...user} key={index} />
+          <RenderListItem key={index} translate={translate} label={user.label} value={user.value} rightContentValue={user.rightContentValue} />
         ))}
         <ListItem bottomDivider containerStyle={styles.listBackground}>
           <ListItem.Content>

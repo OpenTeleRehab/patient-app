@@ -13,7 +13,7 @@ const ActivityTab = () => {
     <Stack.Navigator
       headerMode="none"
       initialRouteName={ROUTES.ACTIVITY}
-      screenOptions={{gestureEnabled: false}}>
+      screenOptions={{gestureEnabled: false, headerShown: false}}>
       {activities.map((route, index) => {
         return (
           <Stack.Screen

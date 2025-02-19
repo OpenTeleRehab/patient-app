@@ -62,9 +62,9 @@ const ChatPanel = ({navigation, theme}) => {
   });
 
   useEffect(() => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    navigation.getParent().setOptions({tabBarVisible: false});
     return () => {
-      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+      navigation.getParent().setOptions({tabBarVisible: true});
     };
   }, [navigation]);
 
@@ -229,7 +229,7 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const handleGoBack = () => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    navigation.getParent().setOptions({tabBarVisible: true});
     Keyboard.dismiss();
     navigation.goBack();
   };

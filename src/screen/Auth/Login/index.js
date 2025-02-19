@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -25,6 +25,8 @@ import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import formatPhoneNumber from '../../../utils/phoneNumber';
+import {getTherapistRequest} from '../../../store/therapist/actions';
+import {getClinicRequest} from '../../../store/clinic/actions';
 
 const containerStyle = {
   height: '100%',
@@ -36,9 +38,34 @@ const Login = ({navigation}) => {
   const {profile, phone, countryCode, dial_code, pin} = useSelector(
     (state) => state.user,
   );
+  const {clinic} = useSelector((state) => state.clinic);
+  const {therapists} = useSelector((state) => state.therapist);
   const translate = getTranslate(localize);
   const [code, setCode] = useState('');
+  const [therapistsWithPhones, setTherapistWithPhones] = useState([]);
   const [errorCode, setErrorCode] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      const clinicId = profile.clinic_id;
+      const primaryTherapistIds = [profile.therapist_id];
+      const secondaryTherapistIds = profile.secondary_therapists;
+      dispatch(
+        getTherapistRequest({
+          ids: JSON.stringify(
+            primaryTherapistIds.concat(secondaryTherapistIds),
+          ),
+        }),
+      );
+      dispatch(getClinicRequest(clinicId));
+    }
+  }, [dispatch, profile]);
+
+  useEffect(() => {
+    if (therapists && therapists.length) {
+      setTherapistWithPhones(therapists.filter((therapist) => therapist.phone));
+    }
+  }, [therapists]);
 
   const handleLogin = (passCode) => {
     dispatch(loginRequest(phone, passCode, countryCode)).then((loginResult) => {
@@ -147,6 +174,52 @@ const Login = ({navigation}) => {
                 {translate('phone.login.other.number')}
               </Text>
             </TouchableOpacity>
+            {clinic && clinic.phone && (
+              <Fragment>
+                <Text
+                  style={[
+                    styles.textSmall,
+                    styles.marginTopMd,
+                    styles.textCenter,
+                    styles.textDefaultBold,
+                  ]}
+                  accessibilityLabel={translate('clinic.phone.number')}>
+                  {translate('clinic.phone.number')}
+                </Text>
+                <TouchableOpacity
+                  style={styles.marginY}
+                  accessible={true}
+                  accessibilityLabel={translate('call.to.clinic')}>
+                  <Text style={[styles.hyperlink, styles.textCenter]}>
+                    {formatPhoneNumber(clinic.dial_code, clinic.phone)}
+                  </Text>
+                </TouchableOpacity>
+              </Fragment>
+            )}
+            {!!therapistsWithPhones.length && (
+              <Fragment>
+                <Text
+                  style={[
+                    styles.textSmall,
+                    styles.marginTopMd,
+                    styles.textCenter,
+                    styles.textDefaultBold,
+                  ]}
+                  accessibilityLabel={translate('therapist.phone.numbers')}>
+                  {translate('therapist.phone.numbers')}
+                </Text>
+                {therapistsWithPhones.map((therapist) => (
+                  <TouchableOpacity
+                    style={styles.marginY}
+                    accessible={true}
+                    accessibilityLabel={translate('call.to.therapist')}>
+                    <Text style={[styles.hyperlink, styles.textCenter]}>
+                      {formatPhoneNumber(therapist.dial_code, therapist.phone)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </Fragment>
+            )}
           </View>
         </View>
       </ScrollView>

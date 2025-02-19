@@ -12,6 +12,10 @@ import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import {enableKidTheme, logoutRequest} from '../../store/user/actions';
 
+const iconRenderer = (route, size, color) => (
+  <FIcon name={route.icon} color={color} size={size} />
+);
+
 const DrawerNavigator = ({navProps}) => {
   const dispatch = useDispatch();
   const {state, navigation} = navProps;
@@ -64,9 +68,7 @@ const DrawerNavigator = ({navProps}) => {
                 label={translate(route.label)}
                 labelStyle={styles.textDefault}
                 onPress={() => handleNavigate(route)}
-                icon={({focused, size, color}) => (
-                  <FIcon name={route.icon} color={color} size={size} />
-                )}
+                icon={({focused, size, color}) => iconRenderer(route, size, color)}
               />
             );
           }

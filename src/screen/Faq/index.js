@@ -13,6 +13,7 @@ import styles from '../../assets/styles';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {tagsStyles} from '../../variables/tagsStyles';
+import TTSButton from '../../components/TTSButton';
 
 const contentWidth = Dimensions.get('window').width;
 
@@ -52,6 +53,48 @@ const contentStyle = {
   paddingBottom: 50,
 };
 
+const olRenderer = (
+  _htmlAttribs,
+  _children,
+  _convertedCSSStyles,
+  passProps,
+  faqPage,
+) => {
+  return (
+    <Text
+      style={[
+        olStyle,
+        listStyle,
+        {
+          color: faqPage.text_color,
+        },
+      ]}>
+      {passProps.index + 1}.
+    </Text>
+  );
+};
+
+const ulRenderer = (
+  _htmlAttribs,
+  _children,
+  _convertedCSSStyles,
+  passProps,
+  faqPage,
+) => {
+  return (
+    <Text
+      style={[
+        ulStyle,
+        listStyle,
+        {
+          color: faqPage.text_color,
+        },
+      ]}>
+      .
+    </Text>
+  );
+};
+
 const Faq = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -65,6 +108,23 @@ const Faq = ({navigation}) => {
   useEffect(() => {
     dispatch(getFaqPageRequest());
   }, [language, dispatch]);
+
+  const getTextsToSpeech = () => {
+    if (faqPage) {
+      const texts = [faqPage.title];
+
+      if (faqPage.content) {
+        let content = faqPage.content;
+        content = content.replace(/<\/?[^>]+(>|$)/g, '');
+        texts.push(content);
+      }
+
+      return texts;
+    }
+
+    return [];
+  };
+
   return (
     <>
       <HeaderBar
@@ -77,6 +137,10 @@ const Faq = ({navigation}) => {
           <>
             {faqPage.file ? (
               <View>
+                <TTSButton
+                  textsToSpeech={getTextsToSpeech()}
+                  style={styles.marginLeft}
+                />
                 <Image source={{uri}} style={imageStyle} />
                 <Text style={[titleStyle, styles.textLight, styles.fontSizeMd]}>
                   {faqPage.title}
@@ -84,6 +148,10 @@ const Faq = ({navigation}) => {
               </View>
             ) : (
               <View>
+                <TTSButton
+                  textsToSpeech={getTextsToSpeech()}
+                  style={styles.marginLeft}
+                />
                 <Text
                   style={[
                     styles.fontSizeMd,
@@ -114,39 +182,25 @@ const Faq = ({navigation}) => {
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text
-                          style={[
-                            olStyle,
-                            listStyle,
-                            {
-                              color: faqPage.text_color,
-                            },
-                          ]}>
-                          {passProps.index + 1}.
-                        </Text>
-                      );
-                    },
+                    ) => olRenderer(
+                      _htmlAttribs,
+                      _children,
+                      _convertedCSSStyles,
+                      passProps,
+                      faqPage,
+                    ),
                     ul: (
                       _htmlAttribs,
                       _children,
                       _convertedCSSStyles,
                       passProps,
-                    ) => {
-                      return (
-                        <Text
-                          style={[
-                            ulStyle,
-                            listStyle,
-                            {
-                              color: faqPage.text_color,
-                            },
-                          ]}>
-                          .
-                        </Text>
-                      );
-                    },
+                    ) => ulRenderer(
+                      _htmlAttribs,
+                      _children,
+                      _convertedCSSStyles,
+                      passProps,
+                      faqPage,
+                    ),
                   }}
                 />
               </View>

@@ -15,6 +15,7 @@ export const ROUTES = {
   USER_PROFILE: 'UserProfile',
   USER_PROFILE_EDIT: 'UserProfileEdit',
   ABOUT: 'About',
+  HELP: 'Help',
   REGISTER: 'Register',
   TERM_OF_SERVICE: 'TermOfService',
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',

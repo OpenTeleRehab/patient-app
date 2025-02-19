@@ -28,12 +28,12 @@ if (Platform.OS === 'android') {
 }
 
 const phoneCodeContainerStyle = {
-  width: '25%',
+  width: '35%',
   marginRight: 5,
   height: '60%',
 };
 const phoneContainerStyle = {
-  width: '75%',
+  width: '65%',
   height: '60%',
 };
 

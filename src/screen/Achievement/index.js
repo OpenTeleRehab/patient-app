@@ -34,14 +34,14 @@ const Achievement = ({theme, navigation}) => {
   }, [dispatch, isFocused]);
 
   useEffect(() => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: false});
+    navigation.getParent().setOptions({tabBarVisible: false});
     return () => {
-      navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+      navigation.getParent().setOptions({tabBarVisible: true});
     };
   }, [navigation]);
 
   const handleGoBack = () => {
-    navigation.dangerouslyGetParent().setOptions({tabBarVisible: true});
+    navigation.getParent().setOptions({tabBarVisible: true});
     navigation.goBack();
   };
 

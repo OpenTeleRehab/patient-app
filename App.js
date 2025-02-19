@@ -48,7 +48,7 @@ export const theme = {
   },
 };
 
-const App: () => React$Node = () => {
+const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
