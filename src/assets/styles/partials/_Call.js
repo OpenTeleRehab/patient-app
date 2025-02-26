@@ -89,6 +89,7 @@ export default {
     position: 'absolute',
     left: 0,
     top: 0,
+    zIndex: 1,
   },
   localVideoView: {
     height: '100%',

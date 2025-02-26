@@ -105,9 +105,8 @@ const AppProvider = ({children}) => {
           msg: CALL_STATUS.ACCEPTED,
         };
         updateMessage(chatSocket, message, patientId);
+        RNCallKeep.endCall(callInfo.callUUID);
       }
-
-      RNCallKeep.endCall(callInfo.callUUID);
     }
   };
 
