@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, Fragment} from 'react';
+import React, {useState, useEffect, useRef, Fragment} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -44,6 +44,8 @@ const Login = ({navigation}) => {
   const [code, setCode] = useState('');
   const [therapistsWithPhones, setTherapistWithPhones] = useState([]);
   const [errorCode, setErrorCode] = useState(false);
+
+  const codeInputRef = useRef(null);
 
   useEffect(() => {
     if (profile) {
@@ -96,6 +98,10 @@ const Login = ({navigation}) => {
     setCode('');
   };
 
+  const handleCodeInputPress = () => {
+    codeInputRef.current?.focus();
+  };
+
   useEffect(() => {
     dispatch(fetchTermOfServiceRequest());
     dispatch(fetchPrivacyPolicyRequest());
@@ -127,8 +133,11 @@ const Login = ({navigation}) => {
             </Text>
             <TouchableOpacity
               accessible={true}
-              accessibilityLabel={translate('pin.enter.number')}>
+              accessibilityLabel={translate('pin.enter.number')}
+              onPress={handleCodeInputPress}
+            >
               <SmoothPinCodeInput
+                ref={codeInputRef}
                 password
                 value={code}
                 onTextChange={(value) => setCode(value)}

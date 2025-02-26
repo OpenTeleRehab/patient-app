@@ -7,8 +7,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..d52703b
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/0a5f63cafb3c1cb5326a888106e4d32c/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -18,8 +17,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..13b35ad
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/18d965c5ebfced9dc161201f69a2b7ac/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -29,8 +27,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..ffdd34a
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/393d1d091826bbea49919c48b176cea2/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -40,8 +37,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..b27be11
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/47794f2d0f60b05841f0b1144f48c86e/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -51,8 +47,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..154de9b
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/54ec455a0953f0f524c36bdb4cd833f1/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -62,8 +57,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..b6cf045
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/65b341e73e5293b6e486b0eb72605757/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -73,8 +67,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..b9ef166
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e36dcee4102fbc217c94ef924127cbb/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -84,8 +77,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..d3a4c91
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/6e790135dd5addfa7b32f85ed3dbdc03/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -95,8 +87,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..c6833d0
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/9519352c9361d03833851bb0fd166b27/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -106,8 +97,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..58f8927
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a60f3a3779abbc0fe4ebde8eda85cf6d/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -117,8 +107,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..2bdb1c6
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/a71ce853e2f04bce65b4ad38f329bd11/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -128,8 +117,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..9752842
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/b870c30628d7bfeafdbc1a141f10baaa/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -139,8 +127,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..4441dbf
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/d839891b89ec0c25afa5bb03ea44c4ec/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -150,8 +137,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..ee1e078
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/ed29ab1dd4b49afb725d93a5032f3c9b/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/results.bin b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/results.bin
 new file mode 100644
 index 0000000..0d259dd
@@ -161,8 +147,7 @@ index 0000000..0d259dd
 +o/classes
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/transformed/classes/classes_dex/classes.dex
 new file mode 100644
-index 0000000..413f5ea
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/.transforms/f3fde9fa26ed8f6c64d16aecece3ec4b/transformed/classes/classes_dex/classes.dex differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/debug/com/twiliorn/library/BuildConfig.java b/node_modules/react-native-twilio-video-webrtc/android/build/generated/source/buildConfig/debug/com/twiliorn/library/BuildConfig.java
 new file mode 100644
 index 0000000..d02b7c6
@@ -345,20 +330,16 @@ index 0000000..9e26dfe
 \ No newline at end of file
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
 new file mode 100644
-index 0000000..71e806b
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar
 new file mode 100644
-index 0000000..53d70da
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
 new file mode 100644
-index 0000000..699a175
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar
 new file mode 100644
-index 0000000..699a175
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
 new file mode 100644
 index 0000000..e69de29
@@ -453,180 +434,136 @@ index 0000000..51c6add
 \ No newline at end of file
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class
 new file mode 100644
-index 0000000..44c337b
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class
 new file mode 100644
-index 0000000..e382302
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class
 new file mode 100644
-index 0000000..5540285
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class
 new file mode 100644
-index 0000000..99a8c03
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class
 new file mode 100644
-index 0000000..a70dc6d
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class
 new file mode 100644
-index 0000000..de27173
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class
 new file mode 100644
-index 0000000..7369790
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class
 new file mode 100644
-index 0000000..fc56535
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class
 new file mode 100644
-index 0000000..bbfe8eb
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class
 new file mode 100644
-index 0000000..2f9576d
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class
 new file mode 100644
-index 0000000..c8be105
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class
 new file mode 100644
-index 0000000..a954bee
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class
 new file mode 100644
-index 0000000..d0137fc
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class
 new file mode 100644
-index 0000000..866c7b3
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class
 new file mode 100644
-index 0000000..f0dfc2e
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class
 new file mode 100644
-index 0000000..b308478
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class
 new file mode 100644
-index 0000000..56ab250
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class
 new file mode 100644
-index 0000000..bf35b6a
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class
 new file mode 100644
-index 0000000..4679278
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class
 new file mode 100644
-index 0000000..45ef7d5
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class
 new file mode 100644
-index 0000000..6328d9f
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class
 new file mode 100644
-index 0000000..90b38eb
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class
 new file mode 100644
-index 0000000..5fd4a47
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/BuildConfig.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class
 new file mode 100644
-index 0000000..e382302
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$1.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class
 new file mode 100644
-index 0000000..10bd0f5
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$2.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class
 new file mode 100644
-index 0000000..953fadc
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$3.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class
 new file mode 100644
-index 0000000..1a184c0
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$4.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class
 new file mode 100644
-index 0000000..89c1c75
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$5.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class
 new file mode 100644
-index 0000000..1b24bca
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$6.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class
 new file mode 100644
-index 0000000..fc56535
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$BecomingNoisyReceiver.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class
 new file mode 100644
-index 0000000..bbfe8eb
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView$Events.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class
 new file mode 100644
-index 0000000..dcbd812
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoView.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class
 new file mode 100644
-index 0000000..c8be105
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/CustomTwilioVideoViewManager.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class
 new file mode 100644
-index 0000000..a954bee
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$1.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class
 new file mode 100644
-index 0000000..d0137fc
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView$Listener.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class
 new file mode 100644
-index 0000000..866c7b3
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/PatchedVideoView.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class
 new file mode 100644
-index 0000000..f0dfc2e
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$1.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class
 new file mode 100644
-index 0000000..b308478
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup$Events.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class
 new file mode 100644
-index 0000000..56ab250
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/RNVideoViewGroup.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class
 new file mode 100644
-index 0000000..bf35b6a
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioPackage.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class
 new file mode 100644
-index 0000000..4679278
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreview.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class
 new file mode 100644
-index 0000000..45ef7d5
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioRemotePreviewManager.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class
 new file mode 100644
-index 0000000..6328d9f
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreview.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class
 new file mode 100644
-index 0000000..90b38eb
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/javac/release/compileReleaseJavaWithJavac/classes/com/twiliorn/library/TwilioVideoPreviewManager.class differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
 new file mode 100644
 index 0000000..78ac5b8
@@ -837,12 +774,10 @@ index 0000000..08f4ebe
 \ No newline at end of file
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
 new file mode 100644
-index 0000000..0f5791c
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar
 new file mode 100644
-index 0000000..a4f77a6
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/react-native-twilio-video-webrtc/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
 new file mode 100644
 index 0000000..6f1f187
@@ -997,12 +932,10 @@ index 0000000..a5704e9
 +		INJECTED from /home/phearoth/dev/docker-projects/patient-app/node_modules/react-native-twilio-video-webrtc/android/src/main/AndroidManifest.xml
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
 new file mode 100644
-index 0000000..4d322bf
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin
 new file mode 100644
-index 0000000..66f436a
-Binary files /dev/null and b/node_modules/react-native-twilio-video-webrtc/android/build/tmp/compileReleaseJavaWithJavac/previous-compilation-data.bin differ
+index 0000000..e69de29
 diff --git a/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java b/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java
 index 9904eb8..3f83f10 100644
 --- a/node_modules/react-native-twilio-video-webrtc/android/src/main/java/com/twiliorn/library/CustomTwilioVideoView.java
@@ -1056,3 +989,16 @@ index 9904eb8..3f83f10 100644
              }
  
              @Override
+diff --git a/node_modules/react-native-twilio-video-webrtc/ios/RCTTWVideoModule.m b/node_modules/react-native-twilio-video-webrtc/ios/RCTTWVideoModule.m
+index 2311f6c..edef087 100644
+--- a/node_modules/react-native-twilio-video-webrtc/ios/RCTTWVideoModule.m
++++ b/node_modules/react-native-twilio-video-webrtc/ios/RCTTWVideoModule.m
+@@ -421,7 +421,7 @@ -(NSMutableDictionary*)convertLocalVideoTrackStats:(TVILocalVideoTrackStats *)st
+   }
+ }
+ 
+-RCT_EXPORT_METHOD(connect:(NSString *)accessToken roomName:(NSString *)roomName enableAudio:(BOOL *)enableAudio enableVideo:(BOOL *)enableVideo encodingParameters:(NSDictionary *)encodingParameters enableNetworkQualityReporting:(BOOL *)enableNetworkQualityReporting dominantSpeakerEnabled:(BOOL *)dominantSpeakerEnabled cameraType:(NSString *)cameraType) {
++RCT_EXPORT_METHOD(connect:(NSString *)accessToken roomName:(NSString *)roomName enableAudio:(BOOL)enableAudio enableVideo:(BOOL)enableVideo encodingParameters:(NSDictionary *)encodingParameters enableNetworkQualityReporting:(BOOL)enableNetworkQualityReporting dominantSpeakerEnabled:(BOOL)dominantSpeakerEnabled cameraType:(NSString *)cameraType) {
+   [self _setLocalVideoEnabled:enableVideo cameraType:cameraType];
+   if (self.localAudioTrack) {
+     [self.localAudioTrack setEnabled:enableAudio];

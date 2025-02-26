@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {ScrollView, View, Alert, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
@@ -27,6 +27,9 @@ const SetupPin = ({navigation, route}) => {
   const translate = getTranslate(localize);
   const isPINChanged = route.params?.isPINChanged || false;
   const [errorCode, setErrorCode] = useState(false);
+
+  const codeInputRef = useRef(null);
+  const confirmCodeInputRef = useRef(null);
 
   const handlerSave = async (passCode) => {
     if (code && passCode) {
@@ -99,6 +102,10 @@ const SetupPin = ({navigation, route}) => {
     dispatch(setProfileInfo(data));
   };
 
+  const handleCodeInputPress = (ref) => {
+    ref.current?.focus();
+  };
+
   return (
     <>
       <HeaderBar
@@ -134,8 +141,11 @@ const SetupPin = ({navigation, route}) => {
             </Text>
             <TouchableOpacity
               accessible={true}
-              accessibilityLabel={translate('enter.pin.new.number')}>
+              accessibilityLabel={translate('enter.pin.new.number')}
+              onPress={() => handleCodeInputPress(codeInputRef)}
+            >
               <SmoothPinCodeInput
+                ref={codeInputRef}
                 password
                 value={code}
                 onTextChange={(value) => setCode(value)}
@@ -163,8 +173,11 @@ const SetupPin = ({navigation, route}) => {
             </Text>
             <TouchableOpacity
               accessible={true}
-              accessibilityLabel={translate('enter.pin.confirm.number')}>
+              accessibilityLabel={translate('enter.pin.confirm.number')}
+              onPress={() => handleCodeInputPress(confirmCodeInputRef)}
+            >
               <SmoothPinCodeInput
+                ref={confirmCodeInputRef}
                 password
                 value={confirmCode}
                 onTextChange={(value) => setConfirmCode(value)}

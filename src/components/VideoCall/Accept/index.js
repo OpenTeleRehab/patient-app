@@ -2,14 +2,9 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState, useRef} from 'react';
-import {
-  AppState,
-  Linking,
-  PermissionsAndroid,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {AppState, Linking, ScrollView, TouchableOpacity, View, Platform} from 'react-native';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {
   TwilioVideoLocalView,
   TwilioVideoParticipantView,
@@ -25,7 +20,7 @@ import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import CommonPopup from '../../Common/Popup';
 import {clearVideoCallStatus} from '../../../store/rocketchat/actions';
-import {useNetInfo} from '@react-native-community/netinfo';
+import RNCallKeep from 'react-native-callkeep';
 
 const AcceptCall = ({
   theme,
@@ -39,14 +34,14 @@ const AcceptCall = ({
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const twilioRef = useRef(null);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const {videoCall} = useSelector((state) => state.rocketchat);
   const {isChatConnected} = useSelector((state) => state.indicator);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [status, setStatus] = useState('disconnected');
-  const [participants, setParticipants] = useState(new Map());
-  const localize = useSelector((state) => state.localize);
-  const translate = getTranslate(localize);
+  const [participants, setParticipants] = useState([]);
   const [permissionSettingPopup, setPermissionSettingPopup] = useState(false);
   const [permissionMessagePopup, setPermissionMessagePopup] = useState('');
   const [forcePermissionMessagePopup, setForcePermissionMessagePopup] = useState(false);
@@ -66,33 +61,35 @@ const AcceptCall = ({
         if (response.success) {
           getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (callInfo) => {
             // Check if permissions are allowed; otherwise; do not enable specific features.
-            let hasVoicePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-            if (!hasVoicePermission) {
-              setForcePermissionMessagePopup(true);
-              setPermissionMessagePopup('common.permissions.audio.message');
-              setPermissionSettingPopup(true);
-            } else {
-              const hasCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-              let videoOn = onVideoOn;
+            request(Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO).then(async (microphonePermission) => {
+              if (microphonePermission === RESULTS.GRANTED) {
+                const cameraPermission = await request(Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA);
 
-              if (!_.isEmpty(callInfo)) {
-                videoOn = callInfo.body.includes('video');
+                let videoOn = onVideoOn;
+
+                if (!_.isEmpty(callInfo)) {
+                  videoOn = callInfo.body.includes('video');
+                }
+
+                twilioRef.current.connect({
+                  accessToken: response.token,
+                  enableVideo: cameraPermission === RESULTS.GRANTED,
+                  enableAudio: microphonePermission === RESULTS.GRANTED,
+                });
+
+                twilioRef.current
+                  .setLocalVideoEnabled(videoOn && cameraPermission === RESULTS.GRANTED)
+                  .then((isEnabled) => setIsVideoEnabled(isEnabled));
+
+                twilioRef.current
+                  .setLocalAudioEnabled(!onMute && microphonePermission === RESULTS.GRANTED)
+                  .then((isEnabled) => setIsAudioEnabled(isEnabled));
+              } else {
+                setForcePermissionMessagePopup(true);
+                setPermissionSettingPopup(true);
+                setPermissionMessagePopup('common.permissions.audio.message');
               }
-
-              twilioRef.current.connect({
-                accessToken: response.token,
-                enableVideo: hasCameraPermission,
-                enableAudio: hasVoicePermission,
-              });
-
-              twilioRef.current
-                .setLocalVideoEnabled(videoOn && hasCameraPermission)
-                .then((isEnabled) => setIsVideoEnabled(isEnabled));
-
-              twilioRef.current
-                .setLocalAudioEnabled(!onMute && hasVoicePermission)
-                .then((isEnabled) => setIsAudioEnabled(isEnabled));
-            }
+            });
           }).finally(() => setIsConnecting(false));
 
           setStatus('connecting');
@@ -111,35 +108,37 @@ const AcceptCall = ({
             if (response.success) {
               getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (callInfo) => {
                 // Check if permissions are allowed; otherwise; do not enable specific features.
-                let hasVoicePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-                if (!hasVoicePermission) {
-                  setForcePermissionMessagePopup(true);
-                  setPermissionMessagePopup('common.permissions.audio.message');
-                  setPermissionSettingPopup(true);
-                } else {
-                  const hasCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-                  let videoOn = onVideoOn;
+                request(Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO).then(async (microphonePermission) => {
+                  if (microphonePermission === RESULTS.GRANTED) {
+                    const cameraPermission = await request(Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA);
 
-                  if (!_.isEmpty(callInfo)) {
-                    videoOn = callInfo.body.includes('video');
+                    let videoOn = onVideoOn;
+
+                    if (!_.isEmpty(callInfo)) {
+                      videoOn = callInfo.body.includes('video');
+                    }
+
+                    twilioRef.current.connect({
+                      accessToken: response.token,
+                      enableVideo: cameraPermission === RESULTS.GRANTED,
+                      enableAudio: microphonePermission === RESULTS.GRANTED,
+                    });
+
+                    twilioRef.current
+                      .setLocalVideoEnabled(videoOn && cameraPermission === RESULTS.GRANTED)
+                      .then((isEnabled) => setIsVideoEnabled(isEnabled));
+
+                    twilioRef.current
+                      .setLocalAudioEnabled(!onMute && microphonePermission === RESULTS.GRANTED)
+                      .then((isEnabled) => setIsAudioEnabled(isEnabled));
+
+                    setPermissionSettingPopup(false);
+                  } else {
+                    setForcePermissionMessagePopup(true);
+                    setPermissionSettingPopup(true);
+                    setPermissionMessagePopup('common.permissions.audio.message');
                   }
-
-                  twilioRef.current.connect({
-                    accessToken: response.token,
-                    enableVideo: hasCameraPermission,
-                    enableAudio: hasVoicePermission,
-                  });
-
-                  twilioRef.current
-                    .setLocalVideoEnabled(videoOn && hasCameraPermission)
-                    .then((isEnabled) => setIsVideoEnabled(isEnabled));
-
-                  twilioRef.current
-                    .setLocalAudioEnabled(!onMute && hasVoicePermission)
-                    .then((isEnabled) => setIsAudioEnabled(isEnabled));
-
-                  setPermissionSettingPopup(false);
-                }
+                });
               }).finally(() => setIsConnecting(false));
 
               setStatus('connecting');
@@ -155,6 +154,11 @@ const AcceptCall = ({
   }, [identity, isConnecting, onMute, onVideoOn, roomId, status]);
 
   const _onRoomDidConnect = () => {
+      getLocalData(STORAGE_KEY.CALL_INFO, true).then(callInfo => {
+        try {
+          callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
+        } catch {}
+      });
     setStatus('connected');
   };
 
@@ -167,40 +171,32 @@ const AcceptCall = ({
     }
   };
 
-  const _onMuteButtonPress = async () => {
-    let hasVoicePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-    if (!hasVoicePermission) {
-      const isAllowedStatus = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-      hasVoicePermission = isAllowedStatus === 'granted';
-
-      if (isAllowedStatus === 'never_ask_again') {
+  const _onMuteButtonPress = () => {
+    request(Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO).then(microphonePermission => {
+      if (microphonePermission === RESULTS.BLOCKED) {
         setForcePermissionMessagePopup(false);
-        setPermissionMessagePopup('common.permissions.audio.message');
         setPermissionSettingPopup(true);
+        setPermissionMessagePopup('common.permissions.audio.message');
       }
-    }
 
-    twilioRef.current
-      .setLocalAudioEnabled(!isAudioEnabled && hasVoicePermission)
-      .then((isEnabled) => setIsAudioEnabled(isEnabled));
+      twilioRef.current
+        .setLocalAudioEnabled(!isAudioEnabled && microphonePermission === RESULTS.GRANTED)
+        .then((isEnabled) => setIsAudioEnabled(isEnabled));
+    });
   };
 
-  const _onCameraDidStart = async () => {
-    let hasCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-    if (!hasCameraPermission) {
-      const isAllowedStatus = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-      hasCameraPermission = isAllowedStatus === 'granted';
-
-      if (isAllowedStatus === 'never_ask_again') {
+  const _onCameraDidStart = () => {
+    request(Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA).then(cameraPermission => {
+      if (cameraPermission === RESULTS.BLOCKED) {
         setForcePermissionMessagePopup(false);
-        setPermissionMessagePopup('common.permissions.camera.message');
         setPermissionSettingPopup(true);
+        setPermissionMessagePopup('common.permissions.camera.message');
       }
-    }
 
-    twilioRef.current
-      .setLocalVideoEnabled(!isVideoEnabled && hasCameraPermission)
-      .then((isEnabled) => setIsVideoEnabled(isEnabled));
+      twilioRef.current
+        .setLocalAudioEnabled(!isVideoEnabled && cameraPermission === RESULTS.GRANTED)
+        .then((isEnabled) => setIsVideoEnabled(isEnabled));
+    });
   };
 
   const _onClosedCaptionClick = async () => {
@@ -287,7 +283,18 @@ const AcceptCall = ({
           </View>
 
           <ScrollView horizontal style={styles.participantContainer}>
-            {Array.from(participants, ({participant, track}) => (
+            {participants.length === 0 && (
+              <View style={styles.participantItem}>
+                <Icon
+                  reverse
+                  name="user-alt"
+                  type="font-awesome-5"
+                  color={theme.colors.black}
+                />
+              </View>
+            )}
+
+            {participants.length > 0 && Array.from(participants, ({participant, track}) => (
               <View key={participant.identity} style={styles.participantItem}>
                 {!isChatConnected && (
                   <Text style={styles.callMessage}>
