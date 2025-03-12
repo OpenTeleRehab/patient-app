@@ -18,6 +18,7 @@ export const callPermission = () => {
       okButton: 'ok',
       additionalPermissions: [
         PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       ],
     },
   };

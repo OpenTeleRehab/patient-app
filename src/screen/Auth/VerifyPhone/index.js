@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Button, Input, Text} from 'react-native-elements';
 import {
   ScrollView,
@@ -48,6 +48,7 @@ const VerifyPhone = ({navigation}) => {
   const [delay, setDelay] = useState(1000);
 
   const codeLength = 6;
+  const codeInputRef = useRef(null);
 
   useInterval(() => {
     if (count > 0) {
@@ -81,6 +82,10 @@ const VerifyPhone = ({navigation}) => {
       setEnableConfirm(false);
     }
   }, [code]);
+
+  const handleInputPress = () => {
+    codeInputRef.current?.focus();
+  };
 
   const onConfirm = (verifyCode) => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, verifyCode, email)).then(
@@ -152,8 +157,11 @@ const VerifyPhone = ({navigation}) => {
             </Text>
             <TouchableOpacity
               accessible={true}
-              accessibilityLabel={translate('enter.verify.code')}>
+              accessibilityLabel={translate('enter.verify.code')}
+              onPress={handleInputPress}
+            >
               <SmoothPinCodeInput
+                ref={codeInputRef}
                 codeLength={codeLength}
                 value={code}
                 onTextChange={(pinCode) => [
