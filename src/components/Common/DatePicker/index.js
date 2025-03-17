@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {View} from 'react-native';
+import {View, Platform} from 'react-native';
 import {Input, Divider} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {formatDate} from '../../../utils/helper';
@@ -39,6 +39,7 @@ const DatePicker = (props) => {
           is24Hour={true}
           display="default"
           onChange={onSetDate}
+          style={Platform.OS === 'ios' ? styles.dateTimePickerContainer : null}
         />
       )}
     </>

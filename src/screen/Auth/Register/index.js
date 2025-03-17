@@ -57,6 +57,7 @@ const Register = ({theme, navigation}) => {
   const [hash, setHash] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
+  const [countryIsoCode, setCountryIsoCode] = useState('');
   const [language, setLanguage] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
 
@@ -103,10 +104,11 @@ const Register = ({theme, navigation}) => {
     }
   }, [definedCountries, userCountryCode, dispatch, validateAndSetLanguage]);
 
-  const handlePhoneCodeChange = (phoneCode) => {
-    setCountryPhoneCode(phoneCode);
-    const selectedCountry = _.find(definedCountries, {phone_code: phoneCode});
-    validateAndSetLanguage(selectedCountry.language_id);
+  const handleCountryCodeChange = (isoCode) => {
+    const selectedCountry = _.find(definedCountries, {iso_code: isoCode});
+    setCountryPhoneCode(selectedCountry?.phone_code);
+    setCountryIsoCode(isoCode);
+    validateAndSetLanguage(selectedCountry?.language_id);
   };
 
   const handleLanguageChange = (lang) => {
@@ -227,13 +229,13 @@ const Register = ({theme, navigation}) => {
               accessibilityLabel={translate('register.phone.country_code')}>
               <SelectPicker
                 placeholder={{}}
-                value={countryPhoneCode}
-                onValueChange={handlePhoneCodeChange}
+                value={countryIsoCode}
+                onValueChange={handleCountryCodeChange}
                 items={
                   countryPhoneCode
                     ? definedCountries.map((country) => ({
                         label: `${country.name} (+${country.phone_code})`,
-                        value: country.phone_code,
+                        value: country.iso_code,
                         inputLabel: `+${country.phone_code}`,
                       }))
                     : []

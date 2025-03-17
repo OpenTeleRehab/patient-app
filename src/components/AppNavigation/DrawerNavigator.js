@@ -86,6 +86,7 @@ const DrawerNavigator = ({navProps}) => {
           containerStyle={styles.navDrawerBottom}
           title={translate('common.back')}
           onPress={() => navigation.closeDrawer()}
+          buttonStyle={styles.navDrawerBackBottom}
         />
       </View>
     </View>

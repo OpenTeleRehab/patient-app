@@ -170,6 +170,19 @@ export const appointments = [
     name: ROUTES.APPOINTMENT_DETAIL,
     screen: AppointmentDetailScreen,
   },
+  {
+    name: ROUTES.CONFIRM_PIN,
+    screen: ConfirmPinScreen,
+  },
+  {
+    name: ROUTES.SETUP_PIN,
+    screen: SetupPinScreen,
+  },
+  {
+    name: ROUTES.USER_PROFILE_EDIT,
+    screen: UserProfileEditScreen,
+  },
+  ...drawer,
 ];
 
 export const messages = [
