@@ -258,16 +258,19 @@ const AssessmentForm = ({
                     onValueChange={(data) => setNumberOfSets(data)}
                     disabled={!!activity?.completed || isCompletedOffline}
                   />
-                  <Text
-                    style={[
-                      styles.fontSizeMd,
-                      styles.marginTop,
-                      styles.textLightGrey,
-                    ]}>
-                    {translate('activity.sets_reps.recommend', {
-                      number: activity.sets,
-                    })}
-                  </Text>
+                  <View style={styles.width90}>
+                    <Text
+                      style={[
+                        styles.fontSizeMd,
+                        styles.marginTop,
+                        styles.textLightGrey,
+                        styles.textCenter,
+                      ]}>
+                      {translate('activity.sets_reps.recommend', {
+                        number: activity.sets,
+                      })}
+                    </Text>
+                  </View>
                 </View>
                 <View>
                   <Text
@@ -293,16 +296,19 @@ const AssessmentForm = ({
                     onValueChange={(data) => setNumberOfReps(data)}
                     disabled={!!activity?.completed || isCompletedOffline}
                   />
-                  <Text
-                    style={[
-                      styles.fontSizeMd,
-                      styles.marginTop,
-                      styles.textLightGrey,
-                    ]}>
-                    {translate('activity.sets_reps.recommend', {
-                      number: activity.reps,
-                    })}
-                  </Text>
+                  <View style={styles.width90}>
+                    <Text
+                      style={[
+                        styles.fontSizeMd,
+                        styles.marginTop,
+                        styles.textLightGrey,
+                        styles.textCenter,
+                      ]}>
+                      {translate('activity.sets_reps.recommend', {
+                        number: activity.reps,
+                      })}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -401,16 +407,19 @@ const AssessmentForm = ({
                       onValueChange={(data) => setNumberOfSets(data)}
                       disabled={!!activity?.completed || isCompletedOffline}
                     />
-                    <Text
-                      style={[
-                        styles.fontSizeMd,
-                        styles.marginTop,
-                        styles.textLightGrey,
-                      ]}>
-                      {translate('activity.sets_reps.recommend', {
-                        number: activity.sets,
-                      })}
-                    </Text>
+                    <View style={styles.width90}>
+                      <Text
+                        style={[
+                          styles.fontSizeMd,
+                          styles.marginTop,
+                          styles.textLightGrey,
+                          styles.textCenter,
+                        ]}>
+                        {translate('activity.sets_reps.recommend', {
+                          number: activity.sets,
+                        })}
+                      </Text>
+                    </View>
                   </View>
                   <View>
                     <Text style={[styles.fontSizeMd, styles.textCenter]}>
@@ -431,16 +440,19 @@ const AssessmentForm = ({
                       onValueChange={(data) => setNumberOfReps(data)}
                       disabled={!!activity?.completed || isCompletedOffline}
                     />
-                    <Text
-                      style={[
-                        styles.fontSizeMd,
-                        styles.marginTop,
-                        styles.textLightGrey,
-                      ]}>
-                      {translate('activity.sets_reps.recommend', {
-                        number: activity.reps,
-                      })}
-                    </Text>
+                    <View style={styles.width90}>
+                      <Text
+                        style={[
+                          styles.fontSizeMd,
+                          styles.marginTop,
+                          styles.textLightGrey,
+                          styles.textCenter,
+                        ]}>
+                        {translate('activity.sets_reps.recommend', {
+                          number: activity.reps,
+                        })}
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>

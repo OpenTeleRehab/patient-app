@@ -25,6 +25,9 @@ export default {
     flex: 1,
     flexDirection: 'column',
   },
+  flexWrap: {
+    flexWrap: 'wrap',
+  },
   alignSelfStretch: {
     alignSelf: 'stretch',
   },

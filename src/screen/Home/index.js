@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, TouchableOpacity, View, Image} from 'react-native';
+import {ActivityIndicator, TouchableOpacity, View, Image, ScrollView} from 'react-native';
 import {Text, Button} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -197,107 +197,105 @@ const Home = ({navigation}) => {
         }}
         leftContent={{hasLogo: true}}
       />
-      <View
-        style={[
-          styles.mainContainerPrimary,
-          styles.flexCenter,
-          styles.flexColumn,
-          styles.justifyContentCenter,
-        ]}>
-        {kidTheme ? (
-          <TouchableOpacity
-            accessibilityLabel={translate('common.home.mascot')}
-            onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
-            <Image source={quackerWave} style={kidThemeImageStyle} />
-          </TouchableOpacity>
-        ) : todaySummary.all ? (
-          <>
+      <ScrollView style={styles.mainContainerPrimary} showsVerticalScrollIndicator={false}>
+        <View
+          style={[
+            styles.mainContainerPrimary,
+            styles.flexCenter,
+            styles.flexColumn,
+            styles.justifyContentCenter,
+          ]}>
+          {kidTheme ? (
             <TouchableOpacity
-              accessibilityLabel={translate('common.activities.progress')}
+              accessibilityLabel={translate('common.home.mascot')}
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
-              <AnimatedCircularProgress
-                size={250}
-                width={20}
-                fill={completedPercentage}
-                lineCap="round"
-                tintColor={colors.white}
-                rotation={0}
-                backgroundColor={colors.blueLight}>
-                {() => (
-                  <>
-                    <Text style={styles.leadText}>
-                      {translate('common.completed')}
-                    </Text>
-                    <Text style={styles.progressTextStyle}>
-                      <Text
-                        style={[
-                          styles.progressTextStyle,
-                          styles.fontWeightBold,
-                        ]}>
-                        {todaySummary.completed}
-                      </Text>
-                      /{todaySummary.all}
-                    </Text>
-                  </>
-                )}
-              </AnimatedCircularProgress>
+              <Image source={quackerWave} style={kidThemeImageStyle} />
             </TouchableOpacity>
-          </>
-        ) : (
-          <Text accessible={false} />
-        )}
-        <Text style={[styles.textLightBold, styles.marginTopMd]}>
-          {translate('common.hi')}, {profile.first_name}!
-        </Text>
-        {todaySummary.all ? (
-          <>
-            <Text style={styles.textLightBold}>
-              {translate('home.activity.completed', {
-                number: todaySummary.completed + '/' + todaySummary.all,
-              })}
-            </Text>
-            <Button
-              title={
-                <Text style={[styles.textPrimaryBold]}>
-                  {translate('common.start')}
-                </Text>
-              }
-              titleStyle={[styles.textPrimary, styles.fontWeightBold]}
-              onPress={() => navigation.navigate(ROUTES.ACTIVITY)}
-              containerStyle={[styles.marginTopMd]}
-              buttonStyle={styles.bgLight}
-            />
-          </>
-        ) : (
-          <>
-            {isLoading === true ? (
-              <ActivityIndicator
-                size={60}
-                color="white"
-                style={styles.marginTopLg}
-              />
-            ) : (
-              <Text
-                style={[
-                  styles.textLight,
-                  styles.marginTop,
-                  styles.headerLeftTitleLight,
-                ]}>
-                {translate('home.no.activity.for.today')}
+          ) : todaySummary.all ? (
+            <>
+              <TouchableOpacity
+                accessibilityLabel={translate('common.activities.progress')}
+                onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
+                <AnimatedCircularProgress
+                  size={250}
+                  width={20}
+                  fill={completedPercentage}
+                  lineCap="round"
+                  tintColor={colors.white}
+                  rotation={0}
+                  backgroundColor={colors.blueLight}>
+                  {() => (
+                    <>
+                      <Text style={styles.leadText}>
+                        {translate('common.completed')}
+                      </Text>
+                      <Text style={styles.progressTextStyle}>
+                        <Text
+                          style={[
+                            styles.progressTextStyle,
+                            styles.fontWeightBold,
+                          ]}>
+                          {todaySummary.completed}
+                        </Text>
+                        /{todaySummary.all}
+                      </Text>
+                    </>
+                  )}
+                </AnimatedCircularProgress>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text accessible={false} />
+          )}
+          <Text style={[styles.textLightBold, styles.marginTopMd]}>
+            {translate('common.hi')}, {profile.first_name}!
+          </Text>
+          {todaySummary.all ? (
+            <>
+              <Text style={styles.textLightBold}>
+                {translate('home.activity.completed', {
+                  number: todaySummary.completed + '/' + todaySummary.all,
+                })}
               </Text>
-            )}
-          </>
-        )}
-      </View>
-
-      {upcomingAppointment && (
-        <View style={styles.mainContainerPrimary}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(ROUTES.APPOINTMENT)}>
-            <AppointmentCard appointment={upcomingAppointment} />
-          </TouchableOpacity>
+              <Button
+                title={translate('common.start')}
+                titleStyle={[styles.textPrimary, styles.fontWeightBold]}
+                onPress={() => navigation.navigate(ROUTES.ACTIVITY)}
+                containerStyle={[styles.marginTopMd]}
+                buttonStyle={styles.bgLight}
+              />
+            </>
+          ) : (
+            <>
+              {isLoading === true ? (
+                <ActivityIndicator
+                  size={60}
+                  color="white"
+                  style={styles.marginTopLg}
+                />
+              ) : (
+                <Text
+                  style={[
+                    styles.textLight,
+                    styles.marginTop,
+                    styles.headerLeftTitleLight,
+                  ]}>
+                  {translate('home.no.activity.for.today')}
+                </Text>
+              )}
+            </>
+          )}
         </View>
-      )}
+
+        {upcomingAppointment && (
+          <View style={styles.mainContainerPrimary}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ROUTES.APPOINTMENT)}>
+              <AppointmentCard appointment={upcomingAppointment} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
     </>
   );
 };

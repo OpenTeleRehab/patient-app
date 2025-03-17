@@ -97,4 +97,7 @@ export default {
   appointmentStatusAdditionalSpace: {
     paddingBottom: 15,
   },
+  appointmentDateTimePickerContainer: {
+    height: 50,
+  },
 };

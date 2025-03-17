@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, Platform, PermissionsAndroid, TextInput} from 'react-native';
+import {AppRegistry, Platform, PermissionsAndroid, TextInput, Text as ReactNativeText} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
@@ -15,6 +15,11 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundTimer from 'react-native-background-timer';
 import _ from 'lodash';
 import {Text} from 'react-native-elements';
+
+ReactNativeText.defaultProps = {
+  ...ReactNativeText.defaultProps,
+  maxFontSizeMultiplier: 1.4,
+};
 
 Text.defaultProps = {
   ...Text.defaultProps,

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {Alert, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -28,6 +28,7 @@ const ConfirmPin = ({navigation}) => {
   const isLoading = useSelector((state) => state.user.isLoading);
   const translate = getTranslate(localize);
   const [pin, setPin] = useState('');
+  const pinRef = useRef(null);
 
   const disabledConfirm = () => {
     return pin.length !== 4 || isLoading;
@@ -63,6 +64,10 @@ const ConfirmPin = ({navigation}) => {
     navigation.navigate(ROUTES.USER_PROFILE);
   };
 
+  const handlePinInputPress = (ref) => {
+    ref.current?.focus();
+  };
+
   return (
     <>
       <HeaderBar
@@ -85,8 +90,11 @@ const ConfirmPin = ({navigation}) => {
             </Text>
             <TouchableOpacity
               accessible={true}
-              accessibilityLabel={translate('pin.enter.number')}>
+              accessibilityLabel={translate('pin.enter.number')}
+              onPress={() => handlePinInputPress(pinRef)}
+            >
               <SmoothPinCodeInput
+                ref={pinRef}
                 password
                 value={pin}
                 onTextChange={(value) => setPin(value)}
