@@ -197,7 +197,11 @@ const Home = ({navigation}) => {
         }}
         leftContent={{hasLogo: true}}
       />
-      <ScrollView style={styles.mainContainerPrimary} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.mainContainerPrimary}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.flexGrow, styles.justifyContentCenter]}
+      >
         <View
           style={[
             styles.mainContainerPrimary,

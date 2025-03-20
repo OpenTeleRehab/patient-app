@@ -28,6 +28,9 @@ export default {
   flexWrap: {
     flexWrap: 'wrap',
   },
+  flexGrow: {
+    flexGrow: 1,
+  },
   alignSelfStretch: {
     alignSelf: 'stretch',
   },
