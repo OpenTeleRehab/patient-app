@@ -182,6 +182,10 @@ export const appointments = [
     name: ROUTES.USER_PROFILE_EDIT,
     screen: UserProfileEditScreen,
   },
+  {
+    name: ROUTES.ACHIEVEMENT,
+    screen: AchievementScreen,
+  },
   ...drawer,
 ];
 
