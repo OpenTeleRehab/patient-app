@@ -20,7 +20,7 @@ export default {
   },
   headerButton: (hasLabel, backgroundPrimary) => ({
     paddingVertical: hasLabel ? variables.spacingSm : 0,
-    paddingHorizontal: hasLabel ? variables.spacingMd : 0,
+    paddingHorizontal: hasLabel ? variables.spacingBase : 0,
     borderRadius: 8,
     backgroundColor: backgroundPrimary ? variables.primary : variables.white,
     borderColor: backgroundPrimary ? variables.white : variables.primary,
