@@ -200,7 +200,7 @@ const UserProfileEdit = ({navigation}) => {
             <Input
               label={<Text>{translate('first.name')}</Text>}
               labelStyle={[styles.formLabel, styles.marginTop]}
-              inputContainerStyle={styles.noneBorderBottom}
+              inputContainerStyle={[styles.noneBorderBottom, styles.marginTop]}
               containerStyle={styles.inputContainer}
               value={userInfo.first_name}
               onChangeText={(value) =>
@@ -212,14 +212,14 @@ const UserProfileEdit = ({navigation}) => {
             />
             <Divider
               style={[
-                styles.marginTop,
+                styles.marginBottom,
                 firstNameError ? styles.bgDanger : null,
               ]}
             />
             <Input
               label={<Text>{translate('last.name')}</Text>}
               labelStyle={[styles.formLabel, styles.marginTop]}
-              inputContainerStyle={styles.noneBorderBottom}
+              inputContainerStyle={[styles.noneBorderBottom, styles.marginTop]}
               containerStyle={styles.inputContainer}
               value={userInfo.last_name}
               onChangeText={(value) =>
@@ -230,7 +230,7 @@ const UserProfileEdit = ({navigation}) => {
               }
             />
             <Divider
-              style={[styles.marginTop, lastNameError ? styles.bgDanger : null]}
+              style={lastNameError ? styles.bgDanger : null}
             />
           </View>
           <View style={styles.formGroup}>
