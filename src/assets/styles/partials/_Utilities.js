@@ -157,9 +157,13 @@ export default {
   displayNone: {
     height: 0,
     width: 0,
+    display: 'none',
   },
   width70: {
     width: '70%',
+  },
+  width90: {
+    width: '90%',
   },
   reject: {
     backgroundColor: variables.danger,
@@ -167,5 +171,8 @@ export default {
   },
   opacity0: {
     opacity: 0,
+  },
+  dateTimePickerContainer: {
+    height: 50,
   },
 };

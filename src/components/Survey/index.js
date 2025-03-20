@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {Button, CheckBox, Input, Divider, withTheme} from 'react-native-elements';
+import {View, StyleSheet} from 'react-native';
+import {Button, CheckBox, Input, Divider, withTheme, Text} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPublishSurvey, submitSurvey, skipSurvey} from '../../store/survey/actions';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommonOverlay from '../Common/Overlay';
 import styles from '../../assets/styles';
 import moment from 'moment';
+import _ from 'lodash';
 
 const Survey = ({theme}) => {
   const dispatch = useDispatch();
@@ -158,12 +159,24 @@ const Survey = ({theme}) => {
 
   const handleNext = () => {
     // Validate mandatory question before moving to next question
-    if (currentQuestion.mandatory && (!answers[currentQuestion.id] || !answers[currentQuestion.id].length)) {
+    if (currentQuestion.mandatory && (!answers[currentQuestion.id] || (_.isArray(answers[currentQuestion.id]) && !answers[currentQuestion.id].length))) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
         [currentQuestion.id]: translate('survey.answer.required'),
       }));
       return;
+    }
+
+    if (currentQuestion.type === 'open-number') {
+      const threshold = currentQuestion.answers[0].threshold;
+      const minValue = 0;
+      if (!_.isEmpty(answers[currentQuestion.id]) && (answers[currentQuestion.id] > threshold || answers[currentQuestion.id] < minValue)) {
+        setValidationErrors((prevErrors) => ({
+          ...prevErrors,
+          [currentQuestion.id]: translate('survey.number.validation', { minValue: minValue, maxValue: threshold }),
+        }));
+        return;
+      }
     }
 
     // If there are no errors, proceed to the next question
@@ -177,7 +190,7 @@ const Survey = ({theme}) => {
 
     // Validate all mandatory questions before submitting
     publishSurvey.questionnaire.questions.forEach((question) => {
-      if (question.mandatory && (!answers[question.id] || !answers[question.id].length)) {
+      if (question.mandatory && (!answers[question.id] || (_.isArray(answers[question.id]) && !answers[question.id].length))) {
         newErrors[question.id] = translate('survey.answer.required');
       }
       if (question.type === 'open-number') {
@@ -245,7 +258,7 @@ const Survey = ({theme}) => {
         {currentQuestion && (
           <>
             <Text style={styles.fontWeightBold}>
-              {currentQuestion.title} {currentQuestion.mandatory && <Text>*</Text>}
+              {currentQuestion.title} {!!currentQuestion.mandatory && <Text>*</Text>}
             </Text>
 
             {currentQuestion.type === 'checkbox' &&
@@ -274,6 +287,7 @@ const Survey = ({theme}) => {
               <Input
                 value={answers[currentQuestion.id] || ''}
                 onChangeText={(text) => handleInputChange(currentQuestion.id, text, 'text')}
+                containerStyle={styles.inputContainer}
               />
             )}
 
@@ -282,6 +296,7 @@ const Survey = ({theme}) => {
                 value={answers[currentQuestion.id] || ''}
                 onChangeText={(text) => handleInputChange(currentQuestion.id, text, 'number')}
                 keyboardType="numeric"
+                containerStyle={styles.inputContainer}
               />
             )}
           </>
@@ -294,7 +309,7 @@ const Survey = ({theme}) => {
         <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
           <View style={[componentStyles.buttonContainer, styles.marginTop]}>
           {currentIndex > 0 && (
-            <Button title={translate('common.previous')} onPress={handlePrevious} buttonStyle={componentStyles.button} containerStyle={[styles.marginRightSm]} />
+            <Button title={translate('common.previous')} onPress={handlePrevious} buttonStyle={componentStyles.button} containerStyle={[styles.marginRightSm]}/>
           )}
           {currentIndex < publishSurvey?.questionnaire?.questions.length - 1 && (
             <Button title={translate('common.next')} onPress={handleNext} buttonStyle={componentStyles.button}/>
@@ -323,6 +338,9 @@ const componentStyles = StyleSheet.create({
   button: {
     paddingHorizontal: 15,
     paddingVertical: 10,
+  },
+  inputContainer: {
+    height: 50,
   },
 });
 

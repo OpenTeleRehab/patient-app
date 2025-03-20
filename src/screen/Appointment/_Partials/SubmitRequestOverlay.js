@@ -307,6 +307,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             mode="date"
             is24Hour={true}
             onChange={onSetDate}
+            style={Platform.OS === 'ios' ? styles.appointmentDateTimePickerContainer : null }
           />
         )}
         <View style={styles.formGroup}>
@@ -343,6 +344,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             mode="time"
             is24Hour={false}
             onChange={onSetFromTime}
+            style={Platform.OS === 'ios' ? styles.appointmentDateTimePickerContainer : null }
           />
         )}
         <View style={styles.formGroup}>
@@ -380,6 +382,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             mode="time"
             is24Hour={false}
             onChange={onSetToTime}
+            style={Platform.OS === 'ios' ? styles.appointmentDateTimePickerContainer : null }
           />
         )}
         <View style={styles.formGroup}>

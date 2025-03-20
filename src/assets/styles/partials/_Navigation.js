@@ -36,4 +36,7 @@ export default {
     backgroundColor: variables.grey6,
     padding: variables.spacingMd,
   },
+  navDrawerBackBottom: {
+    padding: variables.spacingBase - 4,
+  },
 };

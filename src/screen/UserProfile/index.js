@@ -176,7 +176,7 @@ const UserProfile = ({navigation}) => {
     <>
       <HeaderBar
         backgroundPrimary={false}
-        onGoBack={() => navigation.navigate(ROUTES.HOME)}
+        onGoBack={() => navigation.goBack()}
         title={translate('preferences')}
         rightContent={{
           label: translate('common.edit'),
