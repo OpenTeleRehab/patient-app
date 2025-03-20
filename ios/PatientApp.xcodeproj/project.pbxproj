@@ -502,7 +502,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PatientApp/PatientApp.entitlements;
-				CURRENT_PROJECT_VERSION = 260011534;
+				CURRENT_PROJECT_VERSION = 260011543;
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PatientApp/Info.plist;
@@ -513,7 +513,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.33.8;
+				MARKETING_VERSION = 1.34.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -536,7 +536,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PatientApp/PatientApp.entitlements;
-				CURRENT_PROJECT_VERSION = 260011534;
+				CURRENT_PROJECT_VERSION = 260011543;
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				INFOPLIST_FILE = PatientApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = OpenTeleRehab;
@@ -546,7 +546,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.33.8;
+				MARKETING_VERSION = 1.34.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
