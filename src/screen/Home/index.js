@@ -292,7 +292,7 @@ const Home = ({navigation}) => {
         </View>
 
         {upcomingAppointment && (
-          <View style={styles.mainContainerPrimary}>
+          <View style={[styles.mainContainerPrimary, styles.marginBottomMd]}>
             <TouchableOpacity
               onPress={() => navigation.navigate(ROUTES.APPOINTMENT)}>
               <AppointmentCard appointment={upcomingAppointment} />

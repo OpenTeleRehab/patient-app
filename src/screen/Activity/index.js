@@ -350,8 +350,8 @@ const Activity = ({theme, navigation}) => {
         />
       </View>
       {activities?.length ? (
-        <ScrollView style={[styles.mainContainerLight, styles.noPadding]}>
-          <View style={[styles.mainContainerLight, styles.noPadding]}>
+        <ScrollView style={[styles.mainContainerLight, styles.noPadding]} showsVerticalScrollIndicator={false}>
+          <View style={[styles.mainContainerLight, styles.noPadding, styles.marginBottomMd]}>
             <View
               style={[
                 styles.flexRow,
