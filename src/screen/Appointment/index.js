@@ -116,6 +116,7 @@ const Appointment = ({navigation}) => {
       </View>
 
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={styles.mainContainerLight}
         contentContainerStyle={
           !groupedAppointments.length
