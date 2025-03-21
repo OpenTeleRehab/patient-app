@@ -162,9 +162,9 @@ const AssessmentForm = ({
 
   return (
     <>
-      <ScrollView style={styles.mainContainerLight}>
+      <ScrollView style={styles.mainContainerLight} showsVerticalScrollIndicator={false}>
         {steps > 1 ? (
-          <>
+          <View style={styles.marginBottomLg}>
             {activity?.get_pain_level && step === 1 && (
               <View style={[styles.marginTopLg]}>
                 <View style={[styles.flexCenter, styles.marginBottomMd]}>
@@ -312,9 +312,9 @@ const AssessmentForm = ({
                 </View>
               </View>
             </View>
-          </>
+          </View>
         ) : (
-          <>
+          <View style={styles.marginBottomLg}>
             {activity?.get_pain_level && (
               <View style={styles.marginTopLg}>
                 <View style={[styles.flexCenter, styles.marginBottomMd]}>
@@ -457,7 +457,7 @@ const AssessmentForm = ({
                 </View>
               </View>
             )}
-          </>
+          </View>
         )}
       </ScrollView>
       {steps > 1 && step === 1 && (
