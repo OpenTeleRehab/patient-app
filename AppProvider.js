@@ -95,16 +95,15 @@ const AppProvider = ({children}) => {
 
     if (!_.isEmpty(callInfo) && patientId) {
       isAnswerCall = true;
+      const message = {
+        _id: callInfo._id,
+        rid: callInfo.rid,
+        msg: CALL_STATUS.ACCEPTED,
+      };
+      updateMessage(chatSocket, message, patientId);
 
       if (Platform.OS === 'android') {
         RNCallKeep.backToForeground();
-
-        const message = {
-          _id: callInfo._id,
-          rid: callInfo.rid,
-          msg: CALL_STATUS.ACCEPTED,
-        };
-        updateMessage(chatSocket, message, patientId);
         RNCallKeep.endCall(callInfo.callUUID);
       }
     }
