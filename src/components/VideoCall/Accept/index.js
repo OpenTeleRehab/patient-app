@@ -186,6 +186,11 @@ const AcceptCall = ({
 
   const _onEndButtonPress = () => {
     twilioRef.current.disconnect();
+    getLocalData(STORAGE_KEY.CALL_INFO, true).then(callInfo => {
+      try {
+        callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
+      } catch {}
+    });
     onEndCall();
     if (!netInfo.isConnected) {
       setStatus('disconnected');
@@ -301,6 +306,11 @@ const AcceptCall = ({
 
   const handleCancelPermissionPopup = () => {
     if (forcePermissionMessagePopup) {
+      getLocalData(STORAGE_KEY.CALL_INFO, true).then(callInfo => {
+        try {
+          callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
+        } catch {}
+      });
       _onEndButtonPress();
     }
     setPermissionSettingPopup(false);
