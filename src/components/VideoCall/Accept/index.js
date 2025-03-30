@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState, useRef} from 'react';
-import {AppState, Linking, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid} from 'react-native';
+import {AppState, NativeModules, Linking, ScrollView, TouchableOpacity, View, Platform, PermissionsAndroid} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {
@@ -26,11 +26,11 @@ const AcceptCall = ({
   theme,
   onEndCall,
   onVideoOn,
-  onSpeakerOn,
   onMute,
   identity,
   roomId,
 }) => {
+  const { ForegroundService } = NativeModules;
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const twilioRef = useRef(null);
@@ -179,6 +179,7 @@ const AcceptCall = ({
       getLocalData(STORAGE_KEY.CALL_INFO, true).then(callInfo => {
         try {
           callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
+          ForegroundService.startService();
         } catch {}
       });
     setStatus('connected');
@@ -189,6 +190,7 @@ const AcceptCall = ({
     getLocalData(STORAGE_KEY.CALL_INFO, true).then(callInfo => {
       try {
         callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
+        ForegroundService.stopService();
       } catch {}
     });
     onEndCall();
@@ -248,7 +250,7 @@ const AcceptCall = ({
 
       if (showMessage) {
         setForcePermissionMessagePopup(false);
-        setPermissionMessagePopup('common.permissions.camera.message');
+        setPermissionMessagePopup('common.permissions.video.message');
         setPermissionSettingPopup(true);
       }
     }
