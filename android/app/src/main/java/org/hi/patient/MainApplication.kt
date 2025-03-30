@@ -21,6 +21,8 @@ import android.content.Context
 import android.content.IntentFilter
 import android.os.Build
 
+import org.hi.patient.ForegroundServicePackage
+
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
@@ -28,7 +30,7 @@ class MainApplication : Application(), ReactApplication {
         override fun getPackages(): ArrayList<ReactPackage> =
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
-              // add(MyReactNativePackage())
+              add(ForegroundServicePackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
