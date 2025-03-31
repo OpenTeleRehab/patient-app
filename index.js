@@ -56,7 +56,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
           remoteMessage.data.body,
           remoteMessage.data.title,
           'generic',
-          remoteMessage.data.body.includes('video'),
+          true,
         );
       } else {
         const options = {
