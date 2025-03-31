@@ -31,6 +31,7 @@ import {getAppSettingsRequest} from '../../store/appSetting/actions';
 import {mutation} from '../../store/appSetting/mutations';
 import Survey from '../Survey';
 import JailMonkey from 'jail-monkey';
+import {PERMISSIONS, request} from 'react-native-permissions';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -156,15 +157,21 @@ const AppNavigation = (props) => {
 
   // check required permission(s) on android
   const checkAndroidPermission = useCallback(async () => {
-    const permission = PermissionsAndroid.PERMISSIONS.CAMERA;
-    const hasPermission = await PermissionsAndroid.check(permission);
-    if (!hasPermission) {
+    const hasAudioPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+    const hasCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
+    const hasStoragePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+    if (!hasAudioPermission || !hasCameraPermission || !hasStoragePermission) {
       await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.CAMERA,
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
       ]);
     }
+  }, []);
+
+  const checkIosPermission = useCallback(async () => {
+    await request(PERMISSIONS.IOS.MICROPHONE);
+    await request(PERMISSIONS.IOS.CAMERA);
   }, []);
 
   useEffect(() => {
@@ -175,8 +182,10 @@ const AppNavigation = (props) => {
   useEffect(() => {
     if (Platform.OS === 'android') {
       checkAndroidPermission();
+    } else {
+      checkIosPermission();
     }
-  }, [checkAndroidPermission]);
+  }, [checkAndroidPermission, checkIosPermission]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
