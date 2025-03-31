@@ -290,7 +290,7 @@ const AcceptCall = ({
   const _onParticipantRemovedVideoTrack = participant => {
     participants.forEach(item => item.participant.identity === participant.participant.identity && delete item.track);
 
-    setParticipants(participants);
+    setParticipants([...participants]);
   };
 
   const _onDataTrackMessageReceived = (data) => {
@@ -332,6 +332,12 @@ const AcceptCall = ({
       {status === 'connected' && (
         <>
           <View style={styles.localVideoContainer}>
+            {!isChatConnected && (
+              <Text style={styles.callMessage}>
+                {translate('call_message.trying_to_reconnect')}
+              </Text>
+            )}
+
             {isVideoEnabled ? (
               <TwilioVideoLocalView
                 enabled
@@ -362,11 +368,6 @@ const AcceptCall = ({
 
             {participants.length > 0 && Array.from(participants, ({participant, track}) => (
               <View key={participant.identity} style={styles.participantItem}>
-                {!isChatConnected && (
-                  <Text style={styles.callMessage}>
-                    {translate('call_message.trying_to_reconnect')}
-                  </Text>
-                )}
                 {track ? (
                   <TwilioVideoParticipantView
                     trackIdentifier={{
