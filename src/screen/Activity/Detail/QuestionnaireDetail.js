@@ -55,6 +55,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const [question, setQuestion] = useState(undefined);
   const [patientAnswers, setPatientAnswers] = useState([]);
+  const [thresholdErrors, setThresholdErrors] = useState({});
   const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
@@ -107,6 +108,18 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
 
   const handleNext = () => {
     if (activePaginationIndex < questionnaire.questions.length - 1) {
+      const currentQuestion = questionnaire.questions[activePaginationIndex];
+      if (currentQuestion.type === 'open-number') {
+        const threshold = currentQuestion.answers[0].threshold;
+        const minValue = 0;
+        if (!_.isEmpty(patientAnswers[currentQuestion.id]) && (patientAnswers[currentQuestion.id] > threshold || patientAnswers[currentQuestion.id] < minValue)) {
+          setThresholdErrors((prevErrors) => ({
+            ...prevErrors,
+            [currentQuestion.id]: translate('question.threshold.validation', { minValue: minValue, maxValue: threshold }),
+          }));
+          return;
+        }
+      }
       Tts.stop();
       setActivePaginationIndex(activePaginationIndex + 1);
     }
@@ -120,6 +133,18 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   };
 
   const handleCompleteTask = () => {
+    const currentQuestion = questionnaire.questions[activePaginationIndex];
+    if (currentQuestion.type === 'open-number') {
+      const threshold = currentQuestion.answers[0].threshold;
+      const minValue = 0;
+      if (!_.isEmpty(patientAnswers[currentQuestion.id]) && (patientAnswers[currentQuestion.id] > threshold || patientAnswers[currentQuestion.id] < minValue)) {
+        setThresholdErrors((prevErrors) => ({
+          ...prevErrors,
+          [currentQuestion.id]: translate('question.threshold.validation', { minValue: minValue, maxValue: threshold }),
+        }));
+        return;
+      }
+    }
     Tts.stop();
     if (isOnline) {
       const data = {
@@ -252,6 +277,9 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
               patientAnswers={patientAnswers}
               setPatientAnswers={setPatientAnswers}
               notEditable={!!questionnaire.completed}
+              thresholdErrors={thresholdErrors}
+              setThresholdErrors={setThresholdErrors}
+              theme={theme}
               description={
                 activePaginationIndex === 0 ? questionnaire.description : null
               }

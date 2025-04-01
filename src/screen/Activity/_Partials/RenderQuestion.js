@@ -16,11 +16,14 @@ const containerStyle = {
 };
 
 const RenderQuestion = ({
+  theme,
   question,
   setPatientAnswers,
   patientAnswers,
   notEditable,
   description,
+  thresholdErrors,
+  setThresholdErrors,
 }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -43,6 +46,13 @@ const RenderQuestion = ({
 
   const handleOnChange = (value) => {
     setPatientAnswers({...patientAnswers, [question.id]: value});
+    if (thresholdErrors[question.id]) {
+      setThresholdErrors((prevErrors) => {
+        const updatedErrors = { ...prevErrors };
+        delete updatedErrors[question.id];
+        return updatedErrors;
+      });
+    }
   };
 
   const getTextsToSpeech = () => {
@@ -173,6 +183,9 @@ const RenderQuestion = ({
             maxLength={255}
             disabled={notEditable}
           />
+        )}
+        {thresholdErrors[question && question.id] && (
+          <Text style={{color: theme.colors.danger}}>{thresholdErrors[question && question.id]}</Text>
         )}
       </View>
     </>
