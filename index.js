@@ -15,6 +15,9 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundTimer from 'react-native-background-timer';
 import _ from 'lodash';
 import {Text} from 'react-native-elements';
+import notifee from '@notifee/react-native';
+import moment from 'moment';
+import settings from './config/settings';
 
 ReactNativeText.defaultProps = {
   ...ReactNativeText.defaultProps,
@@ -36,7 +39,27 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     // Message with data handled in the background
     const callUUID = uuid.v4();
 
-    if (remoteMessage.data.body.includes('missed')) {
+    if (remoteMessage.data.isLocal) {
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
+      const splitedDates = remoteMessage.data.body.split('|');
+      const startDate = moment.utc(splitedDates[0]).local().format(settings.format.date + ' ' + settings.format.time);
+      const endDate = moment.utc(splitedDates[1]).local().format(settings.format.date + ' ' + settings.format.time);
+
+      await notifee.displayNotification({
+        title: remoteMessage.data.title,
+        body: startDate + ' - ' + endDate,
+        android: {
+          channelId,
+          localOnly: true,
+          pressAction: {
+            id: 'default',
+          },
+        },
+      });
+    } else if (remoteMessage.data.body.includes('missed')) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
       RNCallKeep.endCall(callInfo.callUUID);
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
