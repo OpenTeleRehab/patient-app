@@ -110,7 +110,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
     if (activePaginationIndex < questionnaire.questions.length - 1) {
       const currentQuestion = questionnaire.questions[activePaginationIndex];
       if (currentQuestion.type === 'open-number') {
-        const threshold = currentQuestion.answers[0].threshold;
+        const threshold = currentQuestion.answers[0]?.threshold;
         const minValue = 0;
         if (!_.isEmpty(patientAnswers[currentQuestion.id]) && (patientAnswers[currentQuestion.id] > threshold || patientAnswers[currentQuestion.id] < minValue)) {
           setThresholdErrors((prevErrors) => ({
@@ -135,7 +135,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const handleCompleteTask = () => {
     const currentQuestion = questionnaire.questions[activePaginationIndex];
     if (currentQuestion.type === 'open-number') {
-      const threshold = currentQuestion.answers[0].threshold;
+      const threshold = currentQuestion.answers[0]?.threshold;
       const minValue = 0;
       if (!_.isEmpty(patientAnswers[currentQuestion.id]) && (patientAnswers[currentQuestion.id] > threshold || patientAnswers[currentQuestion.id] < minValue)) {
         setThresholdErrors((prevErrors) => ({
