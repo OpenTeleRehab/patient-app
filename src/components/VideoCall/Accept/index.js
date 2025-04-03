@@ -93,13 +93,26 @@ const AcceptCall = ({
                 enableAudio: hasVoicePermission,
               });
 
-              twilioRef.current
-                .setLocalVideoEnabled(videoOn && hasCameraPermission)
-                .then((isEnabled) => setIsVideoEnabled(isEnabled));
+              if (Platform.OS === 'android') {
+                twilioRef.current
+                  .setLocalVideoEnabled(videoOn && hasCameraPermission)
+                  .then((isEnabled) => setIsVideoEnabled(isEnabled));
 
-              twilioRef.current
-                .setLocalAudioEnabled(!onMute && hasVoicePermission)
-                .then((isEnabled) => setIsAudioEnabled(isEnabled));
+                twilioRef.current
+                  .setLocalAudioEnabled(!onMute && hasVoicePermission)
+                  .then((isEnabled) => setIsAudioEnabled(isEnabled));
+              } else {
+                // Fix issue enabling video in audio call on iOS
+                setTimeout(() => {
+                  twilioRef.current
+                    .setLocalVideoEnabled(videoOn && hasCameraPermission)
+                    .then((isEnabled) => setIsVideoEnabled(isEnabled));
+
+                  twilioRef.current
+                    .setLocalAudioEnabled(!onMute && hasVoicePermission)
+                    .then((isEnabled) => setIsAudioEnabled(isEnabled));
+                }, 500);
+              }
             }
           }).finally(() => setIsConnecting(false));
 
@@ -257,7 +270,19 @@ const AcceptCall = ({
 
     twilioRef.current
       .setLocalVideoEnabled(!isVideoEnabled && hasCameraPermission)
-      .then((isEnabled) => setIsVideoEnabled(isEnabled));
+      .then((isEnabled) => {
+        setIsVideoEnabled(isEnabled);
+        if (Platform.OS === 'ios') {
+          if (!isEnabled) {
+            twilioRef.current.unpublishLocalVideo();
+          } else {
+            // Fix issue enabling video in audio call on iOS, but the issue still occurs sometimes when toggling multi times.
+            setTimeout(() => {
+              twilioRef.current.publishLocalVideo();
+            }, 500);
+          }
+        }
+      });
   };
 
   const _onClosedCaptionClick = async () => {
