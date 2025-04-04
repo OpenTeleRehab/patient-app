@@ -289,7 +289,21 @@ const AcceptCall = ({
     setIsTranscripting(!isTranscripting);
   };
 
-  const _onRoomDidDisconnect = () => {
+  const _onRoomDidDisconnect = (error) => {
+    if (error.error) {
+      twilioRef.current.disconnect();
+      getLocalData(STORAGE_KEY.CALL_INFO, true).then(callInfo => {
+        try {
+          callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
+          ForegroundService.stopService();
+        } catch {}
+      });
+      onEndCall();
+      if (!netInfo.isConnected) {
+        setStatus('disconnected');
+        dispatch(clearVideoCallStatus());
+      }
+    }
     setStatus('disconnected');
   };
 
