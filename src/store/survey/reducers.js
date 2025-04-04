@@ -4,7 +4,7 @@ export const survey = (state = initialState, action) => {
   switch (action.type) {
     case 'PUBLISH_SURVEY_FETCH_SUCCESSED': {
       return Object.assign({}, state, {
-        publishSurvey: action.data,
+        publishSurveys: action.data,
       });
     }
     default:

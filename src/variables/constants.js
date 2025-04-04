@@ -80,3 +80,8 @@ export const TTS = {
 export const MATERIAL_TYPE = {
   image: 'common.type.image',
 };
+
+export const SURVEY_FREQUENCY = {
+  WEEKLY: 'weekly',
+  DAILY: 'daily',
+};
