@@ -111,7 +111,7 @@ const AcceptCall = ({
                   twilioRef.current
                     .setLocalAudioEnabled(!onMute && hasVoicePermission)
                     .then((isEnabled) => setIsAudioEnabled(isEnabled));
-                }, 500);
+                }, 1500);
               }
             }
           }).finally(() => setIsConnecting(false));
@@ -277,9 +277,10 @@ const AcceptCall = ({
             twilioRef.current.unpublishLocalVideo();
           } else {
             // Fix issue enabling video in audio call on iOS, but the issue still occurs sometimes when toggling multi times.
+            twilioRef.current.unpublishLocalVideo();
             setTimeout(() => {
               twilioRef.current.publishLocalVideo();
-            }, 500);
+            }, 1000);
           }
         }
       });
