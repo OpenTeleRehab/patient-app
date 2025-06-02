@@ -1,5 +1,6 @@
 package org.hi.patient
 
+import android.os.Bundle
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -26,6 +27,11 @@ class MainActivity : ReactActivity() {
               RNCallKeepModule.onRequestPermissionsResult(requestCode, permissions, grantResults)
           }
       }
+  }
+
+  //react-native-screens override
+  override fun onCreate(savedInstanceState: Bundle?) {
+      super.onCreate(savedInstanceState)
   }
 
   /**
