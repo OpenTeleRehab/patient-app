@@ -237,7 +237,7 @@ const UserProfileEdit = ({navigation}) => {
             <Text style={styles.formLabel}>{translate('common.gender')}</Text>
             <SelectPicker
               placeholder={{}}
-              value={userInfo.language_id}
+              value={userInfo.gender}
               onValueChange={(value) =>
                 setUserInfo({...userInfo, ['gender']: value})
               }
