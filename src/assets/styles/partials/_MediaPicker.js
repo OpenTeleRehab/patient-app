@@ -60,6 +60,6 @@ export default {
     top: 0,
   },
   pickerSelectInputAndroid: {
-    top: 18,
+    top: 15,
   },
 };
