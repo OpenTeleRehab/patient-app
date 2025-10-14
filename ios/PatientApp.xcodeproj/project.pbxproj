@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8BCAD1C32D9FB7BF005AF209 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8BCAD1C22D9FB7BF005AF209 /* GoogleService-Info.plist */; };
 		99EF8A95DBB1199842971AEE /* Pods_PatientApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09DB99152A90C82C143617C8 /* Pods_PatientApp.framework */; };
 		CCD6B7860919DE566A2F7888 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		EE0AFE72B1026E1C6C476AD8 /* Pods_PatientApp_PatientAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA23A32DB35DE8DAB84842D /* Pods_PatientApp_PatientAppTests.framework */; };
@@ -43,6 +44,7 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = PatientApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PatientApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B382A5C2D70107C0070997A /* PatientApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PatientApp.entitlements; path = PatientApp/PatientApp.entitlements; sourceTree = "<group>"; };
+		8BCAD1C22D9FB7BF005AF209 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9514CDD0B13D31D16D3F52CE /* Pods-PatientApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp.debug.xcconfig"; path = "Target Support Files/Pods-PatientApp/Pods-PatientApp.debug.xcconfig"; sourceTree = "<group>"; };
 		BFA23A32DB35DE8DAB84842D /* Pods_PatientApp_PatientAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PatientApp_PatientAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDB4960C6790631BE2197BB6 /* Pods-PatientApp-PatientAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp-PatientAppTests.debug.xcconfig"; path = "Target Support Files/Pods-PatientApp-PatientAppTests/Pods-PatientApp-PatientAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 		13B07FAE1A68108700A75B9A /* PatientApp */ = {
 			isa = PBXGroup;
 			children = (
+				8BCAD1C22D9FB7BF005AF209 /* GoogleService-Info.plist */,
 				8B382A5C2D70107C0070997A /* PatientApp.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -249,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				8BCAD1C32D9FB7BF005AF209 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				CCD6B7860919DE566A2F7888 /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -502,7 +506,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PatientApp/PatientApp.entitlements;
-				CURRENT_PROJECT_VERSION = 260011543;
+				CURRENT_PROJECT_VERSION = 260011553;
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PatientApp/Info.plist;
@@ -513,14 +517,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.34.0;
+				MARKETING_VERSION = 1.34.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.hi.patient;
+				PRODUCT_BUNDLE_IDENTIFIER = org.hi.telerehabilitation;
 				PRODUCT_NAME = PatientApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -536,7 +540,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PatientApp/PatientApp.entitlements;
-				CURRENT_PROJECT_VERSION = 260011543;
+				CURRENT_PROJECT_VERSION = 260011553;
 				DEVELOPMENT_TEAM = 9AP29HURXY;
 				INFOPLIST_FILE = PatientApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = OpenTeleRehab;
@@ -546,7 +550,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.34.0;
+				MARKETING_VERSION = 1.34.2;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
