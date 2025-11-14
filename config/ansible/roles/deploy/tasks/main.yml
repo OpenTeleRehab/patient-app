@@ -3,10 +3,18 @@
 - name: Change node version
   shell: n 18.20.5
 
-- name: Run yarn to install node packages
-  shell: yarn install
+- name: remove node_modules folder
+  shell: rm -rf node_modules
   args:
     chdir: '{{ workspace }}'
+
+- name: Run yarn to clean cache and install node packages
+  shell: 'yarn {{ item }}'
+  args:
+    chdir: '{{ workspace }}'
+  loop:
+    - 'cache clean'
+    - 'install'
 
 - name: Run yarn patch node packages
   shell: yarn patch-package
