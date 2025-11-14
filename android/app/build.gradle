@@ -126,8 +126,15 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    // Core Fresco
+    implementation 'com.facebook.fresco:fresco:3.6.0'
+    implementation 'com.facebook.fresco:imagepipeline-okhttp3:3.6.0'
+
     // For animated GIF support
         implementation 'com.facebook.fresco:animated-gif:3.6.0'
+
+    // ExifInterface for EXIF metadata support
+    implementation "androidx.exifinterface:exifinterface:1.4.1"
 
     // Import the Firebase core and others
     implementation "com.google.firebase:firebase-core:16.0.9"
