@@ -127,7 +127,7 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     // For animated GIF support
-        implementation 'com.facebook.fresco:animated-gif:2.0.0'
+        implementation 'com.facebook.fresco:animated-gif:3.6.0'
 
     // Import the Firebase core and others
     implementation "com.google.firebase:firebase-core:16.0.9"
