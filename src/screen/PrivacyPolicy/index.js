@@ -67,7 +67,9 @@ const PrivacyPolicy = ({navigation}) => {
     if (privacyPolicy && privacyPolicy.content) {
       let content = privacyPolicy.content;
       content = content.replace(/<\/?[^>]+(>|$)/g, '');
-      texts.push(content);
+      // Split content into sentences for better TTS experience
+      const sentences = content.split(/(?<=[.?!។。！？])\s/u);
+      texts.push(...sentences);
     }
 
     return texts;
