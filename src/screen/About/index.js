@@ -123,7 +123,9 @@ const About = ({navigation}) => {
       if (aboutPage.content) {
         let content = aboutPage.content;
         content = content.replace(/<\/?[^>]+(>|$)/g, '');
-        texts.push(content);
+        // Split content into sentences for better TTS experience
+        const sentences = content.split(/(?<=[.?!។。！？])\s/u);
+        texts.push(...sentences);
       }
 
       if (settings.appVersion) {

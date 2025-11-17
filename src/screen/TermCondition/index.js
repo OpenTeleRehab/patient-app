@@ -64,7 +64,9 @@ const TermCondition = ({navigation}) => {
     if (termOfService && termOfService.content) {
       let content = termOfService.content;
       content = content.replace(/<\/?[^>]+(>|$)/g, '');
-      texts.push(content);
+      // Split content into sentences for better TTS experience
+      const sentences = content.split(/(?<=[.?!។。！？])\s/u);
+      texts.push(...sentences);
     }
 
     return texts;
