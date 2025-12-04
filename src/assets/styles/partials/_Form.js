@@ -11,7 +11,7 @@ export default {
     color: variables.black,
     fontSize: variables.fontSizeSm,
     fontWeight: variables.fontWeightMedium,
-    marginBottom: variables.spacingBase,
+    marginBottom: 8,
   },
   formControl: {
     borderWidth: 1,
@@ -70,5 +70,11 @@ export default {
   formPinTextError: {
     fontSize: 24,
     color: variables.danger,
+  },
+  formSelectPickerContainer: {
+    backgroundColor: variables.grey9,
+    borderRadius: variables.borderRadiusBase,
+    paddingHorizontal: variables.spacingBase,
+    marginBottom: 12,
   },
 };

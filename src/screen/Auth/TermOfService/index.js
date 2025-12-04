@@ -25,13 +25,14 @@ const customStyles = {
     marginBottom: 86,
   },
 };
-const TermOfService = ({theme, navigation}) => {
+const TermOfService = ({navigation}) => {
   const dispatch = useDispatch();
   const [acceptAgreement, setAcceptAgreement] = useState(false);
   const [acceptPrivacyPolicy, setAcceptPrivacyPolicy] = useState(false);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile, isNewRegister} = useSelector((state) => state.user);
+  const register = useSelector((state) => state.register);
+  const {profile} = useSelector((state) => state.user);
   const termContent = useSelector((state) => state.user.termOfService);
   const privacyContent = useSelector((state) => state.user.privacyPolicy);
   const isLoading = useSelector((state) => state.user.isLoading);
@@ -42,7 +43,7 @@ const TermOfService = ({theme, navigation}) => {
   }, [dispatch]);
 
   const onSubmit = () => {
-    if (profile.id && !isNewRegister) {
+    if (profile?.id && Object.keys(register).length === 0) {
       dispatch(acceptTermOfServiceRequest(termContent?.id));
       dispatch(acceptPrivacyPolicyRequest(privacyContent?.id));
     } else {

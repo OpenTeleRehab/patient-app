@@ -1,294 +1,190 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
-import {Button, Divider, Input, Text} from 'react-native-elements';
-import {Alert, ScrollView, View, Platform, Keyboard} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  Alert,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+} from 'react-native';
 import styles from '../../assets/styles';
-import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
-import {ROUTES, STORAGE_KEY} from '../../variables/constants';
-import {updateProfileRequest} from '../../store/user/actions';
+import {ROUTES, STORAGE_KEY, USER_ROLE} from '../../variables/constants';
 import HeaderBar from '../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
-import {formatDate, isValidDateFormat} from '../../utils/helper';
-import DatePicker from '../../components/Common/DatePicker';
-import settings from '../../../config/settings';
+import HealthWorkerProfile from './_Partials/HealthWorkerProfile';
+import PatientProfile from './_Partials/PatientProfile';
+import {useForm} from 'react-hook-form';
+import {Button} from 'react-native-elements';
+import {updateProfileRequest} from '../../store/user/actions';
 import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
-import SelectPicker from '../../components/Common/SelectPicker';
-import _ from 'lodash';
 import {useNetInfo} from '@react-native-community/netinfo';
-import formatPhoneNumber from '../../utils/phoneNumber';
+import {formatDate} from '../../utils/helper';
 
 const UserProfileEdit = ({navigation}) => {
-  const profile = useSelector((state) => state.user.profile);
   const dispatch = useDispatch();
+  const netInfo = useNetInfo();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {languages} = useSelector((state) => state.language);
+  const {profile, registerAs} = useSelector((state) => state.user);
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [contractDate, setContractDate] = useState(null);
-  const [userInfo, setUserInfo] = useState({
-    id: '',
-    first_name: '',
-    last_name: '',
-    gender: '',
-    date_of_birth: '',
-    language_id: '',
+  let defaultValues = {
+    id: profile.id,
+    first_name: profile.first_name,
+    last_name: profile.last_name,
+    country_id: profile.country_id,
+  };
+
+  if (registerAs === USER_ROLE.HEALTH_WORKER) {
+    defaultValues = {
+      ...defaultValues,
+      email: profile.email,
+      profession_id: profile.profession_id,
+      clinic_id: profile.clinic_id,
+      language_id: profile.language_id,
+      language_code: profile.language_code,
+      show_guidance: profile.show_guidance,
+    };
+  } else {
+    defaultValues = {
+      ...defaultValues,
+      phone: profile.phone,
+      gender: profile.gender,
+      date_of_birth: formatDate(profile.date_of_birth),
+      language: profile.language,
+      therapist_id: profile.therapist_id,
+    };
+  }
+
+  const {
+    control,
+    reset,
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { isDirty, errors },
+  } = useForm({
+    defaultValues: {
+      ...defaultValues,
+    },
   });
-  const [firstNameError, setFirstNameError] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
-  const [originUserInfo, setOrginUserInfo] = useState(null);
-  const netInfo = useNetInfo();
 
   useEffect(() => {
-    if (profile) {
-      const profileInfo = {
-        id: profile.id,
-        first_name: profile.first_name,
-        last_name: profile.last_name,
-        gender: profile.gender,
-        date_of_birth: profile.date_of_birth
-          ? isValidDateFormat(profile.date_of_birth)
-            ? profile.date_of_birth
-            : moment(profile.date_of_birth).format(settings.format.date)
-          : null,
-        language_id: profile.language_id,
-      };
-      setUserInfo(profileInfo);
-      setOrginUserInfo(profileInfo);
-      if (profile.date_of_birth) {
-        if (isValidDateFormat(profile.date_of_birth)) {
-          moment(profile.date_of_birth, settings.format.date).toDate();
-        } else {
-          setContractDate(moment(profile.date_of_birth).toDate());
+    const subscription = watch((value, {name}) => {
+      if (name === 'language_id') {
+        const language = languages.find(item => item.id === value.language_id);
+
+        if (language) {
+          setValue('language_code', language.code);
         }
       }
-    }
-  }, [profile, setUserInfo, setContractDate]);
-
-  const handleSave = () => {
-    setFirstNameError(userInfo.first_name === '');
-    setLastNameError(userInfo.last_name === '');
-    if (userInfo.first_name === '' || userInfo.last_name === '') {
-      Alert.alert(
-        translate('edit.profile.title').toString(),
-        userInfo.last_name === ''
-          ? translate('error.message.last.name').toString()
-          : translate('error.message.first.name').toString(),
-        [
-          {
-            text: translate('common.ok').toString(),
-            onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
-          },
-        ],
-        {cancelable: false},
-      );
-    } else {
-      dispatch(
-        updateProfileRequest(
-          profile.id,
-          userInfo,
-          profile.phone,
-          profile.therapist_id,
-          profile.country_id,
-        ),
-      ).then((result) => {
-        if (result) {
-          Alert.alert(
-            translate('edit.profile.title').toString(),
-            translate('success.message.edit.profile').toString(),
-            [
-              {
-                text: translate('common.ok').toString(),
-                onPress: () => onSucceed(),
-              },
-            ],
-            {cancelable: false},
-          );
-        } else {
-          Alert.alert(
-            translate('edit.profile.title').toString(),
-            translate('error.message.edit.profile').toString(),
-            [
-              {
-                text: translate('common.ok').toString(),
-                onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
-              },
-            ],
-            {cancelable: false},
-          );
-        }
-      });
-    }
-  };
-
-  const onSucceed = () => {
-    dispatch(getTranslations(userInfo.language_id));
-    storeLocalData(STORAGE_KEY.LANGUAGE, userInfo.language_id);
-    navigation.navigate(ROUTES.USER_PROFILE);
-  };
-
-  const showDatepicker = () => {
-    setShowDatePicker(true);
-  };
-
-  const onSetDate = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setContractDate(selectedDate);
-      setUserInfo({
-        ...userInfo,
-        ['date_of_birth']: formatDate(selectedDate),
-      });
-    }
-  };
-
-  const resetData = () => {
-    setUserInfo(originUserInfo);
-    if (originUserInfo.date_of_birth) {
-      if (isValidDateFormat(originUserInfo.date_of_birth)) {
-        setContractDate(
-          moment(originUserInfo.date_of_birth, settings.format.date).toDate(),
-        );
-      } else {
-        setContractDate(moment(originUserInfo.date_of_birth).toDate());
-      }
-    } else {
-      setContractDate(null);
-    }
-  };
+    });
+    return () => subscription.unsubscribe();
+  }, [languages, setValue, watch]);
 
   const handleGoBack = () => {
     Keyboard.dismiss();
-    if (_.isEqual(userInfo, originUserInfo)) {
-      navigation.navigate(ROUTES.USER_PROFILE);
-    } else {
+
+    if (isDirty) {
       Alert.alert(
         translate('edit.profile.title').toString(),
         translate('edit.profile.discard.message').toString(),
         [
           {
             text: translate('common.cancel').toString(),
-            onPress: () => navigation.navigate(ROUTES.USER_PROFILE_EDIT),
             style: 'cancel',
           },
           {
             text: translate('common.ok').toString(),
             onPress: () => {
-              resetData();
+              console.log(defaultValues);
+              reset(defaultValues, {keepDefaultValues: true});
               navigation.navigate(ROUTES.USER_PROFILE);
             },
           },
         ],
       );
+    } else {
+      navigation.navigate(ROUTES.USER_PROFILE);
     }
+  };
+
+  const onSubmit = (data) => {
+    dispatch(updateProfileRequest(data)).then((result) => {
+      if (result) {
+        Alert.alert(
+          translate('edit.profile.title').toString(),
+          translate('success.message.edit.profile').toString(),
+          [
+            {
+              text: translate('common.ok').toString(),
+              onPress: async () => {
+                dispatch(getTranslations(data.language_id));
+                await storeLocalData(STORAGE_KEY.LANGUAGE, data.language_id);
+                navigation.navigate(ROUTES.USER_PROFILE);
+              },
+            },
+          ],
+          {
+            cancelable: false,
+          },
+        );
+      } else {
+        Alert.alert(
+          translate('edit.profile.title').toString(),
+          translate('error.message.edit.profile').toString(),
+          [
+            {
+              text: translate('common.ok').toString(),
+              // onPress: () => {},
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    });
   };
 
   return (
     <>
       <HeaderBar
-        onGoBack={() => handleGoBack()}
+        onGoBack={handleGoBack}
         title={translate('edit.profile.title')}
         backgroundPrimary={true}
       />
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.mainContainerLight}>
-          <View style={styles.formGroup}>
-            <Input
-              label={<Text>{translate('first.name')}</Text>}
-              labelStyle={[styles.formLabel, styles.marginTop]}
-              inputContainerStyle={[styles.noneBorderBottom, styles.marginTop]}
-              containerStyle={styles.inputContainer}
-              value={userInfo.first_name}
-              onChangeText={(value) =>
-                setUserInfo({
-                  ...userInfo,
-                  ['first_name']: value,
-                })
-              }
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.mainContainerLight}
+        >
+          {registerAs === USER_ROLE.HEALTH_WORKER ? (
+            <HealthWorkerProfile
+              control={control}
+              errors={errors}
+              editable={true}
             />
-            <Divider
-              style={[
-                styles.marginBottom,
-                firstNameError ? styles.bgDanger : null,
-              ]}
+          ) : (
+            <PatientProfile
+              control={control}
+              errors={errors}
+              editable={true}
             />
-            <Input
-              label={<Text>{translate('last.name')}</Text>}
-              labelStyle={[styles.formLabel, styles.marginTop]}
-              inputContainerStyle={[styles.noneBorderBottom, styles.marginTop]}
-              containerStyle={styles.inputContainer}
-              value={userInfo.last_name}
-              onChangeText={(value) =>
-                setUserInfo({
-                  ...userInfo,
-                  ['last_name']: value,
-                })
-              }
-            />
-            <Divider
-              style={lastNameError ? styles.bgDanger : null}
-            />
-          </View>
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>{translate('common.gender')}</Text>
-            <SelectPicker
-              placeholder={{}}
-              value={userInfo.gender}
-              onValueChange={(value) =>
-                setUserInfo({...userInfo, ['gender']: value})
-              }
-              items={[
-                {label: translate('gender.male'), value: 'male'},
-                {label: translate('gender.female'), value: 'female'},
-                {label: translate('gender.other'), value: 'other'},
-              ]}
-            />
-            <Divider />
-          </View>
-          <DatePicker
-            label={<Text>{translate('date.of.birth')}</Text>}
-            value={contractDate}
-            mode="date"
-            onSetDate={onSetDate}
-            show={showDatePicker}
-            onClickIcon={showDatepicker}
-          />
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>{translate('common.language')}</Text>
-            <SelectPicker
-              placeholder={{}}
-              value={userInfo.language_id}
-              onValueChange={(value) =>
-                setUserInfo({...userInfo, ['language_id']: value})
-              }
-              items={languages.map((lang) => ({
-                label: lang.name,
-                value: lang.id,
-              }))}
-            />
-            <Divider />
-          </View>
-          <View style={styles.formGroup}>
-            <Text style={styles.formLabel}>{translate('phone.number')}</Text>
-            <Text style={styles.textFormDisabled}>
-              {formatPhoneNumber(profile.dial_code, profile.phone)}
-            </Text>
-            <Divider style={styles.marginTop} />
-          </View>
+          )}
+
           <Button
             title={translate('common.save')}
-            onPress={handleSave}
-            containerStyle={styles.marginTopMd}
-            disabled={
-              !netInfo.isConnected || _.isEqual(userInfo, originUserInfo)
-            }
+            onPress={handleSubmit(onSubmit)}
+            disabled={!netInfo.isConnected || !isDirty}
           />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 };

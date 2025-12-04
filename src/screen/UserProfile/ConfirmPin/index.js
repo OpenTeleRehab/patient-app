@@ -3,14 +3,13 @@
  */
 import React, {useState, useRef} from 'react';
 import {Alert, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Button} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {ROUTES} from '../../../variables/constants';
 import styles from '../../../assets/styles';
-import {comparePinNumberRequest} from '../../../store/user/actions';
 
 const customStyles = {
   paddingTopXXL: {
@@ -22,12 +21,10 @@ const customStyles = {
 };
 
 const ConfirmPin = ({navigation}) => {
-  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const accessToken = useSelector((state) => state.user.accessToken);
-  const isLoading = useSelector((state) => state.user.isLoading);
+  const {pin, isLoading} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
-  const [pin, setPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
   const pinRef = useRef(null);
 
   const disabledConfirm = () => {
@@ -35,32 +32,30 @@ const ConfirmPin = ({navigation}) => {
   };
 
   const handleConfirm = () => {
-    dispatch(comparePinNumberRequest(pin, accessToken)).then((result) => {
-      if (!result) {
-        Alert.alert(
-          translate('pin.change').toString(),
-          translate('error.message.pin.confirmed').toString(),
-          [
-            {
-              text: translate('common.ok').toString(),
-              onPress: () => resetPin(),
-            },
-          ],
-          {cancelable: false},
-        );
-      } else {
-        resetPin();
-        navigation.navigate(ROUTES.SETUP_PIN, {isPINChanged: true});
-      }
-    });
+    if (pin === confirmPin) {
+      resetConfirmPin();
+      navigation.navigate(ROUTES.SETUP_PIN, { isPINChanged: true });
+    } else {
+      Alert.alert(
+        translate('pin.change').toString(),
+        translate('error.message.pin.confirmed').toString(),
+        [
+          {
+            text: translate('common.ok').toString(),
+            onPress: () => resetConfirmPin(),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
 
-  const resetPin = () => {
-    setPin('');
+  const resetConfirmPin = () => {
+    setConfirmPin('');
   };
 
   const onCancel = () => {
-    resetPin();
+    resetConfirmPin();
     navigation.navigate(ROUTES.USER_PROFILE);
   };
 
@@ -96,8 +91,8 @@ const ConfirmPin = ({navigation}) => {
               <SmoothPinCodeInput
                 ref={pinRef}
                 password
-                value={pin}
-                onTextChange={(value) => setPin(value)}
+                value={confirmPin}
+                onTextChange={(value) => setConfirmPin(value)}
                 animated={false}
                 cellSpacing={10}
                 textStyle={styles.formPinText}

@@ -10,9 +10,10 @@ export const initialState = {
   privacyPolicy: {},
   dial_code: undefined,
   phone: '',
-  countryCode: '',
+  email: '',
+  password: '',
   pin: '',
+  registerAs: '',
   isLoading: false,
-  isNewRegister: false,
   isDataUpToDate: true,
 };

@@ -4,6 +4,7 @@
 import {getUserCountryIsoCode} from './country';
 import settings from '../../config/settings';
 import store from '../store';
+import {USER_ROLE} from '../variables/constants';
 
 export const callApi = async (
   uri,
@@ -13,14 +14,34 @@ export const callApi = async (
   isFormData = false,
   headers = {},
 ) => {
-  const endpoint = store.getState().phone.apiBaseURL + uri;
+  const user = store.getState().user;
+
+  const endpoint = user?.accessToken && user?.registerAs === USER_ROLE.HEALTH_WORKER
+    ? store.getState().phone.therapistApiBaseURL + uri
+    : store.getState().phone.apiBaseURL + uri;
+
   const allHeaders = {
     country: getUserCountryIsoCode(),
     ...getHeaders(accessToken, isFormData),
     ...headers,
   };
-  body = isFormData || method === 'get' ? body : JSON.stringify(body);
+
+  body = isFormData || method === 'get'
+    ? body
+    : JSON.stringify(body);
+
   return await fetchApi(endpoint, allHeaders, body, method);
+};
+
+export const callTherapistApi = async (uri, accessToken = '', body = null, method = 'get') => {
+  const endpoint = store.getState().phone.therapistApiBaseURL + uri;
+  const headers = getHeaders(accessToken);
+  return await fetchApi(
+    endpoint,
+    headers,
+    method === 'get' ? body : JSON.stringify(body),
+    method,
+  );
 };
 
 export const callAdminApi = async (uri, body = null) => {

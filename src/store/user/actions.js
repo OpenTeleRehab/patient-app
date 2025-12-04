@@ -1,28 +1,15 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {User} from '../../services/user';
-import {mutation} from './mutations';
+import { User } from '../../services/user';
+import { mutation } from './mutations';
 import settings from '../../../config/settings';
 import moment from 'moment';
 import _ from 'lodash';
-import {storeLocalData} from '../../utils/local_storage';
-import {STORAGE_KEY} from '../../variables/constants';
+import { storeLocalData } from '../../utils/local_storage';
+import { STORAGE_KEY, USER_ROLE } from '../../variables/constants';
+import { callApi, callTherapistApi } from '../../utils/request';
 import RNLocalize from 'react-native-localize';
-
-export const registerRequest = (dialCode, to, hash, country, email) => async (
-  dispatch,
-) => {
-  dispatch(mutation.userRegisterRequest());
-  const data = await User.register(to, hash, country, email);
-  if (data.success) {
-    dispatch(mutation.userRegisterSuccess({dialCode, to, country}));
-    return true;
-  } else {
-    dispatch(mutation.userRegisterFailure());
-    return false;
-  }
-};
 
 export const verifyPhoneNumberRequest = (to, code, email) => async (
   dispatch,
@@ -30,7 +17,7 @@ export const verifyPhoneNumberRequest = (to, code, email) => async (
   dispatch(mutation.userVerifyPhoneNumberRequest());
   const data = await User.verifyPhoneNumber(to, code, email);
   if (data.success) {
-    dispatch(mutation.userVerifyPhoneNumberSuccess({code}));
+    dispatch(mutation.userVerifyPhoneNumberSuccess({ code }));
     return true;
   } else {
     dispatch(mutation.userVerifyPhoneNumberFailure());
@@ -38,27 +25,55 @@ export const verifyPhoneNumberRequest = (to, code, email) => async (
   }
 };
 
-export const setupPinNumberRequest = (pin, phone, otp_code) => async (
+export const setupPinNumberRequest = (pin) => async (
   dispatch,
   getState,
 ) => {
   dispatch(mutation.userSetupPinNumberRequest());
-  const {language} = getState().translation;
-  const {countryCode} = getState().user;
-  const data = await User.setupPinNumber(
-    pin,
+
+  const { language } = getState().translation;
+  const {
+    dial_code,
     phone,
-    otp_code,
-    getState().user.termOfService.id,
-    getState().user.privacyPolicy.id,
-    language,
+    email,
+    password,
     countryCode,
-  );
-  if (data.success) {
+    registerAs,
+  } = getState().register;
+
+  let response;
+
+  if (registerAs === USER_ROLE.HEALTH_WORKER) {
+    const accessToken = getState().register.tempAccessToken;
+    const result = await callTherapistApi('/user/profile', accessToken);
+
+    if (result) {
+      response = {
+        success: true,
+        data: {
+          token: accessToken,
+          profile: result.data,
+        },
+      };
+    }
+  } else {
+    response = await User.setupPinNumber(
+      pin,
+      phone,
+      getState().user.otpCode,
+      getState().user.termOfService.id,
+      getState().user.privacyPolicy.id,
+      language,
+      countryCode,
+    );
+  }
+
+  if (response.success) {
     const timespan = moment()
       .add(1, 'M')
       .format(settings.format.date)
       .toString();
+
     await storeLocalData(
       STORAGE_KEY.AUTH_INFO,
       {
@@ -68,52 +83,98 @@ export const setupPinNumberRequest = (pin, phone, otp_code) => async (
       },
       true,
     );
+
+    dispatch(mutation.userRegisterSuccess({
+      dial_code,
+      phone,
+      email,
+      password,
+      countryCode,
+      registerAs,
+    }));
+
     dispatch(mutation.userSetupPinNumberSuccess(pin));
+
     await storeLocalData(STORAGE_KEY.LANGUAGE, language);
-    return {success: true, data: data.data};
+
+    return response;
   } else {
     dispatch(mutation.userSetupPinNumberFailure());
-    return {success: false};
+    return { success: false };
   }
 };
 
-export const loginRequest = (phone, pin, countryCode) => async (
+export const loginRequest = () => async (
   dispatch,
   getState,
 ) => {
+  const registerAs = getState().user.registerAs;
+  const phone = getState().user.phone;
+  const pin = getState().user.pin;
+
   dispatch(mutation.userLoginRequest());
-  let data = await User.login(
-    phone,
-    pin,
-    RNLocalize.getTimeZone(),
-    countryCode,
-  );
-  if (data.success) {
+
+  let response;
+
+  if (registerAs === USER_ROLE.HEALTH_WORKER) {
     const {
-      term_and_condition_id: currentAcceptedTermId,
-      privacy_and_policy_id: currentAcceptedPolicyId,
-    } = data.data.profile;
-    const latestTerm = getState().user.termOfService;
-    const latestPolicy = getState().user.privacyPolicy;
+      email,
+      password,
+    } = getState().user;
 
-    const acceptedTerm =
-      _.isEmpty(latestTerm) || latestTerm.id === currentAcceptedTermId;
-    const acceptedPolicy =
-      _.isEmpty(latestPolicy) || latestPolicy?.id === currentAcceptedPolicyId;
+    const body = { email, password };
 
-    if (!acceptedTerm || !acceptedPolicy) {
-      data.data.profile.token = data.data.token;
-      data.data.token = '';
+    response = await callTherapistApi('/auth/login', '', body, 'post');
+  } else {
+    const timezone = RNLocalize.getTimeZone();
+    const countryCode = getState().user.countryCode;
+    const body = { phone, pin, timezone };
+
+    response = await callApi('/auth/login', '', body, 'post', false, {
+      country: countryCode,
+    });
+  }
+
+  if (response.success) {
+    if (registerAs === USER_ROLE.HEALTH_WORKER) {
+      dispatch(mutation.userRegisterSuccess({
+        accessToken: response.data.access_token,
+      }));
+
+      return {
+        success: true,
+        acceptedTermOfService: true,
+        acceptedPrivacyPolicy: true,
+      };
+    } else {
+      const {
+        term_and_condition_id: currentAcceptedTermId,
+        privacy_and_policy_id: currentAcceptedPolicyId,
+      } = response.data.profile;
+
+      const latestTerm = getState().user.termOfService;
+      const latestPolicy = getState().user.privacyPolicy;
+
+      const acceptedTerm =
+        _.isEmpty(latestTerm) || latestTerm.id === currentAcceptedTermId;
+      const acceptedPolicy =
+        _.isEmpty(latestPolicy) || latestPolicy?.id === currentAcceptedPolicyId;
+
+      if (!acceptedTerm || !acceptedPolicy) {
+        response.data.token = '';
+      }
+
+      dispatch(mutation.userLoginSuccess(response.data, phone, pin));
+
+      return { success: true, acceptedTerm, acceptedPolicy };
     }
-    dispatch(mutation.userLoginSuccess(data.data, phone, pin));
-    return {success: true, acceptedTerm, acceptedPolicy};
   } else {
     dispatch(mutation.userLoginFailure());
-    return {success: false};
+    return { success: false };
   }
 };
 
-export const logoutRequest = (accessToken) => async (dispatch) => {
+export const logoutRequest = () => async (dispatch) => {
   dispatch(mutation.userLogoutSuccess());
 };
 
@@ -131,32 +192,32 @@ export const comparePinNumberRequest = (pin, accessToken) => async (
   }
 };
 
-export const changePinNumberRequest = (pin, phone, accessToken) => async (
+export const changePinNumberRequest = (pin) => async (
   dispatch,
   getState,
 ) => {
+  const {
+    accessToken,
+    registerAs,
+  } = getState().user;
+
   dispatch(mutation.userChangePinNumberRequest());
-  const {countryCode} = getState().user;
-  const data = await User.changePinNumber(pin, accessToken);
-  if (data.success) {
-    const timespan = moment()
-      .add(1, 'M')
-      .format(settings.format.date)
-      .toString();
-    await storeLocalData(
-      STORAGE_KEY.AUTH_INFO,
-      {
-        phone,
-        timespan,
-        country: countryCode,
-      },
-      true,
-    );
-    dispatch(mutation.userChangePinNumberSuccess(data.data, phone));
-    return {success: true, data: data.data};
+
+  if (registerAs === USER_ROLE.HEALTH_WORKER) {
+    dispatch(mutation.userChangePinNumberSuccess({pin}));
+    return { success: true };
   } else {
-    dispatch(mutation.userChangePinNumberFailure());
-    return {success: false};
+    const data = await User.changePinNumber(pin, accessToken);
+    if (data.success) {
+      dispatch(mutation.userChangePinNumberSuccess({
+        accessToken: data.data.token,
+        pin: pin,
+      }));
+      return { success: true };
+    } else {
+      dispatch(mutation.userChangePinNumberFailure());
+      return { success: false };
+    }
   }
 };
 
@@ -169,18 +230,11 @@ export const setProfileInfo = (data) => async (dispatch) => {
 };
 
 export const updateProfileRequest = (
-  id,
   payload,
-  phone,
-  therapistId,
-  countryId,
 ) => async (dispatch, getState) => {
   const {accessToken} = getState().user;
-  let data = await User.updateProfile(id, payload, accessToken);
+  let data = await User.updateProfile(payload, accessToken);
   if (data.success) {
-    payload.phone = phone;
-    payload.therapist_id = therapistId;
-    payload.country_id = countryId;
     dispatch(mutation.updateProfileSuccess(payload));
     return true;
   } else {
@@ -190,7 +244,7 @@ export const updateProfileRequest = (
 };
 
 export const deleteProfileRequest = () => async (dispatch, getState) => {
-  const {accessToken} = getState().user;
+  const { accessToken } = getState().user;
   const res = await User.deleteProfile(accessToken);
   if (res.success) {
     dispatch(mutation.deleteProfileSuccess());
@@ -202,7 +256,7 @@ export const deleteProfileRequest = () => async (dispatch, getState) => {
 };
 
 export const fetchTermOfServiceRequest = () => async (dispatch, getState) => {
-  const {language} = getState().translation;
+  const { language } = getState().translation;
   let res = await User.getTermOfService(language);
   if (res && res.data) {
     dispatch(mutation.fetchTermOfServiceSuccess(res.data));
@@ -214,7 +268,7 @@ export const fetchTermOfServiceRequest = () => async (dispatch, getState) => {
 };
 
 export const fetchPrivacyPolicyRequest = () => async (dispatch, getState) => {
-  const {language} = getState().translation;
+  const { language } = getState().translation;
   let res = await User.getPrivacyPolicy(language);
   if (res && res.data) {
     dispatch(mutation.fetchPrivacyPolicySuccess(res.data));
@@ -283,4 +337,10 @@ export const createFirebaseToken = (accessToken, payload) => async (
   } else {
     dispatch(mutation.userCreateFirebaseTokenFailure());
   }
+};
+
+export const forgotPasswordRequest = (email) => async () => {
+  const body = { email };
+  const response = await callTherapistApi('/auth/forgot-password', '', body, 'post');
+  return response;
 };

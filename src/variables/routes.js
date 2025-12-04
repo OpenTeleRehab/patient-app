@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import {ROUTES} from './constants';
+import { ROUTES } from './constants';
 
 // Auth Group
 import LoginScreen from '../screen/Auth/Login';
 import RegisterScreen from '../screen/Auth/Register';
+import ForgotPasswordScreen from '../screen/Auth/ForgotPassword';
 import TermOfServiceScreen from '../screen/Auth/TermOfService';
 import TermOfServiceDetailScreen from '../screen/Auth/TermOfService/detail';
 import PrivacyPolicyDetailScreen from '../screen/Auth/TermOfService/PrivacyDetail';
@@ -40,7 +41,12 @@ import AppointmentDetailScreen from '../screen/Appointment/detail';
 import ChatRoomListScreen from '../screen/ChatOrCall/ChatRoomList';
 import ChatPanelScreen from '../screen/ChatOrCall/ChatPanel';
 
-const drawer = [
+// Health worker group
+import PatientScreen from '../screen/Patient';
+import TransferScreen from '../screen/Transfer';
+import ChangePasswordScreen from '../screen/UserProfile/ChangePassword';
+
+export const drawerItems = [
   {
     name: ROUTES.USER_PROFILE,
     screen: UserProfileScreen,
@@ -83,6 +89,10 @@ export const auths = [
   {
     name: ROUTES.REGISTER,
     screen: RegisterScreen,
+  },
+  {
+    name: ROUTES.FORGOTPASSWORD,
+    screen: ForgotPasswordScreen,
   },
   {
     name: ROUTES.TERM_OF_SERVICE,
@@ -131,7 +141,7 @@ export const homes = [
     name: ROUTES.ACHIEVEMENT,
     screen: AchievementScreen,
   },
-  ...drawer,
+  ...drawerItems,
 ];
 
 export const activities = [
@@ -186,7 +196,7 @@ export const appointments = [
     name: ROUTES.ACHIEVEMENT,
     screen: AchievementScreen,
   },
-  ...drawer,
+  ...drawerItems,
 ];
 
 export const messages = [
@@ -198,4 +208,52 @@ export const messages = [
     name: ROUTES.CHAT_PANEL,
     screen: ChatPanelScreen,
   },
+];
+
+export const patients = [
+  {
+    name: ROUTES.PATIENT,
+    screen: PatientScreen,
+  },
+  {
+    name: ROUTES.USER_PROFILE_EDIT,
+    screen: UserProfileEditScreen,
+  },
+  {
+    name: ROUTES.CONFIRM_PIN,
+    screen: ConfirmPinScreen,
+  },
+  {
+    name: ROUTES.SETUP_PIN,
+    screen: SetupPinScreen,
+  },
+  {
+    name: ROUTES.CHANGE_PASSWORD,
+    screen: ChangePasswordScreen,
+  },
+  ...drawerItems,
+];
+
+export const transfers = [
+  {
+    name: ROUTES.TRANSFER,
+    screen: TransferScreen,
+  },
+  {
+    name: ROUTES.USER_PROFILE_EDIT,
+    screen: UserProfileEditScreen,
+  },
+  {
+    name: ROUTES.CONFIRM_PIN,
+    screen: ConfirmPinScreen,
+  },
+  {
+    name: ROUTES.SETUP_PIN,
+    screen: SetupPinScreen,
+  },
+  {
+    name: ROUTES.CHANGE_PASSWORD,
+    screen: ChangePasswordScreen,
+  },
+  ...drawerItems,
 ];

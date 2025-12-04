@@ -15,16 +15,14 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
+import {clearRegister} from '../../../store/register/actions';
 
 const SetupPin = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const [code, setCode] = useState('');
-  const [confirmCode, setConfirmCode] = useState('');
-  const phone = useSelector((state) => state.user.phone);
-  const accessToken = useSelector((state) => state.user?.accessToken);
-  const otpCode = useSelector((state) => state.user.otpCode);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const [code, setCode] = useState('');
+  const [confirmCode, setConfirmCode] = useState('');
   const isPINChanged = route.params?.isPINChanged || false;
   const [errorCode, setErrorCode] = useState(false);
 
@@ -35,12 +33,11 @@ const SetupPin = ({navigation, route}) => {
     if (code && passCode) {
       if (code === passCode) {
         let result;
+
         if (isPINChanged) {
-          result = await dispatch(
-            changePinNumberRequest(code, phone, accessToken),
-          );
+          result = await dispatch(changePinNumberRequest(code));
         } else {
-          result = await dispatch(setupPinNumberRequest(code, phone, otpCode));
+          result = await dispatch(setupPinNumberRequest(code));
         }
 
         if (result.success) {
@@ -100,6 +97,7 @@ const SetupPin = ({navigation, route}) => {
 
   const onSetProfileInfo = (data) => {
     dispatch(setProfileInfo(data));
+    dispatch(clearRegister());
   };
 
   const handleCodeInputPress = (ref) => {

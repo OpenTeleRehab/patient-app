@@ -5,6 +5,8 @@ export const ROUTES = {
   LOGIN: 'Login',
   VERIFY_PHONE: 'VerifyPhone',
   HOME: 'Home',
+  PATIENT: 'Patient',
+  TRANSFER: 'Transfer',
   ACTIVITY: 'Activity',
   EXERCISE_DETAIL: 'ExerciseDetail',
   COMPLETE_EXERCISE: 'CompleteExercise',
@@ -17,11 +19,13 @@ export const ROUTES = {
   ABOUT: 'About',
   HELP: 'Help',
   REGISTER: 'Register',
+  FORGOTPASSWORD: 'ForgotPassword',
   TERM_OF_SERVICE: 'TermOfService',
   TERM_OF_SERVICE_DETAIL: 'TermOfServiceDetail',
   PRIVACY_POLICY_DETAIL: 'PrivacyPolicyDetail',
   SETUP_PIN: 'SetupPIN',
   CONFIRM_PIN: 'ConfirmPin',
+  CHANGE_PASSWORD: 'ChangePassword',
   GOAl_DETAIL: 'GoalDetail',
   CHAT_ROOM_LIST: 'ChatRoomList',
   CHAT_PANEL: 'ChatPanel',
@@ -84,4 +88,9 @@ export const MATERIAL_TYPE = {
 export const SURVEY_FREQUENCY = {
   WEEKLY: 'weekly',
   DAILY: 'daily',
+};
+
+export const USER_ROLE = {
+  PATIENT: 'patient',
+  HEALTH_WORKER: 'health_worker',
 };

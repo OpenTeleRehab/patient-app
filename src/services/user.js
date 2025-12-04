@@ -3,6 +3,8 @@
  */
 import {callApi, callGlobalAdminApi} from '../utils/request';
 import {getCountryCodeFromStore} from '../utils/country';
+import store from '../store';
+import {USER_ROLE} from '../variables/constants';
 
 const register = async (to, hash, country, email) => {
   const body = {to, hash, email};
@@ -58,8 +60,14 @@ const changePinNumber = async (pin, accessToken) => {
   return await callApi('/auth/change-pin', accessToken, {pin}, 'post');
 };
 
-const updateProfile = async (id, payload, accessToken) => {
-  return await callApi(`/patient/${id}`, accessToken, {...payload}, 'put');
+const updateProfile = async (payload, accessToken) => {
+   const {profile, registerAs} = store.getState().user;
+
+   if (registerAs === USER_ROLE.HEALTH_WORKER) {
+     return await callApi('/user/update-information', accessToken, payload, 'put');
+   } else {
+     return await callApi(`/patient/${profile.id}`, accessToken, payload, 'put');
+   }
 };
 
 const deleteProfile = async (accessToken) => {

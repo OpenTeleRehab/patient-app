@@ -2,95 +2,56 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Button, ListItem, Text} from 'react-native-elements';
-import {
-  Alert,
-  Platform,
-  ScrollView,
-  ToastAndroid,
-  TouchableOpacity,
-} from 'react-native';
-import styles from '../../assets/styles';
+import {Alert, Platform, ToastAndroid} from 'react-native';
+import moment from 'moment';
+import RNFS from 'react-native-fs';
+import {ScrollView} from 'react-native';
+import RNLocalize from 'react-native-localize';
 import {useDispatch, useSelector} from 'react-redux';
-import {ROUTES} from '../../variables/constants';
+import {ROUTES, USER_ROLE} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
-import {formatDate, isValidDateFormat} from '../../utils/helper';
-import {getLanguageName} from '../../utils/language';
 import {getLanguageRequest} from '../../store/language/actions';
+import {useNetInfo} from '@react-native-community/netinfo';
+import HealthWorkerProfile from './_Partials/HealthWorkerProfile';
+import {getProfessionRequest} from '../../store/profession/actions';
+import {getCountryRequest} from '../../store/country/actions';
+import PatientProfile from './_Partials/PatientProfile';
+import {Button} from 'react-native-elements';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {deleteProfileRequest} from '../../store/user/actions';
 import {forceLogout} from '../../store/auth/actions';
 import {getDownloadDirectoryPath} from '../../utils/fileSystem';
-import RNFS from 'react-native-fs';
-import {ageCalculation} from '../../utils/age';
 import settings from '../../../config/settings';
-import Spinner from 'react-native-loading-spinner-overlay';
-import {useNetInfo} from '@react-native-community/netinfo';
-import RNLocalize from 'react-native-localize';
-import formatPhoneNumber from '../../utils/phoneNumber';
-import moment from 'moment';
-
-const RenderListItem = ({translate, label, value, rightContentValue}) => {
-  return (
-    <>
-      <ListItem bottomDivider containerStyle={styles.listBackground}>
-        <ListItem.Content>
-          <ListItem.Title>
-            {translate(label).toLocaleUpperCase()}
-          </ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
-      <ListItem bottomDivider>
-        <ListItem.Content>
-          <ListItem.Title style={styles.fontWeightBold}>
-            {value}
-          </ListItem.Title>
-        </ListItem.Content>
-        <Text style={styles.listStyle}>{rightContentValue}</Text>
-      </ListItem>
-    </>
-  );
-};
+import styles from '../../assets/styles';
+import {useForm} from 'react-hook-form';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
+  const netInfo = useNetInfo();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile, accessToken} = useSelector((state) => state.user);
-  const {languages} = useSelector((state) => state.language);
+  const {accessToken, registerAs, profile} = useSelector((state) => state.user);
+  const {apiBaseURL} = useSelector((state) => state.phone);
   const [downloading, setDownloading] = useState(false);
-  const dob = isValidDateFormat(profile.date_of_birth)
-    ? profile.date_of_birth
-    : formatDate(profile.date_of_birth);
-  const netInfo = useNetInfo();
 
-  const userInfo = [
-    {
-      label: 'common.name',
-      value: profile.last_name + ' ' + profile.first_name,
-    },
-    {
-      label: 'common.gender',
-      value: profile.gender ? translate(`gender.${profile.gender}`) : '',
-    },
-    {
-      label: 'date.of.birth',
-      value: dob,
-      rightContentValue: 'Age: ' + ageCalculation(dob, translate),
-    },
-    {
-      label: 'phone.number',
-      value: formatPhoneNumber(profile.dial_code, profile.phone),
-    },
-    {
-      label: 'common.language',
-      value: getLanguageName(profile.language_id, languages),
-    },
-  ];
+  const {
+    control,
+    setValue,
+    reset,
+  } = useForm({
+    defaultValues: {},
+  });
 
   useEffect(() => {
     dispatch(getLanguageRequest());
+    dispatch(getProfessionRequest());
+    dispatch(getCountryRequest());
   }, [dispatch]);
+
+  useEffect(() => {
+    reset({...profile});
+  }, [profile, reset, setValue]);
 
   const handleExport = async () => {
     setDownloading(true);
@@ -105,7 +66,7 @@ const UserProfile = ({navigation}) => {
 
     RNFS.downloadFile({
       fromUrl:
-        settings.apiBaseURL +
+        apiBaseURL +
         '/patient/profile/export?timezone=' +
         RNLocalize.getTimeZone(),
       toFile: `${location}/${datetime}_patient_data.zip`,
@@ -180,43 +141,54 @@ const UserProfile = ({navigation}) => {
         title={translate('preferences')}
         rightContent={{
           label: translate('common.edit'),
-          onPress: () =>
-            netInfo.isConnected &&
-            navigation.navigate(ROUTES.USER_PROFILE_EDIT),
+          onPress: () => netInfo.isConnected && navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
       <ScrollView contentContainerStyle={styles.mainContainerLight}>
-        {userInfo.map((user, index) => (
-          <RenderListItem key={index} translate={translate} label={user.label} value={user.value} rightContentValue={user.rightContentValue} />
-        ))}
-        <ListItem bottomDivider containerStyle={styles.listBackground}>
-          <ListItem.Content>
-            <ListItem.Title>
-              <TouchableOpacity
-                disabled={!netInfo.isConnected}
-                onPress={() => navigation.navigate(ROUTES.CONFIRM_PIN)}>
-                <Text style={[styles.listStyle, styles.textPrimary]}>
-                  {translate('pin.change')}
-                </Text>
-              </TouchableOpacity>
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <Button
-          type="clear"
-          title={translate('user.download_my_data')}
-          containerStyle={styles.marginTopMd}
-          onPress={handleExport}
-          disabled={!netInfo.isConnected}
-        />
-        <Button
-          title={translate('user.delete')}
-          buttonStyle={styles.bgGrey}
-          onPress={handleDelete}
-          disabled={!netInfo.isConnected}
-        />
+        {registerAs === USER_ROLE.HEALTH_WORKER ? (
+          <>
+            <HealthWorkerProfile control={control} />
+            <Button
+              type="outline"
+              title={translate('pin.change')}
+              disabled={!netInfo.isConnected}
+              containerStyle={styles.marginBottom}
+              buttonStyle={styles.btnOutline}
+              onPress={() => navigation.navigate(ROUTES.CONFIRM_PIN)}
+            />
+            <Button
+              title={translate('password.change')}
+              disabled={!netInfo.isConnected}
+              containerStyle={styles.marginBottom}
+              onPress={() => navigation.navigate(ROUTES.CHANGE_PASSWORD)}
+            />
+          </>
+        ) : (
+          <>
+            <PatientProfile control={control} />
+            <Button
+              type="outline"
+              title={translate('pin.change')}
+              disabled={!netInfo.isConnected}
+              containerStyle={styles.marginBottomLg}
+              buttonStyle={styles.btnOutline}
+              onPress={() => navigation.navigate(ROUTES.CONFIRM_PIN)}
+            />
+            <Button
+              title={translate('user.download_my_data')}
+              disabled={!netInfo.isConnected}
+              containerStyle={styles.marginBottom}
+              onPress={handleExport}
+            />
+            <Button
+              title={translate('user.delete')}
+              buttonStyle={styles.bgDanger}
+              onPress={handleDelete}
+              disabled={!netInfo.isConnected}
+            />
+          </>
+        )}
       </ScrollView>
-
       <Spinner
         visible={downloading}
         textContent={translate('common.downloading')}

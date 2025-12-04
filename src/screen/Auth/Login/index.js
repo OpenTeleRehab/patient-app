@@ -22,7 +22,7 @@ import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
 import kidLogo from '../../../assets/images/quacker-pincode.png';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
-import {ROUTES} from '../../../variables/constants';
+import {ROUTES, USER_ROLE} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import formatPhoneNumber from '../../../utils/phoneNumber';
 import {getTherapistRequest} from '../../../store/therapist/actions';
@@ -35,7 +35,7 @@ const containerStyle = {
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const {profile, phone, countryCode, dial_code, pin} = useSelector(
+  const {profile, phone, email, dial_code, pin, registerAs} = useSelector(
     (state) => state.user,
   );
   const {clinic} = useSelector((state) => state.clinic);
@@ -46,6 +46,11 @@ const Login = ({navigation}) => {
   const [errorCode, setErrorCode] = useState(false);
 
   const codeInputRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(fetchTermOfServiceRequest());
+    dispatch(fetchPrivacyPolicyRequest());
+  }, [dispatch]);
 
   useEffect(() => {
     if (profile) {
@@ -70,28 +75,35 @@ const Login = ({navigation}) => {
   }, [therapists]);
 
   const handleLogin = (passCode) => {
-    dispatch(loginRequest(phone, passCode, countryCode)).then((loginResult) => {
-      if (loginResult.success) {
-        if (
-          !loginResult.acceptedTermOfService ||
-          !loginResult.acceptedPrivacyPolicy
-        ) {
-          navigation.navigate(ROUTES.TERM_OF_SERVICE);
-        }
-      } else {
-        if (passCode === pin) {
-          dispatch(generateFakeAccessToken());
+    if (passCode === pin) {
+      dispatch(loginRequest()).then((loginResult) => {
+        if (loginResult.success) {
+          if (
+            !loginResult.acceptedTermOfService ||
+            !loginResult.acceptedPrivacyPolicy
+          ) {
+            navigation.navigate(ROUTES.TERM_OF_SERVICE);
+          }
         } else {
-          Alert.alert(
-            translate('common.login.fail'),
-            translate('wrong.pin'),
-            [{text: translate('common.ok'), onPress: () => reset()}],
-            {cancelable: false},
-          );
-          setErrorCode(true);
+          dispatch(generateFakeAccessToken());
         }
-      }
-    });
+      });
+    } else {
+      Alert.alert(
+        translate('common.login.fail'),
+        translate('wrong.pin'),
+        [
+          {
+            text: translate('common.ok'),
+            onPress: () => reset(),
+          },
+        ],
+        {
+          cancelable: false,
+        },
+      );
+      setErrorCode(true);
+    }
   };
 
   const reset = () => {
@@ -101,11 +113,6 @@ const Login = ({navigation}) => {
   const handleCodeInputPress = () => {
     codeInputRef.current?.focus();
   };
-
-  useEffect(() => {
-    dispatch(fetchTermOfServiceRequest());
-    dispatch(fetchPrivacyPolicyRequest());
-  }, [dispatch]);
 
   return (
     <SafeAreaView style={styles.bgLight}>
@@ -162,7 +169,33 @@ const Login = ({navigation}) => {
               accessibilityLabel={translate('pin.forget')}>
               <Text style={styles.hyperlink}>{translate('pin.forget')}</Text>
             </TouchableOpacity>
-            {dial_code && phone && (
+
+            {registerAs === USER_ROLE.HEALTH_WORKER ? (
+              <>
+                <Text
+                  style={[
+                    styles.leadText,
+                    styles.textDefault,
+                    styles.textCenter,
+                    styles.marginTopLg,
+                  ]}
+                  accessibilityLabel={email}
+                >
+                  {email}
+                </Text>
+                <TouchableOpacity
+                  style={styles.marginY}
+                  onPress={() => navigation.navigate(ROUTES.REGISTER)}
+                  accessible={true}
+                  accessibilityLabel={translate('phone.login.other.email')}
+                >
+                  <Text style={[styles.hyperlink, styles.textCenter]}>
+                    {translate('phone.login.other.email')}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+            <>
               <Text
                 style={[
                   styles.leadText,
@@ -170,40 +203,45 @@ const Login = ({navigation}) => {
                   styles.textCenter,
                   styles.marginTopLg,
                 ]}
-                accessibilityLabel={translate('phone.number')}>
+                accessibilityLabel={translate('phone.number')}
+              >
                 {formatPhoneNumber(dial_code, phone)}
               </Text>
-            )}
-            <TouchableOpacity
-              style={styles.marginY}
-              onPress={() => navigation.navigate(ROUTES.REGISTER)}
-              accessible={true}
-              accessibilityLabel={translate('phone.login.other.number')}>
-              <Text style={[styles.hyperlink, styles.textCenter]}>
-                {translate('phone.login.other.number')}
-              </Text>
-            </TouchableOpacity>
-            {clinic && clinic.phone && (
-              <Fragment>
-                <Text
-                  style={[
-                    styles.textSmall,
-                    styles.marginTopMd,
-                    styles.textCenter,
-                    styles.textDefaultBold,
-                  ]}
-                  accessibilityLabel={translate('clinic.phone.number')}>
-                  {translate('clinic.phone.number')}
+              <TouchableOpacity
+                style={styles.marginY}
+                onPress={() => navigation.navigate(ROUTES.REGISTER)}
+                accessible={true}
+                accessibilityLabel={translate('phone.login.other.number')}
+              >
+                <Text style={[styles.hyperlink, styles.textCenter]}>
+                  {translate('phone.login.other.number')}
                 </Text>
-                <TouchableOpacity
-                  style={styles.marginY}
-                  accessible={true}
-                  accessibilityLabel={translate('call.to.clinic')}>
-                  <Text style={[styles.hyperlink, styles.textCenter]}>
-                    {formatPhoneNumber(clinic.dial_code, clinic.phone)}
+              </TouchableOpacity>
+              {clinic && clinic.phone && (
+                <Fragment>
+                  <Text
+                    style={[
+                      styles.textSmall,
+                      styles.marginTopMd,
+                      styles.textCenter,
+                      styles.textDefaultBold,
+                    ]}
+                    accessibilityLabel={translate('clinic.phone.number')}
+                  >
+                    {translate('clinic.phone.number')}
                   </Text>
-                </TouchableOpacity>
-              </Fragment>
+                  <TouchableOpacity
+                    style={styles.marginY}
+                    accessible={true}
+                    accessibilityLabel={translate('call.to.clinic')}
+                  >
+                    <Text style={[styles.hyperlink, styles.textCenter]}>
+                      {formatPhoneNumber(clinic.dial_code, clinic.phone)}
+                    </Text>
+                  </TouchableOpacity>
+                </Fragment>
+              )}
+            </>
             )}
             {!!therapistsWithPhones.length && (
               <Fragment>
