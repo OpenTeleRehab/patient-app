@@ -26,10 +26,11 @@ const AppointmentDetail = ({route, navigation}) => {
   const {appointment} = route.params;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {therapists} = useSelector((state) => state.therapist);
+  const {therapists, phcWorkers} = useSelector((state) => state.therapist);
   const [showRequestOverlay, setShowRequestOverlay] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const netInfo = useNetInfo();
+  const therapistData = [...therapists, ...phcWorkers];
 
   useEffect(() => {
     navigation.getParent().setOptions({tabBarVisible: false});
@@ -96,7 +97,7 @@ const AppointmentDetail = ({route, navigation}) => {
     ).then((res) => {
       setIsLoading(false);
       if (res) {
-        displayNotification(appointment, therapists, translate);
+        displayNotification(appointment, therapistData, translate);
         navigation.navigate(ROUTES.APPOINTMENT);
       }
     });
@@ -152,7 +153,7 @@ const AppointmentDetail = ({route, navigation}) => {
         <Divider style={styles.marginY} />
         <Text>{translate('appointment.appointment_with')}</Text>
         <Text style={styles.fontWeightBold}>
-          {getTherapistName(appointment.therapist_id, therapists)}
+          {getTherapistName(appointment.therapist_id, therapistData)}
         </Text>
         {appointment.note && appointment.note.trim() !== '' && (
           <>

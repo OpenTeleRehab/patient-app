@@ -19,8 +19,29 @@ const therapistFetchFailure = () => {
   };
 };
 
+const phcWorkerFetchRequest = () => {
+  return {
+    type: 'PHC_WORKER_FETCH_REQUESTED',
+  };
+};
+const phcWorkerFetchSuccess = (data) => {
+  return {
+    type: 'PHC_WORKER_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const phcWorkerFetchFailure = () => {
+  return {
+    type: 'PHC_WORKER_FETCH_FAILED',
+  };
+};
+
 export const mutation = {
   therapistFetchRequest,
   therapistFetchSuccess,
   therapistFetchFailure,
+  phcWorkerFetchRequest,
+  phcWorkerFetchSuccess,
+  phcWorkerFetchFailure,
 };

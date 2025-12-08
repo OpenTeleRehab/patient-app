@@ -9,6 +9,10 @@ export const therapist = (state = initialState, action) => {
       return Object.assign({}, state, {
         therapists: action.data,
       });
+    case 'PHC_WORKER_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        phcWorkers: action.data,
+      });
     default:
       return state;
   }

@@ -27,11 +27,12 @@ import {getAssistiveTechnologyName} from '../../../utils/assistiveTechnology';
 const AppointmentCard = ({appointment, style, theme}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {therapists} = useSelector((state) => state.therapist);
+  const {therapists, phcWorkers} = useSelector((state) => state.therapist);
   const {therapist_status, patient_status} = appointment;
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const therapistData = [...therapists, ...phcWorkers];
 
   let additionDateStyle = {};
   let additionTextStyle = {};
@@ -82,7 +83,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
     ).then((res) => {
       setIsLoading(false);
       if (res) {
-        displayNotification(appointment, therapists, translate);
+        displayNotification(appointment, therapistData, translate);
       }
     });
   };
@@ -133,7 +134,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
             {translate('appointment.appointment_with')}
           </Text>
           <Text style={[styles.fontWeightBold, additionTextStyle]}>
-            {getTherapistName(appointment.therapist_id, therapists)}
+            {getTherapistName(appointment.therapist_id, therapistData)}
           </Text>
           {appointment.assistive_technology ? (
             <Text style={styles.marginTop} numberOfLines={1}>
