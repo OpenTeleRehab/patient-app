@@ -14,7 +14,9 @@ import HomeTab from './Tab/HomeTab';
 import ActivityTab from './Tab/ActivityTab';
 import AppointmentTab from './Tab/AppointmentTab';
 import MessageTab from './Tab/MessageTab';
-import {ROUTES} from '../../variables/constants';
+import PatientTab from './Tab/PatientTab';
+import TransferTab from './Tab/TransferTab';
+import {ROUTES, USER_ROLE} from '../../variables/constants';
 import {auths} from '../../variables/routes';
 import styles from '../../assets/styles';
 
@@ -26,6 +28,11 @@ import appointmentIcon from '../../assets/images/appointment-icon.png';
 import appointmentActiveIcon from '../../assets/images/appointment-active-icon.png';
 import messageIcon from '../../assets/images/message-icon.png';
 import messageActiveIcon from '../../assets/images/message-active-icon.png';
+import patientIcon from '../../assets/images/patient-icon.png';
+import patientActiveIcon from '../../assets/images/patient-active-icon.png';
+import transferIcon from '../../assets/images/transfer-icon.png';
+import transferActiveIcon from '../../assets/images/transfer-active-icon.png';
+
 import CommonPopup from '../Common/Popup';
 import {getAppSettingsRequest} from '../../store/appSetting/actions';
 import {mutation} from '../../store/appSetting/mutations';
@@ -44,6 +51,7 @@ const tabs = [
     icon: homeIcon,
     activeIcon: homeActiveIcon,
     badge: 'noBadge',
+    group: USER_ROLE.PATIENT,
   },
   {
     name: ROUTES.ACTIVITY,
@@ -52,6 +60,7 @@ const tabs = [
     icon: activityIcon,
     activeIcon: activityActiveIcon,
     badge: 'hasActivity',
+    group: USER_ROLE.PATIENT,
   },
   {
     name: ROUTES.APPOINTMENT,
@@ -60,6 +69,7 @@ const tabs = [
     icon: appointmentIcon,
     activeIcon: appointmentActiveIcon,
     badge: 'hasAppointment',
+    group: USER_ROLE.PATIENT,
   },
   {
     name: ROUTES.CHAT_ROOM_LIST,
@@ -68,6 +78,25 @@ const tabs = [
     icon: messageIcon,
     activeIcon: messageActiveIcon,
     badge: 'hasUnreadMessage',
+    group: USER_ROLE.PATIENT,
+  },
+  {
+    name: ROUTES.PATIENT,
+    screen: PatientTab,
+    label: 'tab.patient',
+    icon: patientIcon,
+    activeIcon: patientActiveIcon,
+    badge: 'noBadge',
+    group: USER_ROLE.HEALTH_WORKER,
+  },
+  {
+    name: ROUTES.TRANSFER,
+    screen: TransferTab,
+    label: 'tab.transfer',
+    icon: transferIcon,
+    activeIcon: transferActiveIcon,
+    badge: 'noBadge',
+    group: USER_ROLE.HEALTH_WORKER,
   },
 ];
 
@@ -104,6 +133,7 @@ const AuthStackNavigator = () => {
 const AppTabNavigator = (props) => {
   const {theme} = props;
   const indicator = useSelector((state) => state.indicator);
+  const {registerAs} = useSelector((state) => state.user);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -116,7 +146,11 @@ const AppTabNavigator = (props) => {
 
   return (
     <AppTab.Navigator
-      initialRouteName={ROUTES.HOME}
+      initialRouteName={
+        registerAs === USER_ROLE.HEALTH_WORKER
+          ? ROUTES.PATIENT
+          : ROUTES.HOME
+      }
       screenOptions={{ headerShown: false }}
       tabBarOptions={{
         keyboardHidesTabBar: true,
@@ -126,7 +160,7 @@ const AppTabNavigator = (props) => {
         style: styles.navTabBar,
         safeAreaInsets: {bottom: 8},
       }}>
-      {tabs.map((route, index) => {
+      {tabs.filter(item => item.group === registerAs).map((route, index) => {
         return (
           <AppTab.Screen
             key={index}
@@ -254,12 +288,11 @@ const AppNavigation = (props) => {
             }
           />
           {accessToken ? (
-              <>
-                <AppTabNavigator {...props} />
-                <Survey />
-              </>
-            )
-            : <AuthStackNavigator />}
+            <>
+              <AppTabNavigator {...props} />
+              {/*<Survey />*/}
+            </>
+          ) : <AuthStackNavigator />}
         </>
       )}
     </NavigationContainer>

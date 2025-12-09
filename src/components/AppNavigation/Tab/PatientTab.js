@@ -3,18 +3,19 @@
  */
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {drawerItems, homes} from '../../../variables/routes';
+import {drawerItems, patients} from '../../../variables/routes';
 import {withTheme} from 'react-native-elements';
 import DrawerNavigator from '../DrawerNavigator';
 
 const Drawer = createDrawerNavigator();
 
-const HomeTab = (props) => {
+const PatientTab = (props) => {
   const renderDrawerContent = (navProps) => {
     return (
       <DrawerNavigator
         navProps={navProps}
-        drawerItems={drawerItems}
+        drawerItems={drawerItems.slice(0, -1)}
+        allowSwitchTheme={false}
       />
     );
   };
@@ -28,8 +29,13 @@ const HomeTab = (props) => {
         inactiveTintColor: props.theme.colors.grey,
         activeTintColor: props.theme.colors.primary,
       }}
-      screenOptions={{swipeEnabled: false, headerShown: false, drawerPosition: 'right'}}>
-      {homes.map((route, index) => {
+      screenOptions={{
+        swipeEnabled: false,
+        headerShown: false,
+        drawerPosition: 'right',
+      }}
+    >
+      {patients.map((route, index) => {
         return (
           <Drawer.Screen
             key={index}
@@ -42,4 +48,4 @@ const HomeTab = (props) => {
   );
 };
 
-export default withTheme(HomeTab);
+export default withTheme(PatientTab);

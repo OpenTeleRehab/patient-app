@@ -19,9 +19,7 @@ export const user = (state = initialState, action) => {
     }
     case 'USER_REGISTER_SUCCEED': {
       return Object.assign({}, state, {
-        dial_code: action.data.dialCode,
-        phone: action.data.to,
-        countryCode: action.data.country,
+        ...action.data,
         isLoading: false,
       });
     }
@@ -29,11 +27,15 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         otpCode: action.data.code,
         isLoading: false,
-        isNewRegister: true,
         isDataUpToDate: true,
       });
     }
-    case 'USER_CHANGE_PIN_NUMBER_SUCCEED':
+    case 'USER_CHANGE_PIN_NUMBER_SUCCEED': {
+      return Object.assign({}, state, {
+        ...action.data,
+        isLoading: false,
+      });
+    }
     case 'USER_LOGIN_SUCCEED': {
       return Object.assign({}, state, {
         profile: action.data.profile,
@@ -42,7 +44,6 @@ export const user = (state = initialState, action) => {
         initialRouteName: ROUTES.LOGIN,
         isLoading: false,
         pin: action.pin,
-        isNewRegister: false,
         isDataUpToDate: true,
       });
     }

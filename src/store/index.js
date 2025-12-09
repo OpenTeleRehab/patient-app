@@ -4,6 +4,7 @@
 import {combineReducers, createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {initialize, localizeReducer} from 'react-localize-redux';
+import {register} from './register/reducers';
 import {user} from './user/reducers';
 import {indicator} from './indicator/reducers';
 import {activity} from './activity/reducers';
@@ -30,6 +31,7 @@ import {appSettings} from './appSetting/reducers';
 
 const rootReducers = {
   localize: localizeReducer,
+  register,
   user,
   indicator,
   activity,
@@ -61,7 +63,6 @@ const blacklistTransform = createTransform(
     if (key === 'user') {
       inboundStateData = _.omit(inboundState, [
         'accessToken',
-        'isNewRegister',
         'isDataUpToDate',
         'privacyPolicy',
         'termOfService',
@@ -75,6 +76,16 @@ const blacklistTransform = createTransform(
         secondaryVideoCall: {},
         selectedRoom: {},
       };
+    } else if (key === 'register') {
+      inboundStateData = _.omit(inboundState, [
+        'countryCode',
+        'dial_code',
+        'phone',
+        'email',
+        'password',
+        'tempAccessToken',
+        'registerAs',
+      ]);
     }
 
     const cryptedText = CryptoJS.AES.encrypt(

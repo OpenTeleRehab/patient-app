@@ -9,6 +9,9 @@ const btnLightOutlineStyles = {
 };
 
 export default {
+  btnOutline: {
+    borderWidth: 1,
+  },
   btnLight: {
     backgroundColor: 'white',
   },

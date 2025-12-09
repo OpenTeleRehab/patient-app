@@ -2,8 +2,8 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {View, Platform} from 'react-native';
-import {Input, Divider} from 'react-native-elements';
+import {Platform, StyleSheet} from 'react-native';
+import {Input} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {formatDate} from '../../../utils/helper';
 import styles from '../../../assets/styles';
@@ -13,25 +13,22 @@ const DatePicker = (props) => {
 
   return (
     <>
-      <View style={styles.formGroup}>
-        <Input
-          label={label}
-          labelStyle={[styles.formLabel, styles.textSmall]}
-          disabled
-          value={value ? formatDate(value) : ''}
-          rightIcon={{
-            name: 'calendar-today',
-            type: 'material-community',
-            color: '#575757',
-            onPress: () => onClickIcon(),
-            size: 28,
-          }}
-          containerStyle={styles.formControlDate}
-          inputContainerStyle={styles.noneBorderBottom}
-          disabledInputStyle={styles.formControlDateInput}
-        />
-        <Divider />
-      </View>
+      <Input
+        disabled
+        label={label}
+        value={value ? formatDate(value) : ''}
+        rightIcon={{
+          name: 'calendar-today',
+          type: 'material-community',
+          color: '#575757',
+          onPress: () => onClickIcon(),
+        }}
+        labelStyle={componentStyles.labelStyle}
+        containerStyle={componentStyles.containerStyle}
+        inputContainerStyle={componentStyles.inputContainerStyle}
+        disabledInputStyle={componentStyles.disabledInputStyle}
+        renderErrorMessage={false}
+      />
       {show && (
         <DateTimePicker
           value={value || new Date()}
@@ -45,5 +42,30 @@ const DatePicker = (props) => {
     </>
   );
 };
+
+const componentStyles = StyleSheet.create({
+  containerStyle: {
+    paddingHorizontal: 0,
+    marginBottom: 12,
+  },
+  inputContainerStyle: {
+    backgroundColor: '#E6E8EA',
+    borderRadius: 6,
+    borderBottomWidth: 0,
+    paddingHorizontal: 8,
+  },
+  labelStyle: {
+    color: '#333333',
+    fontSize: 14,
+    fontWeight: 400,
+    marginBottom: 8,
+  },
+  disabledInputStyle: {
+    opacity: 1,
+  },
+  errorStyle: {
+    marginHorizontal: 0,
+  },
+});
 
 export default DatePicker;

@@ -13,10 +13,8 @@ import {
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles';
 import {ROUTES} from '../../../variables/constants';
-import {
-  registerRequest,
-  verifyPhoneNumberRequest,
-} from '../../../store/user/actions';
+import {verifyPhoneNumberRequest} from '../../../store/user/actions';
+import {registerRequest} from '../../../store/register/actions';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
