@@ -15,7 +15,7 @@ import {useDrawerStatus} from '@react-navigation/drawer';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import {getAppointmentsListRequest} from '../../store/appointment/actions';
 import AppointmentCard from '../Appointment/_Partials/AppointmentCard';
-import {getTherapistRequest} from '../../store/therapist/actions';
+import {getTherapistRequest, getPhcWorkerRequest} from '../../store/therapist/actions';
 import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import settings from '../../../config/settings';
@@ -147,6 +147,7 @@ const Home = ({navigation}) => {
         }),
       );
       dispatch(getLanguageRequest());
+      dispatch(getPhcWorkerRequest());
     }
   }, [dispatch, profile]);
 

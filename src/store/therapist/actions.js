@@ -13,3 +13,14 @@ export const getTherapistRequest = (payload) => async (dispatch, getState) => {
     dispatch(mutation.therapistFetchFailure());
   }
 };
+
+export const getPhcWorkerRequest = () => async (dispatch, getState) => {
+  dispatch(mutation.phcWorkerFetchRequest);
+  const {accessToken} = getState().user;
+  const data = await Therapist.getPhcWorkers(accessToken);
+  if (data.success) {
+    dispatch(mutation.phcWorkerFetchSuccess(data.data));
+  } else {
+    dispatch(mutation.phcWorkerFetchFailure());
+  }
+};
