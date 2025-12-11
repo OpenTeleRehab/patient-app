@@ -28,6 +28,7 @@ import CryptoJS from 'react-native-crypto-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
 import {appSettings} from './appSetting/reducers';
+import {patient} from './patient/reducers';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -50,6 +51,7 @@ const rootReducers = {
   appSettings,
   assistiveTechnology,
   survey,
+  patient,
 };
 
 const blacklistTransform = createTransform(
