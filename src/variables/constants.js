@@ -33,6 +33,8 @@ export const ROUTES = {
   TC: 'TermCondition',
   PP: 'PrivacyPolicy',
   ACHIEVEMENT: 'Achievement',
+  CREATE_EDIT_PATIENT: 'CreateOrEditPatient',
+  PATIENT_DETAIL: 'PatientDetail',
 };
 
 export const STORAGE_KEY = {
@@ -93,4 +95,10 @@ export const SURVEY_FREQUENCY = {
 export const USER_ROLE = {
   PATIENT: 'patient',
   HEALTH_WORKER: 'health_worker',
+};
+
+export const TREATMENT_STATUS = {
+  ONGOING: 'ongoing',
+  PLANNED: 'planned',
+  FINISHED: 'finished',
 };

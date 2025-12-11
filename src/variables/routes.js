@@ -45,6 +45,8 @@ import ChatPanelScreen from '../screen/ChatOrCall/ChatPanel';
 import PatientScreen from '../screen/Patient';
 import TransferScreen from '../screen/Transfer';
 import ChangePasswordScreen from '../screen/UserProfile/ChangePassword';
+import CreateOrEditPatientScreen from '../screen/Patient/_Partials/CreateOrEdit';
+import PatientDetailScreen from '../screen/Patient/_Partials/PatientDetail';
 
 export const drawerItems = [
   {
@@ -214,6 +216,14 @@ export const patients = [
   {
     name: ROUTES.PATIENT,
     screen: PatientScreen,
+  },
+  {
+    name: ROUTES.CREATE_EDIT_PATIENT,
+    screen: CreateOrEditPatientScreen,
+  },
+  {
+    name: ROUTES.PATIENT_DETAIL,
+    screen: PatientDetailScreen,
   },
   {
     name: ROUTES.USER_PROFILE_EDIT,
