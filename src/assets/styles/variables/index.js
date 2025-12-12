@@ -10,6 +10,9 @@ export default {
   fontWeightDefault: '400',
   fontWeightMedium: '500',
   fontWeightBold: '600',
+  get fontSizeXs() {
+    return this.fontSizeBase - 4;
+  },
   get fontSizeSm() {
     return this.fontSizeBase - 2;
   },

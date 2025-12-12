@@ -18,7 +18,10 @@ import {
 import settings from '../../../../config/settings';
 import {ROUTES} from '../../../variables/constants';
 import CommonOverlay from '../../../components/Common/Overlay';
-import { CARE_PROVIDER_OPTIONS, CARE_PROVIDER_TYPES } from '../../../variables/appointment';
+import {
+  CARE_PROVIDER_OPTIONS,
+  CARE_PROVIDER_TYPES,
+} from '../../../variables/appointment';
 
 const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const dispatch = useDispatch();
@@ -45,10 +48,20 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   useEffect(() => {
     if (profile.phc_worker_id) {
       if (!appointment) {
-        setTherapistId(type === CARE_PROVIDER_TYPES.PHC_WORKER ? profile.phc_worker_id : profile.therapist_id);
+        setTherapistId(
+          type === CARE_PROVIDER_TYPES.PHC_WORKER
+            ? profile.phc_worker_id
+            : profile.therapist_id,
+        );
       } else {
-        const isPhcWorker = phcWorkers.some(item => item.id === appointment.therapist_id);
-        setType(isPhcWorker ? CARE_PROVIDER_TYPES.PHC_WORKER : CARE_PROVIDER_TYPES.THERAPIST);
+        const isPhcWorker = phcWorkers.some(
+          (item) => item.id === appointment.therapist_id,
+        );
+        setType(
+          isPhcWorker
+            ? CARE_PROVIDER_TYPES.PHC_WORKER
+            : CARE_PROVIDER_TYPES.THERAPIST,
+        );
       }
     } else {
       setType(CARE_PROVIDER_TYPES.THERAPIST);
@@ -405,7 +418,11 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             mode="date"
             is24Hour={true}
             onChange={onSetDate}
-            style={Platform.OS === 'ios' ? styles.appointmentDateTimePickerContainer : null }
+            style={
+              Platform.OS === 'ios'
+                ? styles.appointmentDateTimePickerContainer
+                : null
+            }
           />
         )}
         <View style={styles.formGroup}>
@@ -442,7 +459,11 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             mode="time"
             is24Hour={false}
             onChange={onSetFromTime}
-            style={Platform.OS === 'ios' ? styles.appointmentDateTimePickerContainer : null }
+            style={
+              Platform.OS === 'ios'
+                ? styles.appointmentDateTimePickerContainer
+                : null
+            }
           />
         )}
         <View style={styles.formGroup}>
@@ -480,7 +501,11 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             mode="time"
             is24Hour={false}
             onChange={onSetToTime}
-            style={Platform.OS === 'ios' ? styles.appointmentDateTimePickerContainer : null }
+            style={
+              Platform.OS === 'ios'
+                ? styles.appointmentDateTimePickerContainer
+                : null
+            }
           />
         )}
         <View style={styles.formGroup}>

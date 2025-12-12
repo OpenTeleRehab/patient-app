@@ -119,7 +119,7 @@ export default {
     marginTop: variables.spacingBase,
   },
   marginTopSm: {
-    marginTop: variables.spacingBase - 8,
+    marginTop: variables.spacingSm,
   },
   marginTopMd: {
     marginTop: variables.spacingMd,
@@ -132,6 +132,9 @@ export default {
   },
   marginXMd: {
     marginHorizontal: variables.spacingMd,
+  },
+  paddingXNone: {
+    paddingHorizontal: 0,
   },
   marginBottom: {
     marginBottom: variables.spacingBase,
@@ -167,6 +170,15 @@ export default {
   },
   width90: {
     width: '90%',
+  },
+  width100: {
+    width: '100%',
+  },
+  height150: {
+    height: 150,
+  },
+  height110: {
+    height: 110,
   },
   reject: {
     backgroundColor: variables.danger,

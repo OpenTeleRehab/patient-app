@@ -35,6 +35,10 @@ export const ROUTES = {
   ACHIEVEMENT: 'Achievement',
   CREATE_EDIT_PATIENT: 'CreateOrEditPatient',
   PATIENT_DETAIL: 'PatientDetail',
+  INTERVIEW: 'Interview',
+  INTERVIEW_STACK: 'InterviewStack',
+  INTERVIEW_LIST: 'InterviewList',
+  INTERVIEW_HISTORY_LIST: 'InterviewHistoryList',
 };
 
 export const STORAGE_KEY = {

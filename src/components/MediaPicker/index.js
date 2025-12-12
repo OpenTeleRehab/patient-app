@@ -13,7 +13,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {withTheme, Icon, Text, Input} from 'react-native-elements';
-import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import RNPickerSelect from 'react-native-picker-select';
 import _ from 'lodash';
 import styles from '../../assets/styles';

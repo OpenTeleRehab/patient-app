@@ -171,7 +171,8 @@ const AppointmentCard = ({appointment, style, theme}) => {
         )}
         <Divider style={styles.marginY} />
         {appointment.created_by_therapist && !rejectDisabled && (
-          <View style={[styles.flexRow, styles.flexWrap, styles.alignSelfStart]}>
+          <View
+            style={[styles.flexRow, styles.flexWrap, styles.alignSelfStart]}>
             <Button
               icon={
                 <Icon
@@ -185,12 +186,12 @@ const AppointmentCard = ({appointment, style, theme}) => {
                 acceptDisabled
                   ? [styles.opacity0, {pointerEvent: 'none'}]
                   : null,
-                  styles.marginRight,
-                  styles.marginBottom,
+                styles.marginRight,
+                styles.marginBottom,
               ]}
               title={translate('appointment.invitation.accept')}
               titleStyle={styles.marginLeftSm}
-              buttonStyle={styles.paddingYSm}
+              buttonStyle={styles.paddingY}
               disabled={acceptDisabled}
               onPress={() => handleAcceptPress(appointment.id)}
             />

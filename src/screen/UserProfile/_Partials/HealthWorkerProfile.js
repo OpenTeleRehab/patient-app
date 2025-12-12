@@ -62,7 +62,7 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
       label: 'common.clinic',
       value: profile.clinic_id,
       disabled: true,
-      items: [{ label: clinic?.name, value: clinic?.id }],
+      items: [{label: clinic?.name, value: clinic?.id}],
       type: 'select',
     },
     {
@@ -70,7 +70,7 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
       label: 'common.language',
       value: getLanguageName(profile.language_id, languages),
       disabled: !editable,
-      items: languages.map(language => ({
+      items: languages.map((language) => ({
         label: language.name,
         value: language.id,
       })),

@@ -29,7 +29,7 @@ const ChangePassword = ({navigation}) => {
     setValue,
     getValues,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
   } = useForm({
     defaultValues: {
       current_password: '',
@@ -78,13 +78,11 @@ const ChangePassword = ({navigation}) => {
         onGoBack={() => navigation.goBack()}
       />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.mainContainerLight}
-        >
+          contentContainerStyle={styles.mainContainerLight}>
           <View style={styles.marginBottomLg}>
             <TextField
               label={translate('password.current')}
@@ -117,7 +115,9 @@ const ChangePassword = ({navigation}) => {
               secureTextEntry
               {...register('confirm_new_password', {
                 required: translate('error.message.required'),
-                validate: (value) => value === getValues('new_password') || translate('error.message.password.not_match'),
+                validate: (value) =>
+                  value === getValues('new_password') ||
+                  translate('error.message.password.not_match'),
               })}
               onChangeText={(value) => setValue('confirm_new_password', value)}
               errorMessage={errors?.confirm_new_password?.message ?? undefined}

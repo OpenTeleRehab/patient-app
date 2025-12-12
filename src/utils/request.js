@@ -16,9 +16,10 @@ export const callApi = async (
 ) => {
   const user = store.getState().user;
 
-  const endpoint = user?.accessToken && user?.registerAs === USER_ROLE.HEALTH_WORKER
-    ? store.getState().phone.therapistApiBaseURL + uri
-    : store.getState().phone.apiBaseURL + uri;
+  const endpoint =
+    user?.accessToken && user?.registerAs === USER_ROLE.HEALTH_WORKER
+      ? store.getState().phone.therapistApiBaseURL + uri
+      : store.getState().phone.apiBaseURL + uri;
 
   const allHeaders = {
     country: getUserCountryIsoCode(),
@@ -26,14 +27,17 @@ export const callApi = async (
     ...headers,
   };
 
-  body = isFormData || method === 'get'
-    ? body
-    : JSON.stringify(body);
+  body = isFormData || method === 'get' ? body : JSON.stringify(body);
 
   return await fetchApi(endpoint, allHeaders, body, method);
 };
 
-export const callTherapistApi = async (uri, accessToken = '', body = null, method = 'get') => {
+export const callTherapistApi = async (
+  uri,
+  accessToken = '',
+  body = null,
+  method = 'get',
+) => {
   const endpoint = store.getState().phone.therapistApiBaseURL + uri;
   const headers = getHeaders(accessToken);
   return await fetchApi(

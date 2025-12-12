@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   Alert,
   View,
@@ -19,22 +19,22 @@ import {
   Text,
   withTheme,
 } from 'react-native-elements';
-import { getTranslate } from 'react-localize-redux';
+import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 import styles from '../../../assets/styles';
 
-import { registerRequest } from '../../../store/register/actions';
+import {registerRequest} from '../../../store/register/actions';
 import {
   getCountryRequest,
   getDefinedCountries,
 } from '../../../store/country/actions';
-import { getLanguageRequest } from '../../../store/language/actions';
-import { getTranslations } from '../../../store/translation/actions';
-import { getPhoneRequest } from '../../../store/phone/actions';
+import {getLanguageRequest} from '../../../store/language/actions';
+import {getTranslations} from '../../../store/translation/actions';
+import {getPhoneRequest} from '../../../store/phone/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import HeaderBar from '../../../components/Common/HeaderBar';
-import { Country } from '../../../services/country';
-import { ROUTES, USER_ROLE } from '../../../variables/constants';
+import {Country} from '../../../services/country';
+import {ROUTES, USER_ROLE} from '../../../variables/constants';
 import TextField from '../../../components/Common/TextField';
 import validateEmail from '../../../utils/validateEmail';
 
@@ -62,15 +62,17 @@ const contentContainer = {
   height: '100%',
 };
 
-const Register = ({ theme, navigation, route }) => {
+const Register = ({theme, navigation, route}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const { profile } = useSelector((state) => state.user);
-  const { definedCountries, userCountryCode } = useSelector(
+  const {profile} = useSelector((state) => state.user);
+  const {definedCountries, userCountryCode} = useSelector(
     (state) => state.country,
   );
-  const [registerAsSelectedIndex, setRegisterAsSelectedIndex] = useState(route?.params?.registerIndexTab ?? 0);
+  const [registerAsSelectedIndex, setRegisterAsSelectedIndex] = useState(
+    route?.params?.registerIndexTab ?? 0,
+  );
   const {languages} = useSelector((state) => state.language);
   const [hash, setHash] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -83,9 +85,8 @@ const Register = ({ theme, navigation, route }) => {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
 
-  const shouldRegister = registerAsSelectedIndex === 0
-    ? phoneNumber
-    : email && password;
+  const shouldRegister =
+    registerAsSelectedIndex === 0 ? phoneNumber : email && password;
 
   const validateAndSetLanguage = useCallback(
     (lang) => {
@@ -131,7 +132,7 @@ const Register = ({ theme, navigation, route }) => {
   }, [definedCountries, userCountryCode, dispatch, validateAndSetLanguage]);
 
   const handleCountryCodeChange = (isoCode) => {
-    const selectedCountry = _.find(definedCountries, { iso_code: isoCode });
+    const selectedCountry = _.find(definedCountries, {iso_code: isoCode});
     setCountryPhoneCode(selectedCountry?.phone_code);
     setCountryIsoCode(isoCode);
     validateAndSetLanguage(selectedCountry?.language_id);
@@ -164,32 +165,31 @@ const Register = ({ theme, navigation, route }) => {
         if (phone) {
           dispatch(getCountryRequest());
 
-          Country.getCountryCodeByClinicId({
-            clinic_id: phone.clinic_id,
-            service_type: phone.service_type,
-          }).then((res) => {
-            if (res.success) {
-              dispatch(
-                registerRequest(
-                  countryPhoneCode,
-                  formattedNumber,
-                  hash,
-                  res.data.iso_code,
-                  '',
-                  '',
-                  USER_ROLE.PATIENT,
-                ),
-              ).then((result) => {
-                if (result) {
-                  navigation.navigate(ROUTES.VERIFY_PHONE);
-                } else {
-                  setErrorPhoneNumber(true);
-                }
-              });
-            }
-          }).catch((err) => {
-            console.error(err);
-          });
+          Country.getCountryCodeByClinicId(phone.clinic_id, phone.service_type)
+            .then((res) => {
+              if (res.success) {
+                dispatch(
+                  registerRequest(
+                    countryPhoneCode,
+                    formattedNumber,
+                    hash,
+                    res.data.iso_code,
+                    '',
+                    '',
+                    USER_ROLE.PATIENT,
+                  ),
+                ).then((result) => {
+                  if (result) {
+                    navigation.navigate(ROUTES.VERIFY_PHONE);
+                  } else {
+                    setErrorPhoneNumber(true);
+                  }
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+            });
         } else {
           setErrorPhoneNumber(true);
         }
@@ -222,7 +222,7 @@ const Register = ({ theme, navigation, route }) => {
             '',
             email,
             password,
-            USER_ROLE.HEALTH_WORKER
+            USER_ROLE.HEALTH_WORKER,
           ),
         ).then((res) => {
           if (res) {
@@ -247,18 +247,13 @@ const Register = ({ theme, navigation, route }) => {
     <SafeAreaView>
       <HeaderBar
         backgroundPrimary
-        onGoBack={
-          _.isEmpty(profile)
-            ? undefined
-            : () => navigation.goBack()
-        }
+        onGoBack={_.isEmpty(profile) ? undefined : () => navigation.goBack()}
         title={translate('common.register')}
       />
 
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        style={[styles.mainContainerLight, contentContainer]}
-      >
+        style={[styles.mainContainerLight, contentContainer]}>
         <View style={styles.paddingMd}>
           <View style={styles.marginBottom}>
             <Text accessibilityLabel={translate('register.as.label')}>
@@ -287,19 +282,17 @@ const Register = ({ theme, navigation, route }) => {
           <View style={styles.marginBottomMd}>
             <Text
               style={[styles.formLabel, styles.fontWeightBold]}
-              accessibilityLabel={translate('register.language.label')}
-            >
+              accessibilityLabel={translate('register.language.label')}>
               {translate('register.language.label')}
             </Text>
             <View
               style={[
                 styles.formControl,
                 styles.bgGreyLight,
-                { borderColor: theme.colors.grey9 },
+                {borderColor: theme.colors.grey9},
               ]}
               accessible={true}
-              accessibilityLabel={translate('register.language.label')}
-            >
+              accessibilityLabel={translate('register.language.label')}>
               <SelectPicker
                 placeholder={{}}
                 value={language}
@@ -307,9 +300,9 @@ const Register = ({ theme, navigation, route }) => {
                 items={
                   language
                     ? languages.map((lang) => ({
-                      label: lang.name,
-                      value: lang.id,
-                    }))
+                        label: lang.name,
+                        value: lang.id,
+                      }))
                     : []
                 }
                 accessibilityLabel={translate('register.language.label')}
@@ -320,10 +313,7 @@ const Register = ({ theme, navigation, route }) => {
           {registerAsSelectedIndex === 0 && (
             <>
               <Text
-                style={[
-                  styles.formLabel,
-                  styles.fontWeightBold,
-                ]}
+                style={[styles.formLabel, styles.fontWeightBold]}
                 accessibilityLabel={translate('register.phone.label')}>
                 {translate('register.phone.label')}
               </Text>
@@ -333,11 +323,10 @@ const Register = ({ theme, navigation, route }) => {
                     phoneCodeContainerStyle,
                     styles.formControl,
                     styles.bgGreyLight,
-                    { borderColor: theme.colors.grey9 },
+                    {borderColor: theme.colors.grey9},
                   ]}
                   accessible={true}
-                  accessibilityLabel={translate('register.phone.country_code')}
-                >
+                  accessibilityLabel={translate('register.phone.country_code')}>
                   <SelectPicker
                     placeholder={{}}
                     value={countryIsoCode}
@@ -345,13 +334,15 @@ const Register = ({ theme, navigation, route }) => {
                     items={
                       countryPhoneCode
                         ? definedCountries.map((country) => ({
-                          label: `${country.name} (+${country.phone_code})`,
-                          value: country.iso_code,
-                          inputLabel: `+${country.phone_code}`,
-                        }))
+                            label: `${country.name} (+${country.phone_code})`,
+                            value: country.iso_code,
+                            inputLabel: `+${country.phone_code}`,
+                          }))
                         : []
                     }
-                    accessibilityLabel={translate('register.phone.country_code')}
+                    accessibilityLabel={translate(
+                      'register.phone.country_code',
+                    )}
                   />
                 </View>
                 <View
@@ -359,7 +350,7 @@ const Register = ({ theme, navigation, route }) => {
                     phoneContainerStyle,
                     styles.bgGreyLight,
                     styles.formControl,
-                    { borderColor: theme.colors.grey9 },
+                    {borderColor: theme.colors.grey9},
                   ]}
                   accessible={true}
                   accessibilityLabel={translate('register.phone.placeholder')}>
@@ -377,7 +368,9 @@ const Register = ({ theme, navigation, route }) => {
                 <View style={styles.marginBottom}>
                   <Text
                     style={styles.textDanger}
-                    accessibilityLabel={translate('error.message.phone.created')}>
+                    accessibilityLabel={translate(
+                      'error.message.phone.created',
+                    )}>
                     {translate('error.message.phone.created')}
                   </Text>
                 </View>
@@ -395,7 +388,9 @@ const Register = ({ theme, navigation, route }) => {
                 value={email}
                 onChangeText={setEmail}
                 renderErrorMessage={errorEmail}
-                errorMessage={errorEmail ? translate('error.message.email') : null}
+                errorMessage={
+                  errorEmail ? translate('error.message.email') : null
+                }
               />
               <TextField
                 label={translate('register.password.label')}
@@ -405,15 +400,19 @@ const Register = ({ theme, navigation, route }) => {
                 onChangeText={setPassword}
                 secureTextEntry
                 renderErrorMessage={errorPassword}
-                errorMessage={errorPassword ? translate('error.message.password') : null}
+                errorMessage={
+                  errorPassword ? translate('error.message.password') : null
+                }
               />
               <TouchableOpacity
-                onPress={() => navigation.navigate(ROUTES.FORGOTPASSWORD, {email})}
-              >
+                onPress={() =>
+                  navigation.navigate(ROUTES.FORGOTPASSWORD, {email})
+                }>
                 <Text
                   style={styles.textPrimaryBold}
-                  accessibilityLabel={translate('common.forgot_password_button')}
-                >
+                  accessibilityLabel={translate(
+                    'common.forgot_password_button',
+                  )}>
                   {translate('common.forgot_password_button')}
                 </Text>
               </TouchableOpacity>

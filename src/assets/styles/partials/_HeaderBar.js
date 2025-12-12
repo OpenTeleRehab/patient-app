@@ -59,4 +59,7 @@ export default {
   backgroundWhite: {
     backgroundColor: variables.white,
   },
+  backgroundGrayLight: {
+    backgroundColor: variables.grey9,
+  },
 };

@@ -47,9 +47,9 @@ const PatientProfile = ({control, errors, editable}) => {
       label: 'common.gender',
       disabled: !editable,
       items: [
-        { label: translate('gender.male'), value: 'male' },
-        { label: translate('gender.female'), value: 'female' },
-        { label: translate('gender.other'), value: 'other' },
+        {label: translate('gender.male'), value: 'male'},
+        {label: translate('gender.female'), value: 'female'},
+        {label: translate('gender.other'), value: 'other'},
       ],
       type: 'select',
     },
@@ -60,7 +60,9 @@ const PatientProfile = ({control, errors, editable}) => {
       disabled: !editable,
       helperText: (
         <Text>
-          {translate('age.dob', { value: ageCalculation(date_of_birth, translate) })}
+          {translate('age.dob', {
+            value: ageCalculation(date_of_birth, translate),
+          })}
         </Text>
       ),
       type: 'datepicker',
@@ -69,7 +71,7 @@ const PatientProfile = ({control, errors, editable}) => {
       name: 'language',
       label: 'common.language',
       disabled: !editable,
-      items: languages.map(language => ({
+      items: languages.map((language) => ({
         label: language.name,
         value: language.id,
       })),
@@ -88,9 +90,7 @@ const PatientProfile = ({control, errors, editable}) => {
             error={errors ? errors[field.name] : null}
           />
           {field.helperText && (
-            <Text style={styles.marginBottomMd}>
-              {field.helperText}
-            </Text>
+            <Text style={styles.marginBottomMd}>{field.helperText}</Text>
           )}
         </Fragment>
       ))}

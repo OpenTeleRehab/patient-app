@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getTranslate } from 'react-localize-redux';
-import { Text, ListItem, withTheme, Button } from 'react-native-elements';
-import { ScrollView, StatusBar, View, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
+import {Text, ListItem, withTheme, Button} from 'react-native-elements';
+import {ScrollView, StatusBar, View, StyleSheet} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
-import { formatDate } from '../../../utils/helper';
-import { getPatientRequest } from '../../../store/patient/actions';
+import {formatDate} from '../../../utils/helper';
+import {getPatientRequest} from '../../../store/patient/actions';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
-
+import {ROUTES} from '../../../variables/constants';
 
 const PatientDetail = ({theme, navigation, route}) => {
   const dispatch = useDispatch();
@@ -22,12 +22,18 @@ const PatientDetail = ({theme, navigation, route}) => {
   }, [dispatch, patientId]);
 
   const data = [
-    { label: translate('phc.patient.phone'), value: patient?.phone || '' },
-    { label: translate('date.of.birth'), value: patient?.date_of_birth ? formatDate(patient.date_of_birth) : '' },
-    { label: translate('phc.patient.therapist'), value: '' },
-    { label: translate('phc.patient.treatment_status'), value: <TreatmentStatusBadge treatmentPlan={treatmentPlan} /> },
-    { label: translate('phc.patient.referral_status'), value: '' },
-    { label: translate('phc.patient.transfer_status'), value: '' },
+    {label: translate('phc.patient.phone'), value: patient?.phone || ''},
+    {
+      label: translate('date.of.birth'),
+      value: patient?.date_of_birth ? formatDate(patient.date_of_birth) : '',
+    },
+    {label: translate('phc.patient.therapist'), value: ''},
+    {
+      label: translate('phc.patient.treatment_status'),
+      value: <TreatmentStatusBadge treatmentPlan={treatmentPlan} />,
+    },
+    {label: translate('phc.patient.referral_status'), value: ''},
+    {label: translate('phc.patient.transfer_status'), value: ''},
   ];
 
   return (
@@ -44,7 +50,9 @@ const PatientDetail = ({theme, navigation, route}) => {
       />
       <ScrollView contentContainerStyle={styles.mainContainerLight}>
         <Text style={componentStyles.titleTextStyle}>{patient?.identity}</Text>
-        <Text style={componentStyles.titleTextBoldStyle}>{patient?.last_name} {patient?.first_name}</Text>
+        <Text style={componentStyles.titleTextBoldStyle}>
+          {patient?.last_name} {patient?.first_name}
+        </Text>
         <View>
           {data.map((item, index) => (
             <ListItem bottomDivider key={index}>
@@ -60,9 +68,22 @@ const PatientDetail = ({theme, navigation, route}) => {
             containerStyle={styles.marginBottom}
             buttonStyle={componentStyles.interviewButtonStyle}
             title={translate('phc.patient.interview_patient')}
+            onPress={() => {
+              navigation.navigate(ROUTES.INTERVIEW_STACK, {
+                patientId,
+              });
+            }}
           />
-          <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.patient.patient_referral')} />
-          <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.patient.patient_referral')} />
+          <Button
+            type="outline"
+            containerStyle={styles.marginBottom}
+            title={translate('phc.patient.patient_referral')}
+          />
+          <Button
+            type="outline"
+            containerStyle={styles.marginBottom}
+            title={translate('phc.patient.patient_referral')}
+          />
         </View>
       </ScrollView>
     </>

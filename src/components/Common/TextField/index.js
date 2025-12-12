@@ -8,9 +8,8 @@ import {StyleSheet} from 'react-native';
 const TextField = (props) => {
   const {label, variant, secureTextEntry} = props;
 
-  const [showSecureTextEntry, setShowSecureTextEntry] = useState(
-    secureTextEntry
-  );
+  const [showSecureTextEntry, setShowSecureTextEntry] =
+    useState(secureTextEntry);
 
   if (secureTextEntry) {
     props = {

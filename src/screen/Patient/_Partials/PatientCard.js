@@ -1,8 +1,8 @@
 import React from 'react';
 import {withTheme} from 'react-native-elements';
-import { View, StyleSheet } from 'react-native';
-import { Card, Text, Icon } from 'react-native-elements';
-import { formatDate } from '../../../utils/helper';
+import {View, StyleSheet} from 'react-native';
+import {Card, Text, Icon} from 'react-native-elements';
+import {formatDate} from '../../../utils/helper';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 
 const PatientCard = ({patient, theme}) => {
@@ -10,12 +10,31 @@ const PatientCard = ({patient, theme}) => {
     <Card containerStyle={componentStyles.cardContainer}>
       <View style={componentStyles.contentContainer}>
         <View style={componentStyles.leftSideContainer}>
-          <Text style={componentStyles.contentTextBold}>{patient.last_name} {patient.first_name}</Text>
-          <Text style={componentStyles.contentText}>{patient.date_of_birth ? `(${formatDate(patient.date_of_birth)})` : ''}</Text>
+          <Text style={componentStyles.contentTextBold}>
+            {patient.last_name} {patient.first_name}
+          </Text>
+          <Text style={componentStyles.contentText}>
+            {patient.date_of_birth
+              ? `(${formatDate(patient.date_of_birth)})`
+              : ''}
+          </Text>
         </View>
         <View style={componentStyles.rightContainer}>
-          <TreatmentStatusBadge treatmentPlan={patient.ongoingTreatmentPlan.length ? patient.ongoingTreatmentPlan[0] : patient.upcomingTreatmentPlan ? patient.upcomingTreatmentPlan : patient.lastTreatmentPlan} />
-          <Icon name="chevron-right" type="feather" size={25} color={theme.colors.black} />
+          <TreatmentStatusBadge
+            treatmentPlan={
+              patient.ongoingTreatmentPlan.length
+                ? patient.ongoingTreatmentPlan[0]
+                : patient.upcomingTreatmentPlan
+                ? patient.upcomingTreatmentPlan
+                : patient.lastTreatmentPlan
+            }
+          />
+          <Icon
+            name="chevron-right"
+            type="feather"
+            size={25}
+            color={theme.colors.black}
+          />
         </View>
       </View>
     </Card>

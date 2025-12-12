@@ -11,6 +11,15 @@ export default {
   htmlHeadingTag: {
     paddingBottom: variables.spacingMd,
   },
+  fontSizeBase: {
+    fontSize: variables.fontSizeBase,
+  },
+  fontSizeXs: {
+    fontSize: variables.fontSizeXs,
+  },
+  fontSizeSm: {
+    fontSize: variables.fontSizeSm,
+  },
   fontSizeMd: {
     fontSize: variables.fontSizeMd,
   },
@@ -33,5 +42,14 @@ export default {
     borderColor: variables.primary,
     borderBottomWidth: 2,
     marginBottom: variables.spacingBase,
+  },
+  fontWeightBold: {
+    fontWeight: variables.fontWeightBold,
+  },
+  fontWeightMedium: {
+    fontWeight: variables.fontWeightMedium,
+  },
+  fontWeightLight: {
+    fontWeight: variables.fontWeightLight,
   },
 };

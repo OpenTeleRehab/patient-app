@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
-import {
-  Button,
-  withTheme,
-} from 'react-native-elements';
-import {
-  Alert,
-  SafeAreaView,
-  View,
-} from 'react-native';
+import React, {useState} from 'react';
+import {Button, withTheme} from 'react-native-elements';
+import {Alert, SafeAreaView, View} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
-import { useDispatch, useSelector } from 'react-redux';
-import { getTranslate } from 'react-localize-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 import styles from '../../../assets/styles';
 import TextField from '../../../components/Common/TextField';
 import validateEmail from '../../../utils/validateEmail';
-import { ROUTES } from '../../../variables/constants';
-import { forgotPasswordRequest } from '../../../store/user/actions';
+import {ROUTES} from '../../../variables/constants';
+import {forgotPasswordRequest} from '../../../store/user/actions';
 
 const ForgotPassword = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -24,7 +17,6 @@ const ForgotPassword = ({navigation, route}) => {
   const [email, setEmail] = useState(route.params?.email);
   const [errorEmail, setErrorEmail] = useState(false);
   const [forgotPasswordError, setForgotPasswordError] = useState();
-
 
   const handleResetPassword = async () => {
     if (!validateEmail(email)) {
@@ -41,16 +33,15 @@ const ForgotPassword = ({navigation, route}) => {
             [
               {
                 text: translate('common.ok'),
-                onPress: () => navigation.navigate(ROUTES.REGISTER, { registerIndexTab: 1 }),
+                onPress: () =>
+                  navigation.navigate(ROUTES.REGISTER, {registerIndexTab: 1}),
               },
             ],
-            { cancelable: false },
+            {cancelable: false},
           );
         } else {
           if (res.message) {
-            setForgotPasswordError(translate(res.message));
-          } else {
-            setForgotPasswordError(translate('common.email_not_exist'));
+            setForgotPasswordError(res.message);
           }
         }
       } catch (error) {
@@ -79,8 +70,8 @@ const ForgotPassword = ({navigation, route}) => {
             errorEmail
               ? translate('error.message.email')
               : forgotPasswordError
-                ? translate(forgotPasswordError)
-                : null
+              ? translate(forgotPasswordError)
+              : null
           }
         />
         <Button

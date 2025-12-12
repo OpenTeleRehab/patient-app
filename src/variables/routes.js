@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import { ROUTES } from './constants';
+import {ROUTES} from './constants';
 
 // Auth Group
 import LoginScreen from '../screen/Auth/Login';
@@ -47,6 +47,10 @@ import TransferScreen from '../screen/Transfer';
 import ChangePasswordScreen from '../screen/UserProfile/ChangePassword';
 import CreateOrEditPatientScreen from '../screen/Patient/_Partials/CreateOrEdit';
 import PatientDetailScreen from '../screen/Patient/_Partials/PatientDetail';
+import InterviewScreen from '../screen/Interview';
+import InterviewListScreen from '../screen/Interview/InterviewList';
+import InterviewHistoryListScreen from '../screen/Interview/InterviewHistoryList';
+import InterviewStackNavigator from '../screen/Interview/StackNavigator';
 
 export const drawerItems = [
   {
@@ -241,7 +245,26 @@ export const patients = [
     name: ROUTES.CHANGE_PASSWORD,
     screen: ChangePasswordScreen,
   },
+  {
+    name: ROUTES.INTERVIEW_STACK,
+    screen: InterviewStackNavigator,
+  },
   ...drawerItems,
+];
+
+export const interviews = [
+  {
+    name: ROUTES.INTERVIEW,
+    screen: InterviewScreen,
+  },
+  {
+    name: ROUTES.INTERVIEW_LIST,
+    screen: InterviewListScreen,
+  },
+  {
+    name: ROUTES.INTERVIEW_HISTORY_LIST,
+    screen: InterviewHistoryListScreen,
+  },
 ];
 
 export const transfers = [
