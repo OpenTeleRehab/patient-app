@@ -164,7 +164,7 @@ const Register = ({ theme, navigation, route }) => {
         if (phone) {
           dispatch(getCountryRequest());
 
-          Country.getCountryCodeByClinicId(phone.clinic_id).then((res) => {
+          Country.getCountryCodeByClinicId(phone.clinic_id, phone.service_type).then((res) => {
             if (res.success) {
               dispatch(
                 registerRequest(
