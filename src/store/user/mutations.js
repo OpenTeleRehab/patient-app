@@ -129,6 +129,25 @@ const userChangePinNumberFailure = () => {
   };
 };
 
+const userChangePasswordRequest = () => {
+  return {
+    type: 'USER_CHANGE_PASSWORD_REQUESTED',
+  };
+};
+
+const userChangePasswordSuccess = (password) => {
+  return {
+    type: 'USER_CHANGE_PASSWORD_SUCCEED',
+    password,
+  };
+};
+
+const userChangePasswordFailure = () => {
+  return {
+    type: 'USER_CHANGE_PASSWORD_FAILED',
+  };
+};
+
 const userSetInitialRouteNameSuccess = (data) => {
   return {
     type: 'USER_SET_INITIAL_ROUTE_NAME_SUCCEED',
@@ -315,6 +334,9 @@ export const mutation = {
   userChangePinNumberRequest,
   userChangePinNumberSuccess,
   userChangePinNumberFailure,
+  userChangePasswordRequest,
+  userChangePasswordSuccess,
+  userChangePasswordFailure,
   userSetInitialRouteNameSuccess,
   userSetProfileSuccess,
   updateProfileSuccess,

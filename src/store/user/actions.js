@@ -221,6 +221,22 @@ export const changePinNumberRequest = (pin) => async (
   }
 };
 
+export const changePasswordRequest = (payload) => async (
+  dispatch,
+  getState,
+) => {
+  const {accessToken} = getState().user;
+  dispatch(mutation.userChangePasswordRequest());
+  const data = await User.changePassword(payload, accessToken);
+  if (data.success) {
+    dispatch(mutation.userChangePasswordSuccess(payload.new_password));
+    return { success: true };
+  } else {
+    dispatch(mutation.userChangePasswordFailure());
+    return { success: false };
+  }
+};
+
 export const setInitialRouteName = (routeName) => async (dispatch) => {
   dispatch(mutation.userSetInitialRouteNameSuccess(routeName));
 };

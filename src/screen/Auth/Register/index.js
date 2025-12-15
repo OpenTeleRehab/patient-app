@@ -160,11 +160,14 @@ const Register = ({ theme, navigation, route }) => {
 
       const formattedNumber = countryPhoneCode + parseInt(mobileNumber, 10);
 
-      dispatch(getPhoneRequest({ phone: formattedNumber })).then((phone) => {
+      dispatch(getPhoneRequest({phone: formattedNumber})).then((phone) => {
         if (phone) {
           dispatch(getCountryRequest());
 
-          Country.getCountryCodeByClinicId({clinic_id: phone.clinic_id, service_type: phone.service_type}).then((res) => {
+          Country.getCountryCodeByClinicId({
+            clinic_id: phone.clinic_id,
+            service_type: phone.service_type,
+          }).then((res) => {
             if (res.success) {
               dispatch(
                 registerRequest(
@@ -211,7 +214,17 @@ const Register = ({ theme, navigation, route }) => {
       }
 
       if (canRegister) {
-        dispatch(registerRequest('', '', '', '', email, password, USER_ROLE.HEALTH_WORKER)).then((res) => {
+        dispatch(
+          registerRequest(
+            '',
+            '',
+            '',
+            '',
+            email,
+            password,
+            USER_ROLE.HEALTH_WORKER
+          ),
+        ).then((res) => {
           if (res) {
             navigation.navigate(ROUTES.TERM_OF_SERVICE);
           } else {
@@ -274,7 +287,8 @@ const Register = ({ theme, navigation, route }) => {
           <View style={styles.marginBottomMd}>
             <Text
               style={[styles.formLabel, styles.fontWeightBold]}
-              accessibilityLabel={translate('register.language.label')}>
+              accessibilityLabel={translate('register.language.label')}
+            >
               {translate('register.language.label')}
             </Text>
             <View

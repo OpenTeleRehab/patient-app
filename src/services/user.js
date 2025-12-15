@@ -60,6 +60,10 @@ const changePinNumber = async (pin, accessToken) => {
   return await callApi('/auth/change-pin', accessToken, {pin}, 'post');
 };
 
+const changePassword = async (payload, accessToken) => {
+  return await callApi('/user/update-password', accessToken, payload, 'put');
+};
+
 const updateProfile = async (payload, accessToken) => {
    const {profile, registerAs} = store.getState().user;
 
@@ -133,6 +137,7 @@ export const User = {
   logout,
   comparePinNumber,
   changePinNumber,
+  changePassword,
   updateProfile,
   deleteProfile,
   getCallAccessToken,
