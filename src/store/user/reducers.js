@@ -12,6 +12,7 @@ export const user = (state = initialState, action) => {
     case 'USER_LOGIN_REQUESTED':
     case 'USER_COMPARE_PIN_NUMBER_REQUESTED':
     case 'USER_CHANGE_PIN_NUMBER_REQUESTED':
+    case 'USER_CHANGE_PASSWORD_REQUESTED':
     case 'ACCEPT_TERM_OF_SERVICE_REQUESTED': {
       return Object.assign({}, state, {
         isLoading: true,
@@ -34,6 +35,11 @@ export const user = (state = initialState, action) => {
       return Object.assign({}, state, {
         ...action.data,
         isLoading: false,
+      });
+    }
+    case 'USER_CHANGE_PASSWORD_SUCCEED': {
+      return Object.assign({}, state, {
+        password: action.password,
       });
     }
     case 'USER_LOGIN_SUCCEED': {
@@ -104,6 +110,7 @@ export const user = (state = initialState, action) => {
     case 'USER_LOGIN_FAILED':
     case 'USER_COMPARE_PIN_NUMBER_FAILED':
     case 'USER_CHANGE_PIN_NUMBER_FAILED':
+    case 'USER_CHANGE_PASSWORD_FAILED':
     case 'ACCEPT_TERM_OF_SERVICE_FAILED': {
       return Object.assign({}, state, {
         isLoading: false,

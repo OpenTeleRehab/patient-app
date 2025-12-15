@@ -290,7 +290,7 @@ const AppNavigation = (props) => {
           {accessToken ? (
             <>
               <AppTabNavigator {...props} />
-              {/*<Survey />*/}
+              <Survey />
             </>
           ) : <AuthStackNavigator />}
         </>
