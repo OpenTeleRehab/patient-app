@@ -40,6 +40,7 @@ const RenderField = ({control, field, error}) => {
                 }
               }}
               show={showDatePicker}
+              disabled={field.disabled}
               onClickIcon={() => setShowDatePicker(true)}
             />
           );

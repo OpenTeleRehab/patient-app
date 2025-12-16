@@ -47,7 +47,11 @@ const ForgotPassword = ({navigation, route}) => {
             { cancelable: false },
           );
         } else {
-          if (res.message) { setForgotPasswordError(res.message); }
+          if (res.message) {
+            setForgotPasswordError(translate(res.message));
+          } else {
+            setForgotPasswordError(translate('common.email_not_exist'));
+          }
         }
       } catch (error) {
         console.log('Error:', error);
@@ -71,7 +75,13 @@ const ForgotPassword = ({navigation, route}) => {
           value={email}
           onChangeText={setEmail}
           renderErrorMessage={errorEmail}
-          errorMessage={errorEmail ? translate('error.message.email') : forgotPasswordError ? translate(forgotPasswordError) : null}
+          errorMessage={
+            errorEmail
+              ? translate('error.message.email')
+              : forgotPasswordError
+                ? translate(forgotPasswordError)
+                : null
+          }
         />
         <Button
           onPress={handleResetPassword}

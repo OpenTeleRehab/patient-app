@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {Fragment} from 'react';
 import {useSelector} from 'react-redux';
 import {Text} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
@@ -80,7 +80,7 @@ const PatientProfile = ({control, errors, editable}) => {
   return (
     <>
       {fields.map((field, index) => (
-        <>
+        <Fragment key={index}>
           <RenderField
             key={index}
             control={control}
@@ -92,7 +92,7 @@ const PatientProfile = ({control, errors, editable}) => {
               {field.helperText}
             </Text>
           )}
-        </>
+        </Fragment>
       ))}
       <TextField
         disabled
