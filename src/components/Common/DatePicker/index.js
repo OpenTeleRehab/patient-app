@@ -9,7 +9,28 @@ import {formatDate} from '../../../utils/helper';
 import styles from '../../../assets/styles';
 
 const DatePicker = (props) => {
-  const {label, value, mode, onSetDate, show, onClickIcon} = props;
+  const {
+    label,
+    value,
+    mode,
+    onSetDate,
+    show,
+    disabled,
+    onClickIcon,
+  } = props;
+
+  let rightIcon = {
+    name: 'calendar-today',
+    type: 'material-community',
+    color: '#575757',
+  };
+
+  if (!disabled && onClickIcon) {
+    rightIcon = {
+      ...rightIcon,
+      onPress: () => onClickIcon(),
+    };
+  }
 
   return (
     <>
@@ -17,12 +38,7 @@ const DatePicker = (props) => {
         disabled
         label={label}
         value={value ? formatDate(value) : ''}
-        rightIcon={{
-          name: 'calendar-today',
-          type: 'material-community',
-          color: '#575757',
-          onPress: () => onClickIcon(),
-        }}
+        rightIcon={rightIcon}
         labelStyle={componentStyles.labelStyle}
         containerStyle={componentStyles.containerStyle}
         inputContainerStyle={componentStyles.inputContainerStyle}
