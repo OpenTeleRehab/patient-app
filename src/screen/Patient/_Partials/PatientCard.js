@@ -10,7 +10,10 @@ const PatientCard = ({patient, theme}) => {
     <Card containerStyle={componentStyles.cardContainer}>
       <View style={componentStyles.contentContainer}>
         <View style={componentStyles.leftSideContainer}>
-          <Text style={componentStyles.contentTextBold}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={componentStyles.contentTextBold}>
             {patient.last_name} {patient.first_name}
           </Text>
           <Text style={componentStyles.contentText}>
@@ -58,16 +61,20 @@ const componentStyles = StyleSheet.create({
   },
   leftSideContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flex: 1,
     alignItems: 'center',
+    minWidth: 0,
+    marginRight: 10,
   },
   contentTextBold: {
     fontSize: 14,
     fontWeight: 'bold',
+    flexShrink: 1,
   },
   contentText: {
     fontSize: 12,
-    marginLeft: 10,
+    marginLeft: 5,
+    flexShrink: 0,
   },
   rightContainer: {
     alignItems: 'flex-end',

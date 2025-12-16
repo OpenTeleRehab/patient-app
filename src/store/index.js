@@ -30,6 +30,10 @@ import _ from 'lodash';
 import {appSettings} from './appSetting/reducers';
 import {patient} from './patient/reducers';
 import {screeningQuestionnaire} from './screeningQuestionnaire/reducers';
+import {phcService} from './phcService/reducers';
+import {region} from './region/reducers';
+import {province} from './province/reducers';
+import {transfer} from './transfer/reducers';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -54,6 +58,10 @@ const rootReducers = {
   survey,
   patient,
   screeningQuestionnaire,
+  phcService,
+  region,
+  province,
+  transfer,
 };
 
 const blacklistTransform = createTransform(
