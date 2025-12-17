@@ -6,7 +6,7 @@ import {Icon, Input, withTheme} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 
 const TextField = (props) => {
-  const {label, variant, secureTextEntry} = props;
+  const {label, variant, secureTextEntry, labelStyle, inputStyle, keyboardType} = props;
 
   const [showSecureTextEntry, setShowSecureTextEntry] =
     useState(secureTextEntry);
@@ -28,13 +28,15 @@ const TextField = (props) => {
   return (
     <Input
       containerStyle={componentStyles.containerStyle}
-      labelStyle={componentStyles.labelStyle}
+      labelStyle={labelStyle ? labelStyle : componentStyles.labelStyle}
       inputContainerStyle={
         variant === 'filled' && componentStyles.inputContainerStyle
       }
       disabledInputStyle={componentStyles.disabledInputStyle}
       errorStyle={componentStyles.errorStyle}
       accessibilityLabel={label}
+      inputStyle={inputStyle}
+      keyboardType={keyboardType}
       {...props}
     />
   );

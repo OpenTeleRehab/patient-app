@@ -11,3 +11,11 @@ export const getUserCountryIsoCode = () => {
 export const getCountryCodeFromStore = () => {
   return store.getState().user.countryCode;
 };
+
+export const getCountryName = () => {
+  const profile = store.getState().user.profile;
+  const countries = store.getState().country.countries;
+  const country = countries.find((item) => item.id === profile?.country_id);
+
+  return country ? country.name : '';
+};

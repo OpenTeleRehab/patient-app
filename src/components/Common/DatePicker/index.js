@@ -17,6 +17,10 @@ const DatePicker = (props) => {
     show,
     disabled,
     onClickIcon,
+    labelStyle,
+    placeholder,
+    inputStyle,
+    maximumDate,
   } = props;
 
   let rightIcon = {
@@ -37,13 +41,15 @@ const DatePicker = (props) => {
       <Input
         disabled
         label={label}
+        placeholder={placeholder}
         value={value ? formatDate(value) : ''}
         rightIcon={rightIcon}
-        labelStyle={componentStyles.labelStyle}
+        labelStyle={labelStyle ? labelStyle : componentStyles.labelStyle}
         containerStyle={componentStyles.containerStyle}
         inputContainerStyle={componentStyles.inputContainerStyle}
         disabledInputStyle={componentStyles.disabledInputStyle}
         renderErrorMessage={false}
+        inputStyle={inputStyle}
       />
       {show && (
         <DateTimePicker
@@ -53,6 +59,7 @@ const DatePicker = (props) => {
           display="default"
           onChange={onSetDate}
           style={Platform.OS === 'ios' ? styles.dateTimePickerContainer : null}
+          maximumDate={maximumDate}
         />
       )}
     </>

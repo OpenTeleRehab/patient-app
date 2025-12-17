@@ -36,7 +36,7 @@ const SelectPicker = (props) => {
       fixAndroidTouchableBug
       useNativeAndroidPickerStyle={false}
       Icon={() => iconRenderer()}
-      style={pickerStyles}
+      style={props.customeFontSize ? {...pickerStyles, inputAndroid: {...pickerStyles.inputAndroid, fontSize: props.customeFontSize}, placeholder: {fontSize: props.customeFontSize}} : pickerStyles}
       {...props}
       touchableWrapperProps={{
         accessible: true,

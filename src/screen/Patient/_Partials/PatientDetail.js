@@ -1,21 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, ListItem, withTheme, Button} from 'react-native-elements';
-import {ScrollView, StatusBar, View, StyleSheet} from 'react-native';
+import {ScrollView, StatusBar, View, StyleSheet, Alert} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {formatDate} from '../../../utils/helper';
-import {getPatientRequest} from '../../../store/patient/actions';
+import {getPatientRequest, activateDeactivateAccount, deletePatientRequest} from '../../../store/patient/actions';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import {ROUTES} from '../../../variables/constants';
+import {useShowToast} from '../../../hook/useShowToast';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {theme} from '../../../../App';
 
-const PatientDetail = ({theme, navigation, route}) => {
+const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
+  const {showToast} = useShowToast();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {patientId, treatmentPlan} = route.params;
-  const {patient} = useSelector((state) => state.patient);
+  const {patient, loading} = useSelector((state) => state.patient);
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     dispatch(getPatientRequest(patientId));
@@ -36,6 +41,90 @@ const PatientDetail = ({theme, navigation, route}) => {
     {label: translate('phc.patient.transfer_status'), value: ''},
   ];
 
+  const handleActivateDeactivateConfirm = () => {
+    dispatch(activateDeactivateAccount(patient.id, !patient.enabled)).then((response) => {
+      if (response.success) {
+        showToast(
+          translate(
+            patient.enabled ? 'phc.patient.message.account_deactivated' : 'phc.patient.message.account_activated',
+          ),
+          translate('phc.patient.title')
+        );
+        dispatch(getPatientRequest(patient.id));
+      } else {
+        showToast(
+          translate(translate(response.message)),
+          translate('phc.patient.title')
+        );
+      }
+    });
+  };
+
+  const handleDeletePatientConfirm = () => {
+    dispatch(deletePatientRequest(patient.id)).then((response) => {
+      if (response.success) {
+        showToast(
+          translate('phc.patient.message.patient_account_deleted'),
+          translate('phc.patient.title')
+        );
+        navigation.goBack();
+      } else {
+        showToast(
+          translate(translate(response.message)),
+          translate('phc.patient.title')
+        );
+      }
+    });
+  };
+
+  const handleDeactivateActivate = () => {
+    Alert.alert(
+      translate(patient.enabled ? 'phc.patient.deactivate_account' : 'phc.patient.activate_account'),
+      translate(
+        patient.enabled ? 'phc.patient.message.confirm_deactivate_account' : 'phc.patient.message.confirm_activate_account',
+      ),
+      [
+        {
+          text: translate('phc.patient.button.cancel'),
+          style: 'cancel',
+        },
+        {
+          text: translate('phc.patient.button.confirm'),
+          onPress: handleActivateDeactivateConfirm,
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleDeletePatient = () => {
+    Alert.alert(
+      translate('phc.patient.delete_account'),
+      translate('phc.patient.message.confirm_delete_account'),
+      [
+        {
+          text: translate('phc.patient.button.cancel'),
+          style: 'cancel',
+        },
+        {
+          text: translate('phc.patient.button.confirm'),
+          onPress: handleDeletePatientConfirm,
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleEdit = () => {
+    setShowMore(false);
+    navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {patient});
+  };
+
+  const handleGoback = () => {
+    setShowMore(false);
+    navigation.goBack();
+  };
+
   return (
     <>
       <StatusBar
@@ -44,7 +133,7 @@ const PatientDetail = ({theme, navigation, route}) => {
         barStyle="light-content"
       />
       <HeaderBar
-        onGoBack={() => navigation.goBack()}
+        onGoBack={handleGoback}
         title={translate('phc.patient.detail')}
         backgroundPrimary={true}
       />
@@ -84,7 +173,26 @@ const PatientDetail = ({theme, navigation, route}) => {
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.patient_referral')}
           />
+          {!showMore && (
+            <Button
+              type="clear" containerStyle={styles.marginBottom}
+              title={translate('phc.patient.button.more')}
+              onPress={() => setShowMore(true)}
+            />
+          )}
+          {showMore && (
+            <>
+              <Button containerStyle={styles.marginBottom} title={translate('phc.patient.button.edit_patient')} onPress={handleEdit} />
+              <Button type="outline" buttonStyle={componentStyles.buttonStyle} titleStyle={componentStyles.titleButtonStyle} containerStyle={styles.marginBottom} title={translate(patient.enabled ? 'phc.patient.button.deactivate_account' : 'phc.patient.button.activate_account')} onPress={handleDeactivateActivate}/>
+              <Button type="clear" titleStyle={componentStyles.titleButtonStyle} containerStyle={styles.marginBottom} title={translate('phc.patient.button.delete_account')} disabled={!!patient.enabled} onPress={handleDeletePatient} />
+            </>
+          )}
         </View>
+        <Spinner
+          visible={loading}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+          textStyle={styles.textLight}
+        />
       </ScrollView>
     </>
   );
@@ -121,6 +229,13 @@ const componentStyles = StyleSheet.create({
   },
   interviewButtonStyle: {
     backgroundColor: '#024b68ff',
+  },
+  buttonStyle: {
+    borderWidth: 0,
+    backgroundColor: '#fae3e3ff',
+  },
+  titleButtonStyle: {
+    color: theme.colors.danger,
   },
 });
 
