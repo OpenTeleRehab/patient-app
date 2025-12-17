@@ -2,11 +2,11 @@ import React from 'react';
 import {withTheme} from 'react-native-elements';
 import moment from 'moment';
 import settings from '../../../../config/settings';
-import { TREATMENT_STATUS } from '../../../variables/constants';
-import { View, StyleSheet, Text } from 'react-native';
-import { theme } from '../../../../App';
-import { getTranslate } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
+import {TREATMENT_STATUS} from '../../../variables/constants';
+import {View, StyleSheet, Text} from 'react-native';
+import {theme} from '../../../../App';
+import {getTranslate} from 'react-localize-redux';
+import {useSelector} from 'react-redux';
 
 const TreatmentStatusBadge = ({treatmentPlan}) => {
   const localize = useSelector((state) => state.localize);
@@ -32,8 +32,20 @@ const TreatmentStatusBadge = ({treatmentPlan}) => {
   }
 
   return (
-    <View style={[componentStyles.badgeContainer, {backgroundColor: badgeColor}]}>
-      <Text style={[componentStyles.badgeText, {color: status === TREATMENT_STATUS.FINISHED ? theme.colors.black : theme.colors.white}]}>{translate(`phc.patient.treatment_status.${status}`)}</Text>
+    <View
+      style={[componentStyles.badgeContainer, {backgroundColor: badgeColor}]}>
+      <Text
+        style={[
+          componentStyles.badgeText,
+          {
+            color:
+              status === TREATMENT_STATUS.FINISHED
+                ? theme.colors.black
+                : theme.colors.white,
+          },
+        ]}>
+        {translate(`phc.patient.treatment_status.${status}`)}
+      </Text>
     </View>
   );
 };

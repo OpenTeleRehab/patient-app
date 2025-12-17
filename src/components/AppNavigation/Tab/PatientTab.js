@@ -33,8 +33,7 @@ const PatientTab = (props) => {
         swipeEnabled: false,
         headerShown: false,
         drawerPosition: 'right',
-      }}
-    >
+      }}>
       {patients.map((route, index) => {
         return (
           <Drawer.Screen

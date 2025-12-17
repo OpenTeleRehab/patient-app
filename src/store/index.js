@@ -29,6 +29,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
 import {appSettings} from './appSetting/reducers';
 import {patient} from './patient/reducers';
+import {screeningQuestionnaire} from './screeningQuestionnaire/reducers';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -52,6 +53,7 @@ const rootReducers = {
   assistiveTechnology,
   survey,
   patient,
+  screeningQuestionnaire,
 };
 
 const blacklistTransform = createTransform(

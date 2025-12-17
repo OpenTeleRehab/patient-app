@@ -1,6 +1,13 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Button, CheckBox, Input, Divider, withTheme, Text} from 'react-native-elements';
+import {
+  Button,
+  CheckBox,
+  Input,
+  Divider,
+  withTheme,
+  Text,
+} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {submitSurvey, skipSurvey} from '../../store/survey/actions';
 import {getTranslate} from 'react-localize-redux';
@@ -13,7 +20,7 @@ import _ from 'lodash';
 
 const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
   const dispatch = useDispatch();
-  const localize = useSelector(state => state.localize);
+  const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {accessToken, profile} = useSelector((state) => state.user);
   const {treatmentPlan} = useSelector((state) => state.activity);
@@ -25,42 +32,74 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
   const [showSurvey, setShowSurvey] = useState(false);
 
   useEffect(() => {
-    if (!publishSurvey?.questionnaire) {return;}
+    if (!publishSurvey?.questionnaire) {
+      return;
+    }
     (async () => {
       if (await checkShowSurvey()) {
-        const foundMandatoryQuestion = publishSurvey.questionnaire.questions.find(question => question.mandatory);
+        const foundMandatoryQuestion =
+          publishSurvey.questionnaire.questions.find(
+            (question) => question.mandatory,
+          );
         setCanSkip(!!foundMandatoryQuestion);
         setShowSurvey(true);
-        await AsyncStorage.setItem(`lastSurveyShownDate_${publishSurvey.id}`, new Date().toISOString());
+        await AsyncStorage.setItem(
+          `lastSurveyShownDate_${publishSurvey.id}`,
+          new Date().toISOString(),
+        );
       }
     })();
   }, [checkShowSurvey, publishSurvey]);
 
   useEffect(() => {
-    if (publishSurvey && publishSurvey.questionnaire && publishSurvey.questionnaire.questions) {
+    if (
+      publishSurvey &&
+      publishSurvey.questionnaire &&
+      publishSurvey.questionnaire.questions
+    ) {
       setCurrentQuestion(publishSurvey.questionnaire.questions[currentIndex]);
     }
   }, [publishSurvey, currentIndex]);
 
-
   const checkShowSurvey = useCallback(async () => {
     try {
-      const lastSurveyShownDate = await AsyncStorage.getItem(`lastSurveyShownDate_${publishSurvey.id}`);
+      const lastSurveyShownDate = await AsyncStorage.getItem(
+        `lastSurveyShownDate_${publishSurvey.id}`,
+      );
       const currentDate = moment.utc();
-      if ((publishSurvey.include_at_the_start || publishSurvey.include_at_the_end) && (!treatmentPlan.id)) {
+      if (
+        (publishSurvey.include_at_the_start ||
+          publishSurvey.include_at_the_end) &&
+        !treatmentPlan.id
+      ) {
         return false;
       }
 
-      if ((publishSurvey.include_at_the_start || publishSurvey.include_at_the_end)) {
-        const treatmentStartDate = moment.utc(treatmentPlan.start_date, 'DD/MM/YYYY', true);
-        const treatmentEndDate = moment.utc(treatmentPlan.end_date, 'DD/MM/YYYY', true);
+      if (
+        publishSurvey.include_at_the_start ||
+        publishSurvey.include_at_the_end
+      ) {
+        const treatmentStartDate = moment.utc(
+          treatmentPlan.start_date,
+          'DD/MM/YYYY',
+          true,
+        );
+        const treatmentEndDate = moment.utc(
+          treatmentPlan.end_date,
+          'DD/MM/YYYY',
+          true,
+        );
 
         if (!treatmentStartDate.isValid() || !treatmentEndDate.isValid()) {
           return false;
         }
 
-        const waitForShowAtStart = publishSurvey.include_at_the_start && currentDate.isBefore(treatmentStartDate);
-        const waitForShowAtEnd = publishSurvey.include_at_the_end && currentDate.isBefore(treatmentEndDate);
+        const waitForShowAtStart =
+          publishSurvey.include_at_the_start &&
+          currentDate.isBefore(treatmentStartDate);
+        const waitForShowAtEnd =
+          publishSurvey.include_at_the_end &&
+          currentDate.isBefore(treatmentEndDate);
         if (waitForShowAtStart && waitForShowAtEnd) {
           return false;
         }
@@ -68,7 +107,10 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
 
       //Handle frequency logic only if `lastSurveyShownDate` exists
       if (lastSurveyShownDate) {
-        const frequencyInMs = publishSurvey.frequency === SURVEY_FREQUENCY.DAILY ? 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+        const frequencyInMs =
+          publishSurvey.frequency === SURVEY_FREQUENCY.DAILY
+            ? 24 * 60 * 60 * 1000
+            : 7 * 24 * 60 * 60 * 1000;
         const lastShownDate = moment.utc(lastSurveyShownDate);
         if (!lastShownDate.isValid()) {
           return false;
@@ -99,12 +141,12 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
         };
       });
     } else {
-      setAnswers({ ...answers, [questionId]: value });
+      setAnswers({...answers, [questionId]: value});
     }
 
     if (validationErrors[questionId]) {
       setValidationErrors((prevErrors) => {
-        const updatedErrors = { ...prevErrors };
+        const updatedErrors = {...prevErrors};
         delete updatedErrors[questionId];
         return updatedErrors;
       });
@@ -119,7 +161,12 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
 
   const handleNext = () => {
     // Validate mandatory question before moving to next question
-    if (currentQuestion.mandatory && (!answers[currentQuestion.id] || (_.isArray(answers[currentQuestion.id]) && !answers[currentQuestion.id].length))) {
+    if (
+      currentQuestion.mandatory &&
+      (!answers[currentQuestion.id] ||
+        (_.isArray(answers[currentQuestion.id]) &&
+          !answers[currentQuestion.id].length))
+    ) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
         [currentQuestion.id]: translate('survey.answer.required'),
@@ -130,17 +177,24 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
     if (currentQuestion.type === 'open-number') {
       const threshold = currentQuestion.answers[0].threshold;
       const minValue = 0;
-      if (!_.isEmpty(answers[currentQuestion.id]) && (answers[currentQuestion.id] > threshold || answers[currentQuestion.id] < minValue)) {
+      if (
+        !_.isEmpty(answers[currentQuestion.id]) &&
+        (answers[currentQuestion.id] > threshold ||
+          answers[currentQuestion.id] < minValue)
+      ) {
         setValidationErrors((prevErrors) => ({
           ...prevErrors,
-          [currentQuestion.id]: translate('survey.number.validation', { minValue: minValue, maxValue: threshold }),
+          [currentQuestion.id]: translate('survey.number.validation', {
+            minValue: minValue,
+            maxValue: threshold,
+          }),
         }));
         return;
       }
     }
 
     // If there are no errors, proceed to the next question
-    if (currentIndex < (publishSurvey.questionnaire.questions.length - 1)) {
+    if (currentIndex < publishSurvey.questionnaire.questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -150,13 +204,20 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
 
     // Validate all mandatory questions before submitting
     publishSurvey.questionnaire.questions.forEach((question) => {
-      if (question.mandatory && (!answers[question.id] || (_.isArray(answers[question.id]) && !answers[question.id].length))) {
+      if (
+        question.mandatory &&
+        (!answers[question.id] ||
+          (_.isArray(answers[question.id]) && !answers[question.id].length))
+      ) {
         newErrors[question.id] = translate('survey.answer.required');
       }
       if (question.type === 'open-number') {
         const threshold = currentQuestion.answers[0].threshold;
         const minValue = 0;
-        if (answers[question.id] && (answers[question.id] > threshold || answers[question.id] < minValue)) {
+        if (
+          answers[question.id] &&
+          (answers[question.id] > threshold || answers[question.id] < minValue)
+        ) {
           newErrors[question.id] = translate('survey.number.validation', {
             minValue: minValue,
             maxValue: threshold,
@@ -170,10 +231,12 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
       return;
     }
 
-    const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
-      question_id: parseInt(questionId, 10),
-      answer,
-    }));
+    const formattedAnswers = Object.entries(answers).map(
+      ([questionId, answer]) => ({
+        question_id: parseInt(questionId, 10),
+        answer,
+      }),
+    );
 
     const payload = {
       survey_id: publishSurvey.id,
@@ -183,12 +246,14 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
       survey_phase: surveyPhase,
     };
 
-    dispatch(submitSurvey(payload, accessToken)).then(result => {
+    dispatch(submitSurvey(payload, accessToken)).then((result) => {
       if (result) {
         setCurrentIndex(0);
         setAnswers({});
         setValidationErrors({});
-        setSurveys(prev => prev.filter(survey => survey.id !== publishSurvey.id));
+        setSurveys((prev) =>
+          prev.filter((survey) => survey.id !== publishSurvey.id),
+        );
         setShowSurvey(false);
       }
     });
@@ -199,9 +264,11 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
       survey_id: publishSurvey.id,
       user_id: profile.id,
     };
-    dispatch(skipSurvey(payload, accessToken)).then(result => {
+    dispatch(skipSurvey(payload, accessToken)).then((result) => {
       if (result) {
-        setSurveys(prev => prev.filter(survey => survey.id !== publishSurvey.id));
+        setSurveys((prev) =>
+          prev.filter((survey) => survey.id !== publishSurvey.id),
+        );
         setShowSurvey(false);
       }
     });
@@ -209,88 +276,124 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
 
   return (
     publishSurvey?.questionnaire && (
-    <CommonOverlay
-      visible={showSurvey}
-    >
-      <View>
-        <Text style={[styles.fontSizeLg, styles.fontWeightBold]}>
-          {publishSurvey.questionnaire?.title}
-        </Text>
-        <Text style={styles.marginTop}>
-          {publishSurvey.questionnaire && publishSurvey.questionnaire.description}
-        </Text>
-        <Divider style={[styles.marginBottomMd, styles.marginTop]} />
-        {currentQuestion && (
-          <>
-            <Text style={styles.fontWeightBold}>
-              {currentQuestion.title} {!!currentQuestion.mandatory && <Text>*</Text>}
+      <CommonOverlay visible={showSurvey}>
+        <View>
+          <Text style={[styles.fontSizeLg, styles.fontWeightBold]}>
+            {publishSurvey.questionnaire?.title}
+          </Text>
+          <Text style={styles.marginTop}>
+            {publishSurvey.questionnaire &&
+              publishSurvey.questionnaire.description}
+          </Text>
+          <Divider style={[styles.marginBottomMd, styles.marginTop]} />
+          {currentQuestion && (
+            <>
+              <Text style={styles.fontWeightBold}>
+                {currentQuestion.title}{' '}
+                {!!currentQuestion.mandatory && <Text>*</Text>}
+              </Text>
+
+              {currentQuestion.type === 'checkbox' &&
+                currentQuestion.answers.map((answer, index) => (
+                  <CheckBox
+                    key={index}
+                    title={answer.description}
+                    checked={(answers[currentQuestion.id] || []).includes(
+                      answer.id,
+                    )}
+                    onPress={() =>
+                      handleInputChange(
+                        currentQuestion.id,
+                        answer.id,
+                        'checkbox',
+                      )
+                    }
+                  />
+                ))}
+
+              {currentQuestion.type === 'multiple' &&
+                currentQuestion.answers.map((answer, index) => (
+                  <CheckBox
+                    key={index}
+                    title={answer.description}
+                    checkedIcon="dot-circle-o"
+                    uncheckedIcon="circle-o"
+                    checked={answers[currentQuestion.id] === answer.id}
+                    onPress={() =>
+                      handleInputChange(currentQuestion.id, answer.id, 'radio')
+                    }
+                  />
+                ))}
+
+              {currentQuestion.type === 'open-text' && (
+                <Input
+                  value={answers[currentQuestion.id] || ''}
+                  onChangeText={(text) =>
+                    handleInputChange(currentQuestion.id, text, 'text')
+                  }
+                  containerStyle={styles.inputContainer}
+                />
+              )}
+
+              {currentQuestion.type === 'open-number' && (
+                <Input
+                  value={answers[currentQuestion.id] || ''}
+                  onChangeText={(text) =>
+                    handleInputChange(currentQuestion.id, text, 'number')
+                  }
+                  keyboardType="numeric"
+                  containerStyle={styles.inputContainer}
+                />
+              )}
+            </>
+          )}
+
+          {validationErrors[currentQuestion && currentQuestion.id] && (
+            <Text style={{color: theme.colors.danger}}>
+              {validationErrors[currentQuestion && currentQuestion.id]}
             </Text>
-
-            {currentQuestion.type === 'checkbox' &&
-              currentQuestion.answers.map((answer, index) => (
-                <CheckBox
-                  key={index}
-                  title={answer.description}
-                  checked={(answers[currentQuestion.id] || []).includes(answer.id)}
-                  onPress={() => handleInputChange(currentQuestion.id, answer.id, 'checkbox')}
-                />
-              ))}
-
-            {currentQuestion.type === 'multiple' &&
-              currentQuestion.answers.map((answer, index) => (
-                <CheckBox
-                  key={index}
-                  title={answer.description}
-                  checkedIcon="dot-circle-o"
-                  uncheckedIcon="circle-o"
-                  checked={answers[currentQuestion.id] === answer.id}
-                  onPress={() => handleInputChange(currentQuestion.id, answer.id, 'radio')}
-                />
-              ))}
-
-            {currentQuestion.type === 'open-text' && (
-              <Input
-                value={answers[currentQuestion.id] || ''}
-                onChangeText={(text) => handleInputChange(currentQuestion.id, text, 'text')}
-                containerStyle={styles.inputContainer}
-              />
-            )}
-
-            {currentQuestion.type === 'open-number' && (
-              <Input
-                value={answers[currentQuestion.id] || ''}
-                onChangeText={(text) => handleInputChange(currentQuestion.id, text, 'number')}
-                keyboardType="numeric"
-                containerStyle={styles.inputContainer}
-              />
-            )}
-          </>
-        )}
-
-        {validationErrors[currentQuestion && currentQuestion.id] && (
-          <Text style={{color: theme.colors.danger}}>{validationErrors[currentQuestion && currentQuestion.id]}</Text>
-        )}
-        <Divider style={[styles.marginTopMd]} />
-        <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
-          <View style={[componentStyles.buttonContainer, styles.marginTop]}>
-          {currentIndex > 0 && (
-            <Button title={translate('common.previous')} onPress={handlePrevious} buttonStyle={componentStyles.button} containerStyle={[styles.marginRightSm]}/>
           )}
-          {currentIndex < publishSurvey?.questionnaire?.questions.length - 1 && (
-            <Button title={translate('common.next')} onPress={handleNext} buttonStyle={componentStyles.button}/>
-          )}
-          </View>
-          <View style={[componentStyles.buttonContainer, styles.marginTop]}>
-            {currentIndex === publishSurvey?.questionnaire?.questions.length - 1 && (
-              <Button title={translate('common.submit')} onPress={handleSubmit} buttonStyle={componentStyles.button} containerStyle={[styles.marginRightSm]}/>
-            )}
-            {!canSkip && (
-              <Button title={translate('common.skip')} onPress={handleSkipSurvey} buttonStyle={componentStyles.button}/>
-            )}
+          <Divider style={[styles.marginTopMd]} />
+          <View style={[styles.flexRow, styles.justifyContentSpaceBetween]}>
+            <View style={[componentStyles.buttonContainer, styles.marginTop]}>
+              {currentIndex > 0 && (
+                <Button
+                  title={translate('common.previous')}
+                  onPress={handlePrevious}
+                  buttonStyle={componentStyles.button}
+                  containerStyle={[styles.marginRightSm]}
+                />
+              )}
+              {currentIndex <
+                publishSurvey?.questionnaire?.questions.length - 1 && (
+                <Button
+                  title={translate('common.next')}
+                  onPress={handleNext}
+                  buttonStyle={componentStyles.button}
+                />
+              )}
+            </View>
+            <View style={[componentStyles.buttonContainer, styles.marginTop]}>
+              {currentIndex ===
+                publishSurvey?.questionnaire?.questions.length - 1 && (
+                <Button
+                  title={translate('common.submit')}
+                  onPress={handleSubmit}
+                  buttonStyle={componentStyles.button}
+                  containerStyle={[styles.marginRightSm]}
+                />
+              )}
+              {!canSkip && (
+                <Button
+                  title={translate('common.skip')}
+                  onPress={handleSkipSurvey}
+                  buttonStyle={componentStyles.button}
+                />
+              )}
+            </View>
           </View>
         </View>
-      </View>
-    </CommonOverlay>
+      </CommonOverlay>
     )
   );
 };

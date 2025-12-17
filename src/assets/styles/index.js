@@ -22,6 +22,7 @@ import Appointment from './partials/_Appointment';
 import MediaPicker from './partials/_MediaPicker';
 import Modal from './partials/_Modal';
 import Overlay from './partials/_Overlay';
+import ScreeningQuestionnaire from './partials/_ScreeningQuestionnaire';
 
 const styles = StyleSheet.create({
   ...Layouts,
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
   ...MediaPicker,
   ...Modal,
   ...Overlay,
+  ...ScreeningQuestionnaire,
 });
 
 export default styles;

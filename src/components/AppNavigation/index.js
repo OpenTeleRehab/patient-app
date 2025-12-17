@@ -147,11 +147,9 @@ const AppTabNavigator = (props) => {
   return (
     <AppTab.Navigator
       initialRouteName={
-        registerAs === USER_ROLE.HEALTH_WORKER
-          ? ROUTES.PATIENT
-          : ROUTES.HOME
+        registerAs === USER_ROLE.HEALTH_WORKER ? ROUTES.PATIENT : ROUTES.HOME
       }
-      screenOptions={{ headerShown: false }}
+      screenOptions={{headerShown: false}}
       tabBarOptions={{
         keyboardHidesTabBar: true,
         activeTintColor: theme.colors.primary,
@@ -160,21 +158,23 @@ const AppTabNavigator = (props) => {
         style: styles.navTabBar,
         safeAreaInsets: {bottom: 8},
       }}>
-      {tabs.filter(item => item.group === registerAs).map((route, index) => {
-        return (
-          <AppTab.Screen
-            key={index}
-            name={route.name}
-            component={route.screen}
-            options={{
-              tabBarIcon: ({focused}) => iconRenderer(route, focused),
-              tabBarLabel: ({focused}) => renderText(translate(route.label)),
-              tabBarBadge: hasBadge(route.badge),
-              tabBarBadgeStyle: styles.navTabBadge,
-            }}
-          />
-        );
-      })}
+      {tabs
+        .filter((item) => item.group === registerAs)
+        .map((route, index) => {
+          return (
+            <AppTab.Screen
+              key={index}
+              name={route.name}
+              component={route.screen}
+              options={{
+                tabBarIcon: ({focused}) => iconRenderer(route, focused),
+                tabBarLabel: ({focused}) => renderText(translate(route.label)),
+                tabBarBadge: hasBadge(route.badge),
+                tabBarBadgeStyle: styles.navTabBadge,
+              }}
+            />
+          );
+        })}
     </AppTab.Navigator>
   );
 };
@@ -191,9 +191,15 @@ const AppNavigation = (props) => {
 
   // check required permission(s) on android
   const checkAndroidPermission = useCallback(async () => {
-    const hasAudioPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-    const hasCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-    const hasStoragePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+    const hasAudioPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+    );
+    const hasCameraPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    const hasStoragePermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    );
     if (!hasAudioPermission || !hasCameraPermission || !hasStoragePermission) {
       await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -265,26 +271,28 @@ const AppNavigation = (props) => {
               Platform.OS === 'android'
                 ? Linking.openURL('market://details?id=org.hi.patient')
                 : Linking.openURL(
-                  'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
-                )
+                    'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
+                  )
             }
             tittle={translate('app.update.title')}
             message={translate(
-              appForceUpdate ? 'app.update.message.force' : 'app.update.message',
+              appForceUpdate
+                ? 'app.update.message.force'
+                : 'app.update.message',
             )}
             onCancel={
               appForceUpdate
                 ? null
                 : () => {
-                  setAppOutdatedPopup(false);
-                  appVersion &&
-                  appVersion.length > 0 &&
-                  dispatch(
-                    mutation.appSettingsUpdateSkipVersion(
-                      parseInt(appVersion, 10),
-                    ),
-                  );
-                }
+                    setAppOutdatedPopup(false);
+                    appVersion &&
+                      appVersion.length > 0 &&
+                      dispatch(
+                        mutation.appSettingsUpdateSkipVersion(
+                          parseInt(appVersion, 10),
+                        ),
+                      );
+                  }
             }
           />
           {accessToken ? (
@@ -292,7 +300,9 @@ const AppNavigation = (props) => {
               <AppTabNavigator {...props} />
               <Survey />
             </>
-          ) : <AuthStackNavigator />}
+          ) : (
+            <AuthStackNavigator />
+          )}
         </>
       )}
     </NavigationContainer>

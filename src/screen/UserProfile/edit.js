@@ -66,7 +66,7 @@ const UserProfileEdit = ({navigation}) => {
     setValue,
     watch,
     handleSubmit,
-    formState: { isDirty, errors },
+    formState: {isDirty, errors},
   } = useForm({
     defaultValues: {
       ...defaultValues,
@@ -76,7 +76,9 @@ const UserProfileEdit = ({navigation}) => {
   useEffect(() => {
     const subscription = watch((value, {name}) => {
       if (name === 'language_id') {
-        const language = languages.find(item => item.id === value.language_id);
+        const language = languages.find(
+          (item) => item.id === value.language_id,
+        );
 
         if (language) {
           setValue('language_code', language.code);
@@ -157,13 +159,11 @@ const UserProfileEdit = ({navigation}) => {
         backgroundPrimary={true}
       />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.mainContainerLight}
-        >
+          contentContainerStyle={styles.mainContainerLight}>
           {registerAs === USER_ROLE.HEALTH_WORKER ? (
             <HealthWorkerProfile
               control={control}
@@ -171,11 +171,7 @@ const UserProfileEdit = ({navigation}) => {
               editable={true}
             />
           ) : (
-            <PatientProfile
-              control={control}
-              errors={errors}
-              editable={true}
-            />
+            <PatientProfile control={control} errors={errors} editable={true} />
           )}
 
           <Button

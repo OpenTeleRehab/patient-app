@@ -112,10 +112,17 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
       if (currentQuestion.type === 'open-number') {
         const threshold = currentQuestion.answers[0]?.threshold;
         const minValue = 0;
-        if (!_.isEmpty(patientAnswers[currentQuestion.id]) && (patientAnswers[currentQuestion.id] > threshold || patientAnswers[currentQuestion.id] < minValue)) {
+        if (
+          !_.isEmpty(patientAnswers[currentQuestion.id]) &&
+          (patientAnswers[currentQuestion.id] > threshold ||
+            patientAnswers[currentQuestion.id] < minValue)
+        ) {
           setThresholdErrors((prevErrors) => ({
             ...prevErrors,
-            [currentQuestion.id]: translate('question.threshold.validation', { minValue: minValue, maxValue: threshold }),
+            [currentQuestion.id]: translate('question.threshold.validation', {
+              minValue: minValue,
+              maxValue: threshold,
+            }),
           }));
           return;
         }
@@ -137,10 +144,17 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
     if (currentQuestion.type === 'open-number') {
       const threshold = currentQuestion.answers[0]?.threshold;
       const minValue = 0;
-      if (!_.isEmpty(patientAnswers[currentQuestion.id]) && (patientAnswers[currentQuestion.id] > threshold || patientAnswers[currentQuestion.id] < minValue)) {
+      if (
+        !_.isEmpty(patientAnswers[currentQuestion.id]) &&
+        (patientAnswers[currentQuestion.id] > threshold ||
+          patientAnswers[currentQuestion.id] < minValue)
+      ) {
         setThresholdErrors((prevErrors) => ({
           ...prevErrors,
-          [currentQuestion.id]: translate('question.threshold.validation', { minValue: minValue, maxValue: threshold }),
+          [currentQuestion.id]: translate('question.threshold.validation', {
+            minValue: minValue,
+            maxValue: threshold,
+          }),
         }));
         return;
       }

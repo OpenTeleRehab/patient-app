@@ -34,7 +34,7 @@ const ConfirmPin = ({navigation}) => {
   const handleConfirm = () => {
     if (pin === confirmPin) {
       resetConfirmPin();
-      navigation.navigate(ROUTES.SETUP_PIN, { isPINChanged: true });
+      navigation.navigate(ROUTES.SETUP_PIN, {isPINChanged: true});
     } else {
       Alert.alert(
         translate('pin.change').toString(),
@@ -86,8 +86,7 @@ const ConfirmPin = ({navigation}) => {
             <TouchableOpacity
               accessible={true}
               accessibilityLabel={translate('pin.enter.number')}
-              onPress={() => handlePinInputPress(pinRef)}
-            >
+              onPress={() => handlePinInputPress(pinRef)}>
               <SmoothPinCodeInput
                 ref={pinRef}
                 password

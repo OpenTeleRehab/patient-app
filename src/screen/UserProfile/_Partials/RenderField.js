@@ -26,7 +26,7 @@ const RenderField = ({control, field, error}) => {
         control={control}
         name={field.name}
         rules={field.rules}
-        render={({ field: { onChange } }) => {
+        render={({field: {onChange}}) => {
           return (
             <DatePicker
               label={translate('date.of.birth')}
@@ -52,17 +52,14 @@ const RenderField = ({control, field, error}) => {
       <>
         <Text
           accessibilityLabel={translate(field.label)}
-          style={styles.formLabel}
-        >
+          style={styles.formLabel}>
           {translate(field.label)}
         </Text>
-        <View
-          style={styles.formSelectPickerContainer}
-        >
+        <View style={styles.formSelectPickerContainer}>
           <Controller
             control={control}
             name={field.name}
-            render={({ field: { value, onChange } }) => (
+            render={({field: {value, onChange}}) => (
               <SelectPicker
                 placeholder={{}}
                 disabled={field.disabled}
@@ -83,7 +80,7 @@ const RenderField = ({control, field, error}) => {
         control={control}
         name={field.name}
         rules={field.rules}
-        render={({ field: { value, onChange } }) => (
+        render={({field: {value, onChange}}) => (
           <TextField
             label={translate(field.label)}
             variant="filled"

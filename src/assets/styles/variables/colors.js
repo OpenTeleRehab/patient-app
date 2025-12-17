@@ -11,6 +11,7 @@ export default {
   blueLight2: '#0065BF',
   blueLight3: '#B3D6EF',
   blueLight4: '#5BC2E7',
+  blueLight5: '#d9eaf5ff',
   orange: '#E5231E',
   orangeDark: '#c95508',
   orangeDark1: '#E3542E',

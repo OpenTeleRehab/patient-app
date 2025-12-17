@@ -141,8 +141,7 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               accessible={true}
               accessibilityLabel={translate('pin.enter.number')}
-              onPress={handleCodeInputPress}
-            >
+              onPress={handleCodeInputPress}>
               <SmoothPinCodeInput
                 ref={codeInputRef}
                 password
@@ -179,69 +178,63 @@ const Login = ({navigation}) => {
                     styles.textCenter,
                     styles.marginTopLg,
                   ]}
-                  accessibilityLabel={email}
-                >
+                  accessibilityLabel={email}>
                   {email}
                 </Text>
                 <TouchableOpacity
                   style={styles.marginY}
                   onPress={() => navigation.navigate(ROUTES.REGISTER)}
                   accessible={true}
-                  accessibilityLabel={translate('phone.login.other.email')}
-                >
+                  accessibilityLabel={translate('phone.login.other.email')}>
                   <Text style={[styles.hyperlink, styles.textCenter]}>
                     {translate('phone.login.other.email')}
                   </Text>
                 </TouchableOpacity>
               </>
             ) : (
-            <>
-              <Text
-                style={[
-                  styles.leadText,
-                  styles.textDefault,
-                  styles.textCenter,
-                  styles.marginTopLg,
-                ]}
-                accessibilityLabel={translate('phone.number')}
-              >
-                {formatPhoneNumber(dial_code, phone)}
-              </Text>
-              <TouchableOpacity
-                style={styles.marginY}
-                onPress={() => navigation.navigate(ROUTES.REGISTER)}
-                accessible={true}
-                accessibilityLabel={translate('phone.login.other.number')}
-              >
-                <Text style={[styles.hyperlink, styles.textCenter]}>
-                  {translate('phone.login.other.number')}
+              <>
+                <Text
+                  style={[
+                    styles.leadText,
+                    styles.textDefault,
+                    styles.textCenter,
+                    styles.marginTopLg,
+                  ]}
+                  accessibilityLabel={translate('phone.number')}>
+                  {formatPhoneNumber(dial_code, phone)}
                 </Text>
-              </TouchableOpacity>
-              {clinic && clinic.phone && (
-                <Fragment>
-                  <Text
-                    style={[
-                      styles.textSmall,
-                      styles.marginTopMd,
-                      styles.textCenter,
-                      styles.textDefaultBold,
-                    ]}
-                    accessibilityLabel={translate('clinic.phone.number')}
-                  >
-                    {translate('clinic.phone.number')}
+                <TouchableOpacity
+                  style={styles.marginY}
+                  onPress={() => navigation.navigate(ROUTES.REGISTER)}
+                  accessible={true}
+                  accessibilityLabel={translate('phone.login.other.number')}>
+                  <Text style={[styles.hyperlink, styles.textCenter]}>
+                    {translate('phone.login.other.number')}
                   </Text>
-                  <TouchableOpacity
-                    style={styles.marginY}
-                    accessible={true}
-                    accessibilityLabel={translate('call.to.clinic')}
-                  >
-                    <Text style={[styles.hyperlink, styles.textCenter]}>
-                      {formatPhoneNumber(clinic.dial_code, clinic.phone)}
+                </TouchableOpacity>
+                {clinic && clinic.phone && (
+                  <Fragment>
+                    <Text
+                      style={[
+                        styles.textSmall,
+                        styles.marginTopMd,
+                        styles.textCenter,
+                        styles.textDefaultBold,
+                      ]}
+                      accessibilityLabel={translate('clinic.phone.number')}>
+                      {translate('clinic.phone.number')}
                     </Text>
-                  </TouchableOpacity>
-                </Fragment>
-              )}
-            </>
+                    <TouchableOpacity
+                      style={styles.marginY}
+                      accessible={true}
+                      accessibilityLabel={translate('call.to.clinic')}>
+                      <Text style={[styles.hyperlink, styles.textCenter]}>
+                        {formatPhoneNumber(clinic.dial_code, clinic.phone)}
+                      </Text>
+                    </TouchableOpacity>
+                  </Fragment>
+                )}
+              </>
             )}
             {!!therapistsWithPhones.length && (
               <Fragment>

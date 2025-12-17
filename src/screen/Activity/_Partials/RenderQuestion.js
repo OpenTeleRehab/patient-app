@@ -48,7 +48,7 @@ const RenderQuestion = ({
     setPatientAnswers({...patientAnswers, [question.id]: value});
     if (thresholdErrors[question.id]) {
       setThresholdErrors((prevErrors) => {
-        const updatedErrors = { ...prevErrors };
+        const updatedErrors = {...prevErrors};
         delete updatedErrors[question.id];
         return updatedErrors;
       });
@@ -185,7 +185,9 @@ const RenderQuestion = ({
           />
         )}
         {thresholdErrors[question && question.id] && (
-          <Text style={{color: theme.colors.danger}}>{thresholdErrors[question && question.id]}</Text>
+          <Text style={{color: theme.colors.danger}}>
+            {thresholdErrors[question && question.id]}
+          </Text>
         )}
       </View>
     </>

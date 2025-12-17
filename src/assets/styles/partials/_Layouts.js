@@ -13,6 +13,19 @@ export default {
     padding: variables.spacingBase,
     backgroundColor: 'white',
   },
+  mainContainerLightPaddingMd: {
+    flexGrow: 1,
+    padding: variables.spacingMd,
+    backgroundColor: 'white',
+  },
+  mainContainerLightPaddingYMd: {
+    flexGrow: 1,
+    paddingVertical: variables.spacingMd,
+    backgroundColor: 'white',
+  },
+  flex1: {
+    flex: 1,
+  },
   flexCenter: {
     flex: 1,
     alignItems: 'center',
@@ -24,6 +37,9 @@ export default {
   flexColumn: {
     flex: 1,
     flexDirection: 'column',
+  },
+  flexDirectionRow: {
+    flexDirection: 'row',
   },
   flexWrap: {
     flexWrap: 'wrap',
@@ -43,6 +59,9 @@ export default {
   alignSelfEnd: {
     alignSelf: 'flex-end',
   },
+  alignItemsCenter: {
+    alignItems: 'center',
+  },
   justifyContentCenter: {
     justifyContent: 'center',
   },
@@ -51,5 +70,23 @@ export default {
   },
   justifyContentSpaceBetween: {
     justifyContent: 'space-between',
+  },
+  rowGap15: {
+    rowGap: 15,
+  },
+  rowGap10: {
+    rowGap: 10,
+  },
+  rowGap5: {
+    rowGap: 5,
+  },
+  rowGap2: {
+    rowGap: 2,
+  },
+  columnGap10: {
+    columnGap: 10,
+  },
+  columnGap2: {
+    columnGap: 2,
   },
 };

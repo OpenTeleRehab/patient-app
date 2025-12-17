@@ -1,4 +1,4 @@
-import { initialState } from './states';
+import {initialState} from './states';
 
 export const survey = (state = initialState, action) => {
   switch (action.type) {
