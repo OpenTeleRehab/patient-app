@@ -55,7 +55,7 @@ const UserProfileEdit = ({navigation}) => {
       phone: profile.phone,
       gender: profile.gender,
       date_of_birth: formatDate(profile.date_of_birth),
-      language: profile.language,
+      language_id: profile.language_id,
       therapist_id: profile.therapist_id,
     };
   }
@@ -103,7 +103,6 @@ const UserProfileEdit = ({navigation}) => {
           {
             text: translate('common.ok').toString(),
             onPress: () => {
-              console.log(defaultValues);
               reset(defaultValues, {keepDefaultValues: true});
               navigation.navigate(ROUTES.USER_PROFILE);
             },
@@ -142,7 +141,7 @@ const UserProfileEdit = ({navigation}) => {
           [
             {
               text: translate('common.ok').toString(),
-              // onPress: () => {},
+              onPress: () => {},
             },
           ],
           {cancelable: false},

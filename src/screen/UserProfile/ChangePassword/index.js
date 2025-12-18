@@ -47,6 +47,9 @@ const ChangePassword = ({navigation}) => {
           [
             {
               text: translate('common.ok').toString(),
+              onPress: () => {
+                navigation.navigate(ROUTES.USER_PROFILE);
+              },
             },
           ],
           {
@@ -60,6 +63,7 @@ const ChangePassword = ({navigation}) => {
           [
             {
               text: translate('common.ok').toString(),
+              onPress: () => {},
             },
           ],
           {

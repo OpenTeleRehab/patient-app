@@ -1,17 +1,31 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import RenderField from './RenderField';
 import {getLanguageName} from '../../../utils/language';
+import {getPhcServicesRequest} from '../../../store/phcService/actions';
 
 const HealthWorkerProfile = ({control, errors, editable}) => {
+  const dispatch = useDispatch();
   const {languages} = useSelector((state) => state.language);
   const {professions} = useSelector((state) => state.profession);
   const {countries} = useSelector((state) => state.country);
-  const {clinic} = useSelector((state) => state.clinic);
   const {profile} = useSelector((state) => state.user);
+  const {phcServices} = useSelector((state) => state.phcService);
+
+  const [phcService, setPhcService] = useState(undefined);
+
+  useEffect(() => {
+    dispatch(getPhcServicesRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (phcServices.length) {
+      setPhcService(phcServices.find(item => item.id === profile.phc_service_id));
+    }
+  }, [phcServices, profile.phc_service_id]);
 
   const fields = [
     {
@@ -59,10 +73,15 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
     },
     {
       name: 'clinic_id',
-      label: 'common.clinic',
+      label: 'phc.patient.phc_service',
       value: profile.clinic_id,
       disabled: true,
-      items: [{label: clinic?.name, value: clinic?.id}],
+      items: [
+        {
+          label: phcService?.name,
+          value: phcService?.id,
+        }
+      ],
       type: 'select',
     },
     {
