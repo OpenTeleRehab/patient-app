@@ -12,6 +12,8 @@ import {ROUTES} from '../../../variables/constants';
 import {useShowToast} from '../../../hook/useShowToast';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from '../../../../App';
+import Badge from '../../../components/Common/Badge';
+import {getTransferStatus} from '../../../utils/patient';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -37,8 +39,13 @@ const PatientDetail = ({navigation, route}) => {
       label: translate('phc.patient.treatment_status'),
       value: <TreatmentStatusBadge treatmentPlan={treatmentPlan} />,
     },
-    {label: translate('phc.patient.referral_status'), value: ''},
-    {label: translate('phc.patient.transfer_status'), value: ''},
+    {
+      label: translate('phc.patient.referral_status'),
+      value: ''},
+    {
+      label: translate('phc.patient.transfer_status'),
+      value: getTransferStatus(patientId) ? <Badge color={theme.colors.warning} value={translate(`phc.patient.transfer_status.${getTransferStatus(patientId)}`)} /> : ''
+    }
   ];
 
   const handleActivateDeactivateConfirm = () => {
@@ -156,7 +163,7 @@ const PatientDetail = ({navigation, route}) => {
           <Button
             containerStyle={styles.marginBottom}
             buttonStyle={componentStyles.interviewButtonStyle}
-            title={translate('phc.patient.interview_patient')}
+            title={translate('phc.patient.button.interview_patient')}
             onPress={() => {
               navigation.navigate(ROUTES.INTERVIEW_STACK, {
                 patientId,
@@ -166,12 +173,12 @@ const PatientDetail = ({navigation, route}) => {
           <Button
             type="outline"
             containerStyle={styles.marginBottom}
-            title={translate('phc.patient.patient_referral')}
+            title={translate('phc.patient.button.patient_referral')}
           />
           <Button
             type="outline"
             containerStyle={styles.marginBottom}
-            title={translate('phc.patient.patient_referral')}
+            title={translate('phc.patient.button.patient_transfer')}
           />
           {!showMore && (
             <Button

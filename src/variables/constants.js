@@ -106,3 +106,9 @@ export const TREATMENT_STATUS = {
   PLANNED: 'planned',
   FINISHED: 'finished',
 };
+
+export const TRANSFER_STATUS = {
+  INVITED: 'invited',
+  ACCEPTED: 'accepted',
+  DECLINED: 'declined',
+};
