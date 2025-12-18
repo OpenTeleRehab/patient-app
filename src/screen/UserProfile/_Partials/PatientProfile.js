@@ -3,15 +3,12 @@
  */
 import React, {Fragment} from 'react';
 import {useSelector} from 'react-redux';
-import {Text} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import RenderField from './RenderField';
 import {isValidDateFormat} from '../../../utils/helper';
 import formatPhoneNumber from '../../../utils/phoneNumber';
-import {ageCalculation} from '../../../utils/age';
 import moment from 'moment/moment';
 import TextField from '../../../components/Common/TextField';
-import styles from '../../../assets/styles';
 
 const PatientProfile = ({control, errors, editable}) => {
   const localize = useSelector((state) => state.localize);
@@ -58,17 +55,10 @@ const PatientProfile = ({control, errors, editable}) => {
       label: 'date.of.birth',
       value: date_of_birth,
       disabled: !editable,
-      helperText: (
-        <Text>
-          {translate('age.dob', {
-            value: ageCalculation(date_of_birth, translate),
-          })}
-        </Text>
-      ),
       type: 'datepicker',
     },
     {
-      name: 'language',
+      name: 'language_id',
       label: 'common.language',
       disabled: !editable,
       items: languages.map((language) => ({
@@ -82,17 +72,12 @@ const PatientProfile = ({control, errors, editable}) => {
   return (
     <>
       {fields.map((field, index) => (
-        <Fragment key={index}>
-          <RenderField
-            key={index}
-            control={control}
-            field={field}
-            error={errors ? errors[field.name] : null}
-          />
-          {field.helperText && (
-            <Text style={styles.marginBottomMd}>{field.helperText}</Text>
-          )}
-        </Fragment>
+        <RenderField
+          key={index}
+          control={control}
+          field={field}
+          error={errors ? errors[field.name] : null}
+        />
       ))}
       <TextField
         disabled

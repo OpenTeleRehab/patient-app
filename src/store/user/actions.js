@@ -227,10 +227,33 @@ export const setProfileInfo = (data) => async (dispatch) => {
 };
 
 export const updateProfileRequest = (payload) => async (dispatch, getState) => {
-  const {accessToken} = getState().user;
+  const {accessToken, profile, registerAs} = getState().user;
   let data = await User.updateProfile(payload, accessToken);
+
   if (data.success) {
-    dispatch(mutation.updateProfileSuccess(payload));
+    if (registerAs === USER_ROLE.HEALTH_WORKER) {
+      dispatch(mutation.updateProfileSuccess(
+        {
+          ...profile,
+          first_name: payload.first_name,
+          last_name: payload.last_name,
+          profession_id: payload.profession_id,
+          language_id: payload.language_id,
+          language_code: payload.language_code,
+        }
+      ));
+    } else {
+      dispatch(mutation.updateProfileSuccess(
+        {
+          ...profile,
+          first_name: payload.first_name,
+          last_name: payload.last_name,
+          gender: payload.gender,
+          date_of_birth: payload.date_of_birth,
+          language_id: payload.language_id,
+        }
+      ));
+    }
     return true;
   } else {
     dispatch(mutation.updateProfileFailure());

@@ -12,15 +12,39 @@ import styles from '../../../assets/styles';
 import {Controller} from 'react-hook-form';
 import DatePicker from '../../../components/Common/DatePicker';
 import moment from 'moment/moment';
-import {formatDate} from '../../../utils/helper';
+import {formatDate, isValidDateFormat} from '../../../utils/helper';
+import {ageCalculation} from '../../../utils/age';
 
 const RenderField = ({control, field, error}) => {
   const localize = useSelector((state) => state.localize);
+  const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState(field.value);
 
   if (field.type === 'datepicker') {
+    if (field.disabled) {
+      const date_of_birth = isValidDateFormat(profile.date_of_birth)
+        ? profile.date_of_birth
+        : formatDate(profile.date_of_birth);
+
+      return (
+        <TextField
+          label={translate(field.label)}
+          variant="filled"
+          disabled={field.disabled}
+          value={date_of_birth}
+          rightIcon={
+            <Text>
+              {translate('age.dob', {value: ageCalculation(date_of_birth, translate)})}
+            </Text>
+          }
+          errorMessage={error ? error.message : undefined}
+          renderErrorMessage={!!error}
+        />
+      )
+    }
+
     return (
       <Controller
         control={control}

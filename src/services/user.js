@@ -68,7 +68,20 @@ const updateProfile = async (payload, accessToken) => {
    const {profile, registerAs} = store.getState().user;
 
    if (registerAs === USER_ROLE.HEALTH_WORKER) {
-     return await callApi('/user/update-information', accessToken, payload, 'put');
+     // Create a URLSearchParams object from the plain object
+     const searchParams = new URLSearchParams({
+       first_name: payload.first_name,
+       last_name: payload.last_name,
+       language_code: payload.language_code,
+       language_id: payload.language_id,
+       profession_id: payload.profession_id,
+       show_guidance: 1,
+     });
+
+     // Convert the object to a URL-encoded string
+     const queryString = searchParams.toString();
+
+     return await callApi('/user/update-information?' + queryString, accessToken, '', 'put');
    } else {
      return await callApi(`/patient/${profile.id}`, accessToken, payload, 'put');
    }
