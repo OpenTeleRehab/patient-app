@@ -51,6 +51,7 @@ import InterviewScreen from '../screen/Interview';
 import InterviewListScreen from '../screen/Interview/InterviewList';
 import InterviewHistoryListScreen from '../screen/Interview/InterviewHistoryList';
 import InterviewStackNavigator from '../screen/Interview/StackNavigator';
+import InterviewDetail from '../screen/Interview/InterviewDetail';
 
 export const drawerItems = [
   {
@@ -260,6 +261,10 @@ export const interviews = [
   {
     name: ROUTES.INTERVIEW_LIST,
     screen: InterviewListScreen,
+  },
+  {
+    name: ROUTES.INTERVIEW_DETAIL,
+    screen: InterviewDetail,
   },
   {
     name: ROUTES.INTERVIEW_HISTORY_LIST,

@@ -30,7 +30,7 @@ const NoteRender = ({question}) => {
 };
 
 // RADIO
-const RadioRender = ({question, translate}) => {
+const RadioRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
@@ -56,6 +56,7 @@ const RadioRender = ({question, translate}) => {
             <View style={styles.questionOption} key={index}>
               <View>
                 <CheckBox
+                  disabled={disabled}
                   title={opt.option_text}
                   checked={field.value.includes(opt.id)}
                   checkedIcon="dot-circle-o"
@@ -85,7 +86,7 @@ const RadioRender = ({question, translate}) => {
 };
 
 // CHECKBOX
-const CheckBoxRender = ({question, translate}) => {
+const CheckBoxRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
@@ -112,6 +113,7 @@ const CheckBoxRender = ({question, translate}) => {
             <View style={styles.questionOption} key={index}>
               <View>
                 <CheckBox
+                  disabled={disabled}
                   title={opt.option_text}
                   checked={isChecked}
                   onPress={() => {
@@ -146,7 +148,7 @@ const CheckBoxRender = ({question, translate}) => {
 };
 
 // INPUT TEXT
-const InputTextRender = ({question, translate}) => {
+const InputTextRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
@@ -164,6 +166,7 @@ const InputTextRender = ({question, translate}) => {
       <View>
         <Input
           value={field.value}
+          disabled={disabled}
           onChangeText={field.onChange}
           onBlur={field.onBlur}
           errorMessage={error?.message}
@@ -177,7 +180,7 @@ const InputTextRender = ({question, translate}) => {
 };
 
 // INPUT NUMBER
-const InputNumberRender = ({question, translate}) => {
+const InputNumberRender = ({question, disabled, translate}) => {
   const option = question.options?.[0];
   const {
     field,
@@ -202,6 +205,7 @@ const InputNumberRender = ({question, translate}) => {
       <View>
         <Input
           keyboardType="numeric"
+          disabled={disabled}
           value={field.value}
           onChangeText={field.onChange}
           onBlur={field.onBlur}
@@ -216,7 +220,7 @@ const InputNumberRender = ({question, translate}) => {
 };
 
 // SLIDER
-const SliderRender = ({question, translate}) => {
+const SliderRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
@@ -234,9 +238,10 @@ const SliderRender = ({question, translate}) => {
       <View>
         <Text>Value: {field.value}</Text>
         <Slider
-          value={field.value} // controlled value from RHF
-          onValueChange={field.onChange} // update RHF form
-          allowTouchTrack={true}
+          disabled={disabled}
+          value={field.value}
+          onValueChange={field.onChange}
+          allowTouchTrack={!disabled}
           step={1}
           minimumValue={question.options[0].min}
           maximumValue={question.options[0].max}
@@ -264,12 +269,12 @@ const componentMap = {
   checkbox: CheckBoxRender,
 };
 
-const QuestionRenderer = ({question}) => {
+const QuestionRenderer = ({question, disabled}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const Component = componentMap[question.question_type] ?? null;
   return Component ? (
-    <Component question={question} translate={translate} />
+    <Component disabled={disabled} question={question} translate={translate} />
   ) : null;
 };
 

@@ -6,24 +6,19 @@ import {mutation} from './mutations';
 import {getPhcServiceIdentity} from '../../utils/patient';
 import {getTransfersRequest} from '../transfer/actions';
 
-export const getPatientsListRequest = (payload) => async (
-  dispatch,
-  getState,
-) => {
-  dispatch(mutation.patientsFetchRequest());
-  const {accessToken} = getState().user;
-  const res = await Patient.getPatients(payload, accessToken);
-  if (res.success) {
-    dispatch(mutation.patientsFetchSuccess(res.data, res.info));
-  } else {
-    dispatch(mutation.patientsFetchFailure());
-  }
-};
+export const getPatientsListRequest =
+  (payload) => async (dispatch, getState) => {
+    dispatch(mutation.patientsFetchRequest());
+    const {accessToken} = getState().user;
+    const res = await Patient.getPatients(payload, accessToken);
+    if (res.success) {
+      dispatch(mutation.patientsFetchSuccess(res.data, res.info));
+    } else {
+      dispatch(mutation.patientsFetchFailure());
+    }
+  };
 
-export const getPatientRequest = (id) => async (
-  dispatch,
-  getState,
-) => {
+export const getPatientRequest = (id) => async (dispatch, getState) => {
   dispatch(mutation.patientFetchRequest());
   const {accessToken} = getState().user;
   const data = await Patient.getPatient(id, accessToken);

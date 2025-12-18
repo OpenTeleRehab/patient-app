@@ -10,6 +10,7 @@ import QuestionRenderer from '../../components/ScreeningQuestionnaire/QuestionRe
 import colors from '../../assets/styles/variables/colors';
 import {FormProvider, useForm} from 'react-hook-form';
 import {submitScreeningQuestionnaireAnswerRequest} from '../../store/screeningQuestionnaire/actions';
+import {ROUTES} from '../../variables/constants';
 
 const Interview = ({navigation, route}) => {
   const {patientId} = route.params;
@@ -70,15 +71,18 @@ const Interview = ({navigation, route}) => {
     }));
 
     try {
-      const res = dispatch(
+      const res = await dispatch(
         submitScreeningQuestionnaireAnswerRequest(
           screeningQuestionnaire.id,
           patientId,
           transformedData,
         ),
       );
-      console.log('res answer', res);
-      navigation.goBack();
+      navigation.replace(ROUTES.INTERVIEW_DETAIL, {
+        screeningQuestionnaire,
+        answers: JSON.parse(res.data.answers),
+        from: 'create-form',
+      });
     } catch (error) {
       console.log('Error', error);
     }
