@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, withTheme, Button, Icon} from 'react-native-elements';
-import {ScrollView, StatusBar, StyleSheet, View, Platform} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, View, Platform, TouchableOpacity} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
@@ -18,7 +18,6 @@ import {getPhcServicesRequest, getPhcWorkersRequest} from '../../../store/phcSer
 import {getCountryRequest} from '../../../store/country/actions';
 import {getCountryName} from '../../../utils/country';
 import {getRegionName, getProvinceName, getPhcServiceName} from '../../../utils/patient';
-import {getTransfersRequest} from '../../../store/transfer/actions';
 import {createPatientRequest, updatePatientRequest, getPatientsListRequest, deletePendingSupplementary, getPatientByPhoneRequest} from '../../../store/patient/actions';
 import {ageCalculation} from '../../../utils/age';
 import {_} from 'lodash';
@@ -27,6 +26,7 @@ import {useShowToast} from '../../../hook/useShowToast';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment/moment';
+import {TRANSFER_STATUS} from '../../../variables/constants';
 
 const CreateOrEditPatient = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -70,7 +70,6 @@ const CreateOrEditPatient = ({navigation, route}) => {
     dispatch(getProvincesRequest());
     dispatch(getPhcServicesRequest());
     dispatch(getPhcWorkersRequest(profile?.phc_service_id));
-    dispatch(getTransfersRequest());
   }, [dispatch, profile?.phc_service_id]);
 
   useEffect(() => {
@@ -85,7 +84,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
             : moment(patient.date_of_birth).toDate() : '';
         setDateValue(formattedDOB);
         setValue('date_of_birth', patient.date_of_birth ? formatDate(patient.date_of_birth) : '');
-        setValue('phone', patient.phone.replace(patient.dial_code, ''));
+        setValue('phone', patient.phone?.replace(patient.dial_code, ''));
         setCountryPhoneCode(patient.dial_code);
       } else {
         reset(defaultValues);
@@ -201,6 +200,24 @@ const CreateOrEditPatient = ({navigation, route}) => {
     setErrorPhoneExist(false);
     setSelectedSupplementary([]);
     navigation.goBack();
+  };
+
+  const renderSelectedItem = (item, unSelect) => {
+    return (
+      <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+        <View style={componentStyles.selectedStyle}>
+          <Text style={componentStyles.selectedTextStyle}>{item.label}</Text>
+          <Icon
+            name="highlight-off"
+            type="material"
+            size={20}
+            color={theme.colors.white}
+            onPress={() => handleRemovePendingSupplementary(item.id, item.therapist_id)}
+            containerStyle={styles.marginLeftSm}
+          />
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -491,13 +508,13 @@ const CreateOrEditPatient = ({navigation, route}) => {
                   selectedTextStyle={componentStyles.selectedTextStyle}
                   iconStyle={componentStyles.iconStyle}
                   data={(phcWorkers ?? [])
-                    .filter(worker => !pendingTransfers.some(pt => pt.therapist_id === worker.id))
+                    .filter(worker => !pendingTransfers.some(pt => pt.therapist_id === worker.id) && worker.id !== profile.id)
                     .map(worker => ({
                       label: `${worker.last_name} ${worker.first_name}`,
                       value: worker.id,
                     }))
                     .concat(
-                      pendingTransfers.length === phcWorkers.length
+                      pendingTransfers.length === phcWorkers.filter(worker => worker.id !== profile.id).length
                         ? [{label: translate('phc.patient.no_more_option'), value: null}]
                         : []
                     )
@@ -516,7 +533,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
                         therapist_id: worker.id,
                         first_name: worker.first_name,
                         last_name: worker.last_name,
-                        status: 'invited',
+                        status: TRANSFER_STATUS.INVITED,
                       };
                     });
                     if (newPending.length) {
@@ -526,6 +543,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
                     setSelectedSupplementary([...value, ...selected]);
                     onChange(updatedAssigned);
                   }}
+                  renderSelectedItem={renderSelectedItem}
                 />
               )}
             />
@@ -534,7 +552,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
                 <Text style={[componentStyles.labelStyle, styles.marginTop]}>{translate('phc.patient.supplementary_phc_workers.pending_accept_decline')}</Text>
                 <View style={componentStyles.badgeContainer}>
                   {pendingTransfers.map((item, index) =>
-                    <View key={index} style={componentStyles.pendingBadge}>
+                    <View key={index} style={item.id && item.status === TRANSFER_STATUS.DECLINED ? [componentStyles.declineBackgroundStyle, componentStyles.pendingBadge] : [componentStyles.pendingBackgroundStyle, componentStyles.pendingBadge]}>
                       <Text style={componentStyles.selectedTextStyle}>{item.last_name} {item.first_name}</Text>
                       <Icon
                         name="highlight-off"
@@ -619,8 +637,15 @@ const componentStyles = StyleSheet.create({
     height: 25,
   },
   selectedStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 25,
     backgroundColor: theme.colors.primary,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    marginTop: 10,
+    marginRight: 8,
   },
   columnContainerHeight: {
     height: 90,
@@ -653,7 +678,6 @@ const componentStyles = StyleSheet.create({
   pendingBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.primary,
     paddingVertical: 6,
     paddingHorizontal: 8,
     borderRadius: 16,
@@ -661,6 +685,12 @@ const componentStyles = StyleSheet.create({
   },
   requiredText: {
     color: theme.colors.danger,
+  },
+  declineBackgroundStyle: {
+    backgroundColor: theme.colors.danger,
+  },
+  pendingBackgroundStyle: {
+    backgroundColor: theme.colors.primary,
   },
 });
 

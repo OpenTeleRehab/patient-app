@@ -31,3 +31,9 @@ export const getPhcServiceIdentity = () => {
 
   return phcService ? phcService.identity : '';
 };
+
+export const getTransferStatus = (patientId) => {
+  const transfers = store.getState().transfer.transfers;
+  const transfer = transfers.find((item) => item.patient_id === patientId && item.status === 'supplementary');
+  return transfer ? transfer.status : '';
+};

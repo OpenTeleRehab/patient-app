@@ -19,6 +19,7 @@ import {getTranslate} from 'react-localize-redux';
 import {useSelector, useDispatch} from 'react-redux';
 import {getPatientsListRequest} from '../../store/patient/actions';
 import PatientCard from './_Partials/PatientCard';
+import {getTransfersRequest} from '../../store/transfer/actions';
 
 const Patient = ({navigation}) => {
   const dispatch = useDispatch();
@@ -31,6 +32,10 @@ const Patient = ({navigation}) => {
   useEffect(() => {
     setCurrentPage(listInfo.current_page);
   }, [listInfo.current_page]);
+
+  useEffect(() => {
+    dispatch(getTransfersRequest());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getPatientsListRequest({page_size: pageSize}));
