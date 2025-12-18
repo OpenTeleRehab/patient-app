@@ -57,7 +57,7 @@ const RenderMediaItem = ({item, index}, currentIndex) => {
     return (
       <VideoPlayer
         autoplay={index === currentIndex}
-        video={{uri: item.video}}
+        source={{uri: item.video}}
         resizeMode="contain"
         style={mediaSize}
         audioOnly={true}
