@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text} from 'react-native';
 import {View} from 'react-native';
 import {Icon, withTheme} from 'react-native-elements';
@@ -11,6 +11,7 @@ const InterviewItemCard = ({
   interview,
   isDisable,
 }) => {
+  const [isClick, setIsClick] = useState(false);
   return (
     <View style={styles.interviewItemCard}>
       <View style={[styles.flex1, styles.rowGap2, styles.justifyContentCenter]}>
@@ -27,7 +28,11 @@ const InterviewItemCard = ({
           color={colors.success}
           reverseColor="white"
           size={17}
-          onPress={onClickInterview}
+          disabled={isClick}
+          onPress={() => {
+            onClickInterview();
+            setIsClick(true);
+          }}
         />
         <Icon
           reverse
@@ -35,8 +40,11 @@ const InterviewItemCard = ({
           type="font-awesome"
           color={colors.primary}
           size={17}
-          disabled={isDisable}
-          onPress={onClickViewInterviewHistory}
+          disabled={isDisable || isClick}
+          onPress={() => {
+            onClickViewInterviewHistory();
+            setIsClick(true);
+          }}
         />
       </View>
     </View>

@@ -1,24 +1,30 @@
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Text, View} from 'react-native';
 import {CheckBox, Image, Input, Slider, withTheme} from 'react-native-elements';
 import styles from '../../assets/styles';
-import {useController} from 'react-hook-form';
+import {useController, useFormContext, useWatch} from 'react-hook-form';
 import HelperText from './HelperText';
 import QuestionText from './QuestionText';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
+import settings from '../../../config/settings';
+
+const getImageUrl = (file) => {
+  if (!file?.id) return null;
+  return `${settings.adminApiBaseURL}/file/${file.id}`;
+};
 
 // NOTE
 const NoteRender = ({question}) => {
   return (
     <View style={styles.rowGap10}>
-      {question.image && (
+      {question?.file && (
         <Image
           source={{
-            uri: question.image,
+            uri: getImageUrl(question.file),
           }}
           style={[styles.width100, styles.height150]}
-          resizeMode="stretch"
+          resizeMode="contain"
         />
       )}
       <QuestionText questionText={question.question_text} />
@@ -30,12 +36,12 @@ const NoteRender = ({question}) => {
 };
 
 // RADIO
-const RadioRender = ({question, translate}) => {
+const RadioRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: [],
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -56,6 +62,7 @@ const RadioRender = ({question, translate}) => {
             <View style={styles.questionOption} key={index}>
               <View>
                 <CheckBox
+                  disabled={disabled}
                   title={opt.option_text}
                   checked={field.value.includes(opt.id)}
                   checkedIcon="dot-circle-o"
@@ -64,14 +71,14 @@ const RadioRender = ({question, translate}) => {
                   textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
                 />
               </View>
-              {opt.image && (
+              {opt?.file && (
                 <View>
                   <Image
                     source={{
-                      uri: opt.image,
+                      uri: getImageUrl(opt.file),
                     }}
                     style={[styles.width100, styles.height110]}
-                    resizeMode="stretch"
+                    resizeMode="contain"
                   />
                 </View>
               )}
@@ -85,12 +92,12 @@ const RadioRender = ({question, translate}) => {
 };
 
 // CHECKBOX
-const CheckBoxRender = ({question, translate}) => {
+const CheckBoxRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: [],
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -112,6 +119,7 @@ const CheckBoxRender = ({question, translate}) => {
             <View style={styles.questionOption} key={index}>
               <View>
                 <CheckBox
+                  disabled={disabled}
                   title={opt.option_text}
                   checked={isChecked}
                   onPress={() => {
@@ -125,14 +133,14 @@ const CheckBoxRender = ({question, translate}) => {
                   textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
                 />
               </View>
-              {opt.image && (
+              {opt?.file && (
                 <View>
                   <Image
                     source={{
-                      uri: opt.image,
+                      uri: getImageUrl(opt.file),
                     }}
                     style={[styles.width100, styles.height110]}
-                    resizeMode="stretch"
+                    resizeMode="contain"
                   />
                 </View>
               )}
@@ -146,12 +154,12 @@ const CheckBoxRender = ({question, translate}) => {
 };
 
 // INPUT TEXT
-const InputTextRender = ({question, translate}) => {
+const InputTextRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: '',
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -164,6 +172,7 @@ const InputTextRender = ({question, translate}) => {
       <View>
         <Input
           value={field.value}
+          disabled={disabled}
           onChangeText={field.onChange}
           onBlur={field.onBlur}
           errorMessage={error?.message}
@@ -172,18 +181,27 @@ const InputTextRender = ({question, translate}) => {
           errorStyle={error ? styles.errorText : styles.displayNone}
         />
       </View>
+      {question?.file && (
+        <Image
+          source={{
+            uri: getImageUrl(question.file),
+          }}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 };
 
 // INPUT NUMBER
-const InputNumberRender = ({question, translate}) => {
+const InputNumberRender = ({question, disabled, translate}) => {
   const option = question.options?.[0];
   const {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: '',
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -202,6 +220,7 @@ const InputNumberRender = ({question, translate}) => {
       <View>
         <Input
           keyboardType="numeric"
+          disabled={disabled}
           value={field.value}
           onChangeText={field.onChange}
           onBlur={field.onBlur}
@@ -211,17 +230,26 @@ const InputNumberRender = ({question, translate}) => {
           errorStyle={error ? styles.errorText : styles.displayNone}
         />
       </View>
+      {question?.file && (
+        <Image
+          source={{
+            uri: getImageUrl(question.file),
+          }}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 };
 
 // SLIDER
-const SliderRender = ({question, translate}) => {
+const SliderRender = ({question, disabled, translate}) => {
   const {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     rules: {
       required: question.mandatory && translate('error.message.required'),
     },
@@ -234,9 +262,10 @@ const SliderRender = ({question, translate}) => {
       <View>
         <Text>Value: {field.value}</Text>
         <Slider
-          value={field.value} // controlled value from RHF
-          onValueChange={field.onChange} // update RHF form
-          allowTouchTrack={true}
+          disabled={disabled}
+          value={field.value}
+          onValueChange={field.onChange}
+          allowTouchTrack={!disabled}
           step={1}
           minimumValue={question.options[0].min}
           maximumValue={question.options[0].max}
@@ -264,13 +293,71 @@ const componentMap = {
   checkbox: CheckBoxRender,
 };
 
-const QuestionRenderer = ({question}) => {
+const QuestionRenderer = ({question, disabled}) => {
+  console.log('Question', question);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+
+  const shouldSkip = useQuestionSkipLogic(question);
+
+  if (shouldSkip) return null;
+
   const Component = componentMap[question.question_type] ?? null;
   return Component ? (
-    <Component question={question} translate={translate} />
+    <Component disabled={disabled} question={question} translate={translate} />
   ) : null;
 };
 
+const getQuestionName = (id) => {
+  return `question_${id}`;
+};
+
 export default withTheme(QuestionRenderer);
+
+const evaluateLogic = (logic, targetValue) => {
+  switch (logic.condition_rule) {
+    case 'equal':
+      return targetValue?.includes(logic.target_option_id);
+    case 'not_equal':
+      return !targetValue?.includes(logic.target_option_id);
+    case 'was_answered':
+      return targetValue != null && targetValue !== '';
+    case 'was_not_answered':
+      return targetValue == null || targetValue === '';
+    default:
+      return false;
+  }
+};
+
+export const useQuestionSkipLogic = (question) => {
+  const {control, unregister} = useFormContext();
+
+  const fieldNames = useMemo(
+    () =>
+      question.logics?.map((l) => getQuestionName(l.target_question_id)) ?? [],
+    [question.logics],
+  );
+
+  const fieldValues = useWatch({
+    control,
+    name: fieldNames,
+  });
+
+  // Compute skip condition
+  const shouldSkip = useMemo(() => {
+    if (!question.logics?.length) return false;
+
+    return question.logics.every((logic, index) =>
+      evaluateLogic(logic, fieldValues?.[index]),
+    );
+  }, [question.logics, fieldValues]);
+
+  // Unregister field when skipped
+  useEffect(() => {
+    if (shouldSkip) {
+      unregister(getQuestionName(question.id));
+    }
+  }, [shouldSkip, unregister, question.id]);
+
+  return shouldSkip;
+};

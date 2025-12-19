@@ -7,7 +7,6 @@ const screeningQuestionnaireListFetchRequest = () => {
 };
 
 const screeningQuestionnaireListFetchSuccess = (data) => {
-  console.log('Data', data);
   return {
     type: 'SCREENING_QUESTIONNAIRE_LIST_FETCH_SUCCEED',
     data,
@@ -41,6 +40,26 @@ const submitScreeningQuestionnaireFailure = () => {
   };
 };
 
+// Get Screening Questionnaire Histroy List
+const screeningQuestionnaireHistoryListFetchRequest = () => {
+  return {
+    type: 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_REQUESTED',
+  };
+};
+
+const screeningQuestionnaireHistoryListFetchSuccess = (data) => {
+  return {
+    type: 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const screeningQuestionnaireHistoryListFetchFailure = () => {
+  return {
+    type: 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_FAILED',
+  };
+};
+
 export const mutation = {
   screeningQuestionnaireListFetchRequest,
   screeningQuestionnaireListFetchSuccess,
@@ -48,4 +67,7 @@ export const mutation = {
   submitScreeningQuestionnaireRequest,
   submitScreeningQuestionnaireSuccess,
   submitScreeningQuestionnaireFailure,
+  screeningQuestionnaireHistoryListFetchRequest,
+  screeningQuestionnaireHistoryListFetchSuccess,
+  screeningQuestionnaireHistoryListFetchFailure,
 };

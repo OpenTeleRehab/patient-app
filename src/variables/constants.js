@@ -39,6 +39,7 @@ export const ROUTES = {
   INTERVIEW_STACK: 'InterviewStack',
   INTERVIEW_LIST: 'InterviewList',
   INTERVIEW_HISTORY_LIST: 'InterviewHistoryList',
+  INTERVIEW_DETAIL: 'InterviewDetail',
 };
 
 export const STORAGE_KEY = {

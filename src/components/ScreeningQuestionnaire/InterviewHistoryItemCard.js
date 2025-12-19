@@ -3,8 +3,13 @@ import {TouchableOpacity, View} from 'react-native';
 import styles from '../../assets/styles';
 import {Text} from 'react-native';
 import {withTheme} from 'react-native-elements';
+import moment from 'moment';
 
-const InterviewHistoryListCard = ({index, OnViewDetail}) => {
+const formatDate = (date) => {
+  return moment.utc(date).local().format('DD/MM/YYYY');
+};
+
+const InterviewHistoryListCard = ({index, OnViewDetail, data}) => {
   return (
     <TouchableOpacity onPress={OnViewDetail}>
       <View
@@ -18,9 +23,9 @@ const InterviewHistoryListCard = ({index, OnViewDetail}) => {
         <View
           style={[styles.flex1, styles.rowGap2, styles.justifyContentCenter]}>
           <Text style={[styles.fontSizeBase, styles.fontWeightMedium]}>
-            001- Interview
+            {data.title}
           </Text>
-          <Text>25/08/2025</Text>
+          <Text>{formatDate(data.created_at)}</Text>
         </View>
         <View
           style={[
@@ -34,7 +39,7 @@ const InterviewHistoryListCard = ({index, OnViewDetail}) => {
               style={styles.textLight}
               numberOfLines={1}
               ellipsizeMode="tail">
-              Diagosis 1
+              Diagosis Demo 1
             </Text>
           </View>
         </View>
