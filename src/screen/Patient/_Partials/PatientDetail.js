@@ -14,13 +14,14 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from '../../../../App';
 import Badge from '../../../components/Common/Badge';
 import {getTransferStatus} from '../../../utils/patient';
+import {TRANSFER_STATUS, REFERRAL_STATUS} from '../../../variables/constants';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {showToast} = useShowToast();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patientId, treatmentPlan} = route.params;
+  const {patientId, treatmentPlan, referralTherapists} = route.params;
   const {patient, loading} = useSelector((state) => state.patient);
   const [showMore, setShowMore] = useState(false);
 
@@ -34,17 +35,35 @@ const PatientDetail = ({navigation, route}) => {
       label: translate('date.of.birth'),
       value: patient?.date_of_birth ? formatDate(patient.date_of_birth) : '',
     },
-    {label: translate('phc.patient.therapist'), value: ''},
+    {
+      label: translate('phc.patient.therapist'),
+      value: referralTherapists
+    },
     {
       label: translate('phc.patient.treatment_status'),
       value: <TreatmentStatusBadge treatmentPlan={treatmentPlan} />,
     },
     {
       label: translate('phc.patient.referral_status'),
-      value: ''},
+      value: patient?.referral_status ?
+        <Badge
+          color={
+            patient.referral_status === REFERRAL_STATUS.INVITED
+            ? theme.colors.orangeDark : patient.referral_status === REFERRAL_STATUS.DECLINED ?
+            theme.colors.danger : theme.colors.primary
+          }
+          value={translate(`phc.patient.referral_status.${patient.referral_status}`)}
+        />
+        : '',
+    },
     {
       label: translate('phc.patient.transfer_status'),
-      value: getTransferStatus(patientId) ? <Badge color={theme.colors.warning} value={translate(`phc.patient.transfer_status.${getTransferStatus(patientId)}`)} /> : ''
+      value: getTransferStatus(patientId) ?
+        <Badge color={
+          getTransferStatus(patientId) === TRANSFER_STATUS.DECLINED ? theme.colors.danger : theme.colors.orangeDark
+        }
+        value={translate(`phc.patient.transfer_status.${getTransferStatus(patientId)}`)}/>
+        : ''
     }
   ];
 
@@ -154,7 +173,15 @@ const PatientDetail = ({navigation, route}) => {
             <ListItem bottomDivider key={index}>
               <ListItem.Content style={componentStyles.row}>
                 <Text style={componentStyles.label}>{item.label}</Text>
-                <Text style={componentStyles.value}>{item.value}</Text>
+                {Array.isArray(item.value) ? (
+                  <View style={componentStyles.badgeContainer}>
+                    {item.value.map((value, itemIndex) => (
+                      <Badge key={itemIndex} value={value} color={theme.colors.primary} />
+                    ))}
+                  </View>
+                ) : (
+                  <Text style={componentStyles.value}>{item.value}</Text>
+                )}
               </ListItem.Content>
             </ListItem>
           ))}
@@ -243,6 +270,13 @@ const componentStyles = StyleSheet.create({
   },
   titleButtonStyle: {
     color: theme.colors.danger,
+  },
+  badgeContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 2,
+    justifyContent: 'flex-end',
+    flex: 1,
   },
 });
 

@@ -105,6 +105,7 @@ const Patient = ({navigation}) => {
                     : item.upcomingTreatmentPlan
                     ? item.upcomingTreatmentPlan
                     : item.lastTreatmentPlan,
+                  referralTherapists: item.referral_therapists,
                 })
               }
               activeOpacity={0.7}

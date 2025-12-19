@@ -34,6 +34,6 @@ export const getPhcServiceIdentity = () => {
 
 export const getTransferStatus = (patientId) => {
   const transfers = store.getState().transfer.transfers;
-  const transfer = transfers.find((item) => item.patient_id === patientId && item.status === 'supplementary');
+  const transfer = transfers.find((item) => item.patient_id === patientId && item.therapist_type !== 'supplementary');
   return transfer ? transfer.status : '';
 };
