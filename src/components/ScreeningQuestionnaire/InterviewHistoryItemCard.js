@@ -39,7 +39,7 @@ const InterviewHistoryListCard = ({index, OnViewDetail, data}) => {
               style={styles.textLight}
               numberOfLines={1}
               ellipsizeMode="tail">
-              Diagosis 1
+              Diagosis Demo 1
             </Text>
           </View>
         </View>

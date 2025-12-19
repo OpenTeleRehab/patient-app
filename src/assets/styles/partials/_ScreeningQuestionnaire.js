@@ -27,6 +27,11 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  totalScoreCard: {
+    backgroundColor: colors.blueLight5,
+    padding: 8,
+    borderRadius: 10,
+  },
   chipDiagnosis: {
     backgroundColor: variables.orangeDark1,
     paddingVertical: 2,

@@ -1,24 +1,30 @@
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Text, View} from 'react-native';
 import {CheckBox, Image, Input, Slider, withTheme} from 'react-native-elements';
 import styles from '../../assets/styles';
-import {useController} from 'react-hook-form';
+import {useController, useFormContext, useWatch} from 'react-hook-form';
 import HelperText from './HelperText';
 import QuestionText from './QuestionText';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
+import settings from '../../../config/settings';
+
+const getImageUrl = (file) => {
+  if (!file?.id) return null;
+  return `${settings.adminApiBaseURL}/file/${file.id}`;
+};
 
 // NOTE
 const NoteRender = ({question}) => {
   return (
     <View style={styles.rowGap10}>
-      {question.image && (
+      {question?.file && (
         <Image
           source={{
-            uri: question.image,
+            uri: getImageUrl(question.file),
           }}
           style={[styles.width100, styles.height150]}
-          resizeMode="stretch"
+          resizeMode="contain"
         />
       )}
       <QuestionText questionText={question.question_text} />
@@ -35,7 +41,7 @@ const RadioRender = ({question, disabled, translate}) => {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: [],
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -65,14 +71,14 @@ const RadioRender = ({question, disabled, translate}) => {
                   textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
                 />
               </View>
-              {opt.image && (
+              {opt?.file && (
                 <View>
                   <Image
                     source={{
-                      uri: opt.image,
+                      uri: getImageUrl(opt.file),
                     }}
                     style={[styles.width100, styles.height110]}
-                    resizeMode="stretch"
+                    resizeMode="contain"
                   />
                 </View>
               )}
@@ -91,7 +97,7 @@ const CheckBoxRender = ({question, disabled, translate}) => {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: [],
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -127,14 +133,14 @@ const CheckBoxRender = ({question, disabled, translate}) => {
                   textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
                 />
               </View>
-              {opt.image && (
+              {opt?.file && (
                 <View>
                   <Image
                     source={{
-                      uri: opt.image,
+                      uri: getImageUrl(opt.file),
                     }}
                     style={[styles.width100, styles.height110]}
-                    resizeMode="stretch"
+                    resizeMode="contain"
                   />
                 </View>
               )}
@@ -153,7 +159,7 @@ const InputTextRender = ({question, disabled, translate}) => {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: '',
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -175,6 +181,15 @@ const InputTextRender = ({question, disabled, translate}) => {
           errorStyle={error ? styles.errorText : styles.displayNone}
         />
       </View>
+      {question?.file && (
+        <Image
+          source={{
+            uri: getImageUrl(question.file),
+          }}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 };
@@ -186,7 +201,7 @@ const InputNumberRender = ({question, disabled, translate}) => {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     defaultValue: '',
     rules: {
       required: question.mandatory && translate('error.message.required'),
@@ -215,6 +230,15 @@ const InputNumberRender = ({question, disabled, translate}) => {
           errorStyle={error ? styles.errorText : styles.displayNone}
         />
       </View>
+      {question?.file && (
+        <Image
+          source={{
+            uri: getImageUrl(question.file),
+          }}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 };
@@ -225,7 +249,7 @@ const SliderRender = ({question, disabled, translate}) => {
     field,
     fieldState: {error},
   } = useController({
-    name: `question_${question.id}`,
+    name: getQuestionName(question.id),
     rules: {
       required: question.mandatory && translate('error.message.required'),
     },
@@ -270,12 +294,70 @@ const componentMap = {
 };
 
 const QuestionRenderer = ({question, disabled}) => {
+  console.log('Question', question);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+
+  const shouldSkip = useQuestionSkipLogic(question);
+
+  if (shouldSkip) return null;
+
   const Component = componentMap[question.question_type] ?? null;
   return Component ? (
     <Component disabled={disabled} question={question} translate={translate} />
   ) : null;
 };
 
+const getQuestionName = (id) => {
+  return `question_${id}`;
+};
+
 export default withTheme(QuestionRenderer);
+
+const evaluateLogic = (logic, targetValue) => {
+  switch (logic.condition_rule) {
+    case 'equal':
+      return targetValue?.includes(logic.target_option_id);
+    case 'not_equal':
+      return !targetValue?.includes(logic.target_option_id);
+    case 'was_answered':
+      return targetValue != null && targetValue !== '';
+    case 'was_not_answered':
+      return targetValue == null || targetValue === '';
+    default:
+      return false;
+  }
+};
+
+export const useQuestionSkipLogic = (question) => {
+  const {control, unregister} = useFormContext();
+
+  const fieldNames = useMemo(
+    () =>
+      question.logics?.map((l) => getQuestionName(l.target_question_id)) ?? [],
+    [question.logics],
+  );
+
+  const fieldValues = useWatch({
+    control,
+    name: fieldNames,
+  });
+
+  // Compute skip condition
+  const shouldSkip = useMemo(() => {
+    if (!question.logics?.length) return false;
+
+    return question.logics.every((logic, index) =>
+      evaluateLogic(logic, fieldValues?.[index]),
+    );
+  }, [question.logics, fieldValues]);
+
+  // Unregister field when skipped
+  useEffect(() => {
+    if (shouldSkip) {
+      unregister(getQuestionName(question.id));
+    }
+  }, [shouldSkip, unregister, question.id]);
+
+  return shouldSkip;
+};

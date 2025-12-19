@@ -11,6 +11,56 @@ import styles from '../../assets/styles';
 import colors from '../../assets/styles/variables/colors';
 import QuestionRenderer from '../../components/ScreeningQuestionnaire/QuestionRenderer';
 
+const calculateScoreBySection = (section, answers) => {
+  let totalScore = 0;
+
+  section.questions.forEach((question) => {
+    const answerObj = answers.find(
+      (answer) => answer.question_id === question.id,
+    );
+
+    if (!answerObj) return;
+
+    const {answer} = answerObj;
+
+    switch (question.question_type) {
+      case 'radio':
+      case 'checkbox': {
+        const selectedOptionIds = Array.isArray(answer) ? answer : [];
+
+        selectedOptionIds.forEach((optionId) => {
+          const option = question.options.find((opt) => opt.id === optionId);
+
+          if (option && option.option_point) {
+            totalScore += option.option_point;
+          }
+        });
+        break;
+      }
+
+      case 'open-number': {
+        const optionPoint = question.options?.[0]?.option_point;
+        if (optionPoint) {
+          totalScore += Number(optionPoint);
+        }
+        break;
+      }
+
+      case 'rating': {
+        if (typeof answer === 'number') {
+          totalScore += answer;
+        }
+        break;
+      }
+      // Note, Open Text => No Score
+      default:
+        break;
+    }
+  });
+
+  return totalScore;
+};
+
 const InterviewDetail = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -57,6 +107,8 @@ const InterviewDetail = ({navigation, route}) => {
     navigation.goBack();
   };
 
+  const totalScore = calculateScoreBySection(currentSection, answers);
+
   return (
     <>
       <HeaderBar
@@ -91,10 +143,25 @@ const InterviewDetail = ({navigation, route}) => {
               />
             ))}
           </View>
-          {/* Show point after interview **TO DO** */}
-          {/* <View style={[styles.marginTopLg, styles.interviewItemCard]}>
-            <Text>Section {currentSection.title}</Text>
-          </View> */}
+          {/* Show Summary and Point Section */}
+          <View style={[styles.marginTopLg, styles.rowGap10]}>
+            <Text style={[styles.textCenter, styles.fontWeightBold]}>
+              Summary Information
+            </Text>
+            <View style={[styles.totalScoreCard, styles.rowGap5]}>
+              <Text>{currentSection.title}</Text>
+              <Text>Total Score {totalScore}</Text>
+            </View>
+            <View>
+              <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
+                <Text style={styles.textLight}>
+                  Diagnosing brain health involves a multi-faceted approach
+                  using neurological exams, cognitive tests, brain imaging (MRI,
+                  CT, PET),
+                </Text>
+              </View>
+            </View>
+          </View>
           <View
             style={[
               styles.flexRow,
@@ -125,7 +192,6 @@ const InterviewDetail = ({navigation, route}) => {
               onPress={goNext}
             />
           </View>
-          {/* Buttons Submit and Cancel*/}
           <View style={[styles.rowGap10, styles.marginTopMd]}>
             <Button title={'Cancel'} type="outline" onPress={handleCancel} />
           </View>
