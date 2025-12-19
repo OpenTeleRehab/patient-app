@@ -112,3 +112,10 @@ export const TRANSFER_STATUS = {
   ACCEPTED: 'accepted',
   DECLINED: 'declined',
 };
+
+export const REFERRAL_STATUS = {
+  INVITED: 'invited',
+  ACCEPTED: 'accepted',
+  DECLINED: 'declined',
+};
+
