@@ -167,7 +167,7 @@ apply plugin: "com.google.firebase.firebase-perf"
 
 // @see https://medium.com/@maxirosson/versioning-android-apps-d6ec171cfd82
 private Integer generateVersionCode() {
-    return rootProject.ext.minSdkVersion * 10000000 + rootProject.ext.majorApkVersion * 10000 + rootProject.ext.minorApkVersion * 100 + rootProject.ext.patchApkVersion
+    return rootProject.ext.targetSdkVersion * 10000000 + rootProject.ext.majorApkVersion * 10000 + rootProject.ext.minorApkVersion * 100 + rootProject.ext.patchApkVersion
 }
 
 private String generateVersionName() {

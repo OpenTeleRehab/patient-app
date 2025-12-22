@@ -53,10 +53,11 @@ const RenderMediaItem = ({item, index}, activeItem) => {
     return (
       <VideoPlayer
         autoplay={autoplay}
-        video={{uri}}
+        source={{uri}}
         style={styleMedia}
         resizeMode="contain"
         disableFullscreen={true}
+        onError={e => console.log('VIDEO ERROR', e)}
       />
     );
   }
@@ -65,7 +66,7 @@ const RenderMediaItem = ({item, index}, activeItem) => {
     return (
       <VideoPlayer
         autoplay={autoplay}
-        video={{uri}}
+        source={{uri}}
         resizeMode="contain"
         style={styleMedia}
         poster={musicUri}
