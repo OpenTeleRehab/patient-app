@@ -79,6 +79,7 @@ const RadioRender = ({question, disabled, translate}) => {
                     }}
                     style={[styles.width100, styles.height110]}
                     resizeMode="contain"
+                    onPress={() => field.onChange([opt.id])}
                   />
                 </View>
               )}
@@ -141,6 +142,14 @@ const CheckBoxRender = ({question, disabled, translate}) => {
                     }}
                     style={[styles.width100, styles.height110]}
                     resizeMode="contain"
+                    onPress={() => {
+                      const current = field.value || [];
+                      if (current.includes(opt.id)) {
+                        field.onChange(current.filter((x) => x !== opt.id));
+                      } else {
+                        field.onChange([...current, opt.id]);
+                      }
+                    }}
                   />
                 </View>
               )}
@@ -272,13 +281,21 @@ const SliderRender = ({question, disabled, translate}) => {
           trackStyle={styles.trckHeight}
           thumbStyle={styles.thumbStyle}
         />
-
         <Text style={styles.textCenter}>
           {question.options[0].min}- {'Low'} |{question.options[0].max}-{' '}
           {'Hight'}
         </Text>
         {error && <HelperText message={error.message} />}
       </View>
+      {question?.file && (
+        <Image
+          source={{
+            uri: getImageUrl(question.file),
+          }}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
     </View>
   );
 };
@@ -294,7 +311,6 @@ const componentMap = {
 };
 
 const QuestionRenderer = ({question, disabled}) => {
-  console.log('Question', question);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -325,7 +341,7 @@ const evaluateLogic = (logic, targetValue) => {
     case 'was_not_answered':
       return targetValue == null || targetValue === '';
     default:
-      return false;
+      return true;
   }
 };
 
@@ -347,8 +363,8 @@ export const useQuestionSkipLogic = (question) => {
   const shouldSkip = useMemo(() => {
     if (!question.logics?.length) return false;
 
-    return question.logics.every((logic, index) =>
-      evaluateLogic(logic, fieldValues?.[index]),
+    return question.logics.every(
+      (logic, index) => !evaluateLogic(logic, fieldValues?.[index]),
     );
   }, [question.logics, fieldValues]);
 
