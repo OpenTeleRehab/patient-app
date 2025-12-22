@@ -120,3 +120,8 @@ export const REFERRAL_STATUS = {
   DECLINED: 'declined',
 };
 
+export const THERAPIST_TYPES = {
+  LEAD: 'lead',
+  SUPPLEMENTARY: 'supplementary',
+};
+

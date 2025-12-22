@@ -14,7 +14,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from '../../../../App';
 import Badge from '../../../components/Common/Badge';
 import {getTransferStatus} from '../../../utils/patient';
-import {TRANSFER_STATUS, REFERRAL_STATUS} from '../../../variables/constants';
+import {TRANSFER_STATUS, REFERRAL_STATUS, THERAPIST_TYPES} from '../../../variables/constants';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -176,7 +176,7 @@ const PatientDetail = ({navigation, route}) => {
                 {Array.isArray(item.value) ? (
                   <View style={componentStyles.badgeContainer}>
                     {item.value.map((value, itemIndex) => (
-                      <Badge key={itemIndex} value={value} color={theme.colors.primary} />
+                      <Badge key={itemIndex} value={`${value.last_name} ${value.first_name}`} color={value.type === THERAPIST_TYPES.LEAD ? theme.colors.primary : theme.colors.orangeDark2} />
                     ))}
                   </View>
                 ) : (

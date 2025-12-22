@@ -15,6 +15,7 @@ export default {
   orange: '#E5231E',
   orangeDark: '#c95508',
   orangeDark1: '#E3542E',
+  orangeDark2: '#F7934B',
   orangeLight: '#EDC8A3',
   grey: '#777777',
   grey1: '#575757',
