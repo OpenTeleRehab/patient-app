@@ -5,10 +5,22 @@ import {getUserCountryIsoCode} from '../utils/country';
 import {callApi} from '../utils/request';
 
 const getPatients = async (payload, accessToken) => {
+  const {filters, ...rest} = payload;
+  const params = new URLSearchParams();
+  if (filters.length > 0) {
+    filters.forEach((filter) => {
+      params.append('filters[]', JSON.stringify(filter));
+    });
+  }
+  Object.entries(rest).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') {
+      params.append(key, value);
+    }
+  });
+
   return await callApi(
-    '/patient',
+    `/patient?${params.toString()}`,
     accessToken,
-    payload,
   );
 };
 

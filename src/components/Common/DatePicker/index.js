@@ -21,6 +21,7 @@ const DatePicker = (props) => {
     placeholder,
     inputStyle,
     maximumDate,
+    minimumDate
   } = props;
 
   let rightIcon = {
@@ -60,6 +61,7 @@ const DatePicker = (props) => {
           onChange={onSetDate}
           style={Platform.OS === 'ios' ? styles.dateTimePickerContainer : null}
           maximumDate={maximumDate}
+          minimumDate={minimumDate}
         />
       )}
     </>

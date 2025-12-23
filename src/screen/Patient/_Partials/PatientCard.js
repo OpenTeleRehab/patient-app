@@ -2,10 +2,17 @@ import React from 'react';
 import {withTheme} from 'react-native-elements';
 import {View, StyleSheet} from 'react-native';
 import {Card, Text, Icon} from 'react-native-elements';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 import {formatDate} from '../../../utils/helper';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
+import Badge from '../../../components/Common/Badge';
+import {REFERRAL_STATUS} from '../../../variables/constants';
 
 const PatientCard = ({patient, theme}) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+
   return (
     <Card containerStyle={componentStyles.cardContainer}>
       <View style={componentStyles.contentContainer}>
@@ -40,6 +47,18 @@ const PatientCard = ({patient, theme}) => {
           />
         </View>
       </View>
+      {patient.referral_status && (
+        <View style={componentStyles.referralBadgeContainer}>
+          <Badge
+            color={
+              patient.referral_status === REFERRAL_STATUS.INVITED
+              ? theme.colors.orangeDark : patient.referral_status === REFERRAL_STATUS.DECLINED ?
+              theme.colors.danger : theme.colors.primary
+            }
+            value={translate(`phc.patient.referral_status.${patient.referral_status}`)}
+          />
+        </View>
+      )}
     </Card>
   );
 };
@@ -78,6 +97,10 @@ const componentStyles = StyleSheet.create({
   },
   rightContainer: {
     alignItems: 'flex-end',
+  },
+  referralBadgeContainer: {
+    marginTop: 10,
+    alignItems: 'flex-start',
   },
 });
 
