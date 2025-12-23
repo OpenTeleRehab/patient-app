@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Platform, ToastAndroid} from 'react-native';
 import moment from 'moment';
 import RNFS from 'react-native-fs';
@@ -25,7 +25,7 @@ import {getDownloadDirectoryPath} from '../../utils/fileSystem';
 import settings from '../../../config/settings';
 import styles from '../../assets/styles';
 import {useForm} from 'react-hook-form';
-import {formatDate} from '../../utils/helper';
+import {formatDate, isValidDateFormat} from '../../utils/helper';
 
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -36,74 +36,61 @@ const UserProfile = ({navigation}) => {
   const {apiBaseURL} = useSelector((state) => state.phone);
   const [downloading, setDownloading] = useState(false);
 
-  let defaultValues = {
-    id: profile.id,
-    first_name: profile.first_name,
-    last_name: profile.last_name,
-    country_id: profile.country_id,
-  };
-
-  if (registerAs === USER_ROLE.HEALTH_WORKER) {
-    defaultValues = {
-      ...defaultValues,
-      email: profile.email,
-      profession_id: profile.profession_id,
-      clinic_id: profile.clinic_id,
-      language_id: profile.language_id,
-      language_code: profile.language_code,
-      show_guidance: profile.show_guidance,
-    };
-  } else {
-    defaultValues = {
-      ...defaultValues,
-      phone: profile.phone,
-      gender: profile.gender,
-      date_of_birth: formatDate(profile.date_of_birth),
-      language_id: profile.language_id,
-      therapist_id: profile.therapist_id,
-    };
-  }
-
-  const {
-    control,
-    reset,
-  } = useForm({
-    defaultValues: {
-      ...defaultValues,
-    },
+  const {control, reset} = useForm({
+    defaultValues: {},
   });
+
+  const handleReset = useCallback(() => {
+    if (profile) {
+      if (registerAs === USER_ROLE.HEALTH_WORKER) {
+        reset(
+          {
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            email: profile.email,
+            profession_id: profile.profession_id,
+            country_id: profile.country_id,
+            phc_service_id: profile.phc_service_id,
+            language_id: profile.language_id,
+            language_code: profile.language_code,
+            show_guidance: profile.show_guidance,
+          },
+          {
+            keepDirtyValues: false,
+          },
+        );
+      } else {
+        const date_of_birth = isValidDateFormat(profile.date_of_birth)
+          ? profile.date_of_birth
+          : formatDate(profile.date_of_birth);
+
+        reset(
+          {
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            phone: profile.phone,
+            gender: profile.gender,
+            date_of_birth: date_of_birth,
+            language_id: profile.language_id,
+            therapist_id: profile.therapist_id,
+          },
+          {
+            keepDirtyValues: false,
+          },
+        );
+      }
+    }
+  }, [profile, registerAs, reset]);
+
+  useEffect(() => {
+    handleReset();
+  }, [handleReset]);
 
   useEffect(() => {
     dispatch(getLanguageRequest());
     dispatch(getProfessionRequest());
     dispatch(getCountryRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (profile) {
-      if (registerAs === USER_ROLE.HEALTH_WORKER) {
-        reset({
-          first_name: profile.first_name,
-          last_name: profile.last_name,
-          profession_id: profile.profession_id,
-          language_id: profile.language_id,
-          language_code: profile.language_code,
-        }, {
-          keepDirtyValues: false,
-        });
-      } else {
-        reset({
-          first_name: profile.first_name,
-          last_name: profile.last_name,
-          gender: profile.gender,
-          date_of_birth: profile.date_of_birth,
-          language_id: profile.language_id,
-        }, {
-          keepDirtyValues: false,
-        });
-      }
-    }
-  }, [profile, registerAs, reset]);
 
   const handleExport = async () => {
     setDownloading(true);
@@ -196,7 +183,10 @@ const UserProfile = ({navigation}) => {
           onPress: () => netInfo.isConnected && navigation.navigate(ROUTES.USER_PROFILE_EDIT),
         }}
       />
-      <ScrollView contentContainerStyle={styles.mainContainerLight}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.mainContainerLight}
+      >
         {registerAs === USER_ROLE.HEALTH_WORKER ? (
           <>
             <HealthWorkerProfile control={control} />

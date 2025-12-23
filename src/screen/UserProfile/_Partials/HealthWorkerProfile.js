@@ -4,7 +4,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import RenderField from './RenderField';
-import {getLanguageName} from '../../../utils/language';
 import {getPhcServicesRequest} from '../../../store/phcService/actions';
 
 const HealthWorkerProfile = ({control, errors, editable}) => {
@@ -23,7 +22,9 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
 
   useEffect(() => {
     if (phcServices.length) {
-      setPhcService(phcServices.find(item => item.id === profile.phc_service_id));
+      setPhcService(
+        phcServices.find((item) => item.id === profile.phc_service_id),
+      );
     }
   }, [phcServices, profile.phc_service_id]);
 
@@ -31,28 +32,24 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
     {
       name: 'first_name',
       label: 'first.name',
-      value: profile?.first_name,
       disabled: !editable,
       type: 'text',
     },
     {
       name: 'last_name',
       label: 'last.name',
-      value: profile?.last_name,
       disabled: !editable,
       type: 'text',
     },
     {
       name: 'email',
       label: 'common.email',
-      value: profile.email,
       disabled: true,
       type: 'text',
     },
     {
       name: 'profession_id',
       label: 'common.profession',
-      value: profile.profession_id,
       disabled: !editable,
       items: professions.map((profession) => ({
         label: profession.name,
@@ -63,7 +60,6 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
     {
       name: 'country_id',
       label: 'common.country',
-      value: profile.country_id,
       disabled: true,
       items: countries.map((country) => ({
         label: country.name,
@@ -72,22 +68,20 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
       type: 'select',
     },
     {
-      name: 'clinic_id',
+      name: 'phc_service_id',
       label: 'phc.patient.phc_service',
-      value: profile.clinic_id,
       disabled: true,
       items: [
         {
           label: phcService?.name,
           value: phcService?.id,
-        }
+        },
       ],
       type: 'select',
     },
     {
       name: 'language_id',
       label: 'common.language',
-      value: getLanguageName(profile.language_id, languages),
       disabled: !editable,
       items: languages.map((language) => ({
         label: language.name,
