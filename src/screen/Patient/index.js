@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
-import {Icon} from 'react-native-elements';
+import {Icon, BottomSheet} from 'react-native-elements';
 import {theme} from '../../../App';
 import {ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
@@ -20,13 +20,16 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getPatientsListRequest} from '../../store/patient/actions';
 import PatientCard from './_Partials/PatientCard';
 import {getTransfersRequest} from '../../store/transfer/actions';
+import Filter from './_Partials/Filter';
 
 const Patient = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patients, listInfo, loading} = useSelector((state) => state.patient);
+  const {patients, filters, listInfo, loading} = useSelector((state) => state.patient);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentFilters, setCurrentFilters] = useState(filters);
+  const [showFilter, setShowFilter] = useState(false);
   const pageSize = 10;
 
   useEffect(() => {
@@ -38,8 +41,8 @@ const Patient = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getPatientsListRequest({page_size: pageSize}));
-  }, [dispatch, pageSize]);
+    dispatch(getPatientsListRequest({page_size: pageSize, page: 1, filters: currentFilters}));
+  }, [dispatch, pageSize, currentFilters]);
 
   const loadMore = () => {
     if (loading) {
@@ -50,6 +53,7 @@ const Patient = ({navigation}) => {
         getPatientsListRequest({
           page_size: pageSize,
           page: currentPage + 1,
+          filters: currentFilters,
         }),
       );
     }
@@ -77,18 +81,28 @@ const Patient = ({navigation}) => {
         leftContent={{hasLogo: true}}
       />
       <View style={styles.mainContainerLight}>
-        <View style={componentStyles.titleContainerStyle}>
-          <Text style={componentStyles.titleTextStyle}>
-            {translate('phc.patient.list')}
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(ROUTES.CREATE_EDIT_PATIENT)}
-            style={componentStyles.buttonStyle}>
-            <Icon name="add" size={20} color={theme.colors.white} />
-            <Text style={componentStyles.buttonTitleStyle}>
-              {translate('phc.patient.new')}
+        <View style={componentStyles.topContainer}>
+          <View style={componentStyles.titleContainerStyle}>
+            <Text style={componentStyles.titleTextStyle}>
+              {translate('phc.patient.list')}
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ROUTES.CREATE_EDIT_PATIENT)}
+              style={componentStyles.buttonStyle}>
+              <Icon name="add" size={20} color={theme.colors.white} />
+              <Text style={componentStyles.buttonTitleStyle}>
+                {translate('phc.patient.new')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={componentStyles.titleContainerStyle}>
+            <TouchableOpacity onPress={() => setShowFilter(true)}>
+              <Icon name="tune" size={25} color={theme.colors.primary} />
+              {filters.length > 0 && (
+                <View style={componentStyles.indicatorStyle} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
         <FlatList
           data={patients}
@@ -119,6 +133,9 @@ const Patient = ({navigation}) => {
           showsVerticalScrollIndicator={false}
         />
       </View>
+      <BottomSheet isVisible={showFilter}>
+        <Filter filters={currentFilters} setFilters={setCurrentFilters} setShowFilter={setShowFilter} />
+      </BottomSheet>
     </>
   );
 };
@@ -155,6 +172,20 @@ const componentStyles = StyleSheet.create({
   },
   loadingStyle: {
     paddingVertical: 20,
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  indicatorStyle: {
+    position: 'absolute',
+    top: 1,
+    right: 0,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.danger,
   },
 });
 

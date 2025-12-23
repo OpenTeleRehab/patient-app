@@ -3,6 +3,7 @@
  */
 export const initialState = {
   patients: [],
+  filters: [],
   patient: {},
   listInfo: {},
   loading: false,

@@ -12,7 +12,7 @@ export const getPatientsListRequest =
     const {accessToken} = getState().user;
     const res = await Patient.getPatients(payload, accessToken);
     if (res.success) {
-      dispatch(mutation.patientsFetchSuccess(res.data, res.info));
+      dispatch(mutation.patientsFetchSuccess(res.data, payload.page, res.info, payload.filters));
     } else {
       dispatch(mutation.patientsFetchFailure());
     }

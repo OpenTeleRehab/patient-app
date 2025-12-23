@@ -6,7 +6,7 @@ import {initialState} from './states';
 export const patient = (state = initialState, action) => {
   switch (action.type) {
     case 'PATIENTS_FETCH_SUCCEED':
-      const allPatients = [...state.patients, ...action.data];
+      const allPatients = action.page === 1 ? action.data : [...state.patients, ...action.data];
       const map = {};
       allPatients.forEach(patientObj => {
         map[patientObj.id] = patientObj;
@@ -15,6 +15,7 @@ export const patient = (state = initialState, action) => {
       return {
         ...state,
         patients: Object.values(map),
+        filters: action.filters,
         listInfo: action.info,
         loading: false,
       };

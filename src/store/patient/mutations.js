@@ -7,11 +7,13 @@ const patientsFetchRequest = () => {
   };
 };
 
-const patientsFetchSuccess = (data, info) => {
+const patientsFetchSuccess = (data, page, info, filters) => {
   return {
     type: 'PATIENTS_FETCH_SUCCEED',
     data,
+    page,
     info,
+    filters,
   };
 };
 
