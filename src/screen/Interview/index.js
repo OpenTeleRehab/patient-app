@@ -1,16 +1,15 @@
 import React, {useRef, useState} from 'react';
-import {Alert, ScrollView, Text, View} from 'react-native';
+import {Alert, ScrollView, Text} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {Button, Icon, withTheme} from 'react-native-elements';
+import {withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
-import QuestionRenderer from '../../components/ScreeningQuestionnaire/QuestionRenderer';
-import colors from '../../assets/styles/variables/colors';
 import {FormProvider, useForm} from 'react-hook-form';
 import {submitScreeningQuestionnaireAnswerRequest} from '../../store/screeningQuestionnaire/actions';
 import {ROUTES} from '../../variables/constants';
+import VisibleQuestion from '../../components/ScreeningQuestionnaire/VisibleQuestion';
 
 const Interview = ({navigation, route}) => {
   const {patientId} = route.params;
@@ -18,32 +17,22 @@ const Interview = ({navigation, route}) => {
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
   const screeningQuestionnaire = route.params?.screeningQuestionnaire;
-  const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef(null);
   const form = useForm();
+  const mergedQuestions = screeningQuestionnaire.sections.flatMap((section) =>
+    section.questions.map((question) => ({
+      ...question,
+      section_id: section.id,
+      section_title: section.title,
+    })),
+  );
 
   const scrollToTop = () => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
   };
 
   if (!screeningQuestionnaire) return null;
-
-  const currentSection = screeningQuestionnaire?.sections[step];
-
-  const goNext = () => {
-    if (step < screeningQuestionnaire.sections.length - 1) {
-      setStep(step + 1);
-      scrollToTop();
-    }
-  };
-
-  const goBack = () => {
-    if (step > 0) {
-      setStep(step - 1);
-      scrollToTop();
-    }
-  };
 
   const alertConfirmBeforeLeave = () => {
     Alert.alert(
@@ -85,7 +74,7 @@ const Interview = ({navigation, route}) => {
         from: 'create-form',
       });
     } catch (error) {
-      console.log('Error', error);
+      console.log('Submit Questionnaire Error', error);
       setIsLoading(false);
     }
   };
@@ -118,76 +107,14 @@ const Interview = ({navigation, route}) => {
               ]}>
               {screeningQuestionnaire && screeningQuestionnaire?.title}
             </Text>
-            {currentSection && (
-              <Text
-                accessibilityLabel={currentSection.title}
-                style={[styles.fontWeightMedium, styles.marginTop]}>
-                {currentSection.title}
-              </Text>
-            )}
-            {currentSection && (
-              <View style={[styles.rowGap15, styles.marginTopMd]}>
-                {currentSection.questions?.map((question) => (
-                  <QuestionRenderer
-                    key={`question_${question.id}`}
-                    question={question}
-                  />
-                ))}
-              </View>
-            )}
-            {console.log(
-              'screeningQuestionnaire.sections.length',
-              screeningQuestionnaire.sections.length,
-            )}
-            {currentSection && screeningQuestionnaire.sections.length > 1 && (
-              <View
-                style={[
-                  styles.flexRow,
-                  styles.justifyContentSpaceBetween,
-                  styles.flexCenter,
-                  styles.marginTop,
-                ]}>
-                <Icon
-                  raised
-                  name="angle-left"
-                  type="font-awesome"
-                  color={colors.primary}
-                  disabled={step === 0}
-                  onPress={goBack}
-                />
-                <Text
-                  accessibilityLabel={`${step + 1}/${
-                    screeningQuestionnaire.sections.length
-                  }`}>
-                  {step + 1}/{screeningQuestionnaire.sections.length}
-                </Text>
-                <Icon
-                  raised
-                  name="angle-right"
-                  type="font-awesome"
-                  color={colors.primary}
-                  disabled={step === screeningQuestionnaire.sections.length - 1}
-                  onPress={form.handleSubmit(goNext)}
-                />
-              </View>
-            )}
-
-            {/* Buttons Submit and Cancel*/}
-            <View style={[styles.rowGap10, styles.marginTopMd]}>
-              {step === screeningQuestionnaire.sections.length - 1 && (
-                <Button
-                  disabled={isLoading}
-                  title={'Submit'}
-                  onPress={form.handleSubmit(onSubmit)}
-                />
-              )}
-              <Button
-                disabled={isLoading}
-                title={'Cancel'}
-                type="outline"
-                onPress={alertConfirmBeforeLeave}
-              />
-            </View>
+            <VisibleQuestion
+              mergedQuestions={mergedQuestions}
+              scrollToTop={scrollToTop}
+              onSubmitAnswer={form.handleSubmit(onSubmit)}
+              onCancelAlert={alertConfirmBeforeLeave}
+              isLoading={isLoading}
+              form={form}
+            />
           </ScrollView>
         </FormProvider>
       )}

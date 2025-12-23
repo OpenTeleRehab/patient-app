@@ -61,6 +61,18 @@ const calculateScoreBySection = (section, answers) => {
   return totalScore;
 };
 
+//Maping Score Function
+// const MapingScore = (sectionScore) => {
+//   const scoreMap = [
+//     {title: 'ABA', scores: [1, 2, 3]},
+//     {title: 'EEFF', scores: [4, 5, 6]},
+//     {title: 'GGG', scores: [7, 8, 9]},
+//     {title: '0000', scores: [21, 22, 23, 25, 24]},
+//   ];
+//   const found = scoreMap.find((item) => item.scores.includes(sectionScore));
+//   return found ? found.title : 'Testing';
+// };
+
 const InterviewDetail = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -152,15 +164,12 @@ const InterviewDetail = ({navigation, route}) => {
               <Text>{currentSection.title}</Text>
               <Text>Total Score {totalScore}</Text>
             </View>
-            <View>
+            {/* Get Result after interview */}
+            {/* <View>
               <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
-                <Text style={styles.textLight}>
-                  Diagnosing brain health involves a multi-faceted approach
-                  using neurological exams, cognitive tests, brain imaging (MRI,
-                  CT, PET),
-                </Text>
+                <Text style={styles.textLight}>{MapingScore(totalScore)}</Text>
               </View>
-            </View>
+            </View> */}
           </View>
           <View
             style={[

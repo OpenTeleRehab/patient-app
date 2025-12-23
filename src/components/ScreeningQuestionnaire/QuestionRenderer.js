@@ -282,8 +282,8 @@ const SliderRender = ({question, disabled, translate}) => {
           thumbStyle={styles.thumbStyle}
         />
         <Text style={styles.textCenter}>
-          {question.options[0].min}- {'Low'} |{question.options[0].max}-{' '}
-          {'Hight'}
+          {question.options[0].min} - {question.options[0].min_note} |
+          {question.options[0].max} - {question.options[0].max_note}
         </Text>
         {error && <HelperText message={error.message} />}
       </View>
@@ -324,13 +324,13 @@ const QuestionRenderer = ({question, disabled}) => {
   ) : null;
 };
 
-const getQuestionName = (id) => {
+export const getQuestionName = (id) => {
   return `question_${id}`;
 };
 
 export default withTheme(QuestionRenderer);
 
-const evaluateLogic = (logic, targetValue) => {
+export const evaluateLogic = (logic, targetValue) => {
   switch (logic.condition_rule) {
     case 'equal':
       return targetValue?.includes(logic.target_option_id);
