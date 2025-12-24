@@ -1,15 +1,8 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect} from 'react';
-import {
-  Alert,
-  ScrollView,
-  Platform,
-  KeyboardAvoidingView,
-  Keyboard,
-} from 'react-native';
-import styles from '../../assets/styles';
+import React, {useEffect, useCallback} from 'react';
+import {Alert, Keyboard, ScrollView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES, STORAGE_KEY, USER_ROLE} from '../../variables/constants';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -22,7 +15,8 @@ import {updateProfileRequest} from '../../store/user/actions';
 import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {formatDate} from '../../utils/helper';
+import {formatDate, isValidDateFormat} from '../../utils/helper';
+import styles from '../../assets/styles';
 
 const UserProfileEdit = ({navigation}) => {
   const dispatch = useDispatch();
@@ -32,34 +26,6 @@ const UserProfileEdit = ({navigation}) => {
   const {languages} = useSelector((state) => state.language);
   const {profile, registerAs} = useSelector((state) => state.user);
 
-  let defaultValues = {
-    id: profile.id,
-    first_name: profile.first_name,
-    last_name: profile.last_name,
-    country_id: profile.country_id,
-  };
-
-  if (registerAs === USER_ROLE.HEALTH_WORKER) {
-    defaultValues = {
-      ...defaultValues,
-      email: profile.email,
-      profession_id: profile.profession_id,
-      clinic_id: profile.clinic_id,
-      language_id: profile.language_id,
-      language_code: profile.language_code,
-      show_guidance: profile.show_guidance,
-    };
-  } else {
-    defaultValues = {
-      ...defaultValues,
-      phone: profile.phone,
-      gender: profile.gender,
-      date_of_birth: formatDate(profile.date_of_birth),
-      language_id: profile.language_id,
-      therapist_id: profile.therapist_id,
-    };
-  }
-
   const {
     control,
     reset,
@@ -68,10 +34,54 @@ const UserProfileEdit = ({navigation}) => {
     handleSubmit,
     formState: {isDirty, errors},
   } = useForm({
-    defaultValues: {
-      ...defaultValues,
-    },
+    defaultValues: {},
   });
+
+  const handleReset = useCallback(() => {
+    if (profile) {
+      if (registerAs === USER_ROLE.HEALTH_WORKER) {
+        reset(
+          {
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            email: profile.email,
+            profession_id: profile.profession_id,
+            country_id: profile.country_id,
+            phc_service_id: profile.phc_service_id,
+            language_id: profile.language_id,
+            language_code: profile.language_code,
+            show_guidance: profile.show_guidance,
+          },
+          {
+            keepDirtyValues: false,
+          },
+        );
+      } else {
+        const date_of_birth = isValidDateFormat(profile.date_of_birth)
+          ? profile.date_of_birth
+          : formatDate(profile.date_of_birth);
+
+        reset(
+          {
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            phone: profile.phone,
+            gender: profile.gender,
+            date_of_birth: date_of_birth,
+            language_id: profile.language_id,
+            therapist_id: profile.therapist_id,
+          },
+          {
+            keepDirtyValues: false,
+          },
+        );
+      }
+    }
+  }, [profile, registerAs, reset]);
+
+  useEffect(() => {
+    handleReset();
+  }, [handleReset]);
 
   useEffect(() => {
     const subscription = watch((value, {name}) => {
@@ -103,7 +113,6 @@ const UserProfileEdit = ({navigation}) => {
           {
             text: translate('common.ok').toString(),
             onPress: () => {
-              reset(defaultValues, {keepDefaultValues: true});
               navigation.navigate(ROUTES.USER_PROFILE);
             },
           },
@@ -157,29 +166,31 @@ const UserProfileEdit = ({navigation}) => {
         title={translate('edit.profile.title')}
         backgroundPrimary={true}
       />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.mainContainerLight}>
-          {registerAs === USER_ROLE.HEALTH_WORKER ? (
-            <HealthWorkerProfile
-              control={control}
-              errors={errors}
-              editable={true}
-            />
-          ) : (
-            <PatientProfile control={control} errors={errors} editable={true} />
-          )}
-
-          <Button
-            title={translate('common.save')}
-            onPress={handleSubmit(onSubmit)}
-            disabled={!netInfo.isConnected || !isDirty}
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.mainContainerLight}
+      >
+        {registerAs === USER_ROLE.HEALTH_WORKER ? (
+          <HealthWorkerProfile
+            control={control}
+            errors={errors}
+            editable={true}
           />
-        </ScrollView>
-      </KeyboardAvoidingView>
+        ) : (
+          <PatientProfile
+            control={control}
+            errors={errors}
+            editable={true}
+          />
+        )}
+
+        <Button
+          title={translate('common.save')}
+          onPress={handleSubmit(onSubmit)}
+          disabled={!netInfo.isConnected || !isDirty}
+        />
+      </ScrollView>
     </>
   );
 };
