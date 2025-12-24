@@ -38,10 +38,15 @@ export const clearSecondaryVideoCallStatus = () => (dispatch) => {
 
 export const getChatRooms = () => async (dispatch, getState) => {
   const {profile} = getState().user;
-  const primaryTherapistIds = [profile.therapist_id];
-  const secondaryTherapistIds = profile.secondary_therapists;
+  const primaryTherapistIds = [profile.therapist_id, profile.phc_worker_id];
+  const secondaryTherapistIds = profile.secondary_therapists ?? [];
+  const secondaryPhcWorkerIds = profile.supplementary_phc_workers ?? [];
   const data = await Therapist.getTherapists({
-    ids: JSON.stringify(primaryTherapistIds.concat(secondaryTherapistIds)),
+    ids: JSON.stringify([
+      ...primaryTherapistIds,
+      ...secondaryTherapistIds,
+      ...secondaryPhcWorkerIds,
+    ]),
   });
   if (data.success) {
     const roomIds = profile.chat_rooms;
