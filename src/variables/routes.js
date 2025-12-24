@@ -47,6 +47,7 @@ import TransferScreen from '../screen/Transfer';
 import ChangePasswordScreen from '../screen/UserProfile/ChangePassword';
 import CreateOrEditPatientScreen from '../screen/Patient/_Partials/CreateOrEdit';
 import PatientDetailScreen from '../screen/Patient/_Partials/PatientDetail';
+import PatientReferralScreen from '../screen/Patient/_Partials/PatientReferral';
 import InterviewScreen from '../screen/Interview';
 import InterviewListScreen from '../screen/Interview/InterviewList';
 import InterviewHistoryListScreen from '../screen/Interview/InterviewHistoryList';
@@ -229,6 +230,10 @@ export const patients = [
   {
     name: ROUTES.PATIENT_DETAIL,
     screen: PatientDetailScreen,
+  },
+  {
+    name: ROUTES.PATIENT_REFERRAL,
+    screen: PatientReferralScreen,
   },
   {
     name: ROUTES.USER_PROFILE_EDIT,

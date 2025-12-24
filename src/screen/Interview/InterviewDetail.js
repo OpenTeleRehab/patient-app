@@ -62,16 +62,14 @@ const calculateScoreBySection = (section, answers) => {
 };
 
 //Maping Score Function
-// const MapingScore = (sectionScore) => {
-//   const scoreMap = [
-//     {title: 'ABA', scores: [1, 2, 3]},
-//     {title: 'EEFF', scores: [4, 5, 6]},
-//     {title: 'GGG', scores: [7, 8, 9]},
-//     {title: '0000', scores: [21, 22, 23, 25, 24]},
-//   ];
-//   const found = scoreMap.find((item) => item.scores.includes(sectionScore));
-//   return found ? found.title : 'Testing';
-// };
+
+const mapingScore = (sectionTotalScore, actions) => {
+  const match = actions.find(
+    (item) => sectionTotalScore >= item.from && sectionTotalScore <= item.to,
+  );
+
+  return match ? match.action_text : null;
+};
 
 const InterviewDetail = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
@@ -158,18 +156,21 @@ const InterviewDetail = ({navigation, route}) => {
           {/* Show Summary and Point Section */}
           <View style={[styles.marginTopLg, styles.rowGap10]}>
             <Text style={[styles.textCenter, styles.fontWeightBold]}>
-              Summary Information
+              {translate('phc.interview_summary_information')}
             </Text>
             <View style={[styles.totalScoreCard, styles.rowGap5]}>
               <Text>{currentSection.title}</Text>
-              <Text>Total Score {totalScore}</Text>
+              <Text>
+                {translate('phc.interview_total_score', {
+                  total_score: totalScore,
+                })}
+              </Text>
             </View>
-            {/* Get Result after interview */}
-            {/* <View>
-              <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
-                <Text style={styles.textLight}>{MapingScore(totalScore)}</Text>
-              </View>
-            </View> */}
+            <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
+              <Text style={styles.textLight}>
+                {mapingScore(totalScore, currentSection.actions)}
+              </Text>
+            </View>
           </View>
           <View
             style={[

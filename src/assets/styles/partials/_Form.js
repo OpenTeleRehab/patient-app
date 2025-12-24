@@ -77,4 +77,9 @@ export default {
     paddingHorizontal: variables.spacingBase,
     marginBottom: 12,
   },
+  selectPickerContainerStyle: {
+    backgroundColor: variables.grey9,
+    borderRadius: variables.borderRadiusBase,
+    paddingHorizontal: variables.spacingBase,
+  },
 };

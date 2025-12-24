@@ -8,7 +8,7 @@ import QuestionRenderer, {
 import {Button, Icon} from 'react-native-elements';
 import styles from '../../assets/styles';
 import colors from '../../assets/styles/variables/colors';
-import {useFormContext} from 'react-hook-form';
+import {useFormContext, useWatch} from 'react-hook-form';
 
 const VisibleQuestion = ({
   mergedQuestions,
@@ -104,49 +104,51 @@ export default VisibleQuestion;
 
 const useVisibleQuestions = (questions) => {
   const {control, unregister} = useFormContext();
+  const formValues = useWatch({control});
 
   const [visibleQuestions, invisibleQuestions] = useMemo(() => {
-    if (!questions?.length) return [];
-    const _invisibleQuestions = [];
-    const _visibleQuestion = [];
-    questions.forEach((question, idx) => {
+    if (!questions?.length) return [[], []];
+
+    const _visible = [];
+    const _invisible = [];
+
+    questions.forEach((question) => {
       if (!question.logics?.length) {
-        _visibleQuestion.push(question);
+        _visible.push(question);
+        return;
+      }
+
+      const values = question.logics.map((logic) => {
+        const fieldName = getQuestionName(logic.target_question_id);
+        return formValues?.[fieldName];
+      });
+
+      const shouldSkip = question.logics.every(
+        (logic, i) => !evaluateLogic(logic, values[i]),
+      );
+
+      if (shouldSkip) {
+        _invisible.push(question);
       } else {
-        // get field values for this question's logics
-        const values = question.logics.map((logic) => {
-          const name = getQuestionName(logic.target_question_id);
-          return control._formValues?.[name]; // fallback for initial render
-        });
-
-        const shouldSkip = question.logics.every(
-          (logic, i) => !evaluateLogic(logic, values[i]),
-        );
-
-        if (shouldSkip) {
-          _invisibleQuestions.push(question);
-        } else {
-          _visibleQuestion.push(question);
-        }
+        _visible.push(question);
       }
     });
-    return [_visibleQuestion, _invisibleQuestions];
-  }, [questions, control._formValues]);
+
+    return [_visible, _invisible];
+  }, [questions, formValues]);
 
   const invisibleFieldNames = useMemo(() => {
     return invisibleQuestions
-      ?.map((q) => getQuestionName(q.id))
+      .map((q) => getQuestionName(q.id))
       .sort()
       .join(',');
   }, [invisibleQuestions]);
 
   useEffect(() => {
-    if (invisibleFieldNames) {
-      const fieldNames = invisibleFieldNames.split(',');
-      if (fieldNames.length) {
-        unregister(fieldNames);
-      }
-    }
+    if (!invisibleFieldNames) return;
+
+    const fields = invisibleFieldNames.split(',');
+    unregister(fields);
   }, [invisibleFieldNames, unregister]);
 
   return visibleQuestions;
