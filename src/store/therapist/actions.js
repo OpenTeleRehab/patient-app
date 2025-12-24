@@ -24,3 +24,15 @@ export const getPhcWorkerRequest = () => async (dispatch, getState) => {
     dispatch(mutation.phcWorkerFetchFailure());
   }
 };
+
+export const getReferralTherapistsRequest = () => async (dispatch, getState) => {
+  dispatch(mutation.referralTherapistsFetchRequest);
+  const {accessToken} = getState().user;
+  const data = await Therapist.getReferralTherapists(accessToken);
+  console.log('referral therapists data', data);
+  if (data.success) {
+    dispatch(mutation.referralTherapistsFetchSuccess(data.data));
+  } else {
+    dispatch(mutation.referralTherapistsFetchFailure());
+  }
+};

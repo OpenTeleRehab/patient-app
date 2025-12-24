@@ -17,3 +17,24 @@ export const CARE_PROVIDER_OPTIONS = [
     value: CARE_PROVIDER_TYPES.THERAPIST,
   },
 ];
+
+export const PHC_APPOINTMENT_RECIPIENT_TYPE = {
+  PATIENT: 'patient',
+  PHC_WORKER: 'phc_worker',
+  THERAPIST: 'therapist',
+};
+
+export const PHC_APPOINTMENT_OPTIONS = [
+  {
+    label: 'phc.appointment.patient',
+    value: PHC_APPOINTMENT_RECIPIENT_TYPE.PATIENT,
+  },
+  {
+    label: 'phc.appointment.phc_worker',
+    value: PHC_APPOINTMENT_RECIPIENT_TYPE.PHC_WORKER,
+  },
+  {
+    label: 'phc.appointment.therapist',
+    value: PHC_APPOINTMENT_RECIPIENT_TYPE.THERAPIST,
+  },
+];

@@ -2,10 +2,8 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 export const initialState = {
-  patients: [],
+  phcAppointmentsWithPatient: [],
+  phcAppointmentsWithTherapistWorker: [],
   filters: {},
-  allPatients: [],
-  patient: {},
-  listInfo: {},
   loading: false,
 };

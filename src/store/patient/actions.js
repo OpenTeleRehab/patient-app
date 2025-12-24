@@ -22,6 +22,17 @@ export const getPatientsListRequest =
     }
   };
 
+export const getAllPatientsRequest = (payload) => async (dispatch, getState) => {
+  dispatch(mutation.allPatientsFetchRequest());
+  const {accessToken} = getState().user;
+  const res = await Patient.getAllPatients(payload, accessToken);
+  if (res.success) {
+    dispatch(mutation.allPatientsFetchSuccess(res.data));
+  } else {
+    dispatch(mutation.allPatientsFetchFailure());
+  }
+};
+
 export const getPatientRequest = (id) => async (dispatch, getState) => {
   dispatch(mutation.patientFetchRequest());
   const {accessToken} = getState().user;
