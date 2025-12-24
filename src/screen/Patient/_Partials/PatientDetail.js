@@ -6,7 +6,11 @@ import {ScrollView, StatusBar, View, StyleSheet, Alert} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {formatDate} from '../../../utils/helper';
-import {getPatientRequest, activateDeactivateAccount, deletePatientRequest} from '../../../store/patient/actions';
+import {
+  getPatientRequest,
+  activateDeactivateAccount,
+  deletePatientRequest,
+} from '../../../store/patient/actions';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import {ROUTES} from '../../../variables/constants';
 import {useShowToast} from '../../../hook/useShowToast';
@@ -14,7 +18,11 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from '../../../../App';
 import Badge from '../../../components/Common/Badge';
 import {getTransferStatus} from '../../../utils/patient';
-import {TRANSFER_STATUS, REFERRAL_STATUS, THERAPIST_TYPES} from '../../../variables/constants';
+import {
+  TRANSFER_STATUS,
+  REFERRAL_STATUS,
+  THERAPIST_TYPES,
+} from '../../../variables/constants';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -37,7 +45,7 @@ const PatientDetail = ({navigation, route}) => {
     },
     {
       label: translate('phc.patient.therapist'),
-      value: referralTherapists
+      value: referralTherapists,
     },
     {
       label: translate('phc.patient.treatment_status'),
@@ -45,45 +53,63 @@ const PatientDetail = ({navigation, route}) => {
     },
     {
       label: translate('phc.patient.referral_status'),
-      value: patient?.referral_status ?
+      value: patient?.referral_status ? (
         <Badge
           color={
             patient.referral_status === REFERRAL_STATUS.INVITED
-            ? theme.colors.orangeDark : patient.referral_status === REFERRAL_STATUS.DECLINED ?
-            theme.colors.danger : theme.colors.primary
+              ? theme.colors.orangeDark
+              : patient.referral_status === REFERRAL_STATUS.DECLINED
+              ? theme.colors.danger
+              : theme.colors.primary
           }
-          value={translate(`phc.patient.referral_status.${patient.referral_status}`)}
+          value={translate(
+            `phc.patient.referral_status.${patient.referral_status}`,
+          )}
         />
-        : '',
+      ) : (
+        ''
+      ),
     },
     {
       label: translate('phc.patient.transfer_status'),
-      value: getTransferStatus(patientId) ?
-        <Badge color={
-          getTransferStatus(patientId) === TRANSFER_STATUS.DECLINED ? theme.colors.danger : theme.colors.orangeDark
-        }
-        value={translate(`phc.patient.transfer_status.${getTransferStatus(patientId)}`)}/>
-        : ''
-    }
+      value: getTransferStatus(patientId) ? (
+        <Badge
+          color={
+            getTransferStatus(patientId) === TRANSFER_STATUS.DECLINED
+              ? theme.colors.danger
+              : theme.colors.orangeDark
+          }
+          value={translate(
+            `phc.patient.transfer_status.${getTransferStatus(patientId)}`,
+          )}
+        />
+      ) : (
+        ''
+      ),
+    },
   ];
 
   const handleActivateDeactivateConfirm = () => {
-    dispatch(activateDeactivateAccount(patient.id, !patient.enabled)).then((response) => {
-      if (response.success) {
-        showToast(
-          translate(
-            patient.enabled ? 'phc.patient.message.account_deactivated' : 'phc.patient.message.account_activated',
-          ),
-          translate('phc.patient.title')
-        );
-        dispatch(getPatientRequest(patient.id));
-      } else {
-        showToast(
-          translate(translate(response.message)),
-          translate('phc.patient.title')
-        );
-      }
-    });
+    dispatch(activateDeactivateAccount(patient.id, !patient.enabled)).then(
+      (response) => {
+        if (response.success) {
+          showToast(
+            translate(
+              patient.enabled
+                ? 'phc.patient.message.account_deactivated'
+                : 'phc.patient.message.account_activated',
+            ),
+            translate('phc.patient.title'),
+          );
+          dispatch(getPatientRequest(patient.id));
+        } else {
+          showToast(
+            translate(translate(response.message)),
+            translate('phc.patient.title'),
+          );
+        }
+      },
+    );
   };
 
   const handleDeletePatientConfirm = () => {
@@ -91,13 +117,13 @@ const PatientDetail = ({navigation, route}) => {
       if (response.success) {
         showToast(
           translate('phc.patient.message.patient_account_deleted'),
-          translate('phc.patient.title')
+          translate('phc.patient.title'),
         );
         navigation.goBack();
       } else {
         showToast(
           translate(translate(response.message)),
-          translate('phc.patient.title')
+          translate('phc.patient.title'),
         );
       }
     });
@@ -105,9 +131,15 @@ const PatientDetail = ({navigation, route}) => {
 
   const handleDeactivateActivate = () => {
     Alert.alert(
-      translate(patient.enabled ? 'phc.patient.deactivate_account' : 'phc.patient.activate_account'),
       translate(
-        patient.enabled ? 'phc.patient.message.confirm_deactivate_account' : 'phc.patient.message.confirm_activate_account',
+        patient.enabled
+          ? 'phc.patient.deactivate_account'
+          : 'phc.patient.activate_account',
+      ),
+      translate(
+        patient.enabled
+          ? 'phc.patient.message.confirm_deactivate_account'
+          : 'phc.patient.message.confirm_activate_account',
       ),
       [
         {
@@ -176,7 +208,15 @@ const PatientDetail = ({navigation, route}) => {
                 {Array.isArray(item.value) ? (
                   <View style={componentStyles.badgeContainer}>
                     {item.value.map((value, itemIndex) => (
-                      <Badge key={itemIndex} value={`${value.last_name} ${value.first_name}`} color={value.type === THERAPIST_TYPES.LEAD ? theme.colors.primary : theme.colors.orangeDark2} />
+                      <Badge
+                        key={itemIndex}
+                        value={`${value.last_name} ${value.first_name}`}
+                        color={
+                          value.type === THERAPIST_TYPES.LEAD
+                            ? theme.colors.primary
+                            : theme.colors.orangeDark2
+                        }
+                      />
                     ))}
                   </View>
                 ) : (
@@ -201,6 +241,11 @@ const PatientDetail = ({navigation, route}) => {
             type="outline"
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_referral')}
+            onPress={() => {
+              navigation.navigate(ROUTES.PATIENT_REFERRAL, {
+                patientId,
+              });
+            }}
           />
           <Button
             type="outline"
@@ -209,16 +254,39 @@ const PatientDetail = ({navigation, route}) => {
           />
           {!showMore && (
             <Button
-              type="clear" containerStyle={styles.marginBottom}
+              type="clear"
+              containerStyle={styles.marginBottom}
               title={translate('phc.patient.button.more')}
               onPress={() => setShowMore(true)}
             />
           )}
           {showMore && (
             <>
-              <Button containerStyle={styles.marginBottom} title={translate('phc.patient.button.edit_patient')} onPress={handleEdit} />
-              <Button type="outline" buttonStyle={componentStyles.buttonStyle} titleStyle={componentStyles.titleButtonStyle} containerStyle={styles.marginBottom} title={translate(patient.enabled ? 'phc.patient.button.deactivate_account' : 'phc.patient.button.activate_account')} onPress={handleDeactivateActivate}/>
-              <Button type="clear" titleStyle={componentStyles.titleButtonStyle} containerStyle={styles.marginBottom} title={translate('phc.patient.button.delete_account')} disabled={!!patient.enabled} onPress={handleDeletePatient} />
+              <Button
+                containerStyle={styles.marginBottom}
+                title={translate('phc.patient.button.edit_patient')}
+                onPress={handleEdit}
+              />
+              <Button
+                type="outline"
+                buttonStyle={componentStyles.buttonStyle}
+                titleStyle={componentStyles.titleButtonStyle}
+                containerStyle={styles.marginBottom}
+                title={translate(
+                  patient.enabled
+                    ? 'phc.patient.button.deactivate_account'
+                    : 'phc.patient.button.activate_account',
+                )}
+                onPress={handleDeactivateActivate}
+              />
+              <Button
+                type="clear"
+                titleStyle={componentStyles.titleButtonStyle}
+                containerStyle={styles.marginBottom}
+                title={translate('phc.patient.button.delete_account')}
+                disabled={!!patient.enabled}
+                onPress={handleDeletePatient}
+              />
             </>
           )}
         </View>

@@ -61,6 +61,16 @@ const calculateScoreBySection = (section, answers) => {
   return totalScore;
 };
 
+//Maping Score Function
+
+const mapingScore = (sectionTotalScore, actions) => {
+  const match = actions.find(
+    (item) => sectionTotalScore >= item.from && sectionTotalScore <= item.to,
+  );
+
+  return match ? match.action_text : null;
+};
+
 const InterviewDetail = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -146,20 +156,20 @@ const InterviewDetail = ({navigation, route}) => {
           {/* Show Summary and Point Section */}
           <View style={[styles.marginTopLg, styles.rowGap10]}>
             <Text style={[styles.textCenter, styles.fontWeightBold]}>
-              Summary Information
+              {translate('phc.interview_summary_information')}
             </Text>
             <View style={[styles.totalScoreCard, styles.rowGap5]}>
               <Text>{currentSection.title}</Text>
-              <Text>Total Score {totalScore}</Text>
+              <Text>
+                {translate('phc.interview_total_score', {
+                  total_score: totalScore,
+                })}
+              </Text>
             </View>
-            <View>
-              <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
-                <Text style={styles.textLight}>
-                  Diagnosing brain health involves a multi-faceted approach
-                  using neurological exams, cognitive tests, brain imaging (MRI,
-                  CT, PET),
-                </Text>
-              </View>
+            <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
+              <Text style={styles.textLight}>
+                {mapingScore(totalScore, currentSection.actions)}
+              </Text>
             </View>
           </View>
           <View

@@ -35,6 +35,7 @@ export const ROUTES = {
   ACHIEVEMENT: 'Achievement',
   CREATE_EDIT_PATIENT: 'CreateOrEditPatient',
   PATIENT_DETAIL: 'PatientDetail',
+  PATIENT_REFERRAL: 'PatientReferral',
   INTERVIEW: 'Interview',
   INTERVIEW_STACK: 'InterviewStack',
   INTERVIEW_LIST: 'InterviewList',
@@ -124,4 +125,3 @@ export const THERAPIST_TYPES = {
   LEAD: 'lead',
   SUPPLEMENTARY: 'supplementary',
 };
-
