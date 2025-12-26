@@ -22,8 +22,31 @@ const provincesFetchFailure = () => {
   };
 };
 
+const provincesByUserCountryFetchRequest = () => {
+  return {
+    type: 'PROVINCES_BY_USER_COUNTRY_FETCH_REQUESTED',
+  };
+};
+
+const provincesByUserCountryFetchSuccess = (data, info) => {
+  return {
+    type: 'PROVINCES_BY_USER_COUNTRY_FETCH_SUCCEED',
+    data,
+    info,
+  };
+};
+
+const provincesByUserCountryFetchFailure = () => {
+  return {
+    type: 'PROVINCES_BY_USER_COUNTRY_FETCH_FAILED',
+  };
+};
+
 export const mutation = {
   provincesFetchRequest,
   provincesFetchSuccess,
   provincesFetchFailure,
+  provincesByUserCountryFetchRequest,
+  provincesByUserCountryFetchSuccess,
+  provincesByUserCountryFetchFailure,
 };

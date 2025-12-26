@@ -9,6 +9,10 @@ export const clinic = (state = initialState, action) => {
       return Object.assign({}, state, {
         clinic: action.data,
       });
+    case 'CLINIC_LIST_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        clinicList: action.data,
+      });
     default:
       return state;
   }

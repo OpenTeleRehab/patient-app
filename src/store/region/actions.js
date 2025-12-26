@@ -4,10 +4,7 @@
 import {Region} from '../../services/region';
 import {mutation} from './mutations';
 
-export const getRegionsRequest = () => async (
-  dispatch,
-  getState,
-) => {
+export const getRegionsRequest = () => async (dispatch, getState) => {
   dispatch(mutation.regionsFetchRequest());
   const {accessToken} = getState().user;
   const res = await Region.getRegions(accessToken);

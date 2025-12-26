@@ -19,8 +19,30 @@ const clinicFetchFailure = () => {
   };
 };
 
+const clinicListFetchRequest = () => {
+  return {
+    type: 'CLINIC_LIST_FETCH_REQUESTED',
+  };
+};
+
+const clinicListFetchSuccess = (data) => {
+  return {
+    type: 'CLINIC_LIST_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const clinicListFetchFailure = () => {
+  return {
+    type: 'CLINIC_LIST_FETCH_FAILED',
+  };
+};
+
 export const mutation = {
   clinicFetchRequest,
   clinicFetchSuccess,
   clinicFetchFailure,
+  clinicListFetchRequest,
+  clinicListFetchSuccess,
+  clinicListFetchFailure,
 };

@@ -3,4 +3,5 @@
  */
 export const initialState = {
   provinces: [],
+  provincesByUserCountry: [],
 };

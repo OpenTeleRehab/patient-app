@@ -4,10 +4,7 @@
 import {Province} from '../../services/province';
 import {mutation} from './mutations';
 
-export const getProvincesRequest = () => async (
-  dispatch,
-  getState,
-) => {
+export const getProvincesRequest = () => async (dispatch, getState) => {
   dispatch(mutation.provincesFetchRequest());
   const {accessToken} = getState().user;
   const res = await Province.getProvinces(accessToken);
@@ -17,3 +14,15 @@ export const getProvincesRequest = () => async (
     dispatch(mutation.provincesFetchFailure());
   }
 };
+
+export const getProvincesByUserCountryRequest =
+  () => async (dispatch, getState) => {
+    dispatch(mutation.provincesByUserCountryFetchRequest());
+    const {accessToken} = getState().user;
+    const res = await Province.getProvincesByUserCountry(accessToken);
+    if (res) {
+      dispatch(mutation.provincesByUserCountryFetchSuccess(res));
+    } else {
+      dispatch(mutation.provincesByUserCountryFetchFailure());
+    }
+  };

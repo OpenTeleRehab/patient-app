@@ -13,3 +13,15 @@ export const getClinicRequest = (payload) => async (dispatch) => {
     dispatch(mutation.clinicFetchFailure());
   }
 };
+
+export const getClinicListRequest =
+  (countryId) => async (dispatch, getState) => {
+    dispatch(mutation.clinicListFetchRequest());
+    const {accessToken} = getState().user;
+    const res = await Clinic.getClinicList(countryId, accessToken);
+    if (res.success) {
+      dispatch(mutation.clinicListFetchSuccess(res.data));
+    } else {
+      dispatch(mutation.clinicListFetchFailure());
+    }
+  };
