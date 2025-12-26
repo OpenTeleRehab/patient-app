@@ -16,7 +16,7 @@ import {Platform, View, Keyboard} from 'react-native';
 import {CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {sendNewMessage} from '../../../utils/rocketchat';
-import {updateIndicatorList} from '../../../store/indicator/actions';
+import {updateIndicatorList,} from '../../../store/indicator/actions';
 import {mutation} from '../../../store/rocketchat/mutations';
 import MediaPicker from '../../../components/MediaPicker';
 import {
@@ -32,15 +32,9 @@ const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
   const localize = useSelector((state) => state.localize);
-  const {
-    chatAuth,
-    messages,
-    selectedRoom,
-    chatRooms,
-    offlineMessages,
-  } = useSelector((state) => state.rocketchat);
-  const {token, userId} = chatAuth || {};
-  const {isOnlineMode, isOnChatScreen, hasUnreadMessage} = useSelector(
+  const {chatAuth, messages, selectedRoom, chatRooms, offlineMessages} =
+    useSelector((state) => state.rocketchat);
+  const {isOnlineMode, isOnChatScreen} = useSelector(
     (state) => state.indicator,
   );
   const profile = useSelector((state) => state.user.profile);
@@ -69,34 +63,26 @@ const ChatPanel = ({navigation, theme}) => {
   }, [navigation]);
 
   useEffect(() => {
-    if (isOnlineMode) {
-      if (isOnChatScreen) {
-        Rocketchat.markMessagesAsRead(
-          selectedRoom.rid,
-          chatAuth.userId,
-          chatAuth.token,
-        ).then((res) => {
-          if (res.success) {
-            dispatch(updateIndicatorList({hasUnreadMessage: false}));
-          }
-        });
-      }
-
-      setAllMessages(messages);
-    } else {
-      const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
-      if (fIndex !== -1) {
-        setAllMessages(chatRooms[fIndex].messages);
-      }
+    if (isOnlineMode && isOnChatScreen) {
+      Rocketchat.markMessagesAsRead(
+        selectedRoom.rid,
+        chatAuth.userId,
+        chatAuth.token,
+      ).then((res) => {
+        if (res.success) {
+          dispatch(mutation.updateUnreadSuccess(selectedRoom.rid));
+        }
+      });
     }
+    setAllMessages(messages);
   }, [
+    chatAuth.token,
+    chatAuth.userId,
     dispatch,
-    chatRooms,
-    selectedRoom,
-    messages,
-    isOnlineMode,
-    chatAuth,
     isOnChatScreen,
+    isOnlineMode,
+    messages,
+    selectedRoom.rid,
   ]);
 
   useEffect(() => {
@@ -119,17 +105,7 @@ const ChatPanel = ({navigation, theme}) => {
     if (isOnChatScreen !== isFocused) {
       dispatch(updateIndicatorList({isOnChatScreen: isFocused}));
     }
-  }, [
-    dispatch,
-    isFocused,
-    isOnChatScreen,
-    hasUnreadMessage,
-    chatSocket,
-    selectedRoom,
-    profile,
-    userId,
-    token,
-  ]);
+  }, [dispatch, isFocused, isOnChatScreen]);
 
   const onSend = (newMessage = []) => {
     newMessage[0].pending = true;
@@ -205,7 +181,7 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const renderFooter = () => {
-    if (selectedRoom.u.status === CHAT_USER_STATUS.OFFLINE) {
+    if (selectedRoom.u?.status === CHAT_USER_STATUS.OFFLINE) {
       return (
         <View style={[styles.flexCenter, styles.paddingXLg, styles.paddingYMd]}>
           <Text style={styles.chatTherapistNotOnlineText}>

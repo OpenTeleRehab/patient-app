@@ -8,6 +8,14 @@ const login = async (user, password) => {
   return await callChatApi('/login', '', '', body, 'post');
 };
 
+const getSubscriptions = async (userId, authToken) => {
+  const response = await callChatApi('/subscriptions.get', userId, authToken);
+  if (response.success) {
+    return response.update;
+  }
+  return [];
+};
+
 const getUserStatus = async (chatUsernames, userId, authToken) => {
   const fields = JSON.stringify({status: 1});
   const query = JSON.stringify({username: {$in: chatUsernames}});
@@ -54,6 +62,7 @@ const sendAttachmentMessage = async (roomId, userId, authToken, attachment) => {
 
 export const Rocketchat = {
   login,
+  getSubscriptions,
   getUserStatus,
   getLastMessages,
   getMessageCounters,

@@ -30,7 +30,7 @@ if (Platform.OS === 'android') {
 const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
   const [code, setCode] = useState('');
-  const formattedNumber = useSelector((state) => state.user.phone);
+  const formattedNumber = useSelector((state) => state.register.phone);
   const dialCode = useSelector((state) => state.user.dial_code);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);

@@ -39,6 +39,13 @@ export const rocketchat = (state = initialState, action) => {
         messages: action.data,
       });
     }
+    case 'UPDATE_UNREAD_SUCCEED': {
+      return Object.assign({}, state, {
+        chatRooms: state.chatRooms.map((room) =>
+          room.rid === action.rid ? {...room, unreads: false} : room,
+        ),
+      });
+    }
     case 'SET_OFFLINE_MESSAGES_SUCCEED': {
       return Object.assign({}, state, {
         offlineMessages: action.data,
