@@ -10,7 +10,10 @@ import SelectPicker from '../../../components/Common/SelectPicker';
 import {Button} from 'react-native-elements';
 import colors from '../../../assets/styles/variables/colors';
 import HelperText from '../../../components/ScreeningQuestionnaire/HelperText';
-import {getPatientRequest} from '../../../store/patient/actions';
+import {
+  getPatientRequest,
+  getPatientsListRequest,
+} from '../../../store/patient/actions';
 import {getRegionsRequest} from '../../../store/region/actions';
 import {getProvincesByUserCountryRequest} from '../../../store/province/actions';
 import {getClinicListRequest} from '../../../store/clinic/actions';
@@ -115,6 +118,13 @@ const PatientReferral = ({navigation, route}) => {
       reset({});
       setIsSubmitSuccessful(false);
       dispatch(getPatientRequest(patient.id));
+      dispatch(
+        getPatientsListRequest({
+          page_size: 10,
+          page: 1,
+          filters: [],
+        }),
+      );
       onBack();
     }
   }, [isSubmitSuccessful, reset, navigation, patient, dispatch, onBack]);
@@ -126,7 +136,7 @@ const PatientReferral = ({navigation, route}) => {
           reset();
           onBack();
         }}
-        title={translate('phc.patient.detail')}
+        title={translate('phc.patient.referral')}
         backgroundPrimary={true}
       />
       <ScrollView contentContainerStyle={styles.mainContainerLightPaddingMd}>
@@ -135,14 +145,13 @@ const PatientReferral = ({navigation, route}) => {
           <Text style={[styles.fontWeightBold, styles.fontSizeLg]}>
             {patient?.last_name} {patient?.first_name}
           </Text>
-          <Text>Refer the patient to a rehab service within the country</Text>
-
+          <Text>{translate('phc.referral_patient_description')}</Text>
           <SelectPickerField
             control={control}
             errors={errors.region_id}
             name="region_id"
-            title="Region"
-            placeholderTitle="Select Region ..."
+            title={translate('phc.patient.region')}
+            placeholderTitle={translate('phc.select_region')}
             isRequire={true}
             itemList={regionOptions}
           />
@@ -150,24 +159,27 @@ const PatientReferral = ({navigation, route}) => {
             control={control}
             errors={errors.province_id}
             name="province_id"
-            title="Province"
-            placeholderTitle="Select Province ..."
+            title={translate('phc.patient.province')}
+            placeholderTitle={translate('phc.select_province')}
             itemList={provinceOptions}
           />
           <SelectPickerField
             control={control}
             errors={errors.to_clinic_id}
             name="to_clinic_id"
-            title="Rehab Service"
-            placeholderTitle="Select Rehab Service ..."
+            title={translate('phc.rehab_service')}
+            placeholderTitle={translate('phc.select_rehab_service')}
             isRequire={true}
             itemList={clinicOptions}
           />
         </View>
         <View style={[styles.rowGap10, styles.marginTopMd]}>
-          <Button title={'Refer'} onPress={handleSubmit(onSubmit)} />
           <Button
-            title={'Cancel'}
+            title={translate('phc.refer')}
+            onPress={handleSubmit(onSubmit)}
+          />
+          <Button
+            title={translate('common.cancel')}
             type="outline"
             onPress={() => {
               reset();

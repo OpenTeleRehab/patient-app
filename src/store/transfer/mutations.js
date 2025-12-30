@@ -21,8 +21,28 @@ const transfersFetchFailure = () => {
   };
 };
 
+const createTransferPatientRequest = () => {
+  return {
+    type: 'CREATE_TRANSFER_PATIENT_REQUESTED',
+  };
+};
+
+const createTransferPatientSuccess = () => {
+  return {
+    type: 'CREATE_TRANSFER_PATIENT_SUCCEED',
+  };
+};
+const createTransferPatientFailure = () => {
+  return {
+    type: 'CREATE_TRANSFER_PATIENT_FAILED',
+  };
+};
+
 export const mutation = {
   transfersFetchRequest,
   transfersFetchSuccess,
   transfersFetchFailure,
+  createTransferPatientRequest,
+  createTransferPatientSuccess,
+  createTransferPatientFailure,
 };
