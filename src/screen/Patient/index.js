@@ -2,21 +2,14 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {
-  FlatList,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import {ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
-import {Icon, BottomSheet} from 'react-native-elements';
+import {BottomSheet, Icon} from 'react-native-elements';
 import {theme} from '../../../App';
 import {ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getPatientsListRequest} from '../../store/patient/actions';
 import PatientCard from './_Partials/PatientCard';
 import {getTransfersRequest} from '../../store/transfer/actions';
@@ -98,7 +91,7 @@ const Patient = ({navigation}) => {
           <View style={componentStyles.titleContainerStyle}>
             <TouchableOpacity onPress={() => setShowFilter(true)}>
               <Icon name="tune" size={25} color={theme.colors.primary} />
-              {filters.length > 0 && (
+              {filters?.length > 0 && (
                 <View style={componentStyles.indicatorStyle} />
               )}
             </TouchableOpacity>
@@ -133,8 +126,12 @@ const Patient = ({navigation}) => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-      <BottomSheet isVisible={showFilter}>
-        <Filter filters={currentFilters} setFilters={setCurrentFilters} setShowFilter={setShowFilter} />
+      <BottomSheet isVisible={showFilter} modalProps={{}}>
+        <Filter
+          filters={currentFilters}
+          setFilters={setCurrentFilters}
+          setShowFilter={setShowFilter}
+        />
       </BottomSheet>
     </>
   );
