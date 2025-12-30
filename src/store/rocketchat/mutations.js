@@ -11,6 +11,10 @@ const chatUserLoginSuccess = (data) => ({
   data,
 });
 
+const getChatRoomsRequest = () => ({
+  type: 'GET_CHAT_ROOMS_REQUEST',
+});
+
 const getChatRoomsSuccess = (data) => ({
   type: 'GET_CHAT_ROOMS_SUCCEED',
   data,
@@ -34,9 +38,9 @@ const selectRoomSuccess = (data) => ({
   data,
 });
 
-const updateUnreadSuccess = (data) => ({
+const updateUnreadSuccess = (rid) => ({
   type: 'UPDATE_UNREAD_SUCCEED',
-  data,
+  rid,
 });
 
 const getMessagesInRoomSuccess = (data) => ({
@@ -93,6 +97,7 @@ const clearOfflineMessagesSuccess = () => ({
 export const mutation = {
   setChatSubscribeIdsSuccess,
   chatUserLoginSuccess,
+  getChatRoomsRequest,
   getChatRoomsSuccess,
   getChatRoomsFailure,
   getLastMessagesSuccess,

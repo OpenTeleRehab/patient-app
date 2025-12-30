@@ -98,6 +98,15 @@ const tabs = [
     badge: 'noBadge',
     group: USER_ROLE.HEALTH_WORKER,
   },
+  {
+    name: ROUTES.CHAT_ROOM_LIST,
+    screen: MessageTab,
+    label: 'tab.messages',
+    icon: messageIcon,
+    activeIcon: messageActiveIcon,
+    badge: 'hasUnreadMessage',
+    group: USER_ROLE.HEALTH_WORKER,
+  },
 ];
 
 const iconRenderer = (route, focused) => (

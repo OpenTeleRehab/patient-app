@@ -19,7 +19,7 @@ const Survey = () => {
   const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
-    if (publishSurveys.length) {
+    if (publishSurveys?.length) {
       setSurveys(publishSurveys);
     }
   }, [publishSurveys]);

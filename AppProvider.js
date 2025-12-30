@@ -19,7 +19,6 @@ import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
 import {
   initialChatSocket,
-  loadHistoryInRoom,
   sendNewMessage,
   updateMessage,
 } from './src/utils/rocketchat';
@@ -61,7 +60,6 @@ const AppProvider = ({children}) => {
   const {messages} = useSelector((state) => state.translation);
   const {
     messages: chatMessages,
-    chatAuth,
     chatRooms,
     selectedRoom,
     offlineMessages,
@@ -244,14 +242,15 @@ const AppProvider = ({children}) => {
         // Request phone calls permission
         callPermission();
       }
+
+      dispatch(getChatRooms(chatSocket));
     }
   }, [dispatch, isOnline, profile, appStateVisible]);
 
   useEffect(() => {
-    if (chatAuth !== undefined) {
-      dispatch(getChatRooms());
-    }
-  }, [dispatch, chatAuth]);
+    const hasUnreadMessage = chatRooms.some((room) => room.unreads);
+    dispatch(updateIndicatorList({hasUnreadMessage}));
+  }, [dispatch, chatRooms]);
 
   useEffect(() => {
     if (
@@ -346,20 +345,6 @@ const AppProvider = ({children}) => {
       }
     }
   }, [dispatch, profile, isOnline, socket, accessToken]);
-
-  useEffect(() => {
-    if (
-      accessToken &&
-      chatSocket !== null &&
-      chatSocket.readyState === chatSocket.OPEN &&
-      profile.id &&
-      selectedRoom
-    ) {
-      chatRooms.forEach((item) => {
-        loadHistoryInRoom(chatSocket, item.rid, profile.id);
-      });
-    }
-  }, [accessToken, selectedRoom, profile, chatRooms]);
 
   useEffect(() => {
     if (isOnline && isDataUpToDate === false) {
