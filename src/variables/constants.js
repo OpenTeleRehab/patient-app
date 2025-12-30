@@ -36,6 +36,7 @@ export const ROUTES = {
   CREATE_EDIT_PATIENT: 'CreateOrEditPatient',
   PATIENT_DETAIL: 'PatientDetail',
   PATIENT_REFERRAL: 'PatientReferral',
+  PATIENT_TRANSFER: 'PatientTransfer',
   INTERVIEW: 'Interview',
   INTERVIEW_STACK: 'InterviewStack',
   INTERVIEW_LIST: 'InterviewList',

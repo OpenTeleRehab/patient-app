@@ -4,10 +4,7 @@
 import {Transfer} from '../../services/transfer';
 import {mutation} from './mutations';
 
-export const getTransfersRequest = () => async (
-  dispatch,
-  getState,
-) => {
+export const getTransfersRequest = () => async (dispatch, getState) => {
   dispatch(mutation.transfersFetchRequest());
   const {accessToken} = getState().user;
   const res = await Transfer.getTransfers(accessToken);
@@ -17,3 +14,16 @@ export const getTransfersRequest = () => async (
     dispatch(mutation.transfersFetchFailure());
   }
 };
+
+export const createTransferPatientRequest =
+  (transferData) => async (dispatch, getState) => {
+    dispatch(mutation.createTransferPatientRequest());
+    const {accessToken} = getState().user;
+    const res = await Transfer.createTransferPatient(transferData, accessToken);
+    if (res.success) {
+      dispatch(mutation.createTransferPatientSuccess());
+      return res;
+    } else {
+      dispatch(mutation.createTransferPatientFailure());
+    }
+  };

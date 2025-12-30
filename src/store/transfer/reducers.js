@@ -9,6 +9,17 @@ export const transfer = (state = initialState, action) => {
       return Object.assign({}, state, {
         transfers: action.data,
       });
+    case 'CREATE_TRANSFER_PATIENT_REQUESTED':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'CREATE_TRANSFER_PATIENT_SUCCEED':
+    case 'CREATE_TRANSFER_PATIENT_FAILED':
+      return {
+        ...state,
+        loading: false,
+      };
     default:
       return state;
   }

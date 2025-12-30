@@ -255,6 +255,11 @@ const PatientDetail = ({navigation, route}) => {
             type="outline"
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_transfer')}
+            onPress={() => {
+              navigation.navigate(ROUTES.PATIENT_TRANSFER, {
+                patientId,
+              });
+            }}
           />
           {!showMore && (
             <Button
