@@ -9,6 +9,11 @@ export const province = (state = initialState, action) => {
       return Object.assign({}, state, {
         provinces: action.data,
       });
+    case 'PROVINCES_BY_USER_COUNTRY_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        provincesByUserCountry: action.data,
+      });
+
     default:
       return state;
   }

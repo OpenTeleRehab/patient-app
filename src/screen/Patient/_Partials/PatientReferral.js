@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -11,66 +11,120 @@ import {Button} from 'react-native-elements';
 import colors from '../../../assets/styles/variables/colors';
 import HelperText from '../../../components/ScreeningQuestionnaire/HelperText';
 import {getPatientRequest} from '../../../store/patient/actions';
+import {getRegionsRequest} from '../../../store/region/actions';
+import {getProvincesByUserCountryRequest} from '../../../store/province/actions';
+import {getClinicListRequest} from '../../../store/clinic/actions';
+import {createReferralRequest} from '../../../store/referral/actions';
+import {ROUTES} from '../../../variables/constants';
 
 const PatientReferral = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const dispatch = useDispatch();
   const translate = getTranslate(localize);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
+  const {profile} = useSelector((state) => state.user);
   const {patientId} = route.params;
-  const {patient} = useSelector((state) => state.patient);
-  console.log('patient', patient);
+  const {patients} = useSelector((state) => state.patient);
+  const {regions} = useSelector((state) => state.region);
+  const {provincesByUserCountry} = useSelector((state) => state.province);
+  const {clinicList} = useSelector((state) => state.clinic);
 
-  useEffect(() => {
-    dispatch(getPatientRequest(patientId));
-  }, [dispatch, patientId]);
-
-  console.log('Patient ID', patientId);
+  const patient = useMemo(() => {
+    return patients.find((p) => p.id === patientId) || {};
+  }, [patients, patientId]);
 
   const {
     handleSubmit,
     control,
     formState: {errors},
     reset,
-  } = useForm();
+    watch,
+  } = useForm({
+    defaultValues: {
+      region_id: profile.region_id,
+      province_id: profile.province_id,
+    },
+  });
 
-  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
-  const onSubmit = (data) => {
-    console.log('Show Submt Data', data);
-    //Call to referral api
-    //Alert to Show Sucess
-    Alert.alert(
-      translate('refer.patient').toString(),
-      translate('success.message.refer.patient').toString(),
-      [
-        {
-          text: translate('common.ok').toString(),
-          onPress: () => {
-            setIsSubmitSuccessful(true);
+  useEffect(() => {
+    dispatch(getPatientRequest(patientId));
+    dispatch(getRegionsRequest());
+    dispatch(getProvincesByUserCountryRequest());
+    dispatch(getClinicListRequest(profile.country_id));
+  }, [dispatch, patientId, profile.country_id]);
+
+  const regionId = watch('region_id');
+  const provinceId = watch('province_id');
+
+  const regionOptions = useMemo(() => {
+    return (regions ?? []).map((p) => ({label: p.name, value: p.id}));
+  }, [regions]);
+
+  const provinceOptions = useMemo(() => {
+    const list = provincesByUserCountry?.data ?? [];
+    return list
+      .filter((p) => p.region_id === regionId)
+      .map((p) => ({label: p.name, value: p.id}));
+  }, [provincesByUserCountry, regionId]);
+
+  const clinicOptions = useMemo(() => {
+    return clinicList
+      .filter((c) => c.province.id === provinceId)
+      .map((c) => ({label: c.name, value: c.id}));
+  }, [clinicList, provinceId]);
+
+  const onSubmit = async (data) => {
+    const dataPayload = {
+      patient_id: patientId,
+      to_clinic_id: data.to_clinic_id,
+    };
+    const res = await dispatch(createReferralRequest(dataPayload));
+    if (res) {
+      Alert.alert(
+        translate('phc.patient.button.patient_referral').toString(),
+        translate('success_message.referral.create').toString(),
+        [
+          {
+            text: translate('common.ok').toString(),
+            onPress: () => {
+              setIsSubmitSuccessful(true);
+            },
           },
+        ],
+        {
+          cancelable: false,
         },
-      ],
-      {
-        cancelable: false,
-      },
-    );
-
-    //Alert to Show Error
+      );
+    }
   };
+
+  const onBack = useCallback(() => {
+    navigation.navigate(ROUTES.PATIENT_DETAIL, {
+      patientId: patient.id,
+      treatmentPlan: patient.ongoingTreatmentPlan.length
+        ? patient.ongoingTreatmentPlan[0]
+        : patient.upcomingTreatmentPlan
+        ? patient.upcomingTreatmentPlan
+        : patient.lastTreatmentPlan,
+      referralTherapists: patient.referral_therapists,
+    });
+  }, [navigation, patient]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({});
       setIsSubmitSuccessful(false);
-      navigation.goBack();
+      dispatch(getPatientRequest(patient.id));
+      onBack();
     }
-  }, [isSubmitSuccessful, reset, navigation]);
+  }, [isSubmitSuccessful, reset, navigation, patient, dispatch, onBack]);
 
   return (
     <>
       <HeaderBar
         onGoBack={() => {
           reset();
-          navigation.goBack();
+          onBack();
         }}
         title={translate('phc.patient.detail')}
         backgroundPrimary={true}
@@ -85,40 +139,29 @@ const PatientReferral = ({navigation, route}) => {
 
           <SelectPickerField
             control={control}
-            errors={errors.region}
-            name="region"
+            errors={errors.region_id}
+            name="region_id"
             title="Region"
             placeholderTitle="Select Region ..."
             isRequire={true}
-            itemList={[
-              {label: 'Hi', value: 'hi'},
-              {label: 'Oo', value: 'Oo'},
-            ]}
+            itemList={regionOptions}
           />
           <SelectPickerField
             control={control}
-            errors={errors.province}
-            name="province"
+            errors={errors.province_id}
+            name="province_id"
             title="Province"
             placeholderTitle="Select Province ..."
-            itemList={[
-              {label: 'testing', value: 'testing'},
-              {label: 'Option1', value: 'option1'},
-              {label: 'Option2', value: 'option2'},
-            ]}
+            itemList={provinceOptions}
           />
           <SelectPickerField
             control={control}
-            errors={errors.rehab_service}
-            name="rehab_service"
+            errors={errors.to_clinic_id}
+            name="to_clinic_id"
             title="Rehab Service"
             placeholderTitle="Select Rehab Service ..."
             isRequire={true}
-            itemList={[
-              {label: 'Option A', value: 'A'},
-              {label: 'Option B', value: 'B'},
-              {label: 'Option C', value: 'C'},
-            ]}
+            itemList={clinicOptions}
           />
         </View>
         <View style={[styles.rowGap10, styles.marginTopMd]}>
@@ -127,7 +170,8 @@ const PatientReferral = ({navigation, route}) => {
             title={'Cancel'}
             type="outline"
             onPress={() => {
-              navigation.goBack();
+              reset();
+              onBack();
             }}
           />
         </View>
@@ -143,6 +187,7 @@ export const SelectPickerField = ({
   errors,
   name,
   title,
+  itemList,
   placeholderTitle,
   isRequire,
 }) => {
@@ -167,10 +212,7 @@ export const SelectPickerField = ({
                 color: colors.grey,
               }}
               value={value ?? ''}
-              items={[
-                {label: 'Hi', value: 'hi'},
-                {label: 'Oo', value: 'jj'},
-              ]}
+              items={itemList}
               onValueChange={(val) => onChange(val)}
             />
           )}

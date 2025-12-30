@@ -239,6 +239,10 @@ const PatientDetail = ({navigation, route}) => {
           />
           <Button
             type="outline"
+            disabled={
+              patient?.referral_status === REFERRAL_STATUS.INVITED ||
+              patient?.referral_status === REFERRAL_STATUS.ACCEPTED
+            }
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_referral')}
             onPress={() => {

@@ -2,7 +2,14 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {BottomSheet, Icon} from 'react-native-elements';
@@ -19,7 +26,9 @@ const Patient = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patients, filters, listInfo, loading} = useSelector((state) => state.patient);
+  const {patients, filters, listInfo, loading} = useSelector(
+    (state) => state.patient,
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [currentFilters, setCurrentFilters] = useState(filters);
   const [showFilter, setShowFilter] = useState(false);
@@ -34,7 +43,13 @@ const Patient = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getPatientsListRequest({page_size: pageSize, page: 1, filters: currentFilters}));
+    dispatch(
+      getPatientsListRequest({
+        page_size: pageSize,
+        page: 1,
+        filters: currentFilters,
+      }),
+    );
   }, [dispatch, pageSize, currentFilters]);
 
   const loadMore = () => {
