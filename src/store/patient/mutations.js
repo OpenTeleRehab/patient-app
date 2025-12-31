@@ -7,13 +7,10 @@ const patientsFetchRequest = () => {
   };
 };
 
-const patientsFetchSuccess = (data, page, info, filters) => {
+const patientsFetchSuccess = (data) => {
   return {
     type: 'PATIENTS_FETCH_SUCCEED',
     data,
-    page,
-    info,
-    filters,
   };
 };
 
@@ -156,6 +153,13 @@ const deletePendingSupplementaryFailure = () => {
   };
 };
 
+const filtersUpdateSuccess = (data) => {
+  return {
+    type: 'FILTERS_UPDATE_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   patientsFetchRequest,
   patientsFetchSuccess,
@@ -181,4 +185,5 @@ export const mutation = {
   deletePendingSupplementaryRequest,
   deletePendingSupplementarySuccess,
   deletePendingSupplementaryFailure,
+  filtersUpdateSuccess,
 };

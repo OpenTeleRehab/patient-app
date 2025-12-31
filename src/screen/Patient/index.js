@@ -3,7 +3,6 @@
  */
 import React, {useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -21,22 +20,20 @@ import {getPatientsListRequest} from '../../store/patient/actions';
 import PatientCard from './_Partials/PatientCard';
 import {getTransfersRequest} from '../../store/transfer/actions';
 import Filter from './_Partials/Filter';
+import _ from 'lodash';
+import moment from 'moment';
+import {getTreatmentStatus} from '../../utils/patient';
 
 const Patient = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patients, filters, listInfo, loading} = useSelector(
+  const {patients, filters} = useSelector(
     (state) => state.patient,
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentFilters, setCurrentFilters] = useState(filters);
+  const [currentFilters, setCurrentFilters] = useState({});
   const [showFilter, setShowFilter] = useState(false);
-  const pageSize = 10;
-
-  useEffect(() => {
-    setCurrentPage(listInfo.current_page);
-  }, [listInfo.current_page]);
+  const [patientList, setPatientList] = useState([]);
 
   useEffect(() => {
     dispatch(getTransfersRequest());
@@ -44,39 +41,75 @@ const Patient = ({navigation}) => {
 
   useEffect(() => {
     dispatch(
-      getPatientsListRequest({
-        page_size: pageSize,
-        page: 1,
-        filters: currentFilters,
-      }),
+      getPatientsListRequest(),
     );
-  }, [dispatch, pageSize, currentFilters]);
+  }, [dispatch]);
 
-  const loadMore = () => {
-    if (loading) {
-      return;
+  useEffect(() => {
+    if (patients) {
+      setPatientList(patients);
     }
-    if (currentPage < listInfo.last_page) {
-      dispatch(
-        getPatientsListRequest({
-          page_size: pageSize,
-          page: currentPage + 1,
-          filters: currentFilters,
-        }),
-      );
-    }
-  };
+  }, [patients]);
 
-  const renderFooter = () => {
-    if (!loading) {
-      return null;
+  useEffect(() => {
+    setCurrentFilters(filters);
+  }, [filters]);
+
+  useEffect(() => {
+    if (currentFilters && !_.isEmpty(currentFilters)) {
+      const patientData = patients.filter(patient => {
+        if (currentFilters.first_name) {
+          const filterValue = currentFilters.first_name.toLowerCase();
+          if (!patient.first_name.toLowerCase().includes(filterValue)) {
+            return false;
+          }
+        }
+
+        if (currentFilters.last_name) {
+          const filterValue = currentFilters.last_name.toLowerCase();
+          if (!patient.last_name.toLowerCase().includes(filterValue)) {
+            return false;
+          }
+        }
+
+        if (currentFilters.date_of_birth_from || currentFilters.date_of_birth_to) {
+          if (!patient.date_of_birth) {
+            return false;
+          }
+
+          const patientDob = moment(patient.date_of_birth, 'YYYY-MM-DD HH:mm:ss');
+
+          if (currentFilters.date_of_birth_from) {
+            const dobFrom = moment(currentFilters.date_of_birth_from, 'DD/MM/YYYY').startOf('day');
+            if (patientDob.isBefore(dobFrom)) return false;
+          }
+
+          if (currentFilters.date_of_birth_to) {
+            const dobTo = moment(currentFilters.date_of_birth_to, 'DD/MM/YYYY').endOf('day');
+            if (patientDob.isAfter(dobTo)) return false;
+          }
+        }
+
+        if (currentFilters.treatment_status) {
+          const treatmentStatus = getTreatmentStatus(patient.ongoingTreatmentPlan.length
+                ? patient.ongoingTreatmentPlan[0]
+                : patient.upcomingTreatmentPlan
+                ? patient.upcomingTreatmentPlan
+                : patient.lastTreatmentPlan);
+          if (treatmentStatus !== currentFilters.treatment_status) { return false; }
+        }
+
+        if (currentFilters.referral_status && (patient.referral_status !== currentFilters.referral_status)) {
+          return false;
+        }
+
+        return true;
+      });
+      setPatientList(patientData);
+    } else {
+      setPatientList(patients);
     }
-    return (
-      <View style={componentStyles.loadingStyle}>
-        <ActivityIndicator size={30} color={theme.colors.primary} />
-      </View>
-    );
-  };
+  }, [currentFilters, dispatch, patients]);
 
   return (
     <>
@@ -106,14 +139,14 @@ const Patient = ({navigation}) => {
           <View style={componentStyles.titleContainerStyle}>
             <TouchableOpacity onPress={() => setShowFilter(true)}>
               <Icon name="tune" size={25} color={theme.colors.primary} />
-              {filters?.length > 0 && (
+              {!_.isEmpty(currentFilters) && (
                 <View style={componentStyles.indicatorStyle} />
               )}
             </TouchableOpacity>
           </View>
         </View>
         <FlatList
-          data={patients}
+          data={patientList}
           keyExtractor={(item) => item.id.toString()}
           style={componentStyles.listContainer}
           contentContainerStyle={[componentStyles.contentContainer]}
@@ -135,16 +168,13 @@ const Patient = ({navigation}) => {
               <PatientCard patient={item} />
             </TouchableOpacity>
           )}
-          onEndReached={loadMore}
           onEndReachedThreshold={0.01}
-          ListFooterComponent={renderFooter}
           showsVerticalScrollIndicator={false}
         />
       </View>
       <BottomSheet isVisible={showFilter} modalProps={{}}>
         <Filter
           filters={currentFilters}
-          setFilters={setCurrentFilters}
           setShowFilter={setShowFilter}
         />
       </BottomSheet>

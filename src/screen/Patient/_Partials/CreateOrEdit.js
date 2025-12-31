@@ -140,7 +140,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
                   ),
                   translate('phc.patient.edit')
                 );
-                dispatch(getPatientsListRequest({page_size: 10, page: 1}));
+                dispatch(getPatientsListRequest());
                 handleGoback();
               } else {
                 showToast(
@@ -159,7 +159,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
                 ),
                 translate('phc.patient.create')
               );
-              dispatch(getPatientsListRequest({page_size: 10, page: 1}));
+              dispatch(getPatientsListRequest());
               handleGoback();
             } else {
               showToast(

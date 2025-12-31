@@ -6,19 +6,10 @@ import {initialState} from './states';
 export const patient = (state = initialState, action) => {
   switch (action.type) {
     case 'PATIENTS_FETCH_SUCCEED':
-      const allPatients = action.page === 1 ? action.data : [...state.patients, ...action.data];
-      const map = {};
-      allPatients.forEach(patientObj => {
-        map[patientObj.id] = patientObj;
-      });
-
-      return {
-        ...state,
-        patients: Object.values(map),
-        filters: action.filters,
-        listInfo: action.info,
+      return Object.assign({}, state, {
+        patients: action.data,
         loading: false,
-      };
+      });
     case 'PATIENTS_FETCH_FAILED':
     case 'PATIENT_CREATE_FAILED':
     case 'PATIENT_UPDATE_FAILED':
@@ -47,6 +38,10 @@ export const patient = (state = initialState, action) => {
         patients: state.patients.filter(patientObj => patientObj.id !== action.data),
         loading: false,
       };
+    case 'FILTERS_UPDATE_SUCCEED':
+      return Object.assign({}, state, {
+        filters: action.data,
+      });
     default:
       return state;
   }
