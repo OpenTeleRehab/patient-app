@@ -7,17 +7,14 @@ import {getPhcServiceIdentity} from '../../utils/patient';
 import {getTransfersRequest} from '../transfer/actions';
 
 export const getPatientsListRequest =
-  (payload) => async (dispatch, getState) => {
+  () => async (dispatch, getState) => {
     dispatch(mutation.patientsFetchRequest());
     const {accessToken} = getState().user;
-    const res = await Patient.getPatients(payload, accessToken);
+    const res = await Patient.getPatients(accessToken);
     if (res.success) {
       dispatch(
         mutation.patientsFetchSuccess(
           res.data,
-          payload.page,
-          res.info,
-          payload.filters,
         ),
       );
     } else {
@@ -130,4 +127,8 @@ export const deletePendingSupplementary =
       dispatch(mutation.deletePendingSupplementaryFailure());
       return {success: false, message: data.message};
     }
+  };
+
+  export const updateFilters = (payload) => (dispatch) => {
+    dispatch(mutation.filtersUpdateSuccess(payload));
   };

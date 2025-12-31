@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, Button, Icon, Divider} from 'react-native-elements';
 import {StyleSheet, View, Platform} from 'react-native';
+import {useDispatch} from 'react-redux';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
 import SelectPicker from '../../../components/Common/SelectPicker';
@@ -11,10 +12,14 @@ import TextField from '../../../components/Common/TextField';
 import {theme} from '../../../../App';
 import {formatDate} from '../../../utils/helper';
 import moment from 'moment/moment';
+import {REFERRAL_STATUS, TREATMENT_STATUS} from '../../../variables/constants';
+import {updateFilters} from '../../../store/patient/actions';
+import _ from 'lodash';
 
-const Filter = ({filters, setFilters, setShowFilter}) => {
+const Filter = ({filters, setShowFilter}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const dispatch = useDispatch();
   const [showFromDatePicker, setShowFromDatePicker] = useState(false);
   const [showToDatePicker, setShowToDatePicker] = useState(false);
   const [fromDateValue, setFromDateValue] = useState('');
@@ -35,46 +40,28 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
   } = useForm({defaultValues});
 
   useEffect(() => {
-    if (filters && filters.length > 0) { 
-      const formValues = {};
-      filters.forEach((filter) => {
-        if (filter.columnName === 'date_of_birth_range') {
-          const from = moment(filter.from, 'DD/MM/YYYY').toDate();
-          const to = moment(filter.to, 'DD/MM/YYYY').toDate();
-          formValues.date_of_birth_from = filter.from;
-          formValues.date_of_birth_to = filter.to;
-          setFromDateValue(from);
-          setToDateValue(to);
-        } else {
-          formValues[filter.columnName] = filter.value;
-        }
-      });
-      reset(formValues);
-     }
+    if (!_.isEmpty(filters)) {
+     reset(filters);
+      if (filters.date_of_birth_from || filters.date_of_birth_to) {
+        const from = filters.date_of_birth_from ? moment(filters.date_of_birth_from, 'DD/MM/YYYY').toDate() : null;
+        const to = filters.date_of_birth_to ? moment(filters.date_of_birth_to, 'DD/MM/YYYY').toDate() : null;
+        setFromDateValue(from);
+        setToDateValue(to);
+      }
+    }
   }, [filters, reset]);
 
   const onSubmit = (data) => {
-    const filterData = Object.entries(data)
-    .filter(([key, value]) => value !== '' && value !== null && value !== undefined && key !== 'date_of_birth_from' && key !== 'date_of_birth_to')
-    .map(([key, value]) => ({
-      columnName: key,
-      value: value,
-    }));
-
-    if (data.date_of_birth_from && data.date_of_birth_to) {
-      filterData.push({
-        columnName: 'date_of_birth_range',
-        from: data.date_of_birth_from,
-        to: data.date_of_birth_to,
-      });
-    }
-    setFilters(filterData);
+    const filterData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => value !== null && value !== undefined && value !== '')
+    );
+    dispatch(updateFilters(filterData));
     setShowFilter(false);
   };
 
   const handleReset = () => {
     reset();
-    setFilters([]);
+    dispatch(updateFilters({}));
     setShowFilter(false);
   }
 
@@ -173,10 +160,6 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
             <Controller
               control={control}
               name="date_of_birth_to"
-              rules={{validate: (toDate) => {
-                if (!fromDateValue) return true;
-                if (!toDate) return  translate('phc.patient.date_of_birth_to.error');
-              }}}
               render={({field: {onChange}}) => {
                 return (
                   <DatePicker
@@ -197,7 +180,6 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
                     inputStyle={componentStyles.inputStyle}
                     maximumDate={new Date()}
                     minimumDate={fromDateValue || undefined}
-                    disabled={!fromDateValue}
                   />
                 );
               }}
@@ -214,7 +196,6 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
             style={componentStyles.labelStyle}
           >
             {translate('phc.patient.treatment_status')}
-            <Text style={theme.colors.error}> *</Text>
           </Text>
           <View style={styles.formSelectPickerContainer}>
             <Controller
@@ -228,9 +209,9 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
                   }}
                   value={value}
                   items={[
-                    {label: translate('phc.patient.treatment_status.finished'), value: 1},
-                    {label: translate('phc.patient.treatment_status.planned'), value: 2},
-                    {label: translate('phc.patient.treatment_status.ongoing'), value: 3},
+                    {label: translate('phc.patient.treatment_status.finished'), value: TREATMENT_STATUS.FINISHED},
+                    {label: translate('phc.patient.treatment_status.planned'), value: TREATMENT_STATUS.PLANNED},
+                    {label: translate('phc.patient.treatment_status.ongoing'), value: TREATMENT_STATUS.ONGOING},
                   ]}
                   onValueChange={onChange}
                   accessibilityLabel={translate('phc.patient.treatment_status')}
@@ -259,9 +240,9 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
                   }}
                   value={value}
                   items={[
-                    {label: translate('phc.patient.referral_status.invited'), value: 'invited'},
-                    {label: translate('phc.patient.referral_status.accepted'), value: 'accepted'},
-                    {label: translate('phc.patient.referral_status.declined'), value: 'declined'},
+                    {label: translate('phc.patient.referral_status.invited'), value: REFERRAL_STATUS.INVITED},
+                    {label: translate('phc.patient.referral_status.accepted'), value: REFERRAL_STATUS.ACCEPTED},
+                    {label: translate('phc.patient.referral_status.declined'), value: REFERRAL_STATUS.DECLINED},
                   ]}
                   onValueChange={onChange}
                   accessibilityLabel={translate('phc.patient.referral_status')}

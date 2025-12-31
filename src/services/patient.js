@@ -4,23 +4,11 @@
 import {getUserCountryIsoCode} from '../utils/country';
 import {callApi} from '../utils/request';
 
-const getPatients = async (payload, accessToken) => {
-  const {filters, ...rest} = payload;
-  const params = new URLSearchParams();
-  if (filters.length > 0) {
-    filters.forEach((filter) => {
-      params.append('filters[]', JSON.stringify(filter));
-    });
-  }
-  Object.entries(rest).forEach(([key, value]) => {
-    if (value !== undefined && value !== '') {
-      params.append(key, value);
-    }
-  });
-
+const getPatients = async (accessToken) => {
   return await callApi(
-    `/patient?${params.toString()}`,
+    '/patient',
     accessToken,
+    {page_size: 99999},
   );
 };
 
