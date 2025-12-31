@@ -42,6 +42,10 @@ export const patient = (state = initialState, action) => {
       return Object.assign({}, state, {
         filters: action.data,
       });
+    case 'ALL_PATIENTS_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        allPatients: action.data,
+      });
     default:
       return state;
   }

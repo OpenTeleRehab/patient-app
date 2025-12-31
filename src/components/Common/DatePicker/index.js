@@ -5,7 +5,7 @@ import React from 'react';
 import {Platform, StyleSheet} from 'react-native';
 import {Input} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {formatDate} from '../../../utils/helper';
+import {formatDate, formatTime} from '../../../utils/helper';
 import styles from '../../../assets/styles';
 
 const DatePicker = (props) => {
@@ -16,23 +16,25 @@ const DatePicker = (props) => {
     onSetDate,
     show,
     disabled,
+    rightIcon,
     onClickIcon,
     labelStyle,
     placeholder,
     inputStyle,
     maximumDate,
-    minimumDate
+    minimumDate,
+    is24Hour,
   } = props;
 
-  let rightIcon = {
+  let inputRightIcon = rightIcon || {
     name: 'calendar-today',
     type: 'material-community',
     color: '#575757',
   };
 
   if (!disabled && onClickIcon) {
-    rightIcon = {
-      ...rightIcon,
+    inputRightIcon = {
+      ...inputRightIcon,
       onPress: () => onClickIcon(),
     };
   }
@@ -43,8 +45,8 @@ const DatePicker = (props) => {
         disabled
         label={label}
         placeholder={placeholder}
-        value={value ? formatDate(value) : ''}
-        rightIcon={rightIcon}
+        value={value ? mode === 'date' ? formatDate(value) : formatTime(value) : ''}
+        rightIcon={inputRightIcon}
         labelStyle={labelStyle ? labelStyle : componentStyles.labelStyle}
         containerStyle={componentStyles.containerStyle}
         inputContainerStyle={componentStyles.inputContainerStyle}
@@ -56,7 +58,7 @@ const DatePicker = (props) => {
         <DateTimePicker
           value={value || new Date()}
           mode={mode}
-          is24Hour={true}
+          is24Hour={is24Hour ?? true}
           display="default"
           onChange={onSetDate}
           style={Platform.OS === 'ios' ? styles.dateTimePickerContainer : null}

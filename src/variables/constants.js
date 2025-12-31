@@ -7,6 +7,7 @@ export const ROUTES = {
   HOME: 'Home',
   PATIENT: 'Patient',
   TRANSFER: 'Transfer',
+  PHC_APPOINTMENT: 'PhcAppointment',
   ACTIVITY: 'Activity',
   EXERCISE_DETAIL: 'ExerciseDetail',
   COMPLETE_EXERCISE: 'CompleteExercise',

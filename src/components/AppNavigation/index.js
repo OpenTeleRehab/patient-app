@@ -16,6 +16,7 @@ import AppointmentTab from './Tab/AppointmentTab';
 import MessageTab from './Tab/MessageTab';
 import PatientTab from './Tab/PatientTab';
 import TransferTab from './Tab/TransferTab';
+import PhcAppointmentTab from './Tab/PhcAppointmentTab';
 import {ROUTES, USER_ROLE} from '../../variables/constants';
 import {auths} from '../../variables/routes';
 import styles from '../../assets/styles';
@@ -95,6 +96,15 @@ const tabs = [
     label: 'tab.transfer',
     icon: transferIcon,
     activeIcon: transferActiveIcon,
+    badge: 'noBadge',
+    group: USER_ROLE.HEALTH_WORKER,
+  },
+  {
+    name: ROUTES.PHC_APPOINTMENT,
+    screen: PhcAppointmentTab,
+    label: 'tab.appointments',
+    icon: appointmentIcon,
+    activeIcon: appointmentActiveIcon,
     badge: 'noBadge',
     group: USER_ROLE.HEALTH_WORKER,
   },

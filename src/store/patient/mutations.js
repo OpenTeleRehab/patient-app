@@ -20,6 +20,25 @@ const patientsFetchFailure = () => {
   };
 };
 
+const allPatientsFetchRequest = () => {
+  return {
+    type: 'ALL_PATIENTS_FETCH_REQUESTED',
+  };
+};
+
+const allPatientsFetchSuccess = (data) => {
+  return {
+    type: 'ALL_PATIENTS_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const allPatientsFetchFailure = () => {
+  return {
+    type: 'ALL_PATIENTS_FETCH_FAILED',
+  };
+};
+
 const patientFetchRequest = () => {
   return {
     type: 'PATIENT_FETCH_REQUESTED',
@@ -164,6 +183,9 @@ export const mutation = {
   patientsFetchRequest,
   patientsFetchSuccess,
   patientsFetchFailure,
+  allPatientsFetchRequest,
+  allPatientsFetchSuccess,
+  allPatientsFetchFailure,
   patientFetchRequest,
   patientFetchSuccess,
   patientFetchFailure,

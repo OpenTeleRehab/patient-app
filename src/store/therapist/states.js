@@ -4,4 +4,5 @@
 export const initialState = {
   therapists: [],
   phcWorkers: [],
+  referralTherapists: [],
 };

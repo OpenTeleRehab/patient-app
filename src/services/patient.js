@@ -9,6 +9,19 @@ const getPatients = async (accessToken) => {
     '/patient',
     accessToken,
     {page_size: 99999},
+    'get',
+    false,
+    {country: getUserCountryIsoCode()}
+)};
+
+const getAllPatients = async (payload, accessToken) => {
+  return await callApi(
+    '/patient',
+    accessToken,
+    payload,
+    'get',
+    false,
+    {country: getUserCountryIsoCode()}
   );
 };
 
@@ -16,6 +29,10 @@ const getPatient = async (id, accessToken) => {
   return await callApi(
     `/patient/id/${id}`,
     accessToken,
+    '',
+    'get',
+    false,
+    {country: getUserCountryIsoCode()}
   );
 };
 
@@ -86,6 +103,7 @@ const deletePendingSupplementary = async (id, accessToken) => {
 
 export const Patient = {
   getPatients,
+  getAllPatients,
   getPatient,
   getPatientByPhoneNumber,
   createPatient,

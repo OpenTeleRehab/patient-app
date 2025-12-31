@@ -44,6 +44,7 @@ import ChatPanelScreen from '../screen/ChatOrCall/ChatPanel';
 // Health worker group
 import PatientScreen from '../screen/Patient';
 import TransferScreen from '../screen/Transfer';
+import PhcAppointmentScreen from '../screen/PhcAppointment';
 import ChangePasswordScreen from '../screen/UserProfile/ChangePassword';
 import CreateOrEditPatientScreen from '../screen/Patient/_Partials/CreateOrEdit';
 import PatientDetailScreen from '../screen/Patient/_Partials/PatientDetail';
@@ -286,6 +287,30 @@ export const transfers = [
   {
     name: ROUTES.TRANSFER,
     screen: TransferScreen,
+  },
+  {
+    name: ROUTES.USER_PROFILE_EDIT,
+    screen: UserProfileEditScreen,
+  },
+  {
+    name: ROUTES.CONFIRM_PIN,
+    screen: ConfirmPinScreen,
+  },
+  {
+    name: ROUTES.SETUP_PIN,
+    screen: SetupPinScreen,
+  },
+  {
+    name: ROUTES.CHANGE_PASSWORD,
+    screen: ChangePasswordScreen,
+  },
+  ...drawerItems,
+];
+
+export const phcAppointments = [
+  {
+    name: ROUTES.PHC_APPOINTMENT,
+    screen: PhcAppointmentScreen,
   },
   {
     name: ROUTES.USER_PROFILE_EDIT,

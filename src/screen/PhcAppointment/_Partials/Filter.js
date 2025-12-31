@@ -1,0 +1,153 @@
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
+import {Text, Button, Icon, Divider} from 'react-native-elements';
+import {StyleSheet, View, Platform} from 'react-native';
+import styles from '../../../assets/styles';
+import {useForm, Controller} from 'react-hook-form';
+import DatePicker from '../../../components/Common/DatePicker';
+import {theme} from '../../../../App';
+import {formatDate} from '../../../utils/helper';
+import moment from 'moment/moment';
+import {_} from 'lodash';
+
+const Filter = ({filters, setFilters, setShowFilter}) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dateValue, setDateValue] = useState();
+  const defaultValues = {
+    date: moment().toDate(),
+  };
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: {isDirty},
+  } = useForm({defaultValues});
+
+  useEffect(() => {
+    if (!_.isEmpty(filters)) { 
+      const date = moment().toDate();
+      reset({date: filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).format('DD/MM/YYYY') : date});
+      setDateValue(filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).toDate() : date);
+     }
+  }, [filters, reset]);
+
+  const onSubmit = (data) => {
+    if (data.date) {
+      const now = moment().utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
+      const date = moment().utc().locale('en').format('DD/MM/YYYY');
+      const selected_from_date = data.date ? moment.utc(moment(data.date, 'DD/MM/YYYY').startOf('day')).locale('en').format('YYYY-MM-DD HH:mm:ss') : null;
+      const selected_to_date = data.date ? moment.utc(moment(data.date, 'DD/MM/YYYY').endOf('day')).locale('en').format('YYYY-MM-DD HH:mm:ss') : null;
+      setFilters({date, now, selected_from_date, selected_to_date});
+    }
+    setShowFilter(false);
+  };
+
+  const handleReset = () => {
+    const now = moment().utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
+    const date = moment().utc().locale('en').format('DD/MM/YYYY');
+    setDateValue(moment().toDate());
+    reset({date: date});
+    setFilters({date, now});
+    setShowFilter(false);
+  };
+
+  return (
+      <View style={styles.mainContainerLight}>
+      <View style={componentStyles.titleContainer}>
+        <Icon name="filter-outline" type="material-community" size={30} color={theme.colors.primary} />
+        <Text style={componentStyles.titleTextStyle}>{translate('phc.appointment.filter')}</Text>
+      </View>
+      <Divider />
+      <View style={styles.paddingMd}>
+        <Controller
+          control={control}
+          name="date"
+          render={({field: {onChange}}) => {
+            return (
+              <DatePicker
+                label={translate('phc.appointment.date')}
+                placeholder={translate('phc.appointment.date.placeholder')}
+                value={dateValue}
+                mode="date"
+                onSetDate={(event, selectedDate) => {
+                  setShowDatePicker(Platform.OS === 'ios');
+                  if (selectedDate) {
+                    onChange(formatDate(selectedDate));
+                    setDateValue(moment(selectedDate).toDate());
+                  }
+                }}
+                show={showDatePicker}
+                onClickIcon={() => setShowDatePicker(true)}
+                labelStyle={componentStyles.labelStyle}
+                inputStyle={componentStyles.inputStyle}
+                maximumDate={new Date()}
+              />
+            );
+          }}
+        />
+      </View>
+      <View style={[styles.paddingXMd]}>
+        <Button
+          containerStyle={styles.marginBottom}
+          title={translate('phc.appointment.button.apply')}
+          onPress={handleSubmit(onSubmit)}
+          disabled={!isDirty}
+        />
+        <Button
+          containerStyle={styles.marginBottom}
+          title={translate('phc.appointment.button.reset')}
+          onPress={handleReset}
+        />
+        <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.appointment.button.cancel')} onPress={() => setShowFilter(false)} />
+      </View>
+    </View>
+  );
+};
+
+const componentStyles = StyleSheet.create({
+  container: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  twoColumnContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  columnContainer: {
+    flex: 1,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 5,
+    margin: 15,
+  },
+  titleTextStyle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  labelStyle: {
+    fontSize: 12,
+    marginBottom: 8,
+    color: theme.colors.grey1,
+    fontWeight: '200',
+  },
+  inputStyle: {
+    fontSize: 12,
+  },
+  textBold: {
+    fontWeight: 'bold',
+  },
+  errorTextStyle: {
+    color: theme.colors.danger,
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: -7,
+  },
+});
+
+export default Filter;
