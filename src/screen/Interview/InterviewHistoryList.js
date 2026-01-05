@@ -9,24 +9,51 @@ import {ROUTES} from '../../variables/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {getScreeningQuestionnaireHistoryListRequest} from '../../store/screeningQuestionnaire/actions';
+import {calculateScoreBySection, mapingScore} from './InterviewDetail';
 
 const InterviewHistoryList = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const {screeningQuestionnaireHistoryList, loading} = useSelector(
+  const {screeningQuestionnaireHistoryByUser, loading} = useSelector(
     (state) => state.screeningQuestionnaire,
   );
   const {patientId, screeningQuestionnaire} = route.params;
+  const key = `${patientId}_${screeningQuestionnaire.id}`;
+
+  const screeningQuestionnaireHistoryList =
+    screeningQuestionnaireHistoryByUser?.[key] || [];
+
+  // const filteredOfflineInterviews = offlineInterviews.filter(
+  //   (item) =>
+  //     item.userId === patientId &&
+  //     item.screeningQuestionnaireId === screeningQuestionnaire.id,
+  // );
+
+  // console.log('offlineInterviews', offlineInterviews);
+
+  // console.log('filteredOfflineInterviews', filteredOfflineInterviews);
+
+  // const mergedScreeningQuestionnaireHistoryList = [
+  //   ...screeningQuestionnaireHistoryList,
+  //   ...filteredOfflineInterviews,
+  // ];
+
+  // console.log(
+  //   'mergedScreeningQuestionnaireHistoryList',
+  //   mergedScreeningQuestionnaireHistoryList,
+  // );
 
   useEffect(() => {
+    if (!patientId || !screeningQuestionnaire?.id) return;
+
     dispatch(
       getScreeningQuestionnaireHistoryListRequest(
         patientId,
-        screeningQuestionnaire?.id,
+        screeningQuestionnaire.id,
       ),
     );
-  }, [dispatch, patientId, screeningQuestionnaire]);
+  }, [dispatch, patientId, screeningQuestionnaire?.id]);
 
   return (
     <>
@@ -50,7 +77,11 @@ const InterviewHistoryList = ({navigation, route}) => {
           <></>
         ) : (
           <View style={styles.marginTopMd}>
-            {screeningQuestionnaireHistoryList.map((item, index) => {
+            {screeningQuestionnaireHistoryList?.map((item, index) => {
+              const totalScore = calculateScoreBySection(
+                screeningQuestionnaire.sections[0],
+                JSON.parse(item.answers),
+              );
               return (
                 <InterviewHistoryItemCard
                   index={index}
@@ -59,6 +90,10 @@ const InterviewHistoryList = ({navigation, route}) => {
                     ...item,
                     title: screeningQuestionnaire?.title,
                   }}
+                  actionStatus={mapingScore(
+                    totalScore,
+                    screeningQuestionnaire.sections[0].actions,
+                  )}
                   OnViewDetail={() =>
                     navigation.push(ROUTES.INTERVIEW_DETAIL, {
                       screeningQuestionnaire,

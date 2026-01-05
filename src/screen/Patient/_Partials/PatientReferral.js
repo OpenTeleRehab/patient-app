@@ -19,6 +19,7 @@ import {getProvincesByUserCountryRequest} from '../../../store/province/actions'
 import {getClinicListRequest} from '../../../store/clinic/actions';
 import {createReferralRequest} from '../../../store/referral/actions';
 import {ROUTES} from '../../../variables/constants';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const PatientReferral = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
@@ -31,6 +32,8 @@ const PatientReferral = ({navigation, route}) => {
   const {regions} = useSelector((state) => state.region);
   const {provincesByUserCountry} = useSelector((state) => state.province);
   const {clinicList} = useSelector((state) => state.clinic);
+  const {loading} = useSelector((state) => state.referral);
+  console.log('Referral loading state', loading);
 
   const patient = useMemo(() => {
     return patients.find((p) => p.id === patientId) || {};
@@ -72,7 +75,7 @@ const PatientReferral = ({navigation, route}) => {
 
   const clinicOptions = useMemo(() => {
     return clinicList
-      .filter((c) => c.province.id === provinceId)
+      .filter((c) => c?.province?.id === provinceId)
       .map((c) => ({label: c.name, value: c.id}));
   }, [clinicList, provinceId]);
 
@@ -187,6 +190,11 @@ const PatientReferral = ({navigation, route}) => {
             }}
           />
         </View>
+        <Spinner
+          visible={loading}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+          textStyle={styles.textLight}
+        />
       </ScrollView>
     </>
   );

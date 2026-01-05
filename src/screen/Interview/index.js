@@ -7,12 +7,18 @@ import {withTheme} from 'react-native-elements';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {FormProvider, useForm} from 'react-hook-form';
-import {submitScreeningQuestionnaireAnswerRequest} from '../../store/screeningQuestionnaire/actions';
+import {
+  submitScreeningQuestionnaireAnswerOffline,
+  submitScreeningQuestionnaireAnswerRequest,
+} from '../../store/screeningQuestionnaire/actions';
 import {ROUTES} from '../../variables/constants';
 import VisibleQuestion from '../../components/ScreeningQuestionnaire/VisibleQuestion';
+import {useNetInfo} from '@react-native-community/netinfo';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const Interview = ({navigation, route}) => {
   const {patientId} = route.params;
+  const netInfo = useNetInfo();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -60,19 +66,35 @@ const Interview = ({navigation, route}) => {
       answer: value,
     }));
     setIsLoading(true);
+
     try {
-      const res = await dispatch(
-        submitScreeningQuestionnaireAnswerRequest(
-          screeningQuestionnaire.id,
-          patientId,
-          transformedData,
-        ),
-      );
-      navigation.replace(ROUTES.INTERVIEW_DETAIL, {
-        screeningQuestionnaire,
-        answers: JSON.parse(res.data.answers),
-        from: 'create-form',
-      });
+      if (netInfo.isConnected) {
+        const res = await dispatch(
+          submitScreeningQuestionnaireAnswerRequest(
+            screeningQuestionnaire.id,
+            patientId,
+            transformedData,
+          ),
+        );
+        navigation.replace(ROUTES.INTERVIEW_DETAIL, {
+          screeningQuestionnaire,
+          answers: JSON.parse(res.data.answers),
+          from: 'create-form',
+        });
+      } else {
+        await dispatch(
+          submitScreeningQuestionnaireAnswerOffline({
+            questionnaire_id: screeningQuestionnaire.id,
+            userId: patientId,
+            answers: transformedData,
+          }),
+        );
+        navigation.replace(ROUTES.INTERVIEW_DETAIL, {
+          screeningQuestionnaire,
+          answers: transformedData,
+          from: 'create-form-offline',
+        });
+      }
     } catch (error) {
       console.log('Submit Questionnaire Error', error);
       setIsLoading(false);
@@ -118,6 +140,11 @@ const Interview = ({navigation, route}) => {
           </ScrollView>
         </FormProvider>
       )}
+      <Spinner
+        visible={isLoading}
+        overlayColor="rgba(0, 0, 0, 0.5)"
+        textStyle={styles.textLight}
+      />
     </SafeAreaView>
   );
 };

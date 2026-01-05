@@ -123,8 +123,8 @@ const useVisibleQuestions = (questions) => {
         return formValues?.[fieldName];
       });
 
-      const shouldSkip = question.logics.every(
-        (logic, i) => !evaluateLogic(logic, values[i]),
+      const shouldSkip = !question.logics.every((logic, i) =>
+        evaluateLogic(logic, values[i]),
       );
 
       if (shouldSkip) {
