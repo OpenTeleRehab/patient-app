@@ -24,8 +24,8 @@ import {useShowToast} from '../../../hook/useShowToast';
 import {
   createAppointmentWithPatient,
   updateAppointmentWithPatient,
-  createAppointmentWithTherapistWorker,
-  updateAppointmentWithTherapistWorker
+  createAppointment,
+  updateAppointment
 } from '../../../store/phcAppointment/actions';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -129,8 +129,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
         note: data.note
       };
     } else {
-      payload = { 
-        requester_id: profile.id,
+      payload = {
         recipient_id: data.recipient_id,
         from: startDate,
         to: endDate,
@@ -176,7 +175,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
       }
     } else {
       if (appointment) {
-        dispatch(updateAppointmentWithTherapistWorker(appointment.id, payload)).then((res) => {
+        dispatch(updateAppointment(appointment.id, payload)).then((res) => {
           if (res.success) {
             showToast(
               translate(
@@ -193,7 +192,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
           }
         });
       } else {
-        dispatch(createAppointmentWithTherapistWorker(payload)).then((res) => {
+        dispatch(createAppointment(payload)).then((res) => {
           if (res.success) {
             showToast(
               translate(
@@ -268,8 +267,8 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
               )}
             />
           </View>
-          {errors.location && (
-            <Text style={componentStyles.errorTextStyle}>{errors.location.message}</Text>
+          {errors.recipient_type && (
+            <Text style={componentStyles.errorTextStyle}>{errors.recipient_type.message}</Text>
           )}
         </View>
         {watch('recipient_type') === PHC_APPOINTMENT_RECIPIENT_TYPE.PHC_WORKER && (

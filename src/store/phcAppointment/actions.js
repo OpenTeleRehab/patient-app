@@ -18,17 +18,17 @@ export const getAppointmentsWithPatientRequest = (payload) => async (
   }
 };
 
-export const getAppointmentsWithTherapistWorkerRequest = (payload) => async (
+export const getAppointmentsRequest = (payload) => async (
   dispatch,
   getState,
 ) => {
-  dispatch(mutation.appointmentsWithTherapistWorkerFetchRequest());
+  dispatch(mutation.appointmentsFetchRequest());
   const {accessToken} = getState().user;
-  const res = await PhcAppointment.getAppointmentsWithTherapistWorker({...payload}, accessToken);
+  const res = await PhcAppointment.getAppointments({...payload}, accessToken);
   if (res.success) {
-    dispatch(mutation.appointmentsWithTherapistWorkerFetchSuccess(res.data, payload));
+    dispatch(mutation.appointmentsFetchSuccess(res.data, payload));
   } else {
-    dispatch(mutation.appointmentsWithTherapistWorkerFetchFailure());
+    dispatch(mutation.appointmentsFetchFailure());
   }
 };
 
@@ -77,9 +77,7 @@ export const updateAppointmentWithPatientStatus = (id, payload) => async (dispat
 export const deleteAppointmentWithPatient = (id) => async (dispatch, getState) => {
   dispatch(mutation.deleteAppointmentWithPatientRequest());
   const {accessToken} = getState().user;
-  console.log('delete appointment data', id);
   const data = await PhcAppointment.deleteAppointmentWithPatient(id, accessToken);
-  console.log('delete appointment data', data);
   if (data.success) {
     dispatch(mutation.deleteAppointmentWithPatientSuccess());
     dispatch(getAppointmentsWithPatientRequest(getState().phcAppointment.filters));
@@ -90,72 +88,73 @@ export const deleteAppointmentWithPatient = (id) => async (dispatch, getState) =
   }
 };
 
-export const createAppointmentWithTherapistWorker = (payload) => async (dispatch, getState) => {
-  dispatch(mutation.createAppointmentWithTherapistWorkerRequest());
+export const createAppointment = (payload) => async (dispatch, getState) => {
+  dispatch(mutation.createAppointmentRequest());
   const {accessToken} = getState().user;
-  const data = await PhcAppointment.createAppointmentWithTherapistWorker(payload, accessToken);
+  const data = await PhcAppointment.createAppointment(payload, accessToken);
+  console.log('createAppointment data==', data);
   if (data.success) {
-    dispatch(mutation.createAppointmentWithTherapistWorkerSuccess());
-    dispatch(getAppointmentsWithTherapistWorkerRequest(getState().phcAppointment.filters));
+    dispatch(mutation.createAppointmentSuccess());
+    dispatch(getAppointmentsRequest(getState().phcAppointment.filters));
     return {success: true};
   } else {
-    dispatch(mutation.createAppointmentWithTherapistWorkerFailure());
+    dispatch(mutation.createAppointmentFailure());
     return {success: false, message: data.message};
   }
 };
 
-export const updateAppointmentWithTherapistWorker = (id, payload) => async (dispatch, getState) => {
-  dispatch(mutation.updateAppointmentWithTherapistWorkerRequest());
+export const updateAppointment = (id, payload) => async (dispatch, getState) => {
+  dispatch(mutation.updateAppointmentRequest());
   const {accessToken} = getState().user;
-  const data = await PhcAppointment.updateAppointmentWithTherapistWorker(id, payload, accessToken);
+  const data = await PhcAppointment.updateAppointment(id, payload, accessToken);
   if (data.success) {
-    dispatch(mutation.updateAppointmentWithTherapistWorkerSuccess());
-    dispatch(getAppointmentsWithTherapistWorkerRequest(getState().phcAppointment.filters));
+    dispatch(mutation.updateAppointmentSuccess());
+    dispatch(getAppointmentsRequest(getState().phcAppointment.filters));
     return {success: true};
   } else {
-    dispatch(mutation.updateAppointmentWithTherapistWorkerFailure());
+    dispatch(mutation.updateAppointmentFailure());
     return {success: false, message: data.message};
   }
 };
 
-export const deleteAppointmentWithTherapistWorker = (id) => async (dispatch, getState) => {
-  dispatch(mutation.deleteAppointmentWithTherapistWorkerRequest());
+export const deleteAppointment = (id) => async (dispatch, getState) => {
+  dispatch(mutation.deleteAppointmentRequest());
   const {accessToken} = getState().user;
-  const data = await PhcAppointment.deleteAppointmentWithTherapistWorker(id, accessToken);
+  const data = await PhcAppointment.deleteAppointment(id, accessToken);
   if (data.success) {
-    dispatch(mutation.deleteAppointmentWithTherapistWorkerSuccess());
-    dispatch(getAppointmentsWithTherapistWorkerRequest(getState().phcAppointment.filters));
+    dispatch(mutation.deleteAppointmentSuccess());
+    dispatch(getAppointmentsRequest(getState().phcAppointment.filters));
     return {success: true};
   } else {
-    dispatch(mutation.deleteAppointmentWithTherapistWorkerFailure());
+    dispatch(mutation.deleteAppointmentFailure());
     return {success: false, message: data.message};
   }
 };
 
-export const acceptAppointmentWithTherapistWorker = (id) => async (dispatch, getState) => {
-  dispatch(mutation.acceptAppointmentWithTherapistWorkerRequest());
+export const acceptAppointment = (id) => async (dispatch, getState) => {
+  dispatch(mutation.acceptAppointmentRequest());
   const {accessToken} = getState().user;
-  const data = await PhcAppointment.acceptAppointmentWithTherapistWorker(id, accessToken);
+  const data = await PhcAppointment.acceptAppointment(id, accessToken);
   if (data.success) {
-    dispatch(mutation.acceptAppointmentWithTherapistWorkerSuccess());
-    dispatch(getAppointmentsWithTherapistWorkerRequest(getState().phcAppointment.filters));
+    dispatch(mutation.acceptAppointmentSuccess());
+    dispatch(getAppointmentsRequest(getState().phcAppointment.filters));
     return {success: true};
   } else {
-    dispatch(mutation.acceptAppointmentWithTherapistWorkerFailure());
+    dispatch(mutation.acceptAppointmentFailure());
     return {success: false, message: data.message};
   }
 };
 
-export const declineAppointmentWithTherapistWorker = (id) => async (dispatch, getState) => {
-  dispatch(mutation.declineAppointmentWithTherapistWorkerRequest());
+export const declineAppointment = (id) => async (dispatch, getState) => {
+  dispatch(mutation.declineAppointmentRequest());
   const {accessToken} = getState().user;
-  const data = await PhcAppointment.declinedAppointmentWithTherapistWorker(id, accessToken);
+  const data = await PhcAppointment.declineAppointment(id, accessToken);
   if (data.success) {
-    dispatch(mutation.declineAppointmentWithTherapistWorkerSuccess());
-    dispatch(getAppointmentsWithTherapistWorkerRequest(getState().phcAppointment.filters));
+    dispatch(mutation.declineAppointmentSuccess());
+    dispatch(getAppointmentsRequest(getState().phcAppointment.filters));
     return {success: true};
   } else {
-    dispatch(mutation.declineAppointmentWithTherapistWorkerFailure());
+    dispatch(mutation.declineAppointmentFailure());
     return {success: false, message: data.message};
   }
 };
@@ -173,15 +172,15 @@ export const updateAppointmentWithPatientUnreadStatus = (payload) => async (disp
   }
 };
 
-export const updateAppointmentWithTherapistWorkerUnreadStatus = (payload) => async (dispatch, getState) => {
-  dispatch(mutation.updateAppointmentWithTherapistWorkerUnreadStatusRequest());
+export const updateAppointmentUnreadStatus = (payload) => async (dispatch, getState) => {
+  dispatch(mutation.updateAppointmentUnreadStatusRequest());
   const {accessToken} = getState().user;
-  const data = await PhcAppointment.updateAppointmentWithTherapistWorkerUnreadStatus(payload, accessToken);
+  const data = await PhcAppointment.updateAppointmentUnreadStatus(payload, accessToken);
   if (data.success) {
-    dispatch(mutation.updateAppointmentWithTherapistWorkerUnreadStatusSuccess());
+    dispatch(mutation.updateAppointmentUnreadStatusSuccess());
     return {success: true};
   } else {
-    dispatch(mutation.updateAppointmentWithTherapistWorkerUnreadStatusFailure());
+    dispatch(mutation.updateAppointmentUnreadStatusFailure());
     return {success: false, message: data.message};
   }
 };

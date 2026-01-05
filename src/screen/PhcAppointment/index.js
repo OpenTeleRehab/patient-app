@@ -11,9 +11,9 @@ import AppointmentList from './_Partials/AppointmentList';
 import NewRequestedAppointmentList from './_Partials/NewRequestedAppointmentList';
 import {
   getAppointmentsWithPatientRequest,
-  getAppointmentsWithTherapistWorkerRequest,
+  getAppointmentsRequest,
   updateAppointmentWithPatientUnreadStatus,
-  updateAppointmentWithTherapistWorkerUnreadStatus
+  updateAppointmentUnreadStatus
 } from '../../store/phcAppointment/actions';
 import {getTranslate} from 'react-localize-redux';
 import Filter from './_Partials/Filter';
@@ -29,7 +29,7 @@ const PhcAppointment = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {phcAppointmentsWithPatient, phcAppointmentsWithTherapistWorker, filters} = useSelector((state) => state.phcAppointment);
+  const {phcAppointmentsWithPatient, phcAppointments, filters} = useSelector((state) => state.phcAppointment);
   const {profile} = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState(0);
   const [currentFilters, setCurrentFilters] = useState(filters);
@@ -40,13 +40,13 @@ const PhcAppointment = ({navigation}) => {
   useEffect(() => {
     if (!_.isEmpty(currentFilters)) {
       dispatch(getAppointmentsWithPatientRequest(currentFilters));
-      dispatch(getAppointmentsWithTherapistWorkerRequest(currentFilters));
+      dispatch(getAppointmentsRequest(currentFilters));
     } else {
       const now = new Date();
       const formattedNow = moment(now).utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
       const formattedDate = moment(now).utc().locale('en').format('DD/MM/YYYY');
       dispatch(getAppointmentsWithPatientRequest({date: formattedDate, now: formattedNow}));
-      dispatch(getAppointmentsWithTherapistWorkerRequest({date: formattedDate, now: formattedNow}));
+      dispatch(getAppointmentsRequest({date: formattedDate, now: formattedNow}));
     }
   }, [currentFilters, dispatch]);
 
@@ -60,10 +60,10 @@ const PhcAppointment = ({navigation}) => {
     if (phcAppointmentsWithPatient?.unreadAppointments?.length > 0) {
       dispatch(updateAppointmentWithPatientUnreadStatus(_.map(phcAppointmentsWithPatient.unreadAppointments, 'id')));
     }
-    if (phcAppointmentsWithTherapistWorker?.unreadAppointments?.length > 0) {
-      dispatch(updateAppointmentWithTherapistWorkerUnreadStatus(_.map(phcAppointmentsWithTherapistWorker.unreadAppointments, 'id')));
+    if (phcAppointments?.unreadAppointments?.length > 0) {
+      dispatch(updateAppointmentUnreadStatus(_.map(phcAppointments.unreadAppointments, 'id')));
     }
-  }, [dispatch, phcAppointmentsWithPatient, phcAppointmentsWithTherapistWorker]);
+  }, [dispatch, phcAppointmentsWithPatient, phcAppointments]);
 
   return (
     <>
@@ -100,9 +100,9 @@ const PhcAppointment = ({navigation}) => {
                 >
                   {translate(`phc.appointment.${tab}`)}
                 </Text>
-                {tab === 'new_requested_appointments' && (phcAppointmentsWithPatient?.newAppointments?.length > 0 || phcAppointmentsWithTherapistWorker?.newAppointments?.length > 0) && (
+                {tab === 'new_requested_appointments' && (phcAppointmentsWithPatient?.newAppointments?.length > 0 || phcAppointments?.newAppointments?.length > 0) && (
                    <View style={componentStyles.badge}>
-                    <Text style={componentStyles.badgeText}>{phcAppointmentsWithPatient?.newAppointments?.length + phcAppointmentsWithTherapistWorker?.newAppointments?.length}</Text>
+                    <Text style={componentStyles.badgeText}>{phcAppointmentsWithPatient?.newAppointments?.length + phcAppointments?.newAppointments?.length}</Text>
                   </View>
                 )}
               </View>
@@ -115,16 +115,16 @@ const PhcAppointment = ({navigation}) => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setShowFilter(true)}>
             <Icon name="tune" size={25} color={theme.colors.primary} />
-            {filters && (
+            {filters.selected_from_date && (
               <View style={componentStyles.indicatorStyle} />
             )}
           </TouchableOpacity>
         </View>
         <Divider style={styles.marginTop} />
         {activeTab === 0 ? (
-          <AppointmentList navigation={navigation} appointmentWithPatients={phcAppointmentsWithPatient?.approves} appointmentWithTherapistWorkers={phcAppointmentsWithTherapistWorker?.approves} />
+          <AppointmentList navigation={navigation} appointmentWithPatients={phcAppointmentsWithPatient?.approves} appointments={phcAppointments?.approves} />
         ) : (
-          <NewRequestedAppointmentList navigation={navigation} appointmentWithPatients={phcAppointmentsWithPatient?.newAppointments} appointmentWithTherapistWorkers={phcAppointmentsWithTherapistWorker?.newAppointments} />
+          <NewRequestedAppointmentList navigation={navigation} appointmentWithPatients={phcAppointmentsWithPatient?.newAppointments} appointments={phcAppointments?.newAppointments} />
         )}
       </View>
       <BottomSheet isVisible={showFilter}>

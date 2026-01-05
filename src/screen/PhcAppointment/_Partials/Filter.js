@@ -17,7 +17,7 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState();
   const defaultValues = {
-    date: moment().toDate(),
+    date: '',
   };
   const {
     control,
@@ -27,10 +27,9 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
   } = useForm({defaultValues});
 
   useEffect(() => {
-    if (!_.isEmpty(filters)) { 
-      const date = moment().toDate();
-      reset({date: filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).format('DD/MM/YYYY') : date});
-      setDateValue(filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).toDate() : date);
+    if (!_.isEmpty(filters)) {
+      reset({date: filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).format('DD/MM/YYYY') : ''});
+      setDateValue(filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).toDate() : '');
      }
   }, [filters, reset]);
 
@@ -46,11 +45,9 @@ const Filter = ({filters, setFilters, setShowFilter}) => {
   };
 
   const handleReset = () => {
-    const now = moment().utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
-    const date = moment().utc().locale('en').format('DD/MM/YYYY');
-    setDateValue(moment().toDate());
-    reset({date: date});
-    setFilters({date, now});
+    setDateValue('');
+    reset({date: ''});
+    setFilters({});
     setShowFilter(false);
   };
 

@@ -45,7 +45,7 @@ const deleteAppointmentWithPatient = async (id, accessToken) => {
   return await callApi(`/appointment/${id}`, accessToken, null, 'delete', false, {country: getUserCountryIsoCode()});
 };
 
-const getAppointmentsWithTherapistWorker = async (payload, accessToken) => {
+const getAppointments = async (payload, accessToken) => {
   return await callApi(
     '/appointments',
     accessToken,
@@ -53,7 +53,7 @@ const getAppointmentsWithTherapistWorker = async (payload, accessToken) => {
   );
 };
 
-const createAppointmentWithTherapistWorker = async (payload, accessToken) => {
+const createAppointment = async (payload, accessToken) => {
   return await callApi(
     '/appointments',
     accessToken,
@@ -64,7 +64,7 @@ const createAppointmentWithTherapistWorker = async (payload, accessToken) => {
   );
 };
 
-const acceptAppointmentWithTherapistWorker = async (id, accessToken) => {
+const acceptAppointment = async (id, accessToken) => {
   return await callApi(
     `/appointments/${id}/accept`,
     accessToken,
@@ -73,7 +73,7 @@ const acceptAppointmentWithTherapistWorker = async (id, accessToken) => {
   );
 };
 
-const declinedAppointmentWithTherapistWorker = async (id, accessToken) => {
+const declineAppointment = async (id, accessToken) => {
   return await callApi(
     `/appointments/${id}/decline`,
     accessToken,
@@ -82,11 +82,11 @@ const declinedAppointmentWithTherapistWorker = async (id, accessToken) => {
   );
 };
 
-const updateAppointmentWithTherapistWorker = async (id, payload, accessToken) => {
+const updateAppointment = async (id, payload, accessToken) => {
   return await callApi(`/appointments/${id}`, accessToken, {...payload}, 'put', false, {country: getUserCountryIsoCode()});
 };
 
-const deleteAppointmentWithTherapistWorker = async (id, accessToken) => {
+const deleteAppointment= async (id, accessToken) => {
   return await callApi(`/appointments/${id}`, accessToken, null, 'delete');
 };
 
@@ -101,7 +101,7 @@ const updateAppointmentWithPatientUnreadStatus = async (payload, accessToken) =>
   );
 };
 
-const updateAppointmentWithTherapistWorkerUnreadStatus = async (payload, accessToken) => {
+const updateAppointmentUnreadStatus = async (payload, accessToken) => {
   return await callApi(
     '/appointments/bulk/mark-as-read',
     accessToken,
@@ -116,12 +116,12 @@ export const PhcAppointment = {
   updateAppointmentWithPatientStatus,
   updateAppointmentWithPatient,
   deleteAppointmentWithPatient,
-  getAppointmentsWithTherapistWorker,
-  createAppointmentWithTherapistWorker,
-  acceptAppointmentWithTherapistWorker,
-  declinedAppointmentWithTherapistWorker,
-  updateAppointmentWithTherapistWorker,
-  deleteAppointmentWithTherapistWorker,
+  getAppointments,
+  createAppointment,
+  acceptAppointment,
+  declineAppointment,
+  updateAppointment,
+  deleteAppointment,
   updateAppointmentWithPatientUnreadStatus,
-  updateAppointmentWithTherapistWorkerUnreadStatus,
+  updateAppointmentUnreadStatus,
 };

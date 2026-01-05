@@ -45,10 +45,6 @@ const AppointmentDetail = ({route, navigation}) => {
       translate('appointment.cancel.content'),
       [
         {
-          text: translate('common.cancel'),
-          style: 'cancel',
-        },
-        {
           text: translate('common.ok'),
           onPress: () => {
             setIsLoading(true);
@@ -60,6 +56,10 @@ const AppointmentDetail = ({route, navigation}) => {
               }
             });
           },
+        },
+        {
+          text: translate('common.cancel'),
+          style: 'cancel',
         },
       ],
     );
