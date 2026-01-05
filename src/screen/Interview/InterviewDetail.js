@@ -11,7 +11,7 @@ import styles from '../../assets/styles';
 import colors from '../../assets/styles/variables/colors';
 import QuestionRenderer from '../../components/ScreeningQuestionnaire/QuestionRenderer';
 
-const calculateScoreBySection = (section, answers) => {
+export const calculateScoreBySection = (section, answers) => {
   let totalScore = 0;
 
   section.questions.forEach((question) => {
@@ -63,7 +63,7 @@ const calculateScoreBySection = (section, answers) => {
 
 //Maping Score Function
 
-const mapingScore = (sectionTotalScore, actions) => {
+export const mapingScore = (sectionTotalScore, actions) => {
   const match = actions.find(
     (item) => sectionTotalScore >= item.from && sectionTotalScore <= item.to,
   );

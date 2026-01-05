@@ -6,9 +6,10 @@ const screeningQuestionnaireListFetchRequest = () => {
   };
 };
 
-const screeningQuestionnaireListFetchSuccess = (data) => {
+const screeningQuestionnaireListFetchSuccess = (patientID, data) => {
   return {
     type: 'SCREENING_QUESTIONNAIRE_LIST_FETCH_SUCCEED',
+    patientID,
     data,
   };
 };
@@ -27,16 +28,24 @@ const submitScreeningQuestionnaireRequest = () => {
   };
 };
 
-const submitScreeningQuestionnaireSuccess = (data) => {
+const submitScreeningQuestionnaireSuccess = () => {
   return {
     type: 'SUBMIT_SCREENING_QUESTIONNAIRE_SUCCEED',
-    data,
   };
 };
 
 const submitScreeningQuestionnaireFailure = () => {
   return {
     type: 'SUBMIT_SCREENING_QUESTIONNAIRE_FAILED',
+  };
+};
+
+// Offline Interviews
+
+const submitScreeningQuestionnaireOfflineSuccess = (data) => {
+  return {
+    type: 'SUBMIT_SCREENING_QUESTIONNAIRE_OFFLINE_SUCCESS',
+    data,
   };
 };
 
@@ -47,9 +56,15 @@ const screeningQuestionnaireHistoryListFetchRequest = () => {
   };
 };
 
-const screeningQuestionnaireHistoryListFetchSuccess = (data) => {
+const screeningQuestionnaireHistoryListFetchSuccess = (
+  userId,
+  questionnaireId,
+  data,
+) => {
   return {
     type: 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_SUCCEED',
+    userId,
+    questionnaireId,
     data,
   };
 };
@@ -67,6 +82,7 @@ export const mutation = {
   submitScreeningQuestionnaireRequest,
   submitScreeningQuestionnaireSuccess,
   submitScreeningQuestionnaireFailure,
+  submitScreeningQuestionnaireOfflineSuccess, //Offline Submit Screening Questionnaries
   screeningQuestionnaireHistoryListFetchRequest,
   screeningQuestionnaireHistoryListFetchSuccess,
   screeningQuestionnaireHistoryListFetchFailure,

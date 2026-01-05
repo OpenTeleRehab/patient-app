@@ -45,6 +45,7 @@ import {
 import {updateIndicatorList} from './src/store/indicator/actions';
 import messaging from '@react-native-firebase/messaging';
 import {callPermission, notificationPermission} from './src/utils/permission';
+// import {syncOfflineScreeningQuestionnaires} from './src/store/screeningQuestionnaire/actions';
 
 let chatSocket = null;
 let patientId = null;
@@ -65,11 +66,11 @@ const AppProvider = ({children}) => {
     offlineMessages,
   } = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
-  const {
-    offlineQuestionnaireAnswers,
-    offlineActivities,
-    offlineGoals,
-  } = useSelector((state) => state.activity);
+  const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
+    useSelector((state) => state.activity);
+  // const {offlineInterviews} = useSelector(
+  //   (state) => state.screeningQuestionnaire,
+  // );
   const translate = getTranslate(localize);
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
@@ -146,7 +147,10 @@ const AppProvider = ({children}) => {
   }, []);
 
   useEffect(() => {
-    const answerCallListener = RNCallKeep.addEventListener('answerCall', answerCall);
+    const answerCallListener = RNCallKeep.addEventListener(
+      'answerCall',
+      answerCall,
+    );
     const endCallListener = RNCallKeep.addEventListener('endCall', endCall);
 
     return () => {
@@ -209,7 +213,7 @@ const AppProvider = ({children}) => {
           profile.chat_password,
           (newSocket) => {
             chatSocket = newSocket; // Update the reference
-          }
+          },
         );
 
         setSocket(chatSocket);
@@ -236,7 +240,7 @@ const AppProvider = ({children}) => {
           profile.chat_password,
           (newSocket) => {
             chatSocket = newSocket; // Update the reference
-          }
+          },
         );
 
         // Request phone calls permission
@@ -352,6 +356,15 @@ const AppProvider = ({children}) => {
       Alert.alert(translate('user.session'), translate('user.session_expired'));
     }
   }, [isOnline, isDataUpToDate, translate]);
+
+  // Sync Data (Screening Questionnaires) When Online
+
+  // useEffect(() => {
+  //   if (isOnline && accessToken && offlineInterviews?.length > 0) {
+  //     console.log('Sync offline screening questionnaires', offlineInterviews);
+  //     dispatch(syncOfflineScreeningQuestionnaires(offlineInterviews));
+  //   }
+  // }, [dispatch, isOnline, accessToken, offlineInterviews]);
 
   useEffect(() => {
     if (isOnline && accessToken && offlineQuestionnaireAnswers.length) {

@@ -9,7 +9,12 @@ const formatDate = (date) => {
   return moment.utc(date).local().format('DD/MM/YYYY');
 };
 
-const InterviewHistoryListCard = ({index, OnViewDetail, data}) => {
+const InterviewHistoryListCard = ({
+  index,
+  OnViewDetail,
+  data,
+  actionStatus,
+}) => {
   return (
     <TouchableOpacity onPress={OnViewDetail}>
       <View
@@ -34,14 +39,16 @@ const InterviewHistoryListCard = ({index, OnViewDetail, data}) => {
             styles.flexRow,
             styles.alignItemsCenter,
           ]}>
-          <View style={styles.chipDiagnosis}>
-            <Text
-              style={styles.textLight}
-              numberOfLines={1}
-              ellipsizeMode="tail">
-              Diagosis Demo 1
-            </Text>
-          </View>
+          {actionStatus && (
+            <View style={styles.chipDiagnosis}>
+              <Text
+                style={styles.textLight}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {actionStatus}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>

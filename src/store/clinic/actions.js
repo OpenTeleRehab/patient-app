@@ -19,7 +19,7 @@ export const getClinicListRequest =
     dispatch(mutation.clinicListFetchRequest());
     const {accessToken} = getState().user;
     const res = await Clinic.getClinicList(countryId, accessToken);
-    if (res.success) {
+    if (res.data) {
       dispatch(mutation.clinicListFetchSuccess(res.data));
     } else {
       dispatch(mutation.clinicListFetchFailure());

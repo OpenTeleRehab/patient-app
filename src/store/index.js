@@ -35,6 +35,7 @@ import {region} from './region/reducers';
 import {province} from './province/reducers';
 import {transfer} from './transfer/reducers';
 import {phcAppointment} from './phcAppointment/reducers';
+import {referral} from './referral/reducers';
 
 const rootReducers = {
   localize: localizeReducer,
@@ -64,6 +65,7 @@ const rootReducers = {
   province,
   transfer,
   phcAppointment,
+  referral,
 };
 
 const blacklistTransform = createTransform(

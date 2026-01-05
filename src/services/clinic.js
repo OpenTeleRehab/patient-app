@@ -8,7 +8,10 @@ const getClinic = async (id) => {
 };
 
 const getClinicList = async (countryId, accessToken) => {
-  return await callApi(`/clinic?country_id=${countryId}`, accessToken);
+  return await callApi(
+    `/clinics-by-user-country?country_id=${countryId}`,
+    accessToken,
+  );
 };
 
 export const Clinic = {

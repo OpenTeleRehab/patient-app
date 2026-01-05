@@ -6,13 +6,15 @@ export const screeningQuestionnaire = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        screeningQuestionnaireList: [],
       };
     case 'SCREENING_QUESTIONNAIRE_LIST_FETCH_SUCCEED':
       return {
         ...state,
         loading: false,
-        screeningQuestionnaireList: action.data,
+        screeningQuestionnaireListByUser: {
+          ...state.screeningQuestionnaireListByUser,
+          [action.patientID]: action.data,
+        },
       };
     case 'SCREENING_QUESTIONNAIRE_LIST_FETCH_FAILED':
       return {
@@ -23,18 +25,36 @@ export const screeningQuestionnaire = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        screeningQuestionnaireHistoryList: [],
       };
     case 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_SUCCEED':
       return {
         ...state,
         loading: false,
-        screeningQuestionnaireHistoryList: action.data,
+        screeningQuestionnaireHistoryByUser: {
+          ...state.screeningQuestionnaireHistoryByUser,
+          [`${action.userId}_${action.questionnaireId}`]: action.data,
+        },
       };
     case 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_FAILED':
       return {
         ...state,
         loading: false,
+      };
+    case 'SUBMIT_SCREENING_QUESTIONNAIRE_REQUESTED':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'SUBMIT_SCREENING_QUESTIONNAIRE_SUCCEEDED':
+    case 'SUBMIT_SCREENING_QUESTIONNAIRE_FAILED':
+      return {
+        ...state,
+        loading: false,
+      };
+    case 'SUBMIT_SCREENING_QUESTIONNAIRE_OFFLINE_SUCCESS':
+      return {
+        ...state,
+        offlineInterviews: action.data,
       };
     default:
       return state;

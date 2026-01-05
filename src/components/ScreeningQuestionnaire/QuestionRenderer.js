@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Text, View} from 'react-native';
 import {CheckBox, Image, Input, Slider, withTheme} from 'react-native-elements';
 import styles from '../../assets/styles';
@@ -7,30 +7,37 @@ import HelperText from './HelperText';
 import QuestionText from './QuestionText';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
-import settings from '../../../config/settings';
-
-const getImageUrl = (file) => {
-  if (!file?.id) return null;
-  return `${settings.adminApiBaseURL}/file/${file.id}`;
-};
+import {getCachedImage} from '../../utils/imageHelper';
 
 // NOTE
 const NoteRender = ({question}) => {
+  const [uri, setUri] = useState(null);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      if (question?.file) {
+        const localUri = await getCachedImage(question.file);
+        setUri(localUri);
+      }
+    };
+    loadImage();
+  }, [question]);
+
   return (
     <View style={styles.rowGap10}>
-      {question?.file && (
+      {uri && (
         <Image
-          source={{
-            uri: getImageUrl(question.file),
-          }}
+          source={{uri}}
           style={[styles.width100, styles.height150]}
           resizeMode="contain"
         />
       )}
       <QuestionText questionText={question.question_text} />
-      <Text accessibilityLabel={question.options[0].option_text}>
-        {question.options[0].option_text}
-      </Text>
+      {question.options?.[0] && (
+        <Text accessibilityLabel={question.options[0].option_text}>
+          {question.options[0].option_text}
+        </Text>
+      )}
     </View>
   );
 };
@@ -47,6 +54,20 @@ const RadioRender = ({question, disabled, translate}) => {
       required: question.mandatory && translate('error.message.required'),
     },
   });
+
+  const [uris, setUris] = useState({});
+
+  useEffect(() => {
+    const loadImages = async () => {
+      const newUris = {};
+      for (const opt of question.options || []) {
+        if (opt.file) newUris[opt.id] = await getCachedImage(opt.file);
+      }
+      setUris(newUris);
+    };
+    loadImages();
+  }, [question]);
+
   return (
     <View style={styles.rowGap10}>
       <QuestionText error={error} questionText={question.question_text} />
@@ -57,35 +78,27 @@ const RadioRender = ({question, disabled, translate}) => {
           styles.rowGap10,
           styles.flexWrap,
         ]}>
-        {question.options.map((opt, index) => {
-          return (
-            <View style={styles.questionOption} key={index}>
-              <View>
-                <CheckBox
-                  disabled={disabled}
-                  title={opt.option_text}
-                  checked={field.value.includes(opt.id)}
-                  checkedIcon="dot-circle-o"
-                  uncheckedIcon="circle-o"
-                  onPress={() => field.onChange([opt.id])}
-                  textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
-                />
-              </View>
-              {opt?.file && (
-                <View>
-                  <Image
-                    source={{
-                      uri: getImageUrl(opt.file),
-                    }}
-                    style={[styles.width100, styles.height110]}
-                    resizeMode="contain"
-                    onPress={() => field.onChange([opt.id])}
-                  />
-                </View>
-              )}
-            </View>
-          );
-        })}
+        {question.options.map((opt, index) => (
+          <View style={styles.questionOption} key={index}>
+            <CheckBox
+              disabled={disabled}
+              title={opt.option_text}
+              checked={field.value.includes(opt.id)}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
+              onPress={() => field.onChange([opt.id])}
+              textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
+            />
+            {uris[opt.id] && (
+              <Image
+                source={{uri: uris[opt.id]}}
+                style={[styles.width100, styles.height110]}
+                resizeMode="contain"
+                onPress={() => field.onChange([opt.id])}
+              />
+            )}
+          </View>
+        ))}
       </View>
       {error && <HelperText message={error.message} />}
     </View>
@@ -104,6 +117,20 @@ const CheckBoxRender = ({question, disabled, translate}) => {
       required: question.mandatory && translate('error.message.required'),
     },
   });
+
+  const [uris, setUris] = useState({});
+
+  useEffect(() => {
+    const loadImages = async () => {
+      const newUris = {};
+      for (const opt of question.options || []) {
+        if (opt.file) newUris[opt.id] = await getCachedImage(opt.file);
+      }
+      setUris(newUris);
+    };
+    loadImages();
+  }, [question]);
+
   return (
     <View style={styles.rowGap10}>
       <QuestionText error={error} questionText={question.question_text} />
@@ -118,40 +145,34 @@ const CheckBoxRender = ({question, disabled, translate}) => {
           const isChecked = field.value?.includes(opt.id);
           return (
             <View style={styles.questionOption} key={index}>
-              <View>
-                <CheckBox
-                  disabled={disabled}
-                  title={opt.option_text}
-                  checked={isChecked}
+              <CheckBox
+                disabled={disabled}
+                title={opt.option_text}
+                checked={isChecked}
+                onPress={() => {
+                  const current = field.value || [];
+                  field.onChange(
+                    current.includes(opt.id)
+                      ? current.filter((x) => x !== opt.id)
+                      : [...current, opt.id],
+                  );
+                }}
+                textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
+              />
+              {uris[opt.id] && (
+                <Image
+                  source={{uri: uris[opt.id]}}
+                  style={[styles.width100, styles.height110]}
+                  resizeMode="contain"
                   onPress={() => {
                     const current = field.value || [];
-                    if (current.includes(opt.id)) {
-                      field.onChange(current.filter((x) => x !== opt.id));
-                    } else {
-                      field.onChange([...current, opt.id]);
-                    }
+                    field.onChange(
+                      current.includes(opt.id)
+                        ? current.filter((x) => x !== opt.id)
+                        : [...current, opt.id],
+                    );
                   }}
-                  textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
                 />
-              </View>
-              {opt?.file && (
-                <View>
-                  <Image
-                    source={{
-                      uri: getImageUrl(opt.file),
-                    }}
-                    style={[styles.width100, styles.height110]}
-                    resizeMode="contain"
-                    onPress={() => {
-                      const current = field.value || [];
-                      if (current.includes(opt.id)) {
-                        field.onChange(current.filter((x) => x !== opt.id));
-                      } else {
-                        field.onChange([...current, opt.id]);
-                      }
-                    }}
-                  />
-                </View>
               )}
             </View>
           );
@@ -162,7 +183,17 @@ const CheckBoxRender = ({question, disabled, translate}) => {
   );
 };
 
-// INPUT TEXT
+// INPUT TEXT / NUMBER / SLIDER
+const useCachedImage = (file) => {
+  const [uri, setUri] = useState(null);
+  useEffect(() => {
+    if (file) {
+      getCachedImage(file).then(setUri);
+    }
+  }, [file]);
+  return uri;
+};
+
 const InputTextRender = ({question, disabled, translate}) => {
   const {
     field,
@@ -175,26 +206,24 @@ const InputTextRender = ({question, disabled, translate}) => {
     },
   });
 
+  const uri = useCachedImage(question?.file);
+
   return (
     <View style={styles.rowGap10}>
       <QuestionText error={error} questionText={question.question_text} />
-      <View>
-        <Input
-          value={field.value}
-          disabled={disabled}
-          onChangeText={field.onChange}
-          onBlur={field.onBlur}
-          errorMessage={error?.message}
-          containerStyle={styles.paddingXNone}
-          inputContainerStyle={styles.inputContainer}
-          errorStyle={error ? styles.errorText : styles.displayNone}
-        />
-      </View>
-      {question?.file && (
+      <Input
+        value={field.value}
+        disabled={disabled}
+        onChangeText={field.onChange}
+        onBlur={field.onBlur}
+        errorMessage={error?.message}
+        containerStyle={styles.paddingXNone}
+        inputContainerStyle={styles.inputContainer}
+        errorStyle={error ? styles.errorText : styles.displayNone}
+      />
+      {uri && (
         <Image
-          source={{
-            uri: getImageUrl(question.file),
-          }}
+          source={{uri}}
           style={[styles.width100, styles.height150]}
           resizeMode="contain"
         />
@@ -203,7 +232,6 @@ const InputTextRender = ({question, disabled, translate}) => {
   );
 };
 
-// INPUT NUMBER
 const InputNumberRender = ({question, disabled, translate}) => {
   const option = question.options?.[0];
   const {
@@ -223,27 +251,25 @@ const InputNumberRender = ({question, disabled, translate}) => {
     },
   });
 
+  const uri = useCachedImage(question?.file);
+
   return (
     <View style={styles.rowGap10}>
       <QuestionText error={error} questionText={question.question_text} />
-      <View>
-        <Input
-          keyboardType="numeric"
-          disabled={disabled}
-          value={field.value}
-          onChangeText={field.onChange}
-          onBlur={field.onBlur}
-          errorMessage={error?.message}
-          containerStyle={styles.paddingXNone}
-          inputContainerStyle={styles.inputContainer}
-          errorStyle={error ? styles.errorText : styles.displayNone}
-        />
-      </View>
-      {question?.file && (
+      <Input
+        keyboardType="numeric"
+        disabled={disabled}
+        value={field.value}
+        onChangeText={field.onChange}
+        onBlur={field.onBlur}
+        errorMessage={error?.message}
+        containerStyle={styles.paddingXNone}
+        inputContainerStyle={styles.inputContainer}
+        errorStyle={error ? styles.errorText : styles.displayNone}
+      />
+      {uri && (
         <Image
-          source={{
-            uri: getImageUrl(question.file),
-          }}
+          source={{uri}}
           style={[styles.width100, styles.height150]}
           resizeMode="contain"
         />
@@ -252,7 +278,6 @@ const InputNumberRender = ({question, disabled, translate}) => {
   );
 };
 
-// SLIDER
 const SliderRender = ({question, disabled, translate}) => {
   const {
     field,
@@ -264,34 +289,32 @@ const SliderRender = ({question, disabled, translate}) => {
     },
   });
 
+  const uri = useCachedImage(question?.file);
+
   return (
     <View style={styles.rowGap10}>
       <QuestionText error={error} questionText={question.question_text} />
       <Text style={styles.fontWeightMedium}>Level of Difficulty</Text>
-      <View>
-        <Text>Value: {field.value}</Text>
-        <Slider
-          disabled={disabled}
-          value={field.value}
-          onValueChange={field.onChange}
-          allowTouchTrack={!disabled}
-          step={1}
-          minimumValue={question.options[0].min}
-          maximumValue={question.options[0].max}
-          trackStyle={styles.trckHeight}
-          thumbStyle={styles.thumbStyle}
-        />
-        <Text style={styles.textCenter}>
-          {question.options[0].min} - {question.options[0].min_note} |
-          {question.options[0].max} - {question.options[0].max_note}
-        </Text>
-        {error && <HelperText message={error.message} />}
-      </View>
-      {question?.file && (
+      <Text>Value: {field.value}</Text>
+      <Slider
+        disabled={disabled}
+        value={field.value}
+        onValueChange={field.onChange}
+        allowTouchTrack={!disabled}
+        step={1}
+        minimumValue={question.options[0].min}
+        maximumValue={question.options[0].max}
+        trackStyle={styles.trckHeight}
+        thumbStyle={styles.thumbStyle}
+      />
+      <Text style={styles.textCenter}>
+        {question.options[0].min} - {question.options[0].min_note} |
+        {question.options[0].max} - {question.options[0].max_note}
+      </Text>
+      {error && <HelperText message={error.message} />}
+      {uri && (
         <Image
-          source={{
-            uri: getImageUrl(question.file),
-          }}
+          source={{uri}}
           style={[styles.width100, styles.height150]}
           resizeMode="contain"
         />
@@ -333,7 +356,11 @@ export default withTheme(QuestionRenderer);
 export const evaluateLogic = (logic, targetValue) => {
   switch (logic.condition_rule) {
     case 'equal':
-      return targetValue?.includes(logic.target_option_id);
+      if (Array.isArray(targetValue)) {
+        return targetValue?.includes(logic.target_option_id);
+      } else {
+        return targetValue === logic.target_option_value;
+      }
     case 'not_equal':
       return !targetValue?.includes(logic.target_option_id);
     case 'was_answered':
@@ -341,7 +368,7 @@ export const evaluateLogic = (logic, targetValue) => {
     case 'was_not_answered':
       return targetValue == null || targetValue === '';
     default:
-      return true;
+      return false;
   }
 };
 
@@ -362,9 +389,8 @@ export const useQuestionSkipLogic = (question) => {
   // Compute skip condition
   const shouldSkip = useMemo(() => {
     if (!question.logics?.length) return false;
-
-    return question.logics.every(
-      (logic, index) => !evaluateLogic(logic, fieldValues?.[index]),
+    return !question.logics.every((logic, index) =>
+      evaluateLogic(logic, fieldValues?.[index]),
     );
   }, [question.logics, fieldValues]);
 

@@ -1,5 +1,6 @@
 export const initialState = {
-  screeningQuestionnaireList: [],
-  screeningQuestionnaireHistoryList: [],
+  screeningQuestionnaireListByUser: {},
+  screeningQuestionnaireHistoryByUser: {},
   loading: false,
+  offlineInterviews: [],
 };

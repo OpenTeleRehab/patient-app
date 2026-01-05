@@ -14,6 +14,7 @@ import {
   createTransferPatientRequest,
   getTransfersRequest,
 } from '../../../store/transfer/actions';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const PatientTransfer = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -147,6 +148,11 @@ const PatientTransfer = ({navigation, route}) => {
             }}
           />
         </View>
+        <Spinner
+          visible={loading}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+          textStyle={styles.textLight}
+        />
       </ScrollView>
     </>
   );
