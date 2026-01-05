@@ -3,7 +3,7 @@
  */
 export const initialState = {
   phcAppointmentsWithPatient: [],
-  phcAppointmentsWithTherapistWorker: [],
+  phcAppointments: [],
   filters: {},
   loading: false,
 };

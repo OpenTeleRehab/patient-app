@@ -24,9 +24,9 @@ import CreateOrEditAppointment from './CreateOrEdit';
 import {
   deleteAppointmentWithPatient,
   updateAppointmentWithPatientStatus,
-  deleteAppointmentWithTherapistWorker,
-  acceptAppointmentWithTherapistWorker,
-  declineAppointmentWithTherapistWorker
+  deleteAppointment,
+  acceptAppointment,
+  declineAppointment
 } from '../../../store/phcAppointment/actions';
 import {useShowToast} from '../../../hook/useShowToast';
 
@@ -88,12 +88,12 @@ const AppointmentCard = ({appointment}) => {
       translate('phc.appointment.cancel.confirm_message'),
       [
         {
-          text: translate('common.cancel'),
-          style: 'cancel',
-        },
-        {
           text: translate('common.ok'),
           onPress: handleCancelConfirm,
+        },
+        {
+          text: translate('common.cancel'),
+          style: 'cancel',
         },
       ],
     );
@@ -119,7 +119,7 @@ const AppointmentCard = ({appointment}) => {
       return;
     }
 
-    dispatch(deleteAppointmentWithTherapistWorker(appointment.id)).then((res) => {
+    dispatch(deleteAppointment(appointment.id)).then((res) => {
       if (res.success) {
         showToast(
           translate(
@@ -155,7 +155,7 @@ const AppointmentCard = ({appointment}) => {
       });
       return;
     }
-    dispatch(acceptAppointmentWithTherapistWorker(appointment.id)).then((res) => {
+    dispatch(acceptAppointment(appointment.id)).then((res) => {
       if (res.success) {
         showToast(
           translate(
@@ -191,7 +191,7 @@ const AppointmentCard = ({appointment}) => {
       });
       return;
     }
-    dispatch(declineAppointmentWithTherapistWorker(appointment.id)).then((res) => {
+    dispatch(declineAppointment(appointment.id)).then((res) => {
       if (res.success) {
         showToast(
           translate(

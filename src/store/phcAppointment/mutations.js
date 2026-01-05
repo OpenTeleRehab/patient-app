@@ -21,23 +21,23 @@ const appointmentsWithPatientFetchFailure = () => {
   };
 };
 
-const appointmentsWithTherapistWorkerFetchRequest = () => {
+const appointmentsFetchRequest = () => {
   return {
-    type: 'APPOINTMENTS_WITH_THERAPIST_WORKER_FETCH_REQUESTED',
+    type: 'APPOINTMENTS_FETCH_REQUESTED',
   };
 };
 
-const appointmentsWithTherapistWorkerFetchSuccess = (data, filters) => {
+const appointmentsFetchSuccess = (data, filters) => {
   return {
-    type: 'APPOINTMENTS_WITH_THERAPIST_WORKER_FETCH_SUCCEED',
+    type: 'APPOINTMENTS_FETCH_SUCCEED',
     data,
     filters,
   };
 };
 
-const appointmentsWithTherapistWorkerFetchFailure = () => {
+const appointmentsFetchFailure = () => {
   return {
-    type: 'APPOINTMENTS_WITH_THERAPIST_WORKER_FETCH_FAILED',
+    type: 'APPOINTMENTS_FETCH_FAILED',
   };
 };
 
@@ -113,129 +113,129 @@ const deleteAppointmentWithPatientFailure = () => {
   };
 };
 
-const createAppointmentWithTherapistWorkerRequest = () => {
+const createAppointmentRequest = () => {
   return {
-    type: 'CREATE_APPOINTMENT_WITH_THERAPIST_WORKER_REQUESTED',
+    type: 'CREATE_APPOINTMENT_REQUESTED',
   };
 };
 
-const createAppointmentWithTherapistWorkerSuccess = () => {
+const createAppointmentSuccess = () => {
   return {
-    type: 'CREATE_APPOINTMENT_WITH_THERAPIST_WORKER_SUCCEED',
+    type: 'CREATE_APPOINTMENT_SUCCEED',
   };
 };
 
-const createAppointmentWithTherapistWorkerFailure = () => {
+const createAppointmentFailure = () => {
   return {
-    type: 'CREATE_APPOINTMENT_WITH_THERAPIST_WORKER_FAILED',
+    type: 'CREATE_APPOINTMENT_FAILED',
   };
 };
 
-const updateAppointmentWithTherapistWorkerRequest = () => {
+const updateAppointmentRequest = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_THERAPIST_WORKER_REQUESTED',
+    type: 'UPDATE_APPOINTMENT_REQUESTED',
   };
 };
 
-const updateAppointmentWithTherapistWorkerSuccess = () => {
+const updateAppointmentSuccess = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_THERAPIST_WORKER_SUCCEED',
+    type: 'UPDATE_APPOINTMENT_SUCCEED',
   };
 };
 
-const updateAppointmentWithTherapistWorkerFailure = () => {
+const updateAppointmentFailure = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_THERAPIST_WORKER_FAILED',
+    type: 'UPDATE_APPOINTMENT_FAILED',
   };
 };
 
-const deleteAppointmentWithTherapistWorkerRequest = () => {
+const deleteAppointmentRequest = () => {
   return {
-    type: 'DELETE_APPOINTMENT_WITH_THERAPIST_WORKER_REQUESTED',
+    type: 'DELETE_APPOINTMENT_REQUESTED',
   };
 };
 
-const deleteAppointmentWithTherapistWorkerSuccess = () => {
+const deleteAppointmentSuccess = () => {
   return {
-    type: 'DELETE_APPOINTMENT_WITH_THERAPIST_WORKER_SUCCEEDED',
+    type: 'DELETE_APPOINTMENT_SUCCEEDED',
   };
 };
 
-const deleteAppointmentWithTherapistWorkerFailure = () => {
+const deleteAppointmentFailure = () => {
   return {
-    type: 'DELETE_APPOINTMENT_WITH_THERAPIST_WORKER_FAILED',
+    type: 'DELETE_APPOINTMENT_FAILED',
   };
 };
 
-const acceptAppointmentWithTherapistWorkerRequest = () => {
+const acceptAppointmentRequest = () => {
   return {
-    type: 'ACCEPT_APPOINTMENT_WITH_THERAPIST_WORKER_REQUESTED',
+    type: 'ACCEPT_APPOINTMENT_REQUESTED',
   };
 };
 
-const acceptAppointmentWithTherapistWorkerSuccess = () => {
+const acceptAppointmentSuccess = () => {
   return {
-    type: 'ACCEPT_APPOINTMENT_WITH_THERAPIST_WORKER_SUCCEED',
+    type: 'ACCEPT_APPOINTMENT_SUCCEED',
   };
 };
 
-const acceptAppointmentWithTherapistWorkerFailure = () => {
+const acceptAppointmentFailure = () => {
   return {
-    type: 'ACCEPT_APPOINTMENT_WITH_THERAPIST_WORKER_FAILED',
+    type: 'ACCEPT_APPOINTMENT_FAILED',
   };
 };
 
-const declineAppointmentWithTherapistWorkerRequest = () => {
+const declineAppointmentRequest = () => {
   return {
-    type: 'DECLINE_APPOINTMENT_WITH_THERAPIST_WORKER_REQUESTED',
+    type: 'DECLINE_APPOINTMENT_REQUESTED',
   };
 };
 
-const declineAppointmentWithTherapistWorkerSuccess = () => {
+const declineAppointmentSuccess = () => {
   return {
-    type: 'DECLINE_APPOINTMENT_WITH_THERAPIST_WORKER_SUCCEED',
+    type: 'DECLINE_APPOINTMENT_SUCCEED',
   };
 };
 
-const declineAppointmentWithTherapistWorkerFailure = () => {
+const declineAppointmentFailure = () => {
   return {
-    type: 'DECLINE_APPOINTMENT_WITH_THERAPIST_WORKER_FAILED',
+    type: 'DECLINE_APPOINTMENT_FAILED',
   };
 };
 
-const updateAppointmentWithTherapistWorkerUnreadStatusRequest = () => {
+const updateAppointmentUnreadStatusRequest = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_THERAPIST_WORKER_UNREAD_STATUS_REQUESTED',
+    type: 'UPDATE_APPOINTMENT_UNREAD_STATUS_REQUESTED',
   };
 };
 
-const updateAppointmentWithTherapistWorkerUnreadStatusSuccess = () => {
+const updateAppointmentUnreadStatusSuccess = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_THERAPIST_WORKER_UNREAD_STATUS_SUCCEED',
+    type: 'UPDATE_APPOINTMENT_UNREAD_STATUS_SUCCEED',
   };
 };
 
-const updateAppointmentWithTherapistWorkerUnreadStatusFailure = () => {
+const updateAppointmentUnreadStatusFailure = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_THERAPIST_WORKER_UNREAD_STATUS_FAILED',
+    type: 'UPDATE_APPOINTMENT_UNREAD_STATUS_FAILED',
   };
 };
 
 const updateAppointmentWithPatientUnreadStatusRequest = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_PATIENT_UNREAD_STATUS_REQUESTED',
+    type: 'UPDATE_APPOINTMENT_UNREAD_STATUS_REQUESTED',
   };
 };
 
 const updateAppointmentWithPatientUnreadStatusSuccess = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_PATIENT_UNREAD_STATUS_SUCCEED',
+    type: 'UPDATE_APPOINTMENT_UNREAD_STATUS_SUCCEED',
   };
 };
 
 const updateAppointmentWithPatientUnreadStatusFailure = () => {
   return {
-    type: 'UPDATE_APPOINTMENT_WITH_PATIENT_UNREAD_STATUS_FAILED',
+    type: 'UPDATE_APPOINTMENT_UNREAD_STATUS_FAILED',
   };
 };
 
@@ -243,9 +243,9 @@ export const mutation = {
   appointmentsWithPatientFetchRequest,
   appointmentsWithPatientFetchSuccess,
   appointmentsWithPatientFetchFailure,
-  appointmentsWithTherapistWorkerFetchRequest,
-  appointmentsWithTherapistWorkerFetchSuccess,
-  appointmentsWithTherapistWorkerFetchFailure,
+  appointmentsFetchRequest,
+  appointmentsFetchSuccess,
+  appointmentsFetchFailure,
   createAppointmentWithPatientRequest,
   createAppointmentWithPatientSuccess,
   createAppointmentWithPatientFailure,
@@ -258,24 +258,24 @@ export const mutation = {
   deleteAppointmentWithPatientRequest,
   deleteAppointmentWithPatientSuccess,
   deleteAppointmentWithPatientFailure,
-  createAppointmentWithTherapistWorkerRequest,
-  createAppointmentWithTherapistWorkerSuccess,
-  createAppointmentWithTherapistWorkerFailure,
-  updateAppointmentWithTherapistWorkerRequest,
-  updateAppointmentWithTherapistWorkerSuccess,
-  updateAppointmentWithTherapistWorkerFailure,
-  deleteAppointmentWithTherapistWorkerRequest,
-  deleteAppointmentWithTherapistWorkerSuccess,
-  deleteAppointmentWithTherapistWorkerFailure,
-  acceptAppointmentWithTherapistWorkerRequest,
-  acceptAppointmentWithTherapistWorkerSuccess,
-  acceptAppointmentWithTherapistWorkerFailure,
-  declineAppointmentWithTherapistWorkerRequest,
-  declineAppointmentWithTherapistWorkerSuccess,
-  declineAppointmentWithTherapistWorkerFailure,
-  updateAppointmentWithTherapistWorkerUnreadStatusRequest,
-  updateAppointmentWithTherapistWorkerUnreadStatusSuccess,
-  updateAppointmentWithTherapistWorkerUnreadStatusFailure,
+  createAppointmentRequest,
+  createAppointmentSuccess,
+  createAppointmentFailure,
+  updateAppointmentRequest,
+  updateAppointmentSuccess,
+  updateAppointmentFailure,
+  deleteAppointmentRequest,
+  deleteAppointmentSuccess,
+  deleteAppointmentFailure,
+  acceptAppointmentRequest,
+  acceptAppointmentSuccess,
+  acceptAppointmentFailure,
+  declineAppointmentRequest,
+  declineAppointmentSuccess,
+  declineAppointmentFailure,
+  updateAppointmentUnreadStatusRequest,
+  updateAppointmentUnreadStatusSuccess,
+  updateAppointmentUnreadStatusFailure,
   updateAppointmentWithPatientUnreadStatusRequest,
   updateAppointmentWithPatientUnreadStatusSuccess,
   updateAppointmentWithPatientUnreadStatusFailure,

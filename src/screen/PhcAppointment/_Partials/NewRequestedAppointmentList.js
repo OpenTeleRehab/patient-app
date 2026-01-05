@@ -16,7 +16,7 @@ import moment from 'moment/min/moment-with-locales';
 import {PHC_APPOINTMENT_RECIPIENT_TYPE} from '../../../variables/appointment';
 import AppointmentSection from './AppointmentSection';
 
-const NewRequestedAppointmentList = ({appointmentWithPatients, appointmentWithTherapistWorkers}) => {
+const NewRequestedAppointmentList = ({appointmentWithPatients, appointments}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [groupedAppointmentWithPatients, setGroupedAppointmentWithPatients] = useState([]);
@@ -39,14 +39,14 @@ const NewRequestedAppointmentList = ({appointmentWithPatients, appointmentWithTh
   }, [appointmentWithPatients]);
 
   useEffect(() => {
-    const therapistGroupedData = _.chain(appointmentWithTherapistWorkers)
+    const therapistGroupedData = _.chain(appointments)
       .filter(item => item.with_user_type === PHC_APPOINTMENT_RECIPIENT_TYPE.THERAPIST)
       .groupBy((item) =>
         moment.utc(item.start_date).local().format('MMMM YYYY'),
       )
       .map((value, key) => ({month: key, appointments: value}))
       .value();
-    const phcWorkerGroupedData = _.chain(appointmentWithTherapistWorkers)
+    const phcWorkerGroupedData = _.chain(appointments)
       .filter(item => item.with_user_type === PHC_APPOINTMENT_RECIPIENT_TYPE.PHC_WORKER)
       .groupBy((item) =>
         moment.utc(item.start_date).local().format('MMMM YYYY'),
@@ -55,7 +55,7 @@ const NewRequestedAppointmentList = ({appointmentWithPatients, appointmentWithTh
       .value();
     setGroupedAppointmentWithTherapists(therapistGroupedData);
     setGroupedAppointmentWithPhcWorkers(phcWorkerGroupedData);
-  }, [appointmentWithTherapistWorkers]);
+  }, [appointments]);
 
   const toggleSection = (key) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
