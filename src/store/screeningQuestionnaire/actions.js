@@ -56,7 +56,7 @@ export const syncOfflineScreeningQuestionnaires =
       try {
         await dispatch(
           submitScreeningQuestionnaireAnswerRequest(
-            item.screeningQuestionnaireId,
+            item.questionnaire_id,
             item.userId,
             item.answers,
           ),
@@ -71,9 +71,9 @@ export const syncOfflineScreeningQuestionnaires =
 
     dispatch(mutation.submitScreeningQuestionnaireOfflineSuccess(failedItems));
 
-    // syncedPatientIds.forEach((patientId) => {
-    //   dispatch(getScreeningQuestionnaireListRequest(patientId));
-    // });
+    syncedPatientIds.forEach((patientId) => {
+      dispatch(getScreeningQuestionnaireListRequest(patientId));
+    });
   };
 
 // Offline Submit Screening Questionnaries

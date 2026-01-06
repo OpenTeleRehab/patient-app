@@ -15,34 +15,29 @@ const InterviewHistoryList = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const {screeningQuestionnaireHistoryByUser, loading} = useSelector(
-    (state) => state.screeningQuestionnaire,
-  );
+  const {screeningQuestionnaireHistoryByUser, offlineInterviews, loading} =
+    useSelector((state) => state.screeningQuestionnaire);
   const {patientId, screeningQuestionnaire} = route.params;
   const key = `${patientId}_${screeningQuestionnaire.id}`;
 
   const screeningQuestionnaireHistoryList =
     screeningQuestionnaireHistoryByUser?.[key] || [];
 
-  // const filteredOfflineInterviews = offlineInterviews.filter(
-  //   (item) =>
-  //     item.userId === patientId &&
-  //     item.screeningQuestionnaireId === screeningQuestionnaire.id,
-  // );
+  const filteredOfflineInterviews = offlineInterviews
+    .filter(
+      (item) =>
+        item.userId === patientId &&
+        item.questionnaire_id === screeningQuestionnaire.id,
+    )
+    .map((item) => ({
+      ...item,
+      isOffline: true,
+    }));
 
-  // console.log('offlineInterviews', offlineInterviews);
-
-  // console.log('filteredOfflineInterviews', filteredOfflineInterviews);
-
-  // const mergedScreeningQuestionnaireHistoryList = [
-  //   ...screeningQuestionnaireHistoryList,
-  //   ...filteredOfflineInterviews,
-  // ];
-
-  // console.log(
-  //   'mergedScreeningQuestionnaireHistoryList',
-  //   mergedScreeningQuestionnaireHistoryList,
-  // );
+  const mergedScreeningQuestionnaireHistoryList = [
+    ...screeningQuestionnaireHistoryList,
+    ...filteredOfflineInterviews,
+  ];
 
   useEffect(() => {
     if (!patientId || !screeningQuestionnaire?.id) return;
@@ -77,10 +72,10 @@ const InterviewHistoryList = ({navigation, route}) => {
           <></>
         ) : (
           <View style={styles.marginTopMd}>
-            {screeningQuestionnaireHistoryList?.map((item, index) => {
+            {mergedScreeningQuestionnaireHistoryList?.map((item, index) => {
               const totalScore = calculateScoreBySection(
                 screeningQuestionnaire.sections[0],
-                JSON.parse(item.answers),
+                item?.isOffline ? item?.answers : JSON.parse(item.answers),
               );
               return (
                 <InterviewHistoryItemCard
@@ -97,7 +92,9 @@ const InterviewHistoryList = ({navigation, route}) => {
                   OnViewDetail={() =>
                     navigation.push(ROUTES.INTERVIEW_DETAIL, {
                       screeningQuestionnaire,
-                      answers: JSON.parse(item.answers),
+                      answers: item?.isOffline
+                        ? item?.answers
+                        : JSON.parse(item?.answers),
                       from: 'history-list',
                     })
                   }

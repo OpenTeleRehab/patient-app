@@ -15,20 +15,18 @@ const InterviewList = ({navigation, patientId}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const {loading, screeningQuestionnaireListByUser} = useSelector(
-    (state) => state.screeningQuestionnaire,
-  );
+  const {loading, screeningQuestionnaireListByUser, offlineInterviews} =
+    useSelector((state) => state.screeningQuestionnaire);
 
   const screeningQuestionnaireList =
     screeningQuestionnaireListByUser?.[patientId] || [];
 
-  // const isHaveOfflineData = (interview_id) => {
-  //   return offlineInterviews?.some(
-  //     (item) =>
-  //       item.screeningQuestionnaireId === interview_id &&
-  //       item.userId === patientId,
-  //   );
-  // };
+  const isHaveOfflineData = (interview_id) => {
+    return offlineInterviews?.some(
+      (item) =>
+        item.questionnaire_id === interview_id && item.userId === patientId,
+    );
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -68,12 +66,11 @@ const InterviewList = ({navigation, patientId}) => {
                     });
                   }}
                   interview={interview}
-                  isDisable={!(interview.total_interview_history > 0)}
-                  // isDisable={
-                  //   isHaveOfflineData(interview.id)
-                  //     ? false
-                  //     : !(interview.total_interview_history > 0)
-                  // }
+                  isDisable={
+                    isHaveOfflineData(interview.id)
+                      ? false
+                      : !(interview.total_interview_history > 0)
+                  }
                 />
               );
             })}
