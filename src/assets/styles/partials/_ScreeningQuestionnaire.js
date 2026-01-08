@@ -33,7 +33,7 @@ export default {
     borderRadius: 10,
   },
   chipDiagnosis: {
-    backgroundColor: variables.orangeDark1,
+    backgroundColor: variables.blueLight,
     paddingVertical: 2,
     paddingHorizontal: 10,
     borderRadius: 15,

@@ -6,10 +6,9 @@ const screeningQuestionnaireListFetchRequest = () => {
   };
 };
 
-const screeningQuestionnaireListFetchSuccess = (patientID, data) => {
+const screeningQuestionnaireListFetchSuccess = (data) => {
   return {
     type: 'SCREENING_QUESTIONNAIRE_LIST_FETCH_SUCCEED',
-    patientID,
     data,
   };
 };

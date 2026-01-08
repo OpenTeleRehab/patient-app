@@ -30,7 +30,11 @@ const InterviewHistoryListCard = ({
           <Text style={[styles.fontSizeBase, styles.fontWeightMedium]}>
             {data.title}
           </Text>
-          <Text>{formatDate(data.created_at)}</Text>
+          {data?.isOffline ? (
+            <Text style={styles.textOrange}>Pending Submit</Text>
+          ) : (
+            <Text>{formatDate(data.created_at)}</Text>
+          )}
         </View>
         <View
           style={[

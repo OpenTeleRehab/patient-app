@@ -2,7 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, withTheme, Button, Icon} from 'react-native-elements';
-import {ScrollView, StatusBar, StyleSheet, View, Platform, TouchableOpacity} from 'react-native';
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
@@ -14,11 +21,26 @@ import {MultiSelect} from 'react-native-element-dropdown';
 import {theme} from '../../../../App';
 import {getRegionsRequest} from '../../../store/region/actions';
 import {getProvincesRequest} from '../../../store/province/actions';
-import {getPhcServicesRequest, getPhcWorkersRequest} from '../../../store/phcService/actions';
+import {
+  getPhcServicesRequest,
+  getPhcWorkersRequest,
+} from '../../../store/phcService/actions';
 import {getCountryRequest} from '../../../store/country/actions';
 import {getCountryName} from '../../../utils/country';
-import {getRegionName, getProvinceName, getPhcServiceName} from '../../../utils/patient';
-import {createPatientRequest, updatePatientRequest, getPatientsListRequest, deletePendingSupplementary, getPatientByPhoneRequest} from '../../../store/patient/actions';
+import {
+  getRegionName,
+  getProvinceName,
+  getPhcServiceName,
+} from '../../../utils/patient';
+import {
+  createPatientRequest,
+  updatePatientRequest,
+  getPatientsListRequest,
+  deletePendingSupplementary,
+  getPatientByPhoneRequest,
+  createPatientOfflineRequest,
+  getPatientsListForPhcWorkerRequest,
+} from '../../../store/patient/actions';
 import {ageCalculation} from '../../../utils/age';
 import {_} from 'lodash';
 import {formatDate, isValidDateFormat} from '../../../utils/helper';
@@ -27,10 +49,12 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment/moment';
 import {TRANSFER_STATUS} from '../../../variables/constants';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const CreateOrEditPatient = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {showToast} = useShowToast();
+  const netInfo = useNetInfo();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
@@ -80,20 +104,30 @@ const CreateOrEditPatient = ({navigation, route}) => {
     React.useCallback(() => {
       if (patient) {
         reset(patient);
-        const formattedDOB = patient.date_of_birth ? isValidDateFormat(patient.date_of_birth) ? patient.date_of_birth
-            : moment(patient.date_of_birth).toDate() : '';
+        const formattedDOB = patient.date_of_birth
+          ? isValidDateFormat(patient.date_of_birth)
+            ? patient.date_of_birth
+            : moment(patient.date_of_birth).toDate()
+          : '';
         setDateValue(formattedDOB);
-        setValue('date_of_birth', patient.date_of_birth ? formatDate(patient.date_of_birth) : '');
+        setValue(
+          'date_of_birth',
+          patient.date_of_birth ? formatDate(patient.date_of_birth) : '',
+        );
         setValue('phone', patient.phone?.replace(patient.dial_code, ''));
         setCountryPhoneCode(patient.dial_code);
       } else {
         reset(defaultValues);
         if (definedCountries.length) {
-          const userCountryCode = countries.find(country => country.id === profile?.country_id)?.iso_code;
+          const userCountryCode = countries.find(
+            (country) => country.id === profile?.country_id,
+          )?.iso_code;
           let defaultCountry = definedCountries[0];
 
           if (userCountryCode) {
-            const userCountry = _.find(definedCountries, {iso_code: userCountryCode});
+            const userCountry = _.find(definedCountries, {
+              iso_code: userCountryCode,
+            });
             if (userCountry) {
               defaultCountry = userCountry;
             }
@@ -102,29 +136,55 @@ const CreateOrEditPatient = ({navigation, route}) => {
           setValue('dial_code', defaultCountry.phone_code);
         }
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [patient, reset, setValue, definedCountries, countries, profile])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [patient, reset, setValue, definedCountries, countries, profile]),
   );
 
   useEffect(() => {
     if (transfers && transfers.length && patient) {
       const pending = transfers.filter(
         (transfer) =>
-          transfer.patient_id === patient.id && transfer.therapist_type === 'supplementary'
+          transfer.patient_id === patient.id &&
+          transfer.therapist_type === 'supplementary',
       );
-      setPendingTransfers(pending.map(transfer => ({
-        id: transfer.id,
-        therapist_id: transfer.to_therapist.id,
-        first_name: transfer.to_therapist.first_name,
-        last_name: transfer.to_therapist.last_name,
-        status: transfer.status,
-      })));
+      setPendingTransfers(
+        pending.map((transfer) => ({
+          id: transfer.id,
+          therapist_id: transfer.to_therapist.id,
+          first_name: transfer.to_therapist.first_name,
+          last_name: transfer.to_therapist.last_name,
+          status: transfer.status,
+        })),
+      );
     }
   }, [transfers, patient]);
 
   const onSubmit = (data) => {
-    const payload = {...data, phone: `${data.dial_code}${data.phone}`, supplementary_phc_workers: selectedSupplementary};
-    dispatch(getPatientByPhoneRequest(payload.phone, patient ? patient.id : null)).then((response) => {
+    const payload = {
+      ...data,
+      phone: `${data.dial_code}${data.phone}`,
+      supplementary_phc_workers: selectedSupplementary,
+    };
+
+    if (!netInfo.isConnected) {
+      if (patient) {
+        dispatch(updatePatientRequest(patient.id, payload));
+      } else {
+        dispatch(createPatientOfflineRequest(payload));
+      }
+
+      showToast(
+        translate('phc.patient.message.saved_offline'),
+        translate('common.offline'),
+      );
+
+      handleGoback();
+      return;
+    }
+
+    dispatch(
+      getPatientByPhoneRequest(payload.phone, patient ? patient.id : null),
+    ).then((response) => {
       if (response.success) {
         if (response.data) {
           setErrorPhoneExist(true);
@@ -135,17 +195,15 @@ const CreateOrEditPatient = ({navigation, route}) => {
             dispatch(updatePatientRequest(patient.id, payload)).then((res) => {
               if (res.success) {
                 showToast(
-                  translate(
-                    'phc.patient.message.update_success',
-                  ),
-                  translate('phc.patient.edit')
+                  translate('phc.patient.message.update_success'),
+                  translate('phc.patient.edit'),
                 );
                 dispatch(getPatientsListRequest());
                 handleGoback();
               } else {
                 showToast(
                   translate(translate(res.message)),
-                  translate('phc.patient.edit')
+                  translate('phc.patient.edit'),
                 );
               }
             });
@@ -153,18 +211,16 @@ const CreateOrEditPatient = ({navigation, route}) => {
           }
           dispatch(createPatientRequest(payload)).then((res) => {
             if (res.success) {
+              dispatch(getPatientsListForPhcWorkerRequest());
               showToast(
-                translate(
-                  'phc.patient.message.create_success',
-                ),
-                translate('phc.patient.create')
+                translate('phc.patient.message.create_success'),
+                translate('phc.patient.create'),
               );
-              dispatch(getPatientsListRequest());
               handleGoback();
             } else {
               showToast(
                 translate(translate(res.message)),
-                translate('phc.patient.create')
+                translate('phc.patient.create'),
               );
             }
           });
@@ -174,7 +230,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
   };
 
   const handleRemovePendingSupplementary = (id, therapistId) => {
-    setPendingTransfers(pendingTransfers.filter(item => item.therapist_id !== therapistId));
+    setPendingTransfers(
+      pendingTransfers.filter((item) => item.therapist_id !== therapistId),
+    );
     if (id) {
       dispatch(deletePendingSupplementary(id)).then((response) => {
         if (response.success) {
@@ -182,12 +240,12 @@ const CreateOrEditPatient = ({navigation, route}) => {
             translate(
               'phc.patient.message.pending_supplementary_phc_worker_removed',
             ),
-            translate('phc.patient.pending_supplementary')
+            translate('phc.patient.pending_supplementary'),
           );
         } else {
           showToast(
             translate(translate(response.message)),
-            translate('phc.patient.pending_supplementary')
+            translate('phc.patient.pending_supplementary'),
           );
         }
       });
@@ -212,7 +270,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
             type="material"
             size={20}
             color={theme.colors.white}
-            onPress={() => handleRemovePendingSupplementary(item.id, item.therapist_id)}
+            onPress={() =>
+              handleRemovePendingSupplementary(item.id, item.therapist_id)
+            }
             containerStyle={styles.marginLeftSm}
           />
         </View>
@@ -232,17 +292,21 @@ const CreateOrEditPatient = ({navigation, route}) => {
         title={translate(patient ? 'phc.patient.edit' : 'phc.patient.create')}
         backgroundPrimary={true}
       />
-      <ScrollView contentContainerStyle={[styles.mainContainerLight, styles.paddingXMd]}>
-        <View >
+      <ScrollView
+        contentContainerStyle={[styles.mainContainerLight, styles.paddingXMd]}>
+        <View>
           <Text
             accessibilityLabel={translate('phc.patient.phone')}
-            style={componentStyles.labelStyle}
-          >
+            style={componentStyles.labelStyle}>
             {translate('phc.patient.phone')}
             <Text style={componentStyles.requiredText}> *</Text>
           </Text>
           <View style={componentStyles.twoColumnContainer}>
-            <View style={[styles.formSelectPickerContainer, componentStyles.phoneCodeContainer]}>
+            <View
+              style={[
+                styles.formSelectPickerContainer,
+                componentStyles.phoneCodeContainer,
+              ]}>
               <Controller
                 control={control}
                 name="dial_code"
@@ -250,13 +314,14 @@ const CreateOrEditPatient = ({navigation, route}) => {
                   <SelectPicker
                     placeholder={{}}
                     value={countryPhoneCode}
-                    items={countryPhoneCode
-                      ? definedCountries.map(country => ({
-                          label: `${country.name} (+${country.phone_code})`,
-                          value: country.phone_code,
-                          inputLabel: `+${country.phone_code}`,
-                        }))
-                      : []
+                    items={
+                      countryPhoneCode
+                        ? definedCountries.map((country) => ({
+                            label: `${country.name} (+${country.phone_code})`,
+                            value: country.phone_code,
+                            inputLabel: `+${country.phone_code}`,
+                          }))
+                        : []
                     }
                     onValueChange={() => {
                       onChange(value);
@@ -272,14 +337,23 @@ const CreateOrEditPatient = ({navigation, route}) => {
               <Controller
                 control={control}
                 name="phone"
-                rules={{required: translate('error.message.phc.patient.phone.required')}}
+                rules={{
+                  required: translate(
+                    'error.message.phc.patient.phone.required',
+                  ),
+                }}
                 render={({field: {value, onChange}}) => (
                   <TextField
                     placeholder={translate('phc.patient.phone.placeholder')}
                     variant="filled"
                     value={value}
                     onChangeText={onChange}
-                    errorMessage={ errors?.phone?.message || (errorPhoneExist ? translate('error.message.phc.patient.phone_exist') : undefined)}
+                    errorMessage={
+                      errors?.phone?.message ||
+                      (errorPhoneExist
+                        ? translate('error.message.phc.patient.phone_exist')
+                        : undefined)
+                    }
                     renderErrorMessage={!!errors.phone || errorPhoneExist}
                     inputStyle={componentStyles.inputStyle}
                     keyboardType="phone-pad"
@@ -290,55 +364,70 @@ const CreateOrEditPatient = ({navigation, route}) => {
             </View>
           </View>
           <View style={componentStyles.twoColumnContainer}>
-            <View style={[componentStyles.columnContainer, componentStyles.columnContainerHeight]}>
-                <TextField
-                  variant="filled"
-                  value={getCountryName()}
-                  label={translate('phc.patient.country')}
-                  disabled
-                  labelStyle={componentStyles.labelStyle}
-                  inputStyle={componentStyles.inputStyle}
-                />
+            <View
+              style={[
+                componentStyles.columnContainer,
+                componentStyles.columnContainerHeight,
+              ]}>
+              <TextField
+                variant="filled"
+                value={getCountryName()}
+                label={translate('phc.patient.country')}
+                disabled
+                labelStyle={componentStyles.labelStyle}
+                inputStyle={componentStyles.inputStyle}
+              />
             </View>
-            <View style={[componentStyles.columnContainer, componentStyles.columnContainerHeight]}>
-                <TextField
-                  variant="filled"
-                  value={getRegionName()}
-                  label={translate('phc.patient.region')}
-                  disabled
-                  labelStyle={componentStyles.labelStyle}
-                  inputStyle={componentStyles.inputStyle}
-                />
+            <View
+              style={[
+                componentStyles.columnContainer,
+                componentStyles.columnContainerHeight,
+              ]}>
+              <TextField
+                variant="filled"
+                value={getRegionName()}
+                label={translate('phc.patient.region')}
+                disabled
+                labelStyle={componentStyles.labelStyle}
+                inputStyle={componentStyles.inputStyle}
+              />
             </View>
           </View>
           <View style={componentStyles.twoColumnContainer}>
-            <View style={[componentStyles.columnContainer, componentStyles.columnContainerHeight]}>
-                <TextField
-                  variant="filled"
-                  value={getProvinceName()}
-                  label={translate('phc.patient.province')}
-                  disabled
-                  labelStyle={componentStyles.labelStyle}
-                  inputStyle={componentStyles.inputStyle}
-                />
+            <View
+              style={[
+                componentStyles.columnContainer,
+                componentStyles.columnContainerHeight,
+              ]}>
+              <TextField
+                variant="filled"
+                value={getProvinceName()}
+                label={translate('phc.patient.province')}
+                disabled
+                labelStyle={componentStyles.labelStyle}
+                inputStyle={componentStyles.inputStyle}
+              />
             </View>
-            <View style={[componentStyles.columnContainer, componentStyles.columnContainerHeight]}>
-                <TextField
-                  variant="filled"
-                  value={getPhcServiceName()}
-                  label={translate('phc.patient.phc_service')}
-                  disabled
-                  labelStyle={componentStyles.labelStyle}
-                  inputStyle={componentStyles.inputStyle}
-                />
+            <View
+              style={[
+                componentStyles.columnContainer,
+                componentStyles.columnContainerHeight,
+              ]}>
+              <TextField
+                variant="filled"
+                value={getPhcServiceName()}
+                label={translate('phc.patient.phc_service')}
+                disabled
+                labelStyle={componentStyles.labelStyle}
+                inputStyle={componentStyles.inputStyle}
+              />
             </View>
           </View>
           <View style={componentStyles.twoColumnContainer}>
             <View style={componentStyles.columnContainer}>
               <Text
                 accessibilityLabel={translate('phc.patient.gender')}
-                style={componentStyles.labelStyle}
-              >
+                style={componentStyles.labelStyle}>
                 {translate('phc.patient.gender')}
                 <Text style={componentStyles.requiredText}> *</Text>
               </Text>
@@ -346,7 +435,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
                 <Controller
                   control={control}
                   name="gender"
-                  rules={{required: translate('error.message.phc.patient.gender.required')}}
+                  rules={{
+                    required: translate(
+                      'error.message.phc.patient.gender.required',
+                    ),
+                  }}
                   render={({field: {value, onChange}}) => (
                     <SelectPicker
                       placeholder={{
@@ -355,9 +448,18 @@ const CreateOrEditPatient = ({navigation, route}) => {
                       }}
                       value={value}
                       items={[
-                        {label: translate('phc.patient.gender.male'), value: 'male'},
-                        {label: translate('phc.patient.gender.female'), value: 'female'},
-                        {label: translate('phc.patient.gender.other'), value: 'other'},
+                        {
+                          label: translate('phc.patient.gender.male'),
+                          value: 'male',
+                        },
+                        {
+                          label: translate('phc.patient.gender.female'),
+                          value: 'female',
+                        },
+                        {
+                          label: translate('phc.patient.gender.other'),
+                          value: 'other',
+                        },
                       ]}
                       onValueChange={onChange}
                       accessibilityLabel={translate('phc.patient.gender')}
@@ -367,7 +469,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
                 />
               </View>
               {errors.gender && (
-                <Text style={componentStyles.errorTextStyle}>{errors.gender.message}</Text>
+                <Text style={componentStyles.errorTextStyle}>
+                  {errors.gender.message}
+                </Text>
               )}
             </View>
             <View style={componentStyles.columnContainer}>
@@ -378,7 +482,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
                   return (
                     <DatePicker
                       label={translate('phc.patient.date_of_birth')}
-                      placeholder={translate('phc.patient.date_of_birth.placeholder')}
+                      placeholder={translate(
+                        'phc.patient.date_of_birth.placeholder',
+                      )}
                       value={dateValue}
                       mode="date"
                       onSetDate={(event, selectedDate) => {
@@ -399,9 +505,10 @@ const CreateOrEditPatient = ({navigation, route}) => {
               />
               <Text
                 accessibilityLabel={translate('phc.patient.age')}
-                style={componentStyles.labelStyle}
-              >
-                {translate('phc.patient.age', {value: ageCalculation(dateValue, translate)})}
+                style={componentStyles.labelStyle}>
+                {translate('phc.patient.age', {
+                  value: ageCalculation(dateValue, translate),
+                })}
               </Text>
             </View>
           </View>
@@ -409,22 +516,27 @@ const CreateOrEditPatient = ({navigation, route}) => {
             <View style={componentStyles.columnContainer}>
               <Text
                 accessibilityLabel={translate('phc.patient.last_name')}
-                style={componentStyles.labelStyle}
-              >
+                style={componentStyles.labelStyle}>
                 {translate('phc.patient.last_name')}
                 <Text style={componentStyles.requiredText}> *</Text>
               </Text>
               <Controller
                 control={control}
                 name="last_name"
-                rules={{required: translate('error.message.phc.patient.last_name.required')}}
+                rules={{
+                  required: translate(
+                    'error.message.phc.patient.last_name.required',
+                  ),
+                }}
                 render={({field: {value, onChange}}) => (
                   <TextField
                     placeholder={translate('phc.patient.last_name.placeholder')}
                     variant="filled"
                     value={value}
                     onChangeText={onChange}
-                    errorMessage={errors ? errors.last_name?.message : undefined}
+                    errorMessage={
+                      errors ? errors.last_name?.message : undefined
+                    }
                     renderErrorMessage={!!errors.last_name}
                     labelStyle={componentStyles.labelStyle}
                     inputStyle={componentStyles.inputStyle}
@@ -435,22 +547,29 @@ const CreateOrEditPatient = ({navigation, route}) => {
             <View style={componentStyles.columnContainer}>
               <Text
                 accessibilityLabel={translate('phc.patient.first_name')}
-                style={componentStyles.labelStyle}
-              >
+                style={componentStyles.labelStyle}>
                 {translate('phc.patient.first_name')}
                 <Text style={componentStyles.requiredText}> *</Text>
               </Text>
               <Controller
                 control={control}
                 name="first_name"
-                rules={{required: translate('error.message.phc.patient.first_name.required')}}
+                rules={{
+                  required: translate(
+                    'error.message.phc.patient.first_name.required',
+                  ),
+                }}
                 render={({field: {value, onChange}}) => (
                   <TextField
-                    placeholder={translate('phc.patient.first_name.placeholder')}
+                    placeholder={translate(
+                      'phc.patient.first_name.placeholder',
+                    )}
                     variant="filled"
                     value={value}
                     onChangeText={onChange}
-                    errorMessage={errors ? errors.first_name?.message : undefined}
+                    errorMessage={
+                      errors ? errors.first_name?.message : undefined
+                    }
                     renderErrorMessage={!!errors.first_name}
                     labelStyle={componentStyles.labelStyle}
                     inputStyle={componentStyles.inputStyle}
@@ -462,8 +581,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
           <View>
             <Text
               accessibilityLabel={translate('phc.patient.location')}
-              style={componentStyles.labelStyle}
-            >
+              style={componentStyles.labelStyle}>
               {translate('phc.patient.location')}
               <Text style={theme.colors.error}> *</Text>
             </Text>
@@ -471,7 +589,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
               <Controller
                 control={control}
                 name="location"
-                rules={{required: translate('error.message.phc.patient.location.required')}}
+                rules={{
+                  required: translate(
+                    'error.message.phc.patient.location.required',
+                  ),
+                }}
                 render={({field: {value, onChange}}) => (
                   <SelectPicker
                     placeholder={{
@@ -480,9 +602,18 @@ const CreateOrEditPatient = ({navigation, route}) => {
                     }}
                     value={value}
                     items={[
-                      {label: translate('phc.patient.location.rural_area'), value: 'rural_area'},
-                      {label: translate('phc.patient.location.urban_area'), value: 'urban_area'},
-                      {label: translate('phc.patient.location.n/a'), value: 'n/a'},
+                      {
+                        label: translate('phc.patient.location.rural_area'),
+                        value: 'rural_area',
+                      },
+                      {
+                        label: translate('phc.patient.location.urban_area'),
+                        value: 'urban_area',
+                      },
+                      {
+                        label: translate('phc.patient.location.n/a'),
+                        value: 'n/a',
+                      },
                     ]}
                     onValueChange={onChange}
                     accessibilityLabel={translate('phc.patient.location')}
@@ -492,33 +623,50 @@ const CreateOrEditPatient = ({navigation, route}) => {
               />
             </View>
             {errors.location && (
-              <Text style={componentStyles.errorTextStyle}>{errors.location.message}</Text>
+              <Text style={componentStyles.errorTextStyle}>
+                {errors.location.message}
+              </Text>
             )}
           </View>
           <View style={[styles.marginBottom, styles.marginTop]}>
-            <Text style={componentStyles.labelStyle}>{translate('phc.patient.supplementary_phc_workers')}</Text>
+            <Text style={componentStyles.labelStyle}>
+              {translate('phc.patient.supplementary_phc_workers')}
+            </Text>
             <Controller
               control={control}
               name="supplementary_phc_workers"
               render={({field: {onChange, value}}) => (
                 <MultiSelect
                   style={componentStyles.dropdown}
-                  placeholder={translate('phc.patient.supplementary_phc_workers.placeholder')}
+                  placeholder={translate(
+                    'phc.patient.supplementary_phc_workers.placeholder',
+                  )}
                   placeholderStyle={componentStyles.placeholderStyle}
                   selectedTextStyle={componentStyles.selectedTextStyle}
                   iconStyle={componentStyles.iconStyle}
                   data={(phcWorkers ?? [])
-                    .filter(worker => !pendingTransfers.some(pt => pt.therapist_id === worker.id) && worker.id !== profile.id)
-                    .map(worker => ({
+                    .filter(
+                      (worker) =>
+                        !pendingTransfers.some(
+                          (pt) => pt.therapist_id === worker.id,
+                        ) && worker.id !== profile.id,
+                    )
+                    .map((worker) => ({
                       label: `${worker.last_name} ${worker.first_name}`,
                       value: worker.id,
                     }))
                     .concat(
-                      pendingTransfers.length === phcWorkers.filter(worker => worker.id !== profile.id).length
-                        ? [{label: translate('phc.patient.no_more_option'), value: null}]
-                        : []
-                    )
-                  }
+                      pendingTransfers.length ===
+                        phcWorkers.filter((worker) => worker.id !== profile.id)
+                          .length
+                        ? [
+                            {
+                              label: translate('phc.patient.no_more_option'),
+                              value: null,
+                            },
+                          ]
+                        : [],
+                    )}
                   labelField="label"
                   valueField="value"
                   value={value}
@@ -526,9 +674,13 @@ const CreateOrEditPatient = ({navigation, route}) => {
                     if (selected.includes(null)) {
                       return;
                     }
-                    const newlySelected = selected.filter(id => !value.includes(id));
-                    const newPending = newlySelected.map(id => {
-                      const worker = phcWorkers.find(phcWorker => phcWorker.id === id);
+                    const newlySelected = selected.filter(
+                      (id) => !value.includes(id),
+                    );
+                    const newPending = newlySelected.map((id) => {
+                      const worker = phcWorkers.find(
+                        (phcWorker) => phcWorker.id === id,
+                      );
                       return {
                         therapist_id: worker.id,
                         first_name: worker.first_name,
@@ -537,9 +689,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
                       };
                     });
                     if (newPending.length) {
-                      setPendingTransfers(prev => [...prev, ...newPending]);
+                      setPendingTransfers((prev) => [...prev, ...newPending]);
                     }
-                    const updatedAssigned = value.filter(id => selected.includes(id));
+                    const updatedAssigned = value.filter((id) =>
+                      selected.includes(id),
+                    );
                     setSelectedSupplementary([...value, ...selected]);
                     onChange(updatedAssigned);
                   }}
@@ -549,21 +703,44 @@ const CreateOrEditPatient = ({navigation, route}) => {
             />
             {pendingTransfers.length > 0 && (
               <>
-                <Text style={[componentStyles.labelStyle, styles.marginTop]}>{translate('phc.patient.supplementary_phc_workers.pending_accept_decline')}</Text>
+                <Text style={[componentStyles.labelStyle, styles.marginTop]}>
+                  {translate(
+                    'phc.patient.supplementary_phc_workers.pending_accept_decline',
+                  )}
+                </Text>
                 <View style={componentStyles.badgeContainer}>
-                  {pendingTransfers.map((item, index) =>
-                    <View key={index} style={item.id && item.status === TRANSFER_STATUS.DECLINED ? [componentStyles.declineBackgroundStyle, componentStyles.pendingBadge] : [componentStyles.pendingBackgroundStyle, componentStyles.pendingBadge]}>
-                      <Text style={componentStyles.selectedTextStyle}>{item.last_name} {item.first_name}</Text>
+                  {pendingTransfers.map((item, index) => (
+                    <View
+                      key={index}
+                      style={
+                        item.id && item.status === TRANSFER_STATUS.DECLINED
+                          ? [
+                              componentStyles.declineBackgroundStyle,
+                              componentStyles.pendingBadge,
+                            ]
+                          : [
+                              componentStyles.pendingBackgroundStyle,
+                              componentStyles.pendingBadge,
+                            ]
+                      }>
+                      <Text style={componentStyles.selectedTextStyle}>
+                        {item.last_name} {item.first_name}
+                      </Text>
                       <Icon
                         name="highlight-off"
                         type="material"
                         size={20}
                         color={theme.colors.white}
-                        onPress={() => handleRemovePendingSupplementary(item.id, item.therapist_id)}
+                        onPress={() =>
+                          handleRemovePendingSupplementary(
+                            item.id,
+                            item.therapist_id,
+                          )
+                        }
                         containerStyle={styles.marginLeftSm}
                       />
                     </View>
-                  )}
+                  ))}
                 </View>
               </>
             )}
@@ -591,11 +768,21 @@ const CreateOrEditPatient = ({navigation, route}) => {
         <View style={componentStyles.buttonContainer}>
           <Button
             containerStyle={styles.marginBottom}
-            title={translate(patient ? 'phc.patient.button.confirm_change' : 'phc.patient.button.create')}
+            title={translate(
+              patient
+                ? 'phc.patient.button.confirm_change'
+                : 'phc.patient.button.create',
+            )}
             onPress={handleSubmit(onSubmit)}
             disabled={!isDirty || loading}
           />
-          <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.patient.button.cancel')} onPress={() => navigation.goBack()} disabled={loading} />
+          <Button
+            type="outline"
+            containerStyle={styles.marginBottom}
+            title={translate('phc.patient.button.cancel')}
+            onPress={() => navigation.goBack()}
+            disabled={loading}
+          />
         </View>
         <Spinner
           visible={loading}
@@ -619,7 +806,7 @@ const componentStyles = StyleSheet.create({
   columnContainer: {
     flex: 1,
   },
-   dropdown: {
+  dropdown: {
     backgroundColor: '#E6E8EA',
     borderRadius: 8,
     padding: 16,

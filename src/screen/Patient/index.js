@@ -2,13 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {BottomSheet, Icon} from 'react-native-elements';
@@ -16,21 +10,20 @@ import {theme} from '../../../App';
 import {ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {getPatientsListRequest} from '../../store/patient/actions';
+import {getPatientsListForPhcWorkerRequest} from '../../store/patient/actions';
 import PatientCard from './_Partials/PatientCard';
 import {getTransfersRequest} from '../../store/transfer/actions';
 import Filter from './_Partials/Filter';
 import _ from 'lodash';
 import moment from 'moment';
 import {getTreatmentStatus} from '../../utils/patient';
+import {getScreeningQuestionnaireListRequest} from '../../store/screeningQuestionnaire/actions';
 
 const Patient = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patients, filters} = useSelector(
-    (state) => state.patient,
-  );
+  const {patientsForPhcWorker, filters} = useSelector((state) => state.patient);
   const [currentFilters, setCurrentFilters] = useState({});
   const [showFilter, setShowFilter] = useState(false);
   const [patientList, setPatientList] = useState([]);
@@ -40,16 +33,15 @@ const Patient = ({navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(
-      getPatientsListRequest(),
-    );
+    dispatch(getPatientsListForPhcWorkerRequest());
+    dispatch(getScreeningQuestionnaireListRequest());
   }, [dispatch]);
 
   useEffect(() => {
-    if (patients) {
-      setPatientList(patients);
+    if (patientsForPhcWorker) {
+      setPatientList(patientsForPhcWorker);
     }
-  }, [patients]);
+  }, [patientsForPhcWorker]);
 
   useEffect(() => {
     setCurrentFilters(filters);
@@ -57,7 +49,7 @@ const Patient = ({navigation}) => {
 
   useEffect(() => {
     if (currentFilters && !_.isEmpty(currentFilters)) {
-      const patientData = patients.filter(patient => {
+      const patientData = patientsForPhcWorker.filter((patient) => {
         if (currentFilters.first_name) {
           const filterValue = currentFilters.first_name.toLowerCase();
           if (!patient.first_name.toLowerCase().includes(filterValue)) {
@@ -72,34 +64,53 @@ const Patient = ({navigation}) => {
           }
         }
 
-        if (currentFilters.date_of_birth_from || currentFilters.date_of_birth_to) {
+        if (
+          currentFilters.date_of_birth_from ||
+          currentFilters.date_of_birth_to
+        ) {
           if (!patient.date_of_birth) {
             return false;
           }
 
-          const patientDob = moment(patient.date_of_birth, 'YYYY-MM-DD HH:mm:ss');
+          const patientDob = moment(
+            patient.date_of_birth,
+            'YYYY-MM-DD HH:mm:ss',
+          );
 
           if (currentFilters.date_of_birth_from) {
-            const dobFrom = moment(currentFilters.date_of_birth_from, 'DD/MM/YYYY').startOf('day');
+            const dobFrom = moment(
+              currentFilters.date_of_birth_from,
+              'DD/MM/YYYY',
+            ).startOf('day');
             if (patientDob.isBefore(dobFrom)) return false;
           }
 
           if (currentFilters.date_of_birth_to) {
-            const dobTo = moment(currentFilters.date_of_birth_to, 'DD/MM/YYYY').endOf('day');
+            const dobTo = moment(
+              currentFilters.date_of_birth_to,
+              'DD/MM/YYYY',
+            ).endOf('day');
             if (patientDob.isAfter(dobTo)) return false;
           }
         }
 
         if (currentFilters.treatment_status) {
-          const treatmentStatus = getTreatmentStatus(patient.ongoingTreatmentPlan.length
-                ? patient.ongoingTreatmentPlan[0]
-                : patient.upcomingTreatmentPlan
-                ? patient.upcomingTreatmentPlan
-                : patient.lastTreatmentPlan);
-          if (treatmentStatus !== currentFilters.treatment_status) { return false; }
+          const treatmentStatus = getTreatmentStatus(
+            patient?.ongoingTreatmentPlan?.length
+              ? patient.ongoingTreatmentPlan[0]
+              : patient.upcomingTreatmentPlan
+              ? patient.upcomingTreatmentPlan
+              : patient.lastTreatmentPlan,
+          );
+          if (treatmentStatus !== currentFilters.treatment_status) {
+            return false;
+          }
         }
 
-        if (currentFilters.referral_status && (patient.referral_status !== currentFilters.referral_status)) {
+        if (
+          currentFilters.referral_status &&
+          patient.referral_status !== currentFilters.referral_status
+        ) {
           return false;
         }
 
@@ -107,9 +118,9 @@ const Patient = ({navigation}) => {
       });
       setPatientList(patientData);
     } else {
-      setPatientList(patients);
+      setPatientList(patientsForPhcWorker);
     }
-  }, [currentFilters, dispatch, patients]);
+  }, [currentFilters, dispatch, patientsForPhcWorker]);
 
   return (
     <>
@@ -154,8 +165,9 @@ const Patient = ({navigation}) => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate(ROUTES.PATIENT_DETAIL, {
+                  patientDetail: item,
                   patientId: item.id,
-                  treatmentPlan: item.ongoingTreatmentPlan.length
+                  treatmentPlan: item?.ongoingTreatmentPlan?.length
                     ? item.ongoingTreatmentPlan[0]
                     : item.upcomingTreatmentPlan
                     ? item.upcomingTreatmentPlan
@@ -173,10 +185,7 @@ const Patient = ({navigation}) => {
         />
       </View>
       <BottomSheet isVisible={showFilter} modalProps={{}}>
-        <Filter
-          filters={currentFilters}
-          setShowFilter={setShowFilter}
-        />
+        <Filter filters={currentFilters} setShowFilter={setShowFilter} />
       </BottomSheet>
     </>
   );

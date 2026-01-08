@@ -5,11 +5,17 @@ import {initialState} from './states';
 
 export const patient = (state = initialState, action) => {
   switch (action.type) {
+    case 'PATIENTS_FOR_PHC_WORKER_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        patientsForPhcWorker: action.data,
+        loading: false,
+      });
     case 'PATIENTS_FETCH_SUCCEED':
       return Object.assign({}, state, {
         patients: action.data,
         loading: false,
       });
+    case 'PATIENTS_FOR_PHC_WORKER_FETCH_FAILED':
     case 'PATIENTS_FETCH_FAILED':
     case 'PATIENT_CREATE_FAILED':
     case 'PATIENT_UPDATE_FAILED':
@@ -24,7 +30,9 @@ export const patient = (state = initialState, action) => {
     case 'PATIENT_FETCH_SUCCEED':
       return Object.assign({}, state, {
         patient: action.data,
+        loading: false,
       });
+    case 'PATIENTS_FOR_PHC_WORKER_FETCH_REQUESTED':
     case 'PATIENT_CREATE_REQUESTED':
     case 'PATIENT_UPDATE_REQUESTED':
     case 'PATIENT_DELETE_REQUESTED':
@@ -35,7 +43,9 @@ export const patient = (state = initialState, action) => {
     case 'PATIENT_DELETE_SUCCEED':
       return {
         ...state,
-        patients: state.patients.filter(patientObj => patientObj.id !== action.data),
+        patients: state.patients.filter(
+          (patientObj) => patientObj.id !== action.data,
+        ),
         loading: false,
       };
     case 'FILTERS_UPDATE_SUCCEED':

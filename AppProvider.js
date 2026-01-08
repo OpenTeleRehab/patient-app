@@ -45,7 +45,7 @@ import {
 import {updateIndicatorList} from './src/store/indicator/actions';
 import messaging from '@react-native-firebase/messaging';
 import {callPermission, notificationPermission} from './src/utils/permission';
-// import {syncOfflineScreeningQuestionnaires} from './src/store/screeningQuestionnaire/actions';
+import {syncPatientOffline} from './src/store/patient/actions';
 
 let chatSocket = null;
 let patientId = null;
@@ -68,9 +68,6 @@ const AppProvider = ({children}) => {
   const localize = useSelector((state) => state.localize);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
     useSelector((state) => state.activity);
-  // const {offlineInterviews} = useSelector(
-  //   (state) => state.screeningQuestionnaire,
-  // );
   const translate = getTranslate(localize);
   const [loading, setLoading] = useState(true);
   const [timespan, setTimespan] = useState('');
@@ -357,14 +354,12 @@ const AppProvider = ({children}) => {
     }
   }, [isOnline, isDataUpToDate, translate]);
 
-  // Sync Data (Screening Questionnaires) When Online
-
-  // useEffect(() => {
-  //   if (isOnline && accessToken && offlineInterviews?.length > 0) {
-  //     console.log('Sync offline screening questionnaires', offlineInterviews);
-  //     dispatch(syncOfflineScreeningQuestionnaires(offlineInterviews));
-  //   }
-  // }, [dispatch, isOnline, accessToken, offlineInterviews]);
+  useEffect(() => {
+    if (isOnline && accessToken) {
+      dispatch(syncPatientOffline());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnline, dispatch, accessToken]);
 
   useEffect(() => {
     if (isOnline && accessToken && offlineQuestionnaireAnswers.length) {

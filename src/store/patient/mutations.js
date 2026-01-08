@@ -1,6 +1,27 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
+
+//Patient for Phc worker
+const patientsForPhcWorkerFetchRequest = () => {
+  return {
+    type: 'PATIENTS_FOR_PHC_WORKER_FETCH_REQUESTED',
+  };
+};
+
+const patientsForPhcWorkerFetchSuccess = (data) => {
+  return {
+    type: 'PATIENTS_FOR_PHC_WORKER_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const patientsForPhcWorkerFetchFailure = () => {
+  return {
+    type: 'PATIENTS_FOR_PHC_WORKER_FETCH_FAILED',
+  };
+};
+
 const patientsFetchRequest = () => {
   return {
     type: 'PATIENTS_FETCH_REQUESTED',
@@ -180,6 +201,9 @@ const filtersUpdateSuccess = (data) => {
 };
 
 export const mutation = {
+  patientsForPhcWorkerFetchRequest,
+  patientsForPhcWorkerFetchSuccess,
+  patientsForPhcWorkerFetchFailure,
   patientsFetchRequest,
   patientsFetchSuccess,
   patientsFetchFailure,

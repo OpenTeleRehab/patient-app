@@ -24,15 +24,18 @@ const PatientCard = ({patient, theme}) => {
             {patient.last_name} {patient.first_name}
           </Text>
           <Text style={componentStyles.contentText}>
-            {patient.date_of_birth
-              ? `(${formatDate(patient.date_of_birth)})`
+            {patient?.date_of_birth
+              ? patient?.status === 'pending'
+                ? `(${patient?.date_of_birth})`
+                : `(${formatDate(patient?.date_of_birth)})`
               : ''}
           </Text>
+          {patient?.status === 'pending' && <Text> Pending Submit</Text>}
         </View>
         <View style={componentStyles.rightContainer}>
           <TreatmentStatusBadge
             treatmentPlan={
-              patient.ongoingTreatmentPlan.length
+              patient?.ongoingTreatmentPlan?.length
                 ? patient.ongoingTreatmentPlan[0]
                 : patient.upcomingTreatmentPlan
                 ? patient.upcomingTreatmentPlan
@@ -52,10 +55,14 @@ const PatientCard = ({patient, theme}) => {
           <Badge
             color={
               patient.referral_status === REFERRAL_STATUS.INVITED
-              ? theme.colors.orangeDark : patient.referral_status === REFERRAL_STATUS.DECLINED ?
-              theme.colors.danger : theme.colors.primary
+                ? theme.colors.orangeDark
+                : patient.referral_status === REFERRAL_STATUS.DECLINED
+                ? theme.colors.danger
+                : theme.colors.primary
             }
-            value={translate(`phc.patient.referral_status.${patient.referral_status}`)}
+            value={translate(
+              `phc.patient.referral_status.${patient.referral_status}`,
+            )}
           />
         </View>
       )}

@@ -1,9 +1,7 @@
 import {callApi} from '../utils/request';
 
-const getScreeningQuestionnaireList = async (accessToken, {user_id}) => {
-  return await callApi('/screening-questionnaires-list', accessToken, {
-    user_id,
-  });
+const getScreeningQuestionnaireList = async (accessToken) => {
+  return await callApi('/screening-questionnaires-list', accessToken);
 };
 
 const getScreeningQuestionnaireHistroyList = async (

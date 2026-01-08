@@ -16,6 +16,9 @@ export default {
   textWarning: {
     color: variables.warning,
   },
+  textOrange: {
+    color: variables.orangeDark2,
+  },
   textLight: {
     color: variables.white,
   },
