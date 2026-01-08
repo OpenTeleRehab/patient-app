@@ -15,6 +15,7 @@ import {ROUTES} from '../../variables/constants';
 import VisibleQuestion from '../../components/ScreeningQuestionnaire/VisibleQuestion';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getPatientsListForPhcWorkerRequest} from '../../store/patient/actions';
 
 const Interview = ({navigation, route}) => {
   const {patientId} = route.params;
@@ -76,6 +77,7 @@ const Interview = ({navigation, route}) => {
             transformedData,
           ),
         );
+        dispatch(getPatientsListForPhcWorkerRequest());
         navigation.replace(ROUTES.INTERVIEW_DETAIL, {
           screeningQuestionnaire,
           answers: JSON.parse(res.data.answers),

@@ -10,16 +10,26 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {getScreeningQuestionnaireListRequest} from '../../store/screeningQuestionnaire/actions';
 import {useFocusEffect} from '@react-navigation/native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const InterviewList = ({navigation, patientId}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const {loading, screeningQuestionnaireListByUser, offlineInterviews} =
-    useSelector((state) => state.screeningQuestionnaire);
+  const {loading, screeningQuestionnaireList, offlineInterviews} = useSelector(
+    (state) => state.screeningQuestionnaire,
+  );
+  const {patientsForPhcWorker} = useSelector((state) => state.patient);
 
-  const screeningQuestionnaireList =
-    screeningQuestionnaireListByUser?.[patientId] || [];
+  const isHaveInterviewHistory = (interview_id) => {
+    const patientDetail = patientsForPhcWorker.find(
+      (item) => item.id === patientId,
+    );
+
+    return patientDetail?.interviewed_questionnaires?.some(
+      (item) => item === interview_id,
+    );
+  };
 
   const isHaveOfflineData = (interview_id) => {
     return offlineInterviews?.some(
@@ -30,8 +40,8 @@ const InterviewList = ({navigation, patientId}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(getScreeningQuestionnaireListRequest(patientId));
-    }, [dispatch, patientId]),
+      dispatch(getScreeningQuestionnaireListRequest());
+    }, [dispatch]),
   );
 
   return (
@@ -47,35 +57,36 @@ const InterviewList = ({navigation, patientId}) => {
         <Text style={[styles.fontSizeBase, styles.fontWeightBold]}>
           {translate('phc.interview_list')}
         </Text>
-        {loading ? (
-          <></>
-        ) : (
-          <View style={[styles.marginTopMd, styles.rowGap15]}>
-            {screeningQuestionnaireList.map((interview, index) => {
-              return (
-                <InterviewItemCard
-                  key={index}
-                  onClickInterview={() => {
-                    navigation.push(ROUTES.INTERVIEW, {
-                      screeningQuestionnaire: interview,
-                    });
-                  }}
-                  onClickViewInterviewHistory={() => {
-                    navigation.push(ROUTES.INTERVIEW_HISTORY_LIST, {
-                      screeningQuestionnaire: interview,
-                    });
-                  }}
-                  interview={interview}
-                  isDisable={
-                    isHaveOfflineData(interview.id)
-                      ? false
-                      : !(interview.total_interview_history > 0)
-                  }
-                />
-              );
-            })}
-          </View>
-        )}
+        <View style={[styles.marginTopMd, styles.rowGap15]}>
+          {screeningQuestionnaireList.map((interview, index) => {
+            return (
+              <InterviewItemCard
+                key={index}
+                onClickInterview={() => {
+                  navigation.push(ROUTES.INTERVIEW, {
+                    screeningQuestionnaire: interview,
+                  });
+                }}
+                onClickViewInterviewHistory={() => {
+                  navigation.push(ROUTES.INTERVIEW_HISTORY_LIST, {
+                    screeningQuestionnaire: interview,
+                  });
+                }}
+                interview={interview}
+                isDisable={
+                  isHaveOfflineData(interview.id)
+                    ? false
+                    : !isHaveInterviewHistory(interview.id)
+                }
+              />
+            );
+          })}
+        </View>
+        <Spinner
+          visible={loading && screeningQuestionnaireList.length === 0}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+          textStyle={styles.textLight}
+        />
       </ScrollView>
     </>
   );

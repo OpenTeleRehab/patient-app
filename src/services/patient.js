@@ -4,6 +4,15 @@
 import {getUserCountryIsoCode} from '../utils/country';
 import {callApi} from '../utils/request';
 
+const getPatientsForPhcWorker = async (accessToken) => {
+  return await callApi(
+    '/patient/list-for-phc-worker',
+    accessToken,
+    null,
+    'get',
+  );
+};
+
 const getPatients = async (accessToken) => {
   return await callApi(
     '/patient',
@@ -11,29 +20,20 @@ const getPatients = async (accessToken) => {
     {page_size: 99999},
     'get',
     false,
-    {country: getUserCountryIsoCode()}
-)};
-
-const getAllPatients = async (payload, accessToken) => {
-  return await callApi(
-    '/patient',
-    accessToken,
-    payload,
-    'get',
-    false,
-    {country: getUserCountryIsoCode()}
+    {country: getUserCountryIsoCode()},
   );
 };
 
+const getAllPatients = async (payload, accessToken) => {
+  return await callApi('/patient', accessToken, payload, 'get', false, {
+    country: getUserCountryIsoCode(),
+  });
+};
+
 const getPatient = async (id, accessToken) => {
-  return await callApi(
-    `/patient/id/${id}`,
-    accessToken,
-    '',
-    'get',
-    false,
-    {country: getUserCountryIsoCode()}
-  );
+  return await callApi(`/patient/id/${id}`, accessToken, '', 'get', false, {
+    country: getUserCountryIsoCode(),
+  });
 };
 
 const getPatientByPhoneNumber = async (phone, accessToken, patientId) => {
@@ -51,19 +51,14 @@ const getPatientByPhoneNumber = async (phone, accessToken, patientId) => {
     {...payloads},
     'get',
     false,
-    {country: getUserCountryIsoCode()}
+    {country: getUserCountryIsoCode()},
   );
 };
 
 const createPatient = async (payload, accessToken) => {
-  return await callApi(
-    '/patient',
-    accessToken,
-    {...payload},
-    'post',
-    false,
-    {country: getUserCountryIsoCode()}
-  );
+  return await callApi('/patient', accessToken, {...payload}, 'post', false, {
+    country: getUserCountryIsoCode(),
+  });
 };
 
 const updatePatient = async (id, payload, accessToken) => {
@@ -73,12 +68,19 @@ const updatePatient = async (id, payload, accessToken) => {
     {...payload},
     'put',
     false,
-    {country: getUserCountryIsoCode()}
+    {country: getUserCountryIsoCode()},
   );
 };
 
 const activateDeactivateAccount = async (id, accessToken, enabled) => {
-  return await callApi(`/patient/activateDeactivateAccount/${id}`, accessToken, {enabled}, 'post', false, {country: getUserCountryIsoCode()});
+  return await callApi(
+    `/patient/activateDeactivateAccount/${id}`,
+    accessToken,
+    {enabled},
+    'post',
+    false,
+    {country: getUserCountryIsoCode()},
+  );
 };
 
 const deletePatient = async (id, accessToken) => {
@@ -88,20 +90,16 @@ const deletePatient = async (id, accessToken) => {
     null,
     'post',
     false,
-    {country: getUserCountryIsoCode()}
+    {country: getUserCountryIsoCode()},
   );
 };
 
 const deletePendingSupplementary = async (id, accessToken) => {
-  return await callApi(
-    `/transfer/${id}`,
-    accessToken,
-    null,
-    'delete',
-  );
+  return await callApi(`/transfer/${id}`, accessToken, null, 'delete');
 };
 
 export const Patient = {
+  getPatientsForPhcWorker,
   getPatients,
   getAllPatients,
   getPatient,
@@ -112,4 +110,3 @@ export const Patient = {
   deletePatient,
   deletePendingSupplementary,
 };
-

@@ -3,35 +3,46 @@
  */
 import {Patient} from '../../services/patient';
 import {mutation} from './mutations';
+import {mutation as questionnaireMutation} from '../screeningQuestionnaire/mutations';
 import {getPhcServiceIdentity} from '../../utils/patient';
 import {getTransfersRequest} from '../transfer/actions';
+import uuid from 'react-native-uuid';
+import {syncOfflineScreeningQuestionnaires} from '../screeningQuestionnaire/actions';
 
-export const getPatientsListRequest =
+export const getPatientsListForPhcWorkerRequest =
   () => async (dispatch, getState) => {
-    dispatch(mutation.patientsFetchRequest());
+    dispatch(mutation.patientsForPhcWorkerFetchRequest());
     const {accessToken} = getState().user;
-    const res = await Patient.getPatients(accessToken);
+    const res = await Patient.getPatientsForPhcWorker(accessToken);
     if (res.success) {
-      dispatch(
-        mutation.patientsFetchSuccess(
-          res.data,
-        ),
-      );
+      dispatch(mutation.patientsForPhcWorkerFetchSuccess(res.data));
     } else {
-      dispatch(mutation.patientsFetchFailure());
+      dispatch(mutation.patientsForPhcWorkerFetchFailure());
     }
   };
 
-export const getAllPatientsRequest = (payload) => async (dispatch, getState) => {
-  dispatch(mutation.allPatientsFetchRequest());
+export const getPatientsListRequest = () => async (dispatch, getState) => {
+  dispatch(mutation.patientsFetchRequest());
   const {accessToken} = getState().user;
-  const res = await Patient.getAllPatients(payload, accessToken);
+  const res = await Patient.getPatients(accessToken);
   if (res.success) {
-    dispatch(mutation.allPatientsFetchSuccess(res.data));
+    dispatch(mutation.patientsFetchSuccess(res.data));
   } else {
-    dispatch(mutation.allPatientsFetchFailure());
+    dispatch(mutation.patientsFetchFailure());
   }
 };
+
+export const getAllPatientsRequest =
+  (payload) => async (dispatch, getState) => {
+    dispatch(mutation.allPatientsFetchRequest());
+    const {accessToken} = getState().user;
+    const res = await Patient.getAllPatients(payload, accessToken);
+    if (res.success) {
+      dispatch(mutation.allPatientsFetchSuccess(res.data));
+    } else {
+      dispatch(mutation.allPatientsFetchFailure());
+    }
+  };
 
 export const getPatientRequest = (id) => async (dispatch, getState) => {
   dispatch(mutation.patientFetchRequest());
@@ -62,6 +73,33 @@ export const getPatientByPhoneRequest =
     }
   };
 
+export const createPatientOfflineRequest =
+  (payload) => async (dispatch, getState) => {
+    const {patientsForPhcWorker} = getState().patient;
+    const localId = uuid.v4();
+    const data = {...payload, id: localId, status: 'pending'};
+    const newData = [...patientsForPhcWorker, data];
+    dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
+  };
+
+export const syncPatientOffline = (payload) => async (dispatch, getState) => {
+  const {patientsForPhcWorker} = getState().patient;
+  const {offlineInterviews} = getState().screeningQuestionnaire;
+
+  const offlinePatients = patientsForPhcWorker.filter(
+    (item) => item.status === 'pending',
+  );
+  if (offlinePatients?.length > 0) {
+    await dispatch(syncOfflineCreatePatient(offlinePatients));
+  }
+
+  if (offlineInterviews?.length > 0) {
+    const qn = getState().screeningQuestionnaire;
+
+    await dispatch(syncOfflineScreeningQuestionnaires(qn.offlineInterviews));
+  }
+};
+
 export const createPatientRequest = (payload) => async (dispatch, getState) => {
   dispatch(mutation.patientCreateRequest());
   const {accessToken} = getState().user;
@@ -78,6 +116,58 @@ export const createPatientRequest = (payload) => async (dispatch, getState) => {
     return {success: false, message: data.message};
   }
 };
+
+//Async Create Patient Offline syncOfflineScreeningQuestionnaires
+
+export const syncOfflineCreatePatient =
+  (offlinePatients) => async (dispatch, getState) => {
+    const {patientsForPhcWorker} = getState().patient;
+    const {offlineInterviews} = getState().screeningQuestionnaire;
+    const {accessToken} = getState().user;
+
+    for (const item of offlinePatients) {
+      try {
+        const res = await Patient.createPatient(
+          {...item, phc_service_identity: getPhcServiceIdentity()},
+          accessToken,
+        );
+        if (res.success) {
+          if (offlineInterviews?.length > 0) {
+            const offlineInterviewsUpdated = offlineInterviews.map(
+              (interview) => {
+                if (interview.userId === item.id) {
+                  return {
+                    ...interview,
+                    userId: res.data.id,
+                  };
+                }
+                return interview;
+              },
+            );
+            dispatch(
+              questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
+                offlineInterviewsUpdated,
+              ),
+            );
+          }
+          const patientUpdated = patientsForPhcWorker.map((patient) => {
+            if (patient.id === item.id) {
+              return {
+                ...patient,
+                status: 'sucess',
+                id: res.data.id,
+              };
+            }
+            return patient;
+          });
+          dispatch(mutation.patientsForPhcWorkerFetchSuccess(patientUpdated));
+        }
+      } catch (e) {
+        console.log('Failed to asnc offline Patient', e);
+      }
+    }
+    dispatch(getPatientsListForPhcWorkerRequest());
+  };
 
 export const updatePatientRequest =
   (id, payload) => async (dispatch, getState) => {
@@ -140,6 +230,6 @@ export const deletePendingSupplementary =
     }
   };
 
-  export const updateFilters = (payload) => (dispatch) => {
-    dispatch(mutation.filtersUpdateSuccess(payload));
-  };
+export const updateFilters = (payload) => (dispatch) => {
+  dispatch(mutation.filtersUpdateSuccess(payload));
+};

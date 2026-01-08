@@ -362,11 +362,23 @@ export const evaluateLogic = (logic, targetValue) => {
         return targetValue === logic.target_option_value;
       }
     case 'not_equal':
-      return !targetValue?.includes(logic.target_option_id);
+      if (Array.isArray(targetValue)) {
+        return !targetValue?.includes(logic.target_option_id);
+      } else {
+        return targetValue !== logic.target_option_value;
+      }
     case 'was_answered':
       return targetValue != null && targetValue !== '';
     case 'was_not_answered':
-      return targetValue == null || targetValue === '';
+      if (Array.isArray(targetValue)) {
+        if (targetValue.length === 0) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return targetValue == null || targetValue === '';
+      }
     default:
       return false;
   }

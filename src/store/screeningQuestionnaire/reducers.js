@@ -2,6 +2,7 @@ import {initialState} from './states';
 
 export const screeningQuestionnaire = (state = initialState, action) => {
   switch (action.type) {
+    //Fetch Screening Questionnaire List
     case 'SCREENING_QUESTIONNAIRE_LIST_FETCH_REQUESTED':
       return {
         ...state,
@@ -11,16 +12,14 @@ export const screeningQuestionnaire = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        screeningQuestionnaireListByUser: {
-          ...state.screeningQuestionnaireListByUser,
-          [action.patientID]: action.data,
-        },
+        screeningQuestionnaireList: action.data,
       };
     case 'SCREENING_QUESTIONNAIRE_LIST_FETCH_FAILED':
       return {
         ...state,
         loading: false,
       };
+    //Fetch Screening Questionnaire History By User
     case 'SCREENING_QUESTIONNAIRE_HISTORY_LIST_FETCH_REQUESTED':
       return {
         ...state,

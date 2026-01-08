@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, ListItem, withTheme, Button} from 'react-native-elements';
@@ -14,7 +14,6 @@ import {
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import {ROUTES} from '../../../variables/constants';
 import {useShowToast} from '../../../hook/useShowToast';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {theme} from '../../../../App';
 import Badge from '../../../components/Common/Badge';
 import {getTransferStatus} from '../../../utils/patient';
@@ -29,19 +28,20 @@ const PatientDetail = ({navigation, route}) => {
   const {showToast} = useShowToast();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patientId, treatmentPlan, referralTherapists} = route.params;
-  const {patient, loading} = useSelector((state) => state.patient);
+  const {patientId, patientDetail, treatmentPlan, referralTherapists} =
+    route.params;
   const [showMore, setShowMore] = useState(false);
 
-  useEffect(() => {
-    dispatch(getPatientRequest(patientId));
-  }, [dispatch, patientId]);
-
   const data = [
-    {label: translate('phc.patient.phone'), value: patient?.phone || ''},
+    {label: translate('phc.patient.phone'), value: patientDetail?.phone || ''},
     {
       label: translate('date.of.birth'),
-      value: patient?.date_of_birth ? formatDate(patient.date_of_birth) : '',
+      value:
+        patientDetail?.status === 'pending'
+          ? patientDetail?.date_of_birth
+          : patientDetail?.date_of_birth
+          ? formatDate(patientDetail.date_of_birth)
+          : '',
     },
     {
       label: translate('phc.patient.therapist'),
@@ -53,17 +53,17 @@ const PatientDetail = ({navigation, route}) => {
     },
     {
       label: translate('phc.patient.referral_status'),
-      value: patient?.referral_status ? (
+      value: patientDetail?.referral_status ? (
         <Badge
           color={
-            patient.referral_status === REFERRAL_STATUS.INVITED
+            patientDetail.referral_status === REFERRAL_STATUS.INVITED
               ? theme.colors.orangeDark
-              : patient.referral_status === REFERRAL_STATUS.DECLINED
+              : patientDetail.referral_status === REFERRAL_STATUS.DECLINED
               ? theme.colors.danger
               : theme.colors.primary
           }
           value={translate(
-            `phc.patient.referral_status.${patient.referral_status}`,
+            `phc.patient.referral_status.${patientDetail.referral_status}`,
           )}
         />
       ) : (
@@ -90,30 +90,30 @@ const PatientDetail = ({navigation, route}) => {
   ];
 
   const handleActivateDeactivateConfirm = () => {
-    dispatch(activateDeactivateAccount(patient.id, !patient.enabled)).then(
-      (response) => {
-        if (response.success) {
-          showToast(
-            translate(
-              patient.enabled
-                ? 'phc.patient.message.account_deactivated'
-                : 'phc.patient.message.account_activated',
-            ),
-            translate('phc.patient.title'),
-          );
-          dispatch(getPatientRequest(patient.id));
-        } else {
-          showToast(
-            translate(translate(response.message)),
-            translate('phc.patient.title'),
-          );
-        }
-      },
-    );
+    dispatch(
+      activateDeactivateAccount(patientDetail.id, !patientDetail.enabled),
+    ).then((response) => {
+      if (response.success) {
+        showToast(
+          translate(
+            patientDetail.enabled
+              ? 'phc.patient.message.account_deactivated'
+              : 'phc.patient.message.account_activated',
+          ),
+          translate('phc.patient.title'),
+        );
+        dispatch(getPatientRequest(patientDetail.id));
+      } else {
+        showToast(
+          translate(translate(response.message)),
+          translate('phc.patient.title'),
+        );
+      }
+    });
   };
 
   const handleDeletePatientConfirm = () => {
-    dispatch(deletePatientRequest(patient.id)).then((response) => {
+    dispatch(deletePatientRequest(patientDetail.id)).then((response) => {
       if (response.success) {
         showToast(
           translate('phc.patient.message.patient_account_deleted'),
@@ -132,12 +132,12 @@ const PatientDetail = ({navigation, route}) => {
   const handleDeactivateActivate = () => {
     Alert.alert(
       translate(
-        patient.enabled
+        patientDetail.enabled
           ? 'phc.patient.deactivate_account'
           : 'phc.patient.activate_account',
       ),
       translate(
-        patient.enabled
+        patientDetail.enabled
           ? 'phc.patient.message.confirm_deactivate_account'
           : 'phc.patient.message.confirm_activate_account',
       ),
@@ -175,7 +175,7 @@ const PatientDetail = ({navigation, route}) => {
 
   const handleEdit = () => {
     setShowMore(false);
-    navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {patient});
+    navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {patientDetail});
   };
 
   const handleGoback = () => {
@@ -196,9 +196,11 @@ const PatientDetail = ({navigation, route}) => {
         backgroundPrimary={true}
       />
       <ScrollView contentContainerStyle={styles.mainContainerLight}>
-        <Text style={componentStyles.titleTextStyle}>{patient?.identity}</Text>
+        <Text style={componentStyles.titleTextStyle}>
+          {patientDetail?.identity}
+        </Text>
         <Text style={componentStyles.titleTextBoldStyle}>
-          {patient?.last_name} {patient?.first_name}
+          {patientDetail?.last_name} {patientDetail?.first_name}
         </Text>
         <View>
           {data.map((item, index) => (
@@ -234,14 +236,15 @@ const PatientDetail = ({navigation, route}) => {
             onPress={() => {
               navigation.navigate(ROUTES.INTERVIEW_STACK, {
                 patientId,
+                patientDetail,
               });
             }}
           />
           <Button
             type="outline"
             disabled={
-              patient?.referral_status === REFERRAL_STATUS.INVITED ||
-              patient?.referral_status === REFERRAL_STATUS.ACCEPTED
+              patientDetail?.referral_status === REFERRAL_STATUS.INVITED ||
+              patientDetail?.referral_status === REFERRAL_STATUS.ACCEPTED
             }
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_referral')}
@@ -282,7 +285,7 @@ const PatientDetail = ({navigation, route}) => {
                 titleStyle={componentStyles.titleButtonStyle}
                 containerStyle={styles.marginBottom}
                 title={translate(
-                  patient.enabled
+                  patientDetail.enabled
                     ? 'phc.patient.button.deactivate_account'
                     : 'phc.patient.button.activate_account',
                 )}
@@ -293,17 +296,12 @@ const PatientDetail = ({navigation, route}) => {
                 titleStyle={componentStyles.titleButtonStyle}
                 containerStyle={styles.marginBottom}
                 title={translate('phc.patient.button.delete_account')}
-                disabled={!!patient.enabled}
+                disabled={!!patientDetail.enabled}
                 onPress={handleDeletePatient}
               />
             </>
           )}
         </View>
-        <Spinner
-          visible={loading}
-          overlayColor="rgba(0, 0, 0, 0.5)"
-          textStyle={styles.textLight}
-        />
       </ScrollView>
     </>
   );

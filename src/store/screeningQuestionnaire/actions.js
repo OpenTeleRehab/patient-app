@@ -1,19 +1,17 @@
 import {ScreeningQuestionnaire} from '../../services/screeningQuestionnaire';
 import {getCachedImage} from '../../utils/imageHelper';
+import {getPatientsListForPhcWorkerRequest} from '../patient/actions';
 import {mutation} from './mutations';
 
 export const getScreeningQuestionnaireListRequest =
-  (patientID) => async (dispatch, getState) => {
+  () => async (dispatch, getState) => {
     dispatch(mutation.screeningQuestionnaireListFetchRequest());
     const {accessToken} = getState().user;
     const res = await ScreeningQuestionnaire.getScreeningQuestionnaireList(
       accessToken,
-      {user_id: patientID},
     );
     if (res.success) {
-      dispatch(
-        mutation.screeningQuestionnaireListFetchSuccess(patientID, res.data),
-      );
+      dispatch(mutation.screeningQuestionnaireListFetchSuccess(res.data));
       for (const questionnaire of res.data) {
         for (const section of questionnaire.sections) {
           for (const question of section.questions) {
@@ -35,6 +33,7 @@ export const getScreeningQuestionnaireListRequest =
 
 export const submitScreeningQuestionnaireAnswerRequest =
   (screeningQuestionnaireId, userId, answers) => async (dispatch, getState) => {
+    dispatch(mutation.submitScreeningQuestionnaireRequest());
     const formData = new FormData();
     formData.append('user_id', userId);
     formData.append('answers', JSON.stringify(answers));
@@ -50,7 +49,6 @@ export const submitScreeningQuestionnaireAnswerRequest =
 export const syncOfflineScreeningQuestionnaires =
   (offlineInterviews) => async (dispatch) => {
     const failedItems = [];
-    const syncedPatientIds = new Set();
 
     for (const item of offlineInterviews) {
       try {
@@ -61,8 +59,6 @@ export const syncOfflineScreeningQuestionnaires =
             item.answers,
           ),
         );
-
-        syncedPatientIds.add(item.userId);
       } catch (e) {
         console.log('Failed to sync offline interview', e);
         failedItems.push(item); // keep failed items in offline queue
@@ -70,10 +66,7 @@ export const syncOfflineScreeningQuestionnaires =
     }
 
     dispatch(mutation.submitScreeningQuestionnaireOfflineSuccess(failedItems));
-
-    syncedPatientIds.forEach((patientId) => {
-      dispatch(getScreeningQuestionnaireListRequest(patientId));
-    });
+    dispatch(getPatientsListForPhcWorkerRequest());
   };
 
 // Offline Submit Screening Questionnaries

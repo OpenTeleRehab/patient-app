@@ -33,7 +33,6 @@ const PatientReferral = ({navigation, route}) => {
   const {provincesByUserCountry} = useSelector((state) => state.province);
   const {clinicList} = useSelector((state) => state.clinic);
   const {loading} = useSelector((state) => state.referral);
-  console.log('Referral loading state', loading);
 
   const patient = useMemo(() => {
     return patients.find((p) => p.id === patientId) || {};

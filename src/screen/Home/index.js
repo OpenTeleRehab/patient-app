@@ -2,7 +2,13 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, TouchableOpacity, View, Image, ScrollView} from 'react-native';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  Image,
+  ScrollView,
+} from 'react-native';
 import {Text, Button} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -15,7 +21,10 @@ import {useDrawerStatus} from '@react-navigation/drawer';
 import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import {getAppointmentsListRequest} from '../../store/appointment/actions';
 import AppointmentCard from '../Appointment/_Partials/AppointmentCard';
-import {getTherapistRequest, getPhcWorkerRequest} from '../../store/therapist/actions';
+import {
+  getTherapistRequest,
+  getPhcWorkerRequest,
+} from '../../store/therapist/actions';
 import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import settings from '../../../config/settings';
@@ -201,8 +210,7 @@ const Home = ({navigation}) => {
       <ScrollView
         style={styles.mainContainerPrimary}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.flexGrow, styles.justifyContentCenter]}
-      >
+        contentContainerStyle={[styles.flexGrow, styles.justifyContentCenter]}>
         <View
           style={[
             styles.mainContainerPrimary,
