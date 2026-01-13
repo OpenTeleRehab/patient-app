@@ -35,11 +35,12 @@ import {
 import {
   createPatientRequest,
   updatePatientRequest,
-  getPatientsListRequest,
   deletePendingSupplementary,
   getPatientByPhoneRequest,
   createPatientOfflineRequest,
   getPatientsListForPhcWorkerRequest,
+  updatePatientOfflineRequest,
+  updateListItem,
 } from '../../../store/patient/actions';
 import {ageCalculation} from '../../../utils/age';
 import {_} from 'lodash';
@@ -50,6 +51,9 @@ import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment/moment';
 import {TRANSFER_STATUS} from '../../../variables/constants';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {mutation} from '../../../store/patient/mutations';
+import {mutation as questionnaireMutation} from '../../../store/screeningQuestionnaire/mutations';
+import {syncOfflineScreeningQuestionnaires} from '../../../store/screeningQuestionnaire/actions';
 
 const CreateOrEditPatient = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -68,7 +72,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
   const [pendingTransfers, setPendingTransfers] = useState([]);
   const [errorPhoneExist, setErrorPhoneExist] = useState(false);
   const [selectedSupplementary, setSelectedSupplementary] = useState([]);
-  const {patient} = route.params || {};
+  const {patientsForPhcWorker} = useSelector((state) => state.patient);
+  const {offlineInterviews} = useSelector(
+    (state) => state.screeningQuestionnaire,
+  );
+  const {patientDetail} = route.params || {};
   const defaultValues = {
     dial_code: '',
     phone: '',
@@ -102,20 +110,25 @@ const CreateOrEditPatient = ({navigation, route}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (patient) {
-        reset(patient);
-        const formattedDOB = patient.date_of_birth
-          ? isValidDateFormat(patient.date_of_birth)
-            ? patient.date_of_birth
-            : moment(patient.date_of_birth).toDate()
+      if (patientDetail) {
+        reset(patientDetail);
+        const formattedDOB = patientDetail.date_of_birth
+          ? isValidDateFormat(patientDetail.date_of_birth)
+            ? patientDetail.date_of_birth
+            : moment(patientDetail.date_of_birth).toDate()
           : '';
         setDateValue(formattedDOB);
         setValue(
           'date_of_birth',
-          patient.date_of_birth ? formatDate(patient.date_of_birth) : '',
+          patientDetail.date_of_birth
+            ? formatDate(patientDetail.date_of_birth)
+            : '',
         );
-        setValue('phone', patient.phone?.replace(patient.dial_code, ''));
-        setCountryPhoneCode(patient.dial_code);
+        setValue(
+          'phone',
+          patientDetail.phone?.replace(patientDetail.dial_code, ''),
+        );
+        setCountryPhoneCode(patientDetail.dial_code ?? '855');
       } else {
         reset(defaultValues);
         if (definedCountries.length) {
@@ -137,14 +150,14 @@ const CreateOrEditPatient = ({navigation, route}) => {
         }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [patient, reset, setValue, definedCountries, countries, profile]),
+    }, [patientDetail, reset, setValue, definedCountries, countries, profile]),
   );
 
   useEffect(() => {
-    if (transfers && transfers.length && patient) {
+    if (transfers && transfers.length && patientDetail) {
       const pending = transfers.filter(
         (transfer) =>
-          transfer.patient_id === patient.id &&
+          transfer.patient_id === patientDetail.id &&
           transfer.therapist_type === 'supplementary',
       );
       setPendingTransfers(
@@ -157,7 +170,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
         })),
       );
     }
-  }, [transfers, patient]);
+  }, [transfers, patientDetail]);
 
   const onSubmit = (data) => {
     const payload = {
@@ -167,23 +180,23 @@ const CreateOrEditPatient = ({navigation, route}) => {
     };
 
     if (!netInfo.isConnected) {
-      if (patient) {
-        dispatch(updatePatientRequest(patient.id, payload));
+      if (patientDetail) {
+        dispatch(updatePatientOfflineRequest(patientDetail.id, payload));
       } else {
         dispatch(createPatientOfflineRequest(payload));
       }
 
-      showToast(
-        translate('phc.patient.message.saved_offline'),
-        translate('common.offline'),
-      );
+      showToast(translate('phc.patient.message.create_offline_success'));
 
       handleGoback();
       return;
     }
 
     dispatch(
-      getPatientByPhoneRequest(payload.phone, patient ? patient.id : null),
+      getPatientByPhoneRequest(
+        payload.phone,
+        patientDetail ? patientDetail.id : null,
+      ),
     ).then((response) => {
       if (response.success) {
         if (response.data) {
@@ -191,24 +204,115 @@ const CreateOrEditPatient = ({navigation, route}) => {
           return;
         } else {
           setErrorPhoneExist(false);
-          if (patient) {
-            dispatch(updatePatientRequest(patient.id, payload)).then((res) => {
-              if (res.success) {
-                showToast(
-                  translate('phc.patient.message.update_success'),
-                  translate('phc.patient.edit'),
-                );
-                dispatch(getPatientsListRequest());
-                handleGoback();
-              } else {
-                showToast(
-                  translate(translate(res.message)),
-                  translate('phc.patient.edit'),
-                );
-              }
-            });
+          if (patientDetail) {
+            if (patientDetail.status === 'duplicate-create') {
+              const updatePayload = Object.fromEntries(
+                Object.entries(payload).filter(
+                  ([key]) => key !== 'id' && key !== 'status',
+                ),
+              );
+              dispatch(createPatientRequest(updatePayload)).then((res) => {
+                if (res.success) {
+                  const updatePatientList = updateListItem(
+                    patientsForPhcWorker,
+                    (patient) => patient.id === patientDetail.id,
+                    {
+                      status: 'success',
+                    },
+                  );
+                  dispatch(
+                    mutation.patientsForPhcWorkerFetchSuccess(
+                      updatePatientList,
+                    ),
+                  );
+                  dispatch(getPatientsListForPhcWorkerRequest());
+
+                  showToast(
+                    translate('phc.patient.message.create_success'),
+                    translate('phc.patient.create'),
+                  );
+
+                  if (offlineInterviews?.length > 0) {
+                    const updateOfflineInterviews = updateListItem(
+                      offlineInterviews,
+                      (interview) => interview.userId === payload.id,
+                      {userId: res.data.id, status: 'pending'},
+                    );
+                    dispatch(
+                      questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
+                        updateOfflineInterviews,
+                      ),
+                    );
+                    dispatch(
+                      syncOfflineScreeningQuestionnaires(
+                        updateOfflineInterviews,
+                      ),
+                    );
+                  }
+
+                  handleGoback();
+                } else {
+                  showToast(
+                    translate(translate(res.message)),
+                    translate('phc.patient.create'),
+                  );
+                }
+              });
+
+              return;
+            } else if (patientDetail.status === 'duplicate-update') {
+              dispatch(updatePatientRequest(patientDetail.id, payload)).then(
+                (res) => {
+                  if (res.success) {
+                    const updatePatientList = updateListItem(
+                      patientsForPhcWorker,
+                      (patient) => patient.id === patientDetail.id,
+                      {
+                        status: 'success',
+                      },
+                    );
+                    dispatch(
+                      mutation.patientsForPhcWorkerFetchSuccess(
+                        updatePatientList,
+                      ),
+                    );
+                    dispatch(getPatientsListForPhcWorkerRequest());
+                    showToast(
+                      translate('phc.patient.message.update_success'),
+                      translate('phc.patient.edit'),
+                    );
+                    handleGoback();
+                  } else {
+                    showToast(
+                      translate(translate(res.message)),
+                      translate('phc.patient.edit'),
+                    );
+                  }
+                },
+              );
+
+              return;
+            }
+            dispatch(updatePatientRequest(patientDetail.id, payload)).then(
+              (res) => {
+                if (res.success) {
+                  showToast(
+                    translate('phc.patient.message.update_success'),
+                    translate('phc.patient.edit'),
+                  );
+                  dispatch(getPatientsListForPhcWorkerRequest());
+                  handleGoback();
+                } else {
+                  showToast(
+                    translate(translate(res.message)),
+                    translate('phc.patient.edit'),
+                  );
+                }
+              },
+            );
             return;
           }
+
           dispatch(createPatientRequest(payload)).then((res) => {
             if (res.success) {
               dispatch(getPatientsListForPhcWorkerRequest());
@@ -289,7 +393,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
       />
       <HeaderBar
         onGoBack={handleGoback}
-        title={translate(patient ? 'phc.patient.edit' : 'phc.patient.create')}
+        title={translate(
+          patientDetail ? 'phc.patient.edit' : 'phc.patient.create',
+        )}
         backgroundPrimary={true}
       />
       <ScrollView
@@ -769,7 +875,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
           <Button
             containerStyle={styles.marginBottom}
             title={translate(
-              patient
+              patientDetail
                 ? 'phc.patient.button.confirm_change'
                 : 'phc.patient.button.create',
             )}

@@ -52,4 +52,8 @@ export default {
   fontWeightLight: {
     fontWeight: variables.fontWeightLight,
   },
+  textOfflineStyle: {
+    color: variables.orangeDark2,
+    fontSize: variables.fontSizeXs,
+  },
 };

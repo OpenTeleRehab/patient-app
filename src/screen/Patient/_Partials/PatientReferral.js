@@ -28,15 +28,15 @@ const PatientReferral = ({navigation, route}) => {
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
   const {profile} = useSelector((state) => state.user);
   const {patientId} = route.params;
-  const {patients} = useSelector((state) => state.patient);
+  const {patientsForPhcWorker} = useSelector((state) => state.patient);
   const {regions} = useSelector((state) => state.region);
   const {provincesByUserCountry} = useSelector((state) => state.province);
   const {clinicList} = useSelector((state) => state.clinic);
   const {loading} = useSelector((state) => state.referral);
 
   const patient = useMemo(() => {
-    return patients.find((p) => p.id === patientId) || {};
-  }, [patients, patientId]);
+    return patientsForPhcWorker.find((p) => p.id === patientId) || {};
+  }, [patientsForPhcWorker, patientId]);
 
   const {
     handleSubmit,
@@ -106,6 +106,7 @@ const PatientReferral = ({navigation, route}) => {
   const onBack = useCallback(() => {
     navigation.navigate(ROUTES.PATIENT_DETAIL, {
       patientId: patient.id,
+      patientDetail: patient,
       treatmentPlan: patient.ongoingTreatmentPlan.length
         ? patient.ongoingTreatmentPlan[0]
         : patient.upcomingTreatmentPlan

@@ -37,7 +37,7 @@ const PatientDetail = ({navigation, route}) => {
     {
       label: translate('date.of.birth'),
       value:
-        patientDetail?.status === 'pending'
+        patientDetail?.status === 'pending-create'
           ? patientDetail?.date_of_birth
           : patientDetail?.date_of_birth
           ? formatDate(patientDetail.date_of_birth)
