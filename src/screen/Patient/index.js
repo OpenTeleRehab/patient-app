@@ -158,22 +158,27 @@ const Patient = ({navigation}) => {
         </View>
         <FlatList
           data={patientList}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item?.id?.toString()}
           style={componentStyles.listContainer}
           contentContainerStyle={[componentStyles.contentContainer]}
           renderItem={({item}) => (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate(ROUTES.PATIENT_DETAIL, {
-                  patientDetail: item,
-                  patientId: item.id,
-                  treatmentPlan: item?.ongoingTreatmentPlan?.length
-                    ? item.ongoingTreatmentPlan[0]
-                    : item.upcomingTreatmentPlan
-                    ? item.upcomingTreatmentPlan
-                    : item.lastTreatmentPlan,
-                  referralTherapists: item.referral_therapists,
-                })
+                item.status === 'duplicate-create' ||
+                item.status === 'duplicate-update'
+                  ? navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {
+                      patientDetail: item,
+                    })
+                  : navigation.navigate(ROUTES.PATIENT_DETAIL, {
+                      patientDetail: item,
+                      patientId: item.id,
+                      treatmentPlan: item?.ongoingTreatmentPlan?.length
+                        ? item.ongoingTreatmentPlan[0]
+                        : item.upcomingTreatmentPlan
+                        ? item.upcomingTreatmentPlan
+                        : item.lastTreatmentPlan,
+                      referralTherapists: item.referral_therapists,
+                    })
               }
               activeOpacity={0.7}
               style={styles.marginBottom}>
@@ -191,7 +196,7 @@ const Patient = ({navigation}) => {
   );
 };
 
-const componentStyles = StyleSheet.create({
+export const componentStyles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },

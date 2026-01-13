@@ -13,6 +13,23 @@ const getPatientsForPhcWorker = async (accessToken) => {
   );
 };
 
+const getPatientsByIds = async (payload, accessToken) => {
+  const query = payload.patient_ids
+    .map((id) => `patient_ids[]=${id}`)
+    .join('&');
+
+  return await callApi(
+    `/patient/list/by-ids?${query}`,
+    accessToken,
+    null,
+    'get',
+    false,
+    {
+      country: getUserCountryIsoCode(),
+    },
+  );
+};
+
 const getPatients = async (accessToken) => {
   return await callApi(
     '/patient',
@@ -109,4 +126,5 @@ export const Patient = {
   activateDeactivateAccount,
   deletePatient,
   deletePendingSupplementary,
+  getPatientsByIds,
 };

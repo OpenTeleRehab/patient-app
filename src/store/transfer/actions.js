@@ -27,3 +27,32 @@ export const createTransferPatientRequest =
       dispatch(mutation.createTransferPatientFailure());
     }
   };
+
+export const acceptTransferPatientRequest =
+  (transferInfo) => async (dispatch, getState) => {
+    dispatch(mutation.acceptTransferPatientRequest());
+    const {accessToken} = getState().user;
+    const res = await Transfer.acceptTransferPatient(transferInfo, accessToken);
+    if (res.success) {
+      dispatch(mutation.acceptTransferPatientSuccess());
+      return res;
+    } else {
+      dispatch(mutation.acceptTransferPatientFailure());
+    }
+  };
+
+export const declineTransferPatientRequest =
+  (transferInfo) => async (dispatch, getState) => {
+    dispatch(mutation.declineTransferPatientRequest());
+    const {accessToken} = getState().user;
+    const res = await Transfer.declineTransferPatient(
+      transferInfo,
+      accessToken,
+    );
+    if (res.success) {
+      dispatch(mutation.declineTransferPatientSuccess());
+      return res;
+    } else {
+      dispatch(mutation.declineTransferPatientFailure());
+    }
+  };

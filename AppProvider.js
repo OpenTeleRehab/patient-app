@@ -358,7 +358,6 @@ const AppProvider = ({children}) => {
     if (isOnline && accessToken) {
       dispatch(syncPatientOffline());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOnline, dispatch, accessToken]);
 
   useEffect(() => {

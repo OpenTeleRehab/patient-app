@@ -23,13 +23,13 @@ const PatientTransfer = ({navigation, route}) => {
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
   const {profile} = useSelector((state) => state.user);
   const {patientId} = route.params;
-  const {patients} = useSelector((state) => state.patient);
+  const {patientsForPhcWorker} = useSelector((state) => state.patient);
   const {phcWorkers} = useSelector((state) => state.phcService);
   const {loading} = useSelector((state) => state.transfer);
 
   const patient = useMemo(() => {
-    return patients.find((p) => p.id === patientId) || {};
-  }, [patients, patientId]);
+    return patientsForPhcWorker.find((p) => p.id === patientId) || {};
+  }, [patientsForPhcWorker, patientId]);
 
   useEffect(() => {
     dispatch(getPhcWorkersRequest(profile?.phc_service_id));
@@ -87,6 +87,7 @@ const PatientTransfer = ({navigation, route}) => {
   const onBack = useCallback(() => {
     navigation.navigate(ROUTES.PATIENT_DETAIL, {
       patientId: patient.id,
+      patientDetail: patient,
       treatmentPlan: patient.ongoingTreatmentPlan.length
         ? patient.ongoingTreatmentPlan[0]
         : patient.upcomingTreatmentPlan
@@ -148,12 +149,12 @@ const PatientTransfer = ({navigation, route}) => {
             }}
           />
         </View>
-        <Spinner
-          visible={loading}
-          overlayColor="rgba(0, 0, 0, 0.5)"
-          textStyle={styles.textLight}
-        />
       </ScrollView>
+      <Spinner
+        visible={loading}
+        overlayColor="rgba(0, 0, 0, 0.5)"
+        textStyle={styles.textLight}
+      />
     </>
   );
 };

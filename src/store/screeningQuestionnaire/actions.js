@@ -1,6 +1,5 @@
 import {ScreeningQuestionnaire} from '../../services/screeningQuestionnaire';
 import {getCachedImage} from '../../utils/imageHelper';
-import {getPatientsListForPhcWorkerRequest} from '../patient/actions';
 import {mutation} from './mutations';
 
 export const getScreeningQuestionnaireListRequest =
@@ -51,6 +50,10 @@ export const syncOfflineScreeningQuestionnaires =
     const failedItems = [];
 
     for (const item of offlineInterviews) {
+      if (item.status === 'user-duplicate') {
+        failedItems.push(item);
+        continue;
+      }
       try {
         await dispatch(
           submitScreeningQuestionnaireAnswerRequest(
@@ -66,7 +69,6 @@ export const syncOfflineScreeningQuestionnaires =
     }
 
     dispatch(mutation.submitScreeningQuestionnaireOfflineSuccess(failedItems));
-    dispatch(getPatientsListForPhcWorkerRequest());
   };
 
 // Offline Submit Screening Questionnaries

@@ -109,6 +109,7 @@ const fetchApi = async (endpoint, headers, body = null, method = 'get') => {
   const response = await fetch(url, configs).catch((error) => {
     return false;
   });
+
   return !response ||
     (response &&
       ((response.status !== 200 && response.status !== 201) || !response.ok))

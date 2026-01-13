@@ -15,7 +15,28 @@ export const getPatientsListForPhcWorkerRequest =
     const {accessToken} = getState().user;
     const res = await Patient.getPatientsForPhcWorker(accessToken);
     if (res.success) {
-      dispatch(mutation.patientsForPhcWorkerFetchSuccess(res.data));
+      try {
+        const {patientsForPhcWorker} = getState().patient;
+        const needActionPatients =
+          patientsForPhcWorker?.filter(
+            (item) => item.status && item.status !== 'success',
+          ) || [];
+        dispatch(
+          mutation.patientsForPhcWorkerFetchSuccess([
+            ...needActionPatients,
+            ...res.data.filter((item) => {
+              if (!needActionPatients.length) return true;
+              const found = needActionPatients.find(
+                (p) => p.id === item.id && p.status === 'duplicate-update',
+              );
+              if (found) return false;
+              return true;
+            }),
+          ]),
+        );
+      } catch (error) {
+        console.log('erro', error);
+      }
     } else {
       dispatch(mutation.patientsForPhcWorkerFetchFailure());
     }
@@ -73,11 +94,38 @@ export const getPatientByPhoneRequest =
     }
   };
 
+export const updatePatientOfflineRequest =
+  (id, payload) => async (dispatch, getState) => {
+    const {patientsForPhcWorker} = getState().patient;
+    //1. Find Patient by Patient ID
+    //2. Check Status of Patiend Detail
+    //3. Replace Data Patient Detail
+    //4. Change State of Patient Detail by check if Status pending-crate so just replace data and no change but if not change status to pending-update
+    const filterOutPatientUpdate = patientsForPhcWorker?.filter(
+      (item) => item.id !== id,
+    );
+
+    const findPatientByPatientId = patientsForPhcWorker?.find(
+      (item) => item.id === id,
+    );
+
+    if (findPatientByPatientId.status === 'pending-create') {
+      const newData = [...filterOutPatientUpdate, payload];
+      dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
+    } else {
+      const newData = [
+        ...filterOutPatientUpdate,
+        {...payload, status: 'pending-update'},
+      ];
+      dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
+    }
+  };
+
 export const createPatientOfflineRequest =
   (payload) => async (dispatch, getState) => {
     const {patientsForPhcWorker} = getState().patient;
     const localId = uuid.v4();
-    const data = {...payload, id: localId, status: 'pending'};
+    const data = {...payload, id: localId, status: 'pending-create'};
     const newData = [...patientsForPhcWorker, data];
     dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
   };
@@ -87,7 +135,8 @@ export const syncPatientOffline = (payload) => async (dispatch, getState) => {
   const {offlineInterviews} = getState().screeningQuestionnaire;
 
   const offlinePatients = patientsForPhcWorker.filter(
-    (item) => item.status === 'pending',
+    (item) =>
+      item.status === 'pending-create' || item.status === 'pending-update',
   );
   if (offlinePatients?.length > 0) {
     await dispatch(syncOfflineCreatePatient(offlinePatients));
@@ -95,8 +144,11 @@ export const syncPatientOffline = (payload) => async (dispatch, getState) => {
 
   if (offlineInterviews?.length > 0) {
     const qn = getState().screeningQuestionnaire;
-
     await dispatch(syncOfflineScreeningQuestionnaires(qn.offlineInterviews));
+  }
+
+  if (offlinePatients.length > 0 || offlineInterviews.length > 0) {
+    dispatch(getPatientsListForPhcWorkerRequest());
   }
 };
 
@@ -110,7 +162,7 @@ export const createPatientRequest = (payload) => async (dispatch, getState) => {
   if (data.success) {
     dispatch(mutation.patientCreateSuccess());
     dispatch(getTransfersRequest());
-    return {success: true};
+    return {success: true, data: data.data};
   } else {
     dispatch(mutation.patientCreateFailure());
     return {success: false, message: data.message};
@@ -118,6 +170,17 @@ export const createPatientRequest = (payload) => async (dispatch, getState) => {
 };
 
 //Async Create Patient Offline syncOfflineScreeningQuestionnaires
+export const updateListItem = (list, compare, payload) => {
+  return list.map((item) => {
+    if (compare(item)) {
+      return {
+        ...item,
+        ...payload,
+      };
+    }
+    return item;
+  });
+};
 
 export const syncOfflineCreatePatient =
   (offlinePatients) => async (dispatch, getState) => {
@@ -127,46 +190,93 @@ export const syncOfflineCreatePatient =
 
     for (const item of offlinePatients) {
       try {
-        const res = await Patient.createPatient(
-          {...item, phc_service_identity: getPhcServiceIdentity()},
-          accessToken,
+        // validate duplicate and set status duplicate
+        const response = await dispatch(
+          getPatientByPhoneRequest(
+            item.phone,
+            item.status === 'pending-update' ? item.id : null,
+          ),
         );
-        if (res.success) {
-          if (offlineInterviews?.length > 0) {
-            const offlineInterviewsUpdated = offlineInterviews.map(
-              (interview) => {
-                if (interview.userId === item.id) {
-                  return {
-                    ...interview,
-                    userId: res.data.id,
-                  };
-                }
-                return interview;
+        if (response.success) {
+          if (response.data) {
+            const updatePatientList = updateListItem(
+              patientsForPhcWorker,
+              (patient) => patient.id === item.id,
+              {
+                status: item.status.replace('pending', 'duplicate'),
               },
             );
             dispatch(
-              questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
-                offlineInterviewsUpdated,
-              ),
+              mutation.patientsForPhcWorkerFetchSuccess(updatePatientList),
             );
-          }
-          const patientUpdated = patientsForPhcWorker.map((patient) => {
-            if (patient.id === item.id) {
-              return {
-                ...patient,
-                status: 'sucess',
-                id: res.data.id,
-              };
+            if (
+              offlineInterviews?.length > 0 &&
+              item.status.include('create')
+            ) {
+              const updateOfflineInterviews = updateListItem(
+                offlineInterviews,
+                (interview) => interview.userId === item.id,
+                {
+                  status: 'user-duplicate',
+                },
+              );
+              await dispatch(
+                questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
+                  updateOfflineInterviews,
+                ),
+              );
             }
-            return patient;
-          });
-          dispatch(mutation.patientsForPhcWorkerFetchSuccess(patientUpdated));
+          } else {
+            if (item.status === 'pending-update') {
+              //Can not Work hereeeeeeeeeeeeee
+              await Patient.updatePatient(item.id, item, accessToken);
+              const updatedPatient = updateListItem(
+                patientsForPhcWorker,
+                (patient) => patient.id === item.id,
+                {
+                  status: 'success',
+                },
+              );
+              dispatch(
+                mutation.patientsForPhcWorkerFetchSuccess(updatedPatient),
+              );
+            } else {
+              const res = await Patient.createPatient(
+                {...item, phc_service_identity: getPhcServiceIdentity()},
+                accessToken,
+              );
+              if (res.success) {
+                if (offlineInterviews?.length > 0) {
+                  const updateOfflineInterviews = updateListItem(
+                    offlineInterviews,
+                    (interview) => interview.userId === item.id,
+                    {userId: res.data.id},
+                  );
+                  await dispatch(
+                    questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
+                      updateOfflineInterviews,
+                    ),
+                  );
+                }
+                const updatedPatient = updateListItem(
+                  patientsForPhcWorker,
+                  (patient) => patient.id === item.id,
+                  {
+                    status: 'success',
+                    id: res.data.id,
+                  },
+                );
+                dispatch(
+                  mutation.patientsForPhcWorkerFetchSuccess(updatedPatient),
+                );
+              }
+            }
+          }
         }
       } catch (e) {
         console.log('Failed to asnc offline Patient', e);
       }
     }
-    dispatch(getPatientsListForPhcWorkerRequest());
   };
 
 export const updatePatientRequest =
@@ -232,4 +342,14 @@ export const deletePendingSupplementary =
 
 export const updateFilters = (payload) => (dispatch) => {
   dispatch(mutation.filtersUpdateSuccess(payload));
+};
+
+export const getPatientsByIds = (payload) => async (dispatch, getState) => {
+  const {accessToken} = getState().user;
+  const data = await Patient.getPatientsByIds(payload, accessToken);
+  if (data.success) {
+    return data.data;
+  } else {
+    return null;
+  }
 };

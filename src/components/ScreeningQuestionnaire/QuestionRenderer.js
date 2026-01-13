@@ -354,31 +354,28 @@ export const getQuestionName = (id) => {
 export default withTheme(QuestionRenderer);
 
 export const evaluateLogic = (logic, targetValue) => {
+  const isArray = Array.isArray(targetValue);
+  const hasValue = isArray
+    ? targetValue.length > 0
+    : targetValue != null && targetValue !== '';
+
   switch (logic.condition_rule) {
     case 'equal':
-      if (Array.isArray(targetValue)) {
-        return targetValue?.includes(logic.target_option_id);
-      } else {
-        return targetValue === logic.target_option_value;
-      }
+      return isArray
+        ? targetValue.includes(logic.target_option_id)
+        : targetValue === logic.target_option_value;
+
     case 'not_equal':
-      if (Array.isArray(targetValue)) {
-        return !targetValue?.includes(logic.target_option_id);
-      } else {
-        return targetValue !== logic.target_option_value;
-      }
+      return isArray
+        ? !targetValue.includes(logic.target_option_id)
+        : targetValue !== logic.target_option_value;
+
     case 'was_answered':
-      return targetValue != null && targetValue !== '';
+      return hasValue;
+
     case 'was_not_answered':
-      if (Array.isArray(targetValue)) {
-        if (targetValue.length === 0) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return targetValue == null || targetValue === '';
-      }
+      return !hasValue;
+
     default:
       return false;
   }

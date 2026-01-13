@@ -38,6 +38,38 @@ const createTransferPatientFailure = () => {
   };
 };
 
+const acceptTransferPatientRequest = () => {
+  return {
+    type: 'ACCEPT_TRANSFER_PATIENT_REQUESTED',
+  };
+};
+const acceptTransferPatientSuccess = () => {
+  return {
+    type: 'ACCEPT_TRANSFER_PATIENT_SUCCEED',
+  };
+};
+const acceptTransferPatientFailure = () => {
+  return {
+    type: 'ACCEPT_TRANSFER_PATIENT_FAILED',
+  };
+};
+
+const declineTransferPatientRequest = () => {
+  return {
+    type: 'DECLINE_TRANSFER_PATIENT_REQUESTED',
+  };
+};
+const declineTransferPatientSuccess = () => {
+  return {
+    type: 'DECLINE_TRANSFER_PATIENT_SUCCEED',
+  };
+};
+const declineTransferPatientFailure = () => {
+  return {
+    type: 'DECLINE_TRANSFER_PATIENT_FAILED',
+  };
+};
+
 export const mutation = {
   transfersFetchRequest,
   transfersFetchSuccess,
@@ -45,4 +77,10 @@ export const mutation = {
   createTransferPatientRequest,
   createTransferPatientSuccess,
   createTransferPatientFailure,
+  acceptTransferPatientRequest,
+  acceptTransferPatientSuccess,
+  acceptTransferPatientFailure,
+  declineTransferPatientRequest,
+  declineTransferPatientSuccess,
+  declineTransferPatientFailure,
 };

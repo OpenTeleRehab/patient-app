@@ -20,6 +20,20 @@ export const transfer = (state = initialState, action) => {
         ...state,
         loading: false,
       };
+    case 'ACCEPT_TRANSFER_PATIENT_REQUESTED':
+    case 'DECLINE_TRANSFER_PATIENT_REQUESTED':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'ACCEPT_TRANSFER_PATIENT_SUCCEED':
+    case 'ACCEPT_TRANSFER_PATIENT_FAILED':
+    case 'DECLINE_TRANSFER_PATIENT_SUCCEED':
+    case 'DECLINE_TRANSFER_PATIENT_FAILED':
+      return {
+        ...state,
+        loading: false,
+      };
     default:
       return state;
   }

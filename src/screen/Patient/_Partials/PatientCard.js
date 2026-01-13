@@ -8,6 +8,7 @@ import {formatDate} from '../../../utils/helper';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import Badge from '../../../components/Common/Badge';
 import {REFERRAL_STATUS} from '../../../variables/constants';
+import styles from '../../../assets/styles';
 
 const PatientCard = ({patient, theme}) => {
   const localize = useSelector((state) => state.localize);
@@ -25,12 +26,11 @@ const PatientCard = ({patient, theme}) => {
           </Text>
           <Text style={componentStyles.contentText}>
             {patient?.date_of_birth
-              ? patient?.status === 'pending'
+              ? patient?.status === 'pending-create'
                 ? `(${patient?.date_of_birth})`
                 : `(${formatDate(patient?.date_of_birth)})`
               : ''}
           </Text>
-          {patient?.status === 'pending' && <Text> Pending Submit</Text>}
         </View>
         <View style={componentStyles.rightContainer}>
           <TreatmentStatusBadge
@@ -66,11 +66,14 @@ const PatientCard = ({patient, theme}) => {
           />
         </View>
       )}
+      {patient?.status && (
+        <Text style={styles.textOfflineStyle}>{patient?.status}</Text>
+      )}
     </Card>
   );
 };
 
-const componentStyles = StyleSheet.create({
+export const componentStyles = StyleSheet.create({
   cardContainer: {
     borderRadius: 12,
     paddingHorizontal: 15,
