@@ -106,13 +106,6 @@ const PatientReferral = ({navigation, route}) => {
   const onBack = useCallback(() => {
     navigation.navigate(ROUTES.PATIENT_DETAIL, {
       patientId: patient.id,
-      patientDetail: patient,
-      treatmentPlan: patient.ongoingTreatmentPlan.length
-        ? patient.ongoingTreatmentPlan[0]
-        : patient.upcomingTreatmentPlan
-        ? patient.upcomingTreatmentPlan
-        : patient.lastTreatmentPlan,
-      referralTherapists: patient.referral_therapists,
     });
   }, [navigation, patient]);
 

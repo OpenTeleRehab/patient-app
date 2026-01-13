@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, ListItem, withTheme, Button} from 'react-native-elements';
@@ -7,7 +7,6 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {formatDate} from '../../../utils/helper';
 import {
-  getPatientRequest,
   activateDeactivateAccount,
   deletePatientRequest,
 } from '../../../store/patient/actions';
@@ -22,18 +21,45 @@ import {
   REFERRAL_STATUS,
   THERAPIST_TYPES,
 } from '../../../variables/constants';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {mutation} from '../../../store/patient/mutations';
+import variables from '../../../assets/styles/variables';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
+  const netInfo = useNetInfo();
   const {showToast} = useShowToast();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patientId, patientDetail, treatmentPlan, referralTherapists} =
-    route.params;
+  const {patientId} = route.params;
+  const {patientsForPhcWorker} = useSelector((state) => state.patient);
   const [showMore, setShowMore] = useState(false);
+  const [patientDetail, setPatientDetail] = useState();
+  const [treatmentPlan, setTreatmentPlan] = useState();
+  const [referralTherapists, setReferralTherapists] = useState();
+
+  useEffect(() => {
+    const detailInfo = patientsForPhcWorker.find(
+      (item) => item.id === patientId,
+    );
+    setPatientDetail(detailInfo);
+    const treatmentPlanInfo = detailInfo?.ongoingTreatmentPlan?.length
+      ? detailInfo?.ongoingTreatmentPlan[0]
+      : detailInfo?.upcomingTreatmentPlan
+      ? detailInfo?.upcomingTreatmentPlan
+      : detailInfo?.lastTreatmentPlan;
+    setTreatmentPlan(treatmentPlanInfo);
+    setReferralTherapists(detailInfo?.referral_therapists);
+  }, [patientId, patientsForPhcWorker]);
+
+  const localNumber = patientDetail?.phone.startsWith(patientDetail?.dial_code)
+    ? patientDetail?.phone.slice(patientDetail?.dial_code.length)
+    : patientDetail?.phone;
+
+  const displayPhone = `(+${patientDetail?.dial_code}) ${localNumber}`;
 
   const data = [
-    {label: translate('phc.patient.phone'), value: patientDetail?.phone || ''},
+    {label: translate('phc.patient.phone'), value: displayPhone || ''},
     {
       label: translate('date.of.birth'),
       value:
@@ -102,7 +128,16 @@ const PatientDetail = ({navigation, route}) => {
           ),
           translate('phc.patient.title'),
         );
-        dispatch(getPatientRequest(patientDetail.id));
+        const patientListUpdate = patientsForPhcWorker.map((item) =>
+          item.id === patientDetail.id
+            ? {...item, enabled: !patientDetail.enabled ? 1 : 0}
+            : item,
+        );
+        setPatientDetail({
+          ...patientDetail,
+          enabled: !patientDetail.enabled ? 1 : 0,
+        });
+        dispatch(mutation.patientsForPhcWorkerFetchSuccess(patientListUpdate));
       } else {
         showToast(
           translate(translate(response.message)),
@@ -115,6 +150,10 @@ const PatientDetail = ({navigation, route}) => {
   const handleDeletePatientConfirm = () => {
     dispatch(deletePatientRequest(patientDetail.id)).then((response) => {
       if (response.success) {
+        const patientListUpdate = patientsForPhcWorker.filter(
+          (item) => item.id !== patientDetail.id,
+        );
+        dispatch(mutation.patientsForPhcWorkerFetchSuccess(patientListUpdate));
         showToast(
           translate('phc.patient.message.patient_account_deleted'),
           translate('phc.patient.title'),
@@ -175,7 +214,9 @@ const PatientDetail = ({navigation, route}) => {
 
   const handleEdit = () => {
     setShowMore(false);
-    navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {patientDetail});
+    navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {
+      patientId,
+    });
   };
 
   const handleGoback = () => {
@@ -236,13 +277,13 @@ const PatientDetail = ({navigation, route}) => {
             onPress={() => {
               navigation.navigate(ROUTES.INTERVIEW_STACK, {
                 patientId,
-                patientDetail,
               });
             }}
           />
           <Button
             type="outline"
             disabled={
+              !netInfo.isConnected ||
               patientDetail?.referral_status === REFERRAL_STATUS.INVITED ||
               patientDetail?.referral_status === REFERRAL_STATUS.ACCEPTED
             }
@@ -258,6 +299,7 @@ const PatientDetail = ({navigation, route}) => {
             type="outline"
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_transfer')}
+            disabled={!netInfo.isConnected}
             onPress={() => {
               navigation.navigate(ROUTES.PATIENT_TRANSFER, {
                 patientId,
@@ -280,15 +322,23 @@ const PatientDetail = ({navigation, route}) => {
                 onPress={handleEdit}
               />
               <Button
-                type="outline"
-                buttonStyle={componentStyles.buttonStyle}
-                titleStyle={componentStyles.titleButtonStyle}
+                buttonStyle={
+                  patientDetail.enabled
+                    ? componentStyles.buttonStyle
+                    : componentStyles.buttonActivateStyle
+                }
+                titleStyle={
+                  patientDetail.enabled
+                    ? componentStyles.titleButtonStyle
+                    : componentStyles.titleActivateButtonStyle
+                }
                 containerStyle={styles.marginBottom}
                 title={translate(
                   patientDetail.enabled
                     ? 'phc.patient.button.deactivate_account'
                     : 'phc.patient.button.activate_account',
                 )}
+                disabled={!netInfo.isConnected}
                 onPress={handleDeactivateActivate}
               />
               <Button
@@ -296,7 +346,7 @@ const PatientDetail = ({navigation, route}) => {
                 titleStyle={componentStyles.titleButtonStyle}
                 containerStyle={styles.marginBottom}
                 title={translate('phc.patient.button.delete_account')}
-                disabled={!!patientDetail.enabled}
+                disabled={!netInfo.isConnected || !!patientDetail.enabled}
                 onPress={handleDeletePatient}
               />
             </>
@@ -326,7 +376,7 @@ const componentStyles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    fontWeight: '500',
+    fontWeight: '700',
     fontSize: 13,
   },
   value: {
@@ -342,6 +392,13 @@ const componentStyles = StyleSheet.create({
   buttonStyle: {
     borderWidth: 0,
     backgroundColor: '#fae3e3ff',
+  },
+  buttonActivateStyle: {
+    borderWidth: 0,
+    backgroundColor: variables.blueLight4,
+  },
+  titleActivateButtonStyle: {
+    color: theme.colors.white,
   },
   titleButtonStyle: {
     color: theme.colors.danger,
