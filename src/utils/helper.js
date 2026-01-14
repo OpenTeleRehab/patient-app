@@ -26,6 +26,13 @@ export const isValidDateFormat = (date) => {
   return false;
 };
 
+export const isPhcWorker = (type) => {
+  if (!type) {
+    return false;
+  }
+  return type === 'phc_worker';
+};
+
 export const generateHash = (length = 17) => {
   let hashStr = '';
   const randomStr =
@@ -67,7 +74,7 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     user: {_id: u._id},
     received: true,
     pending: false,
-    isVideoCall: msg !== '' && msg.includes('jitsi_call'),
+    isVideoCall: msg.startsWith('jitsi_call'),
   };
 };
 

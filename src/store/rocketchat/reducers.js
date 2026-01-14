@@ -21,6 +21,11 @@ export const rocketchat = (state = initialState, action) => {
         chatRooms: action.data,
       });
     }
+    case 'GET_CALL_ACCESS_TOKEN_SUCCEED': {
+      return Object.assign({}, state, {
+        callAccessToken: action.token,
+      });
+    }
     case 'SELECT_ROOM_SUCCEED': {
       return Object.assign({}, state, {
         selectedRoom: _.pick(action.data, [
@@ -51,11 +56,6 @@ export const rocketchat = (state = initialState, action) => {
         offlineMessages: action.data,
       });
     }
-    case 'CLEAR_OFFLINE_MESSAGES_SUCCEED': {
-      return Object.assign({}, state, {
-        offlineMessages: [],
-      });
-    }
     case 'UPDATE_VIDEO_CALL_STATUS_SUCCEED': {
       return Object.assign({}, state, {
         videoCall: action.data,
@@ -67,6 +67,16 @@ export const rocketchat = (state = initialState, action) => {
       });
     }
     case 'CLEAR_CHAT_DATA_SUCCEED':
+    case 'CLEAR_CALL_ACCESS_TOKEN_SUCCESS': {
+      return Object.assign({}, state, {
+        callAccessToken: undefined,
+      });
+    }
+    case 'CLEAR_OFFLINE_MESSAGES_SUCCEED': {
+      return Object.assign({}, state, {
+        offlineMessages: [],
+      });
+    }
     default:
       return state;
   }

@@ -87,6 +87,7 @@ const blacklistTransform = createTransform(
     } else if (key === 'rocketchat') {
       inboundStateData = {
         ...inboundState,
+        callAccessToken: undefined,
         messages: [],
         videoCall: {},
         secondaryVideoCall: {},

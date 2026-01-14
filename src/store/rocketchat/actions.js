@@ -2,9 +2,10 @@ import {Rocketchat} from '../../services/rocketchat';
 import {Therapist} from '../../services/therapist';
 import {mutation} from './mutations';
 import {updateIndicatorList} from '../indicator/actions';
-import {CALL_STATUS} from '../../variables/constants';
 import {Chat} from '../../services/chat';
 import {loadHistoryInRoom} from '../../utils/rocketchat';
+import {Call} from '../../services/call';
+import {isPhcWorker} from '../../utils/helper';
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
   dispatch(mutation.setChatSubscribeIdsSuccess(payload));
@@ -18,16 +19,8 @@ export const clearChatData = () => (dispatch) => {
   dispatch(mutation.clearChatDataSuccess());
 };
 
-export const updateVideoCallStatus = (payload) => (dispatch, getState) => {
-  const {videoCall} = getState().rocketchat;
-  if (
-    Object.keys(videoCall).length === 0 ||
-    payload.status === CALL_STATUS.ACCEPTED
-  ) {
-    dispatch(mutation.updateVideoCallStatusSuccess(payload));
-  } else {
-    dispatch(mutation.updateSecondaryVideoCallStatusSuccess(payload));
-  }
+export const updateVideoCallStatus = (payload) => (dispatch) => {
+  dispatch(mutation.updateVideoCallStatusSuccess(payload));
 };
 
 export const clearVideoCallStatus = () => (dispatch) => {
@@ -36,6 +29,10 @@ export const clearVideoCallStatus = () => (dispatch) => {
 
 export const clearSecondaryVideoCallStatus = () => (dispatch) => {
   dispatch(mutation.updateSecondaryVideoCallStatusSuccess({}));
+};
+
+export const clearCallAccessToken = () => (dispatch) => {
+  dispatch(mutation.clearCallAccessTokenSuccess());
 };
 
 export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
@@ -58,7 +55,7 @@ export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
   if (subscriptions.length && chatUserStatus.success) {
     dispatch(mutation.getChatRoomsRequest());
 
-    if (profile?.type === 'phc_worker') {
+    if (isPhcWorker(profile?.type)) {
       const patientChatRooms = await Chat.getPatientChatRooms(accessToken);
       const therapistChatRooms = await Chat.getTherapistChatRooms(accessToken);
       const phcWorkerChatRooms = await Chat.getPhcWorkerChatRooms(accessToken);
@@ -73,8 +70,6 @@ export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
             const chatUser = chatUserStatus.users.find(
               (user) => user.username === chatRoom.identity,
             );
-
-            console.log(chatRoom.profession_id);
 
             chatRooms.push({
               rid: subscription.rid,
@@ -249,27 +244,22 @@ export const prependNewMessage = (payload) => async (dispatch, getState) => {
 
   if (fIndex > -1) {
     if (selectedRoom?.rid === payload.rid) {
-      dispatch(mutation.prependNewMessageSuccess([payload, ...messages]));
+      const msgIndex = messages.findIndex((msg) => msg._id === payload._id);
+
+      if (msgIndex > -1) {
+        messages[msgIndex] = payload;
+      } else {
+        messages.unshift(payload);
+      }
+
+      dispatch(mutation.prependNewMessageSuccess(messages));
 
       if (isOnChatScreen) {
         chatRooms[fIndex].unreads = 0;
       }
-    }
-
-    if (
-      payload.text !== CALL_STATUS.VIDEO_ENDED &&
-      payload.text !== CALL_STATUS.AUDIO_ENDED &&
-      payload.text !== CALL_STATUS.VIDEO_MISSED &&
-      payload.text !== CALL_STATUS.AUDIO_MISSED &&
-      payload.text !== CALL_STATUS.ACCEPTED
-    ) {
+    } else {
       chatRooms[fIndex].unreads += 1;
-    }
-
-    if (payload !== CALL_STATUS.ACCEPTED) {
-      chatRooms[fIndex].totalMessages += 1;
       chatRooms[fIndex].lastMessage = payload;
-      chatRooms[fIndex].messages = [payload, ...chatRooms[fIndex].messages];
     }
 
     // Update unread message indicator
@@ -308,4 +298,20 @@ export const postAttachmentMessage = (roomId, attachment) => async (
     dispatch(mutation.sendAttachmentMessagesFailure());
     return false;
   }
+};
+
+export const getCallAccessToken = (roomId) => async (dispatch) => {
+  dispatch(mutation.getCallAccessTokenRequest());
+  const data = await Call.getCallAccessToken(roomId);
+  if (data.success) {
+    dispatch(mutation.getCallAccessTokenSuccess(data.token));
+    return true;
+  } else {
+    dispatch(mutation.getCallAccessTokenFailure());
+    return false;
+  }
+};
+
+export const sendPodcastNotification = (payload) => async () => {
+  await Call.sendPodcastNotification(payload);
 };

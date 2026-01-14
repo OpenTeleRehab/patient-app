@@ -11,17 +11,18 @@ import {getTranslate} from 'react-localize-redux';
 import {Rocketchat} from '../../../services/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import settings from '../../../../config/settings';
-import {generateHash} from '../../../utils/helper';
+import {generateHash, isPhcWorker} from '../../../utils/helper';
 import {Platform, View, Keyboard} from 'react-native';
-import {CHAT_USER_STATUS} from '../../../variables/constants';
+import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {sendNewMessage} from '../../../utils/rocketchat';
-import {updateIndicatorList,} from '../../../store/indicator/actions';
+import {updateIndicatorList} from '../../../store/indicator/actions';
 import {mutation} from '../../../store/rocketchat/mutations';
 import MediaPicker from '../../../components/MediaPicker';
 import {
   postAttachmentMessage,
   prependNewMessage,
+  sendPodcastNotification,
 } from '../../../store/rocketchat/actions';
 import ChatContainer from '../_Partials/ChatContainer';
 import ChatToolbar from '../_Partials/ChatToolbar';
@@ -37,7 +38,7 @@ const ChatPanel = ({navigation, theme}) => {
   const {isOnlineMode, isOnChatScreen} = useSelector(
     (state) => state.indicator,
   );
-  const profile = useSelector((state) => state.user.profile);
+  const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const [allMessages, setAllMessages] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
@@ -63,6 +64,10 @@ const ChatPanel = ({navigation, theme}) => {
   }, [navigation]);
 
   useEffect(() => {
+    setAllMessages(messages);
+  }, [chatRooms, messages]);
+
+  useEffect(() => {
     if (isOnlineMode && isOnChatScreen) {
       Rocketchat.markMessagesAsRead(
         selectedRoom.rid,
@@ -74,14 +79,12 @@ const ChatPanel = ({navigation, theme}) => {
         }
       });
     }
-    setAllMessages(messages);
   }, [
     chatAuth.token,
     chatAuth.userId,
     dispatch,
     isOnChatScreen,
     isOnlineMode,
-    messages,
     selectedRoom.rid,
   ]);
 
@@ -108,14 +111,17 @@ const ChatPanel = ({navigation, theme}) => {
   }, [dispatch, isFocused, isOnChatScreen]);
 
   const onSend = (newMessage = []) => {
-    newMessage[0].pending = true;
-    setAllMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessage),
-    );
     newMessage[0].rid = selectedRoom.rid;
+
     if (isOnlineMode) {
+      newMessage[0].received = true;
+      newMessage[0].pending = false;
+
       sendNewMessage(chatSocket, newMessage[0], profile.id);
     } else {
+      newMessage[0].received = false;
+      newMessage[0].pending = true;
+
       dispatch(
         mutation.setOfflineMessagesSuccess(
           offlineMessages.concat([newMessage[0]]),
@@ -123,6 +129,10 @@ const ChatPanel = ({navigation, theme}) => {
       );
       dispatch(prependNewMessage(newMessage[0]));
     }
+
+    setAllMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, newMessage),
+    );
   };
 
   const onSendAttachment = (caption, file, type) => {
@@ -132,7 +142,7 @@ const ChatPanel = ({navigation, theme}) => {
       createdAt: new Date(),
       pending: true,
       text: caption,
-      user: {_id: profile.chat_user_id},
+      user: {_id: chatAuth.userId},
     };
     if (type.includes('video/')) {
       newMessage.video = file.uri;
@@ -210,13 +220,50 @@ const ChatPanel = ({navigation, theme}) => {
     navigation.goBack();
   };
 
+  const handleCall = (isVideo) => {
+    const _id = generateHash();
+    const rid = selectedRoom.rid;
+    const text = isVideo
+      ? CALL_STATUS.VIDEO_STARTED
+      : CALL_STATUS.AUDIO_STARTED;
+
+    // Send call message
+    sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
+
+    // Send podcast notification
+    if (selectedRoom.u.status === 'offline') {
+      const notification = {
+        _id,
+        rid,
+        identity: selectedRoom.u.username,
+        title: profile.first_name + ' ' + profile.last_name,
+        body: text,
+        translatable: false,
+      };
+
+      dispatch(sendPodcastNotification(notification));
+    }
+  };
+
   return (
     <>
-      <HeaderBar
-        backgroundPrimary={true}
-        onGoBack={() => handleGoBack()}
-        title={selectedRoom.name}
-      />
+      {isPhcWorker(profile?.type) ? (
+        <HeaderBar
+          backgroundPrimary
+          onGoBack={() => handleGoBack()}
+          title={selectedRoom.name}
+          call={{
+            onAudioCall: () => handleCall(false),
+            onVideoCall: () => handleCall(true),
+          }}
+        />
+      ) : (
+        <HeaderBar
+          backgroundPrimary
+          onGoBack={() => handleGoBack()}
+          title={selectedRoom.name}
+        />
+      )}
       <Spinner
         visible={isLoading}
         textContent={translate('common.loading')}

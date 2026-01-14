@@ -91,13 +91,6 @@ const deleteProfile = async (accessToken) => {
   return await callApi('/patient/profile/delete', accessToken, null, 'delete');
 };
 
-const getCallAccessToken = async (roomId, identity) => {
-  return await callApi('/patient/get-call-access-token', '', {
-    room_id: roomId,
-    identity: identity,
-  });
-};
-
 const getTermOfService = async (lang) => {
   return await callGlobalAdminApi('/user-term-condition', {lang: lang});
 };
@@ -153,7 +146,6 @@ export const User = {
   changePassword,
   updateProfile,
   deleteProfile,
-  getCallAccessToken,
   getTermOfService,
   acceptTermOfService,
   getPrivacyPolicy,

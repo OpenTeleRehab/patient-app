@@ -5,8 +5,6 @@ import {
   updateChatUserStatus,
   clearChatData,
   updateVideoCallStatus,
-  clearVideoCallStatus,
-  clearSecondaryVideoCallStatus,
 } from '../store/rocketchat/actions';
 import {
   updateIndicatorList,
@@ -14,8 +12,9 @@ import {
 } from '../store/indicator/actions';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../variables/constants';
 import {getUniqueId, getChatMessage} from './helper';
-import store from '../store';
 import {Rocketchat} from '../services/rocketchat';
+import {checkCallBusy} from './chat';
+import store from '../store';
 
 export const initialChatSocket = (
   dispatch,
@@ -58,23 +57,24 @@ export const initialChatSocket = (
         // Connection success => login
         dispatch(updateIndicatorList({isChatConnected: true}));
 
-        Rocketchat.login(username, {digest: password, algorithm: 'sha-256'}).then(
-          (res) => {
-            if (res.data) {
-              const options = {
-                msg: 'method',
-                method: 'login',
-                id: loginId,
-                params: [
-                  {
-                    resume: res.data.authToken,
-                  },
-                ],
-              };
-              socket.send(JSON.stringify(options));
-            }
-          },
-        );
+        Rocketchat.login(username, {
+          digest: password,
+          algorithm: 'sha-256',
+        }).then((res) => {
+          if (res.data) {
+            const options = {
+              msg: 'method',
+              method: 'login',
+              id: loginId,
+              params: [
+                {
+                  resume: res.data.authToken,
+                },
+              ],
+            };
+            socket.send(JSON.stringify(options));
+          }
+        });
       } else if (resMessage === 'result') {
         if (error !== undefined) {
           console.error(`WebSocket: ${error.reason}`);
@@ -105,28 +105,20 @@ export const initialChatSocket = (
       } else if (resMessage === 'changed') {
         if (collection === 'stream-room-messages') {
           // Trigger change in chat room
+          const {profile} = store.getState().user;
+
           const {_id, msg, rid, u} = fields.args[0];
-          if (msg !== '') {
-            if (
-              msg === CALL_STATUS.AUDIO_STARTED ||
-              msg === CALL_STATUS.VIDEO_STARTED ||
-              msg === CALL_STATUS.ACCEPTED
-            ) {
+
+          if (msg?.startsWith('jitsi_call')) {
+            if (checkCallBusy(u._id, msg)) {
+              updateMessage(socket, {_id, rid, msg: CALL_STATUS.BUSY}, profile.id);
+            } else {
               dispatch(updateVideoCallStatus({_id, rid, status: msg, u}));
             }
-            if (
-              msg === CALL_STATUS.AUDIO_ENDED ||
-              msg === CALL_STATUS.VIDEO_ENDED ||
-              msg === CALL_STATUS.AUDIO_MISSED ||
-              msg === CALL_STATUS.VIDEO_MISSED
-            ) {
-              dispatch(clearVideoCallStatus());
-            }
-            if (msg === CALL_STATUS.BUSY) {
-              dispatch(clearSecondaryVideoCallStatus());
-            }
           }
+
           const newMessage = getChatMessage(fields.args[0], userId, authToken);
+
           dispatch(prependNewMessage(newMessage));
           dispatch(updateUnreadMessageIndicator());
         } else if (collection === 'stream-notify-logged') {
