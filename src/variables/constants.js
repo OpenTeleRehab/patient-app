@@ -80,6 +80,21 @@ export const CALL_STATUS = {
   BUSY: 'jitsi_call_busy',
 };
 
+export const CALL_STARTED_STATUSES = [
+  CALL_STATUS.AUDIO_STARTED,
+  CALL_STATUS.VIDEO_STARTED,
+];
+
+export const CALL_MISSED_STATUSES = [
+  CALL_STATUS.AUDIO_MISSED,
+  CALL_STATUS.VIDEO_MISSED,
+];
+
+export const CALL_ENDED_STATUSES = [
+  CALL_STATUS.AUDIO_ENDED,
+  CALL_STATUS.VIDEO_ENDED,
+];
+
 export const APPOINTMENT_STATUS = {
   INVITED: 'invited',
   ACCEPTED: 'accepted',

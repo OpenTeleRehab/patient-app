@@ -24,6 +24,19 @@ const getChatRoomsFailure = () => ({
   type: 'GET_CHAT_ROOMS_FAILED',
 });
 
+const getCallAccessTokenRequest = () => ({
+  type: 'GET_CALL_ACCESS_TOKEN_REQUEST',
+});
+
+const getCallAccessTokenSuccess = (token) => ({
+  type: 'GET_CALL_ACCESS_TOKEN_SUCCEED',
+  token,
+});
+
+const getCallAccessTokenFailure = () => ({
+  type: 'GET_CALL_ACCESS_TOKEN_FAILED',
+});
+
 const getLastMessagesSuccess = (data) => ({
   type: 'GET_LAST_MESSAGES_SUCCEED',
   data,
@@ -63,10 +76,6 @@ const updateChatUserStatusSuccess = (data) => ({
   data,
 });
 
-const clearChatDataSuccess = () => ({
-  type: 'CLEAR_CHAT_DATA_SUCCEED',
-});
-
 const sendAttachmentMessagesSuccess = () => ({
   type: 'SEND_ATTACHMENT_MESSAGES_SUCCEED',
 });
@@ -90,6 +99,14 @@ const setOfflineMessagesSuccess = (data) => ({
   data,
 });
 
+const clearChatDataSuccess = () => ({
+  type: 'CLEAR_CHAT_DATA_SUCCEED',
+});
+
+const clearCallAccessTokenSuccess = () => ({
+  type: 'CLEAR_CALL_ACCESS_TOKEN_SUCCESS',
+});
+
 const clearOfflineMessagesSuccess = () => ({
   type: 'CLEAR_OFFLINE_MESSAGES_SUCCEED',
 });
@@ -100,6 +117,9 @@ export const mutation = {
   getChatRoomsRequest,
   getChatRoomsSuccess,
   getChatRoomsFailure,
+  getCallAccessTokenRequest,
+  getCallAccessTokenSuccess,
+  getCallAccessTokenFailure,
   getLastMessagesSuccess,
   getLastMessagesFailure,
   selectRoomSuccess,
@@ -108,11 +128,12 @@ export const mutation = {
   prependNewMessageSuccess,
   updateLastMessageSuccess,
   updateChatUserStatusSuccess,
-  clearChatDataSuccess,
   sendAttachmentMessagesSuccess,
   sendAttachmentMessagesFailure,
   updateVideoCallStatusSuccess,
   updateSecondaryVideoCallStatusSuccess,
   setOfflineMessagesSuccess,
+  clearChatDataSuccess,
+  clearCallAccessTokenSuccess,
   clearOfflineMessagesSuccess,
 };

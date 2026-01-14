@@ -83,6 +83,9 @@ export default {
   rowGap2: {
     rowGap: 2,
   },
+  columnGap16: {
+    columnGap: 16,
+  },
   columnGap10: {
     columnGap: 10,
   },

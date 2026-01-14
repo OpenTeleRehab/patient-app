@@ -4,7 +4,14 @@
 import variables from '../variables';
 
 export default {
-  callContainer: {
+  incomingCallContainer: {
+    backgroundColor: variables.grey6,
+    flex: 1,
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+  },
+  acceptCallContainer: {
     flex: 1,
     backgroundColor: variables.grey6,
     height: '100%',
@@ -27,26 +34,23 @@ export default {
     paddingLeft: variables.spacingLg,
     paddingRight: variables.spacingLg,
   },
-  callOptionIcon: {
-    justifyContent: 'center',
-    textAlign: 'center',
-    backgroundColor: variables.grey2,
-    borderRadius: 25,
-    color: variables.white,
-    marginBottom: variables.spacingBase,
-    lineHeight: 50,
-    height: 50,
-    width: 50,
+  btnAddParticipant: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 99,
   },
-  callActionIcon: {
-    justifyContent: 'center',
-    textAlign: 'center',
-    borderRadius: 40,
+  btnInviteParticipant: {
+    alignItems: 'center',
+    backgroundColor: variables.primary,
+    borderRadius: 6,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: variables.spacingBase,
+    paddingVertical: variables.spacingBase,
+  },
+  btnInviteParticipantLabel: {
     color: variables.white,
-    marginBottom: variables.spacingBase,
-    lineHeight: 80,
-    height: 80,
-    width: 80,
   },
   callActionLabel: {
     fontSize: variables.fontSizeMd,
@@ -85,7 +89,7 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '66%',
+    height: '62%',
     position: 'absolute',
     left: 0,
     top: 0,
@@ -123,6 +127,7 @@ export default {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 12,
     paddingVertical: 20,
     position: 'absolute',
     left: 0,
@@ -130,9 +135,6 @@ export default {
     width: '100%',
     elevation: 99,
     zIndex: 99,
-  },
-  optionButton: {
-    marginHorizontal: variables.spacingMd,
   },
   callMessage: {
     color: variables.white,

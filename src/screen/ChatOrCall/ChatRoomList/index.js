@@ -12,12 +12,16 @@ import {mutation} from '../../../store/rocketchat/mutations';
 import {getProfessionRequest} from '../../../store/profession/actions';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
+import {
+  getPatientChatRooms,
+  getPhcChatRooms,
+  getTherapistChatRooms,
+} from '../../../utils/chat';
 
 const ChatRoomList = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {chatRooms} = useSelector((state) => state.rocketchat);
   const {professions} = useSelector((state) => state.profession);
   const [defaultExpanded, setDefaultExpanded] = useState([
     'patients',
@@ -25,14 +29,10 @@ const ChatRoomList = ({navigation}) => {
     'phc_workers',
   ]);
 
-  const patients = chatRooms.filter((item) => !item.u.username.startsWith('T') && !item.u.username.startsWith('PHC'));
-  const therapists = chatRooms.filter((item) => item.u.username.startsWith('T'));
-  const phc_workers = chatRooms.filter((item) => item.u.username.startsWith('PHC'));
-
   const rooms = {
-    patients: patients,
-    therapists: therapists,
-    phc_workers: phc_workers,
+    patients: getPatientChatRooms(),
+    therapists: getTherapistChatRooms(),
+    phc_workers: getPhcChatRooms(),
   };
 
   useEffect(() => {

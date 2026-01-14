@@ -4,6 +4,7 @@
 export const initialState = {
   chatRooms: [],
   messages: [],
+  callAccessToken: undefined,
   chatAuth: undefined,
   subscribeIds: undefined,
   selectedRoom: undefined,

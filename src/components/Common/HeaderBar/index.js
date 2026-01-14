@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Image, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {Header, Text, Button, Icon, withTheme} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import logoWhite from '../../../assets/images/logo-white.png';
@@ -28,6 +28,7 @@ const HeaderBar = (props) => {
     backgroundPrimary,
     setting,
     achievement,
+    call,
   } = props;
   const {videoCall} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
@@ -236,6 +237,40 @@ const HeaderBar = (props) => {
           type="clear"
           buttonStyle={[styles.marginLeftLg, styles.noPadding]}
         />
+      );
+    }
+    if (call && (call.onAudioCall || call.onVideoCall)) {
+      return (
+        <View style={[styles.flexRow, styles.flexCenter, styles.columnGap16]}>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel="Audio call"
+            disabled={!isOnline}
+            onPress={call.onAudioCall}>
+            <Icon
+              type="material"
+              name="call"
+              size={24}
+              color={
+                backgroundPrimary ? theme.colors.white : theme.colors.black
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel="Video call"
+            disabled={!isOnline}
+            onPress={call.onVideoCall}>
+            <Icon
+              type="material"
+              name="videocam"
+              size={24}
+              color={
+                backgroundPrimary ? theme.colors.white : theme.colors.black
+              }
+            />
+          </TouchableOpacity>
+        </View>
       );
     }
     return (

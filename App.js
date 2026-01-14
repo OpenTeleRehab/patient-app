@@ -10,6 +10,7 @@ import AppNavigation from './src/components/AppNavigation';
 import colors from './src/assets/styles/variables/colors';
 import VideoCall from './src/components/VideoCall';
 import {PersistGate} from 'redux-persist/integration/react';
+import {CallContextProvider} from './src/context/CallContext';
 import store, {persistor} from './src/store';
 
 export const theme = {
@@ -56,7 +57,9 @@ const App = () => {
           <AppProvider>
             <ThemeProvider theme={theme}>
               <AppNavigation />
-              <VideoCall />
+              <CallContextProvider>
+                <VideoCall />
+              </CallContextProvider>
             </ThemeProvider>
           </AppProvider>
         </LocalizeProvider>
