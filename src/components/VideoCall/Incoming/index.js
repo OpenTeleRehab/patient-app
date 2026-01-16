@@ -2,13 +2,18 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useContext, useEffect, useRef} from 'react';
+import {useNetInfo} from '@react-native-community/netinfo';
 import {Icon, Text} from 'react-native-elements';
 import {TouchableOpacity, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
 import {useCallContext} from '../../../context/CallContext';
 import {updateMessage} from '../../../utils/rocketchat';
 import RocketchatContext from '../../../context/RocketchatContext';
+import {
+  clearCallAccessToken,
+  clearVideoCallStatus,
+} from '../../../store/rocketchat/actions';
 import styles from '../../../assets/styles';
 
 const IncomingCall = ({
@@ -22,20 +27,21 @@ const IncomingCall = ({
   onMute,
 }) => {
   const callTimeout = useRef(null);
-  const {
-    hostUserId,
-    handleAcceptCall,
-  } = useCallContext();
-
+  const netInfo = useNetInfo();
+  const dispatch = useDispatch();
+  const {handleAcceptCall} = useCallContext();
+  const {handlePushNotification} = useCallContext();
   const chatSocket = useContext(RocketchatContext);
   const chatAuth = useSelector((state) => state.rocketchat.chatAuth);
   const videoCall = useSelector((state) => state.rocketchat.videoCall);
   const selectedRoom = useSelector((state) => state.rocketchat.selectedRoom);
   const profile = useSelector((state) => state.user.profile);
 
+  const isLocalParticipant = videoCall.u._id === chatAuth.userId;
+
   useEffect(() => {
-    if (chatAuth.userId === videoCall.u._id) {
-      callTimeout.current = setTimeout(() => {
+    callTimeout.current = setTimeout(() => {
+      if (chatAuth.userId === videoCall.u._id) {
         const _id = videoCall._id;
         const rid = videoCall.rid;
         const msg =
@@ -43,23 +49,63 @@ const IncomingCall = ({
             ? CALL_STATUS.AUDIO_MISSED
             : CALL_STATUS.VIDEO_MISSED;
 
+        // Send missed call message
         updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-      }, 60000); // 60000 milliseconds
-      return () => {
-        clearInterval(callTimeout.current);
-      };
-    }
-  }, [chatAuth, chatSocket, profile.id, videoCall]);
+
+        if (!netInfo.isConnected) {
+          // Clear call access token
+          dispatch(clearCallAccessToken());
+
+          // Cleanup video call
+          dispatch(clearVideoCallStatus());
+        }
+      }
+
+      // Cleanup video call
+      dispatch(clearVideoCallStatus());
+    }, 60000); // milliseconds
+    return () => {
+      clearInterval(callTimeout.current);
+    };
+  }, [
+    chatAuth,
+    chatSocket,
+    dispatch,
+    handlePushNotification,
+    netInfo.isConnected,
+    profile,
+    selectedRoom,
+    videoCall,
+  ]);
 
   const handleDeclineCall = () => {
     const _id = videoCall._id;
     const rid = videoCall.rid;
-    const msg = videoCall.status === CALL_STATUS.AUDIO_STARTED
-      ? CALL_STATUS.AUDIO_MISSED
-      : CALL_STATUS.VIDEO_MISSED;
+    const msg =
+      videoCall.status === CALL_STATUS.AUDIO_STARTED
+        ? CALL_STATUS.AUDIO_MISSED
+        : CALL_STATUS.VIDEO_MISSED;
 
     // Send decline call message
     updateMessage(chatSocket, {_id, rid, msg}, profile.id);
+
+    if (chatAuth.userId === videoCall.u._id) {
+      handlePushNotification({
+        _id,
+        rid,
+        identity: selectedRoom.u.username,
+        title: profile.first_name + ' ' + profile.last_name,
+        body: msg,
+      });
+    }
+
+    if (!netInfo.isConnected) {
+      // Clear call access token
+      dispatch(clearCallAccessToken());
+
+      // Cleanup video call
+      dispatch(clearVideoCallStatus());
+    }
   };
 
   return (
@@ -67,7 +113,7 @@ const IncomingCall = ({
       <View style={styles.incomingCallContainer}>
         <View style={[styles.flexCenter, styles.justifyContentCenter]}>
           <Text style={styles.callerName}>
-            {hostUserId ? selectedRoom.name : videoCall.u.name}
+            {isLocalParticipant ? selectedRoom.name : videoCall.u.name}
           </Text>
           <Text style={styles.callingText}>
             {translate('video_call_starting')}
@@ -83,7 +129,7 @@ const IncomingCall = ({
                 reverse
                 type="feather"
                 name={isVideoOn ? 'video' : 'video-off'}
-                color={isVideoOn ? theme.colors.bgDark : theme.colors.grey2}
+                color={isVideoOn ? theme.colors.dark : theme.colors.grey2}
                 size={24}
               />
               <Text>{translate(isVideoOn ? 'video_on' : 'video_off')}</Text>
@@ -95,7 +141,7 @@ const IncomingCall = ({
                 reverse
                 type="feather"
                 name={isSpeakerOn ? 'volume-2' : 'volume-x'}
-                color={isSpeakerOn ? theme.colors.bgDark : theme.colors.grey2}
+                color={isSpeakerOn ? theme.colors.dark : theme.colors.grey2}
                 size={24}
               />
               <Text>
@@ -109,7 +155,7 @@ const IncomingCall = ({
                 reverse
                 type="feather"
                 name={isMute ? 'mic-off' : 'mic'}
-                color={isMute ? theme.colors.grey2 : theme.colors.bgDark}
+                color={isMute ? theme.colors.grey2 : theme.colors.dark}
                 size={24}
               />
               <Text>{translate(isMute ? 'mute' : 'unmute')}</Text>
@@ -134,10 +180,10 @@ const IncomingCall = ({
                 size={38}
               />
               <Text style={[styles.callActionLabel, styles.textDanger]}>
-                {translate(hostUserId ? 'end_call' : 'decline_call')}
+                {translate(isLocalParticipant ? 'end_call' : 'decline_call')}
               </Text>
             </TouchableOpacity>
-            {hostUserId === undefined && (
+            {!isLocalParticipant && (
               <TouchableOpacity
                 onPress={handleAcceptCall}
                 style={[styles.btnCallAction, styles.flexCenter]}>

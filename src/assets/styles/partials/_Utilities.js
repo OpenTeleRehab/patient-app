@@ -174,6 +174,9 @@ export default {
   width100: {
     width: '100%',
   },
+  fullHeight: {
+    height: '100%',
+  },
   height150: {
     height: 150,
   },

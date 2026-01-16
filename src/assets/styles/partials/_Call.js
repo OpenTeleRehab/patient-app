@@ -45,9 +45,11 @@ export default {
     backgroundColor: variables.primary,
     borderRadius: 6,
     flexDirection: 'row',
+    justifyContent: 'center',
     gap: 6,
     paddingHorizontal: variables.spacingBase,
     paddingVertical: variables.spacingBase,
+    minWidth: 90,
   },
   btnInviteParticipantLabel: {
     color: variables.white,
@@ -72,6 +74,7 @@ export default {
     backgroundColor: variables.black,
     borderWidth: 3,
     borderColor: variables.primary,
+    color: variables.white,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -79,32 +82,21 @@ export default {
     height: 150,
     width: 150,
   },
-  participantView: {
-    height: '100%',
-    width: '100%',
+  participantName: {
+    color: variables.white,
+    position: 'absolute',
+    bottom: 12,
   },
   localVideoContainer: {
     backgroundColor: variables.black,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '62%',
     position: 'absolute',
     left: 0,
     top: 0,
-    zIndex: 1,
-  },
-  localVideoView: {
-    height: '100%',
     width: '100%',
-  },
-  localVideoAvatar: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    elevation: 99,
-    zIndex: 99,
+    zIndex: 1,
   },
   callTranscriptWrapper: {
     flexDirection: 'row',
@@ -145,5 +137,9 @@ export default {
     width: '100%',
     elevation: 99,
     zIndex: 99,
+  },
+  twilioVideoView: {
+    height: '100%',
+    width: '100%',
   },
 };

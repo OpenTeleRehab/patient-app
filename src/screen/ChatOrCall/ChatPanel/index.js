@@ -231,7 +231,7 @@ const ChatPanel = ({navigation, theme}) => {
     sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
 
     // Send podcast notification
-    if (selectedRoom.u.status === 'offline') {
+    if (selectedRoom.u.status === CHAT_USER_STATUS.OFFLINE) {
       const notification = {
         _id,
         rid,
