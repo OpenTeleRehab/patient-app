@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {sendNewMessage, updateMessage} from '../utils/rocketchat';
+import {updateMessage} from '../utils/rocketchat';
 import RocketchatContext from './RocketchatContext';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -13,6 +13,7 @@ import {
   clearCallAccessToken,
   clearVideoCallStatus,
   getCallAccessToken,
+  sendPodcastNotification,
 } from '../store/rocketchat/actions';
 import {storeLocalData} from '../utils/local_storage';
 
@@ -26,29 +27,29 @@ export const CallContextProvider = ({children}) => {
   const {callAccessToken, chatAuth, videoCall} = useSelector(
     (state) => state.rocketchat,
   );
-  const {profile} = useSelector((state) => state.user);
-  const [hostUserId, setHostUserId] = useState(undefined);
-  const [participants, setParticipants] = useState([]);
+  const {accessToken, profile} = useSelector((state) => state.user);
+  const [isHostOwner, setIsHostOwner] = useState(true);
+  const [hasParticipant, setHasParticipant] = useState(false);
 
   useEffect(() => {
     // Call started listener
     if (CALL_STARTED_STATUSES.includes(videoCall.status)) {
       if (videoCall.u._id === chatAuth.userId) {
-        setHostUserId(chatAuth.userId);
+        setIsHostOwner(true);
       } else {
-        setHostUserId(undefined);
+        setIsHostOwner(false);
       }
     }
 
     // Call accepted listener
     if (videoCall.status === CALL_STATUS.ACCEPTED) {
-      if (callAccessToken === undefined) {
+      if (callAccessToken === undefined && accessToken) {
         const _id = videoCall._id;
         const rid = videoCall.rid;
         const msg = CALL_STATUS.ACCEPTED;
 
         // Send accept call message
-        if (hostUserId === undefined) {
+        if (!isHostOwner) {
           updateMessage(chatSocket, {_id, rid, msg}, profile.id);
         }
 
@@ -59,7 +60,7 @@ export const CallContextProvider = ({children}) => {
 
     // Call busy listener
     if (videoCall.status === CALL_STATUS.BUSY) {
-      if (callAccessToken && participants.length === 0) {
+      if (callAccessToken && !hasParticipant) {
         // Clear call access token
         dispatch(clearCallAccessToken());
 
@@ -75,7 +76,7 @@ export const CallContextProvider = ({children}) => {
 
     // Call missed listener
     if (CALL_MISSED_STATUSES.includes(videoCall.status)) {
-      if (callAccessToken && participants.length === 0) {
+      if (callAccessToken && !hasParticipant) {
         // Clear call access token
         dispatch(clearCallAccessToken());
 
@@ -106,19 +107,16 @@ export const CallContextProvider = ({children}) => {
       }
     }
   }, [
+    accessToken,
     callAccessToken,
     chatAuth,
     chatSocket,
     dispatch,
-    hostUserId,
-    participants,
+    isHostOwner,
+    hasParticipant,
     profile,
     videoCall,
   ]);
-
-  const handleCall = (_id, rid, msg) => {
-    sendNewMessage(chatSocket, {_id, rid, text: msg}, profile.id);
-  };
 
   const handleAcceptCall = () => {
     const _id = videoCall._id;
@@ -128,8 +126,13 @@ export const CallContextProvider = ({children}) => {
     // Send accept call message
     updateMessage(chatSocket, {_id, rid, msg}, profile.id);
 
-    // Get call access token
-    dispatch(getCallAccessToken(videoCall.u._id));
+    // Set not host owner
+    setIsHostOwner(false);
+
+    if (accessToken !== undefined) {
+      // Get call access token
+      dispatch(getCallAccessToken(videoCall.u._id));
+    }
 
     // Cleanup call info from local storage
     storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
@@ -143,20 +146,19 @@ export const CallContextProvider = ({children}) => {
     updateMessage(chatSocket, {_id, rid, msg}, profile.id);
   };
 
-  const handleSetParticipants = (items) => {
-    setParticipants(items);
+  const handlePushNotification = (notification) => {
+    dispatch(sendPodcastNotification({...notification, translatable: false}));
   };
 
   return (
     <CallContext.Provider
       value={{
-        hostUserId,
-        participants,
-        handleCall,
+        isHostOwner,
+        setHasParticipant,
         handleAcceptCall,
         handleDeclineCall,
         handleEndCall,
-        handleSetParticipants,
+        handlePushNotification,
       }}>
       {children}
     </CallContext.Provider>

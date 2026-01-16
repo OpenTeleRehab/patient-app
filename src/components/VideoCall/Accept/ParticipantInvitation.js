@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {BottomSheet, Icon, ListItem, Text} from 'react-native-elements';
-import {theme} from '../../../../App';
+import {Badge, BottomSheet, Icon, ListItem, Text} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {useCallContext} from '../../../context/CallContext';
@@ -14,11 +13,20 @@ import {
   getTherapistChatRooms,
 } from '../../../utils/chat';
 import {generateHash} from '../../../utils/helper';
-import {CALL_STATUS} from '../../../variables/constants';
+import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
+import {sendNewMessage} from '../../../utils/rocketchat';
+import RocketchatContext from '../../../context/RocketchatContext';
+import {theme} from '../../../../App';
 import styles from '../../../assets/styles';
 
-const ParticipantInvitation = ({participants, isVideoOn}) => {
-  const {handleCall, handleDeclineCall} = useCallContext();
+const ParticipantInvitation = ({
+  isVideoOn,
+  participants,
+  onSetInvitingParticipants,
+}) => {
+  const chatSocket = useContext(RocketchatContext);
+  const {handlePushNotification} = useCallContext();
+  const {handleDeclineCall} = useCallContext();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
@@ -30,9 +38,9 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
     'phc_workers',
   ]);
 
-  const [invitationRooms, setInvitationRooms] = useState([]);
+  const [invitingParticipants, setInvitingParticipants] = useState([]);
 
-  const listChatRooms = {
+  const groupChatRooms = {
     patients: getPatientChatRooms(),
     therapists: getTherapistChatRooms(),
     phc_workers: getPhcChatRooms(),
@@ -40,7 +48,7 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
 
   useEffect(() => {
     if (chatRooms?.length > 0) {
-      setInvitationRooms(
+      setInvitingParticipants(
         chatRooms.map((chatRoom) => ({
           rid: chatRoom.rid,
           u: chatRoom.u,
@@ -50,13 +58,19 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
   }, [chatRooms]);
 
   useEffect(() => {
-    const timers = invitationRooms.map((participant) => {
+    onSetInvitingParticipants(
+      invitingParticipants.filter((item) => item?.countdown > 0),
+    );
+  }, [invitingParticipants, onSetInvitingParticipants]);
+
+  useEffect(() => {
+    const timers = invitingParticipants.map((participant) => {
       if (participant.countdown === undefined) {
         return null;
       } else {
         if (participant.countdown > 0) {
           return setTimeout(() => {
-            setInvitationRooms((prev) =>
+            setInvitingParticipants((prev) =>
               prev.map((p) => {
                 if (p.countdown === undefined) {
                   return p;
@@ -93,16 +107,15 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
     });
 
     return () => timers.forEach((timer) => clearTimeout(timer));
-  }, [handleDeclineCall, invitationRooms, participants, profile.country_id]);
+  }, [
+    handleDeclineCall,
+    invitingParticipants,
+    participants,
+    profile.country_id,
+  ]);
 
   const getInvitationCountdown = (rid) => {
-    const room = invitationRooms.find((item) => item.rid === rid);
-
-    if (room?.countdown) {
-      return room.countdown;
-    }
-
-    return undefined;
+    return invitingParticipants.find((item) => item.rid === rid)?.countdown;
   };
 
   const checkParticipantJoined = (room) => {
@@ -123,9 +136,11 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
   const handleInviteParticipant = (participant) => {
     const _id = generateHash();
     const rid = participant.rid;
-    const msg = isVideoOn ? CALL_STATUS.VIDEO_STARTED : CALL_STATUS.AUDIO_STARTED;
+    const text = isVideoOn
+      ? CALL_STATUS.VIDEO_STARTED
+      : CALL_STATUS.AUDIO_STARTED;
 
-    setInvitationRooms((prev) =>
+    setInvitingParticipants((prev) =>
       prev.map((item) =>
         item.u._id === participant.u._id
           ? {...item, _id: _id, countdown: 60}
@@ -133,7 +148,20 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
       ),
     );
 
-    handleCall(_id, rid, msg);
+    // Send call message
+    sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
+
+    // Send podcast notification
+    if (participant.u.status === CHAT_USER_STATUS.OFFLINE) {
+      const notification = {
+        _id,
+        rid,
+        identity: participant.u.username,
+        title: profile.first_name + ' ' + profile.last_name,
+        body: text,
+      };
+      handlePushNotification(notification);
+    }
   };
 
   return (
@@ -141,27 +169,22 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
       <TouchableOpacity
         style={styles.btnAddParticipant}
         onPress={() => setIsVisible(true)}>
-        <Icon
-          type="material-icons"
-          name="person-add-alt-1"
-          color={theme.colors.white}
-          size={26}
-        />
+        <Icon name="person-add-alt-1" color={theme.colors.white} size={26} />
       </TouchableOpacity>
       <BottomSheet isVisible={isVisible} modalProps={{}}>
         <View style={styles.mainContainerLight}>
           <View style={componentStyles.bottomSheetHeader}>
             <Text
               accessible
-              accessibilityLabel="Add Participants"
+              accessibilityLabel={translate('common.add_participants')}
               style={componentStyles.titleTextStyle}>
-              Add Participants
+              {translate('common.add_participants')}
             </Text>
             <Icon name="close" onPress={() => setIsVisible(false)} />
           </View>
-          {Object.keys(listChatRooms).map((key) => (
+          {Object.keys(groupChatRooms).map((key) => (
             <View key={key}>
-              {listChatRooms[key].length > 0 && (
+              {groupChatRooms[key].length > 0 && (
                 <>
                   <ListItem
                     bottomDivider
@@ -183,7 +206,7 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
                   </ListItem>
                   {defaultExpanded.includes(key) && (
                     <>
-                      {listChatRooms[key].map((room, i) => (
+                      {groupChatRooms[key].map((room, i) => (
                         <ListItem
                           key={i}
                           bottomDivider
@@ -191,7 +214,16 @@ const ParticipantInvitation = ({participants, isVideoOn}) => {
                             componentStyles.listItemContainerStyle
                           }>
                           <ListItem.Content>
-                            <ListItem.Title>{room.name}</ListItem.Title>
+                            <View style={componentStyles.listItemTitleWrapper}>
+                              <Badge
+                                status={
+                                  room.u.status === CHAT_USER_STATUS.ONLINE
+                                    ? 'success'
+                                    : 'grey'
+                                }
+                              />
+                              <ListItem.Title>{room.name}</ListItem.Title>
+                            </View>
                           </ListItem.Content>
 
                           {checkParticipantJoined(room) ? (
@@ -277,6 +309,12 @@ const componentStyles = StyleSheet.create({
   },
   listItemContainerStyle: {
     paddingHorizontal: 0,
+    justifyContent: 'space-between',
+  },
+  listItemTitleWrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 6,
   },
 });
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Modal, StatusBar} from 'react-native';
+import {Modal, NativeModules, StatusBar} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
@@ -11,9 +11,11 @@ import IncomingCall from './Incoming';
 import AcceptCall from './Accept';
 
 const VideoCall = ({theme}) => {
+  const {ForegroundService} = NativeModules;
   const {callAccessToken, videoCall} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {accessToken} = useSelector((state) => state.user);
   const [isVideoOn, setIsVideoOn] = useState(undefined);
   const [isSpeakerOn, setIsSpeakerOn] = useState(true);
   const [isMute, setIsMute] = useState(false);
@@ -21,20 +23,31 @@ const VideoCall = ({theme}) => {
 
   useEffect(() => {
     if (videoCall.status?.startsWith('jitsi_call')) {
-      setShowModal(true);
+      if (videoCall.status === CALL_STATUS.ACCEPTED && !accessToken) {
+        // Ensure foreground service stopped
+        ForegroundService.stopService();
+
+        // Need to enter pin to unlock accept call
+        setShowModal(false);
+      } else {
+        setShowModal(true);
+      }
     } else {
       setShowModal(false);
+
+      // Ensure foreground service stopped
+      ForegroundService.stopService();
     }
-  }, [callAccessToken, videoCall]);
+  }, [ForegroundService, accessToken, callAccessToken, videoCall]);
 
   useEffect(() => {
-    if (CALL_STARTED_STATUSES.includes(videoCall.status) && !isVideoOn) {
+    if (CALL_STARTED_STATUSES.includes(videoCall.status)) {
       setIsVideoOn(videoCall.status === CALL_STATUS.VIDEO_STARTED);
     }
-  }, [videoCall, isVideoOn]);
+  }, [videoCall]);
 
   return (
-    <Modal animationType="fade" transparent={false} visible={showModal}>
+    <Modal transparent={false} visible={showModal}>
       <StatusBar
         backgroundColor={theme.colors.success}
         barStyle="light-content"

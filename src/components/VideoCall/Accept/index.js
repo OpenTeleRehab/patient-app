@@ -7,36 +7,28 @@ import {
   AppState,
   NativeModules,
   Linking,
-  ScrollView,
   TouchableOpacity,
   View,
   Platform,
   PermissionsAndroid,
 } from 'react-native';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {
-  TwilioVideoLocalView,
-  TwilioVideoParticipantView,
-  TwilioVideo,
-} from 'react-native-twilio-video-webrtc';
+import {TwilioVideo} from 'react-native-twilio-video-webrtc';
 import {useDispatch, useSelector} from 'react-redux';
-import {Avatar, Icon, Text} from 'react-native-elements';
+import {Icon, Text} from 'react-native-elements';
 import {getLocalData} from '../../../utils/local_storage';
-import {
-  CALL_STATUS,
-  STORAGE_KEY,
-} from '../../../variables/constants';
-import {
-  clearCallAccessToken,
-  clearVideoCallStatus,
-} from '../../../store/rocketchat/actions';
-import styles from '../../../assets/styles';
-import CommonPopup from '../../Common/Popup';
-import ParticipantInvitation from '../ParticipantInvitation';
+import {CALL_STATUS, STORAGE_KEY} from '../../../variables/constants';
+import {clearCallAccessToken} from '../../../store/rocketchat/actions';
+import {clearVideoCallStatus} from '../../../store/rocketchat/actions';
 import {sendNewMessage, updateMessage} from '../../../utils/rocketchat';
 import {generateHash, isPhcWorker} from '../../../utils/helper';
 import {useCallContext} from '../../../context/CallContext';
+import CommonPopup from '../../Common/Popup';
 import RocketchatContext from '../../../context/RocketchatContext';
+import ParticipantInvitation from './ParticipantInvitation';
+import Participants from './Participants';
+import LocalParticipant from './LocalParticipant';
+import styles from '../../../assets/styles';
 import _ from 'lodash';
 
 const AcceptCall = ({
@@ -49,28 +41,33 @@ const AcceptCall = ({
   onSpeakerOn,
   onMute,
 }) => {
-  const twilioRef = useRef(null);
   const dispatch = useDispatch();
-  const {ForegroundService} = NativeModules;
-  const {hostUserId} = useCallContext();
-  const {participants} = useCallContext();
-  const {handleSetParticipants} = useCallContext();
+  const twilioRef = useRef(null);
+  const timerRef = useRef(null);
+  const callStartRef = useRef(null);
   const chatSocket = useContext(RocketchatContext);
-  const {callAccessToken, chatAuth, chatRooms, videoCall} = useSelector(
+  const {ForegroundService} = NativeModules;
+  const {isHostOwner, setHasParticipant} = useCallContext();
+  const {callAccessToken, chatRooms, videoCall} = useSelector(
     (state) => state.rocketchat,
   );
-  const {isChatConnected} = useSelector((state) => state.indicator);
   const {profile} = useSelector((state) => state.user);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
-  const [status, setStatus] = useState('connected');
+  const [status, setStatus] = useState('disconnected');
+  const [participants, setParticipants] = useState([]);
+  const [invitingParticipants, setInvitingParticipants] = useState([]);
   const [permissionSettingPopup, setPermissionSettingPopup] = useState(false);
   const [permissionMessagePopup, setPermissionMessagePopup] = useState('');
-  const [forcePermissionMessagePopup, setForcePermissionMessagePopup] =
-    useState(false);
+  const [forcePermissionMessagePopup, setForcePermissionMessagePopup] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true); // Prevent duplicate connections.
   const [isTranscripting, setIsTranscripting] = useState(false);
   const [transcriptedText, setTranscriptedText] = useState('');
+  const [callDuration, setCallDuration] = useState(0);
+
+  useEffect(() => {
+    setHasParticipant(participants.length > 0);
+  }, [participants, setHasParticipant]);
 
   useEffect(() => {
     if (callAccessToken) {
@@ -216,40 +213,46 @@ const AcceptCall = ({
     };
   }, [callAccessToken, isConnecting, isVideoOn, isMute, status]);
 
-  const _onEndButtonPress = async () => {
+  const startCallTimer = () => {
+    callStartRef.current = Date.now();
+
+    timerRef.current = setInterval(() => {
+      const diff = Math.floor((Date.now() - callStartRef.current) / 1000);
+      setCallDuration(diff);
+    }, 1000);
+  };
+
+  const stopCallTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const _onEndButtonPress = () => {
     // Disconnect from twilio call
     twilioRef.current.disconnect();
 
-    getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-      try {
-        // End call keep
-        callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
-
-        // Stop foreground service
-        ForegroundService.stopService();
-      } catch {}
-    });
-
-    // Disconnect from twilio call
-    twilioRef.current.disconnect();
-
-    // Cleanup call access token
-    dispatch(clearCallAccessToken());
-
-    // Cleanup video call status
-    dispatch(clearVideoCallStatus());
-
-    if (videoCall.u._id === chatAuth.userId) {
+    if (isHostOwner) {
       participants.forEach(({participant}) => {
-        const room = chatRooms.find((chatRoom) =>
-          participant.identity.startsWith(chatRoom.u.username),
+        const chatRoom = chatRooms.find((item) =>
+          participant.identity.startsWith(item.u.username),
         );
 
         const _id = generateHash();
-        const rid = room.rid;
+        const rid = chatRoom.rid;
         const text = CALL_STATUS.AUDIO_ENDED;
 
+        // TODO: Update end call message
         sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
+      });
+
+      invitingParticipants.forEach((participant) => {
+        const _id = participant._id;
+        const rid = participant.rid;
+        const msg = CALL_STATUS.AUDIO_ENDED;
+
+        updateMessage(chatSocket, {_id, rid, msg}, profile.id);
       });
     } else {
       const _id = videoCall._id;
@@ -260,14 +263,35 @@ const AcceptCall = ({
     }
   };
 
-  const _onRoomDidConnect = () => {
-    getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-      try {
-        callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
-        ForegroundService.startService();
-      } catch {}
-    });
+  const _onRoomDidConnect = (connected) => {
+    // Start call duration
+    startCallTimer();
+
     setStatus('connected');
+
+    // Get callUUID and end call keep
+    getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
+      callInfo?.callUUID && RNCallKeep.endCall(callInfo?.callUUID);
+    });
+
+    // Start foreground service
+    ForegroundService.startService();
+  };
+
+  const _onRoomDidDisconnect = () => {
+    // Stop call duration
+    stopCallTimer();
+
+    setStatus('disconnected');
+
+    // Stop foreground service
+    ForegroundService.stopService();
+
+    // Cleanup call access token
+    dispatch(clearCallAccessToken());
+
+    // Cleanup video call status
+    dispatch(clearVideoCallStatus());
   };
 
   const _onMuteButtonPress = async () => {
@@ -355,63 +379,47 @@ const AcceptCall = ({
     setIsTranscripting(!isTranscripting);
   };
 
-  const _onRoomDidDisconnect = (error) => {
-    // TODO: Disconnect duplicate participant
-    console.error(error);
-  };
-
   const _onRoomDidFailToConnect = () => {
     setStatus('disconnected');
   };
 
   const _onRoomParticipantDidConnect = (participant) => {
-    handleSetParticipants([...participants, participant]);
+    setParticipants([...participants, participant]);
   };
 
-  const _onRoomParticipantDidDisconnect = async (participant) => {
-    const connectedParticipants = participants.filter(
-      (item) => item.participant.identity !== participant.participant.identity,
+  const _onRoomParticipantDidDisconnect = (participant) => {
+    const items = participants.filter(
+      (item) => item.participant.sid !== participant.participant.sid,
     );
 
-    if (connectedParticipants.length === 0) {
-      // Disconnect from twilio call
-      twilioRef.current.disconnect();
+    setParticipants(items);
 
-      // Stop foreground service
-      getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-        try {
-          callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
-          ForegroundService.stopService();
-        } catch {}
-      });
-
-      // Cleanup call access token
-      dispatch(clearCallAccessToken());
-
-      // Cleanup video call status
-      dispatch(clearVideoCallStatus());
+    if (!isHostOwner && items.length === 0) {
+      setTimeout(() => {
+        // Disconnect from twilio call
+        twilioRef?.current?.disconnect();
+      }, 2000);
     }
-
-    handleSetParticipants(connectedParticipants);
   };
 
   const _onParticipantAddedVideoTrack = (participant) => {
-    handleSetParticipants([
-      ...participants.filter(
-        (item) =>
-          item.participant.identity !== participant.participant.identity,
-      ),
+    const sid = participant.participant.sid;
+    setParticipants((prev) => [
+      ...prev.filter((item) => item.participant.sid !== sid),
       participant,
     ]);
   };
 
   const _onParticipantRemovedVideoTrack = (participant) => {
-    participants.forEach(
-      (item) =>
-        item.participant.identity === participant.participant.identity &&
-        delete item.track,
+    setParticipants((prevParticipant) =>
+      prevParticipant.map((item) => {
+        if (item.participant.sid !== participant.participant.sid) {
+          return item;
+        }
+        const {track, ...rest} = item;
+        return rest;
+      }),
     );
-    handleSetParticipants([...participants]);
   };
 
   const _onDataTrackMessageReceived = (data) => {
@@ -453,72 +461,20 @@ const AcceptCall = ({
 
       {status === 'connected' && (
         <>
-          {hostUserId && (
+          <LocalParticipant
+            isVideoEnabled={isVideoEnabled}
+            callDuration={callDuration}
+            participants={participants}
+          />
+          <Participants participants={participants} />
+
+          {isHostOwner && (
             <ParticipantInvitation
+              isVideoEnabled={isVideoEnabled}
               participants={participants}
-              isVideoOn={isVideoOn}
+              onSetInvitingParticipants={setInvitingParticipants}
             />
           )}
-
-          <View style={styles.localVideoContainer}>
-            {!isChatConnected && (
-              <Text style={styles.callMessage}>
-                {translate('call_message.trying_to_reconnect')}
-              </Text>
-            )}
-
-            {isVideoEnabled ? (
-              <TwilioVideoLocalView
-                enabled
-                applyZOrder
-                style={styles.localVideoView}
-              />
-            ) : (
-              <Icon
-                reverse
-                name="user-alt"
-                type="font-awesome-5"
-                color={theme.colors.black}
-              />
-            )}
-          </View>
-
-          <ScrollView horizontal style={styles.participantContainer}>
-            {/*{participants.length === 0 && (*/}
-            {/*  <View style={styles.participantItem}>*/}
-            {/*    <Icon*/}
-            {/*      reverse*/}
-            {/*      name="user-alt"*/}
-            {/*      type="font-awesome-5"*/}
-            {/*      color={theme.colors.black}*/}
-            {/*    />*/}
-            {/*  </View>*/}
-            {/*)}*/}
-
-            {participants.length > 0 &&
-              Array.from(participants, ({participant, track}) => (
-                <View key={participant.identity} style={styles.participantItem}>
-                  {track ? (
-                    <TwilioVideoParticipantView
-                      trackIdentifier={{
-                        participantSid: participant.sid,
-                        videoTrackSid: track.trackSid,
-                      }}
-                      style={styles.participantView}
-                    />
-                  ) : (
-                    <Avatar
-                      size={50}
-                      rounded
-                      title={participant.identity?.charAt(0)}
-                      containerStyle={{
-                        backgroundColor: theme.colors.primary,
-                      }}
-                    />
-                  )}
-                </View>
-              ))}
-          </ScrollView>
         </>
       )}
 
@@ -535,9 +491,7 @@ const AcceptCall = ({
                 reverse
                 type="feather"
                 name={isAudioEnabled ? 'mic' : 'mic-off'}
-                color={
-                  isAudioEnabled ? theme.colors.bgDark : theme.colors.danger
-                }
+                color={isAudioEnabled ? theme.colors.dark : theme.colors.danger}
                 size={24}
               />
             </TouchableOpacity>
@@ -555,9 +509,7 @@ const AcceptCall = ({
                 reverse
                 type="feather"
                 name={isVideoEnabled ? 'video' : 'video-off'}
-                color={
-                  isVideoEnabled ? theme.colors.bgDark : theme.colors.danger
-                }
+                color={isVideoEnabled ? theme.colors.dark : theme.colors.danger}
                 size={24}
               />
             </TouchableOpacity>
@@ -572,7 +524,7 @@ const AcceptCall = ({
                       : 'closed-caption-disabled'
                   }
                   color={
-                    isTranscripting ? theme.colors.bgDark : theme.colors.danger
+                    isTranscripting ? theme.colors.dark : theme.colors.danger
                   }
                   size={22}
                 />
