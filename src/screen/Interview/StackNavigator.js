@@ -4,18 +4,12 @@ import {ROUTES} from '../../variables/constants';
 import {interviews} from '../../variables/routes';
 
 const Stack = createStackNavigator();
-const ScreenWrapper = (ScreenComponent, patientId, patientDetail) => {
-  return (props) => (
-    <ScreenComponent
-      {...props}
-      patientId={patientId}
-      patientDetail={patientDetail}
-    />
-  );
+const ScreenWrapper = (ScreenComponent, patientId) => {
+  return (props) => <ScreenComponent {...props} patientId={patientId} />;
 };
 
 const InterviewScreen = ({route}) => {
-  const {patientId, patientDetail} = route.params;
+  const {patientId} = route.params;
 
   return (
     <Stack.Navigator
@@ -27,12 +21,8 @@ const InterviewScreen = ({route}) => {
           <Stack.Screen
             key={index}
             name={interviewRoute.name}
-            component={ScreenWrapper(
-              interviewRoute.screen,
-              patientId,
-              patientDetail,
-            )}
-            initialParams={{patientId, patientDetail}}
+            component={ScreenWrapper(interviewRoute.screen, patientId)}
+            initialParams={{patientId}}
           />
         );
       })}

@@ -110,12 +110,12 @@ export const updatePatientOfflineRequest =
     );
 
     if (findPatientByPatientId.status === 'pending-create') {
-      const newData = [...filterOutPatientUpdate, payload];
+      const newData = [payload, ...filterOutPatientUpdate];
       dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
     } else {
       const newData = [
-        ...filterOutPatientUpdate,
         {...payload, status: 'pending-update'},
+        ...filterOutPatientUpdate,
       ];
       dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
     }
@@ -126,7 +126,7 @@ export const createPatientOfflineRequest =
     const {patientsForPhcWorker} = getState().patient;
     const localId = uuid.v4();
     const data = {...payload, id: localId, status: 'pending-create'};
-    const newData = [...patientsForPhcWorker, data];
+    const newData = [data, ...patientsForPhcWorker];
     dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
   };
 
@@ -184,11 +184,12 @@ export const updateListItem = (list, compare, payload) => {
 
 export const syncOfflineCreatePatient =
   (offlinePatients) => async (dispatch, getState) => {
-    const {patientsForPhcWorker} = getState().patient;
     const {offlineInterviews} = getState().screeningQuestionnaire;
     const {accessToken} = getState().user;
 
     for (const item of offlinePatients) {
+      const {patientsForPhcWorker} = getState().patient;
+
       try {
         // validate duplicate and set status duplicate
         const response = await dispatch(
@@ -206,7 +207,7 @@ export const syncOfflineCreatePatient =
                 status: item.status.replace('pending', 'duplicate'),
               },
             );
-            dispatch(
+            await dispatch(
               mutation.patientsForPhcWorkerFetchSuccess(updatePatientList),
             );
             if (
@@ -228,7 +229,6 @@ export const syncOfflineCreatePatient =
             }
           } else {
             if (item.status === 'pending-update') {
-              //Can not Work hereeeeeeeeeeeeee
               await Patient.updatePatient(item.id, item, accessToken);
               const updatedPatient = updateListItem(
                 patientsForPhcWorker,
@@ -237,7 +237,7 @@ export const syncOfflineCreatePatient =
                   status: 'success',
                 },
               );
-              dispatch(
+              await dispatch(
                 mutation.patientsForPhcWorkerFetchSuccess(updatedPatient),
               );
             } else {
@@ -266,7 +266,7 @@ export const syncOfflineCreatePatient =
                     id: res.data.id,
                   },
                 );
-                dispatch(
+                await dispatch(
                   mutation.patientsForPhcWorkerFetchSuccess(updatedPatient),
                 );
               }

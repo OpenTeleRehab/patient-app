@@ -15,7 +15,7 @@ import {ROUTES} from '../../variables/constants';
 import VisibleQuestion from '../../components/ScreeningQuestionnaire/VisibleQuestion';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {getPatientsListForPhcWorkerRequest} from '../../store/patient/actions';
+import {mutation} from '../../store/patient/mutations';
 
 const Interview = ({navigation, route}) => {
   const {patientId} = route.params;
@@ -23,10 +23,17 @@ const Interview = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const screeningQuestionnaire = route.params?.screeningQuestionnaire;
+  const screeningQuestionnaireId = route.params?.screeningQuestionnaireId;
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef(null);
   const form = useForm();
+  const {screeningQuestionnaireList} = useSelector(
+    (state) => state.screeningQuestionnaire,
+  );
+  const screeningQuestionnaire = screeningQuestionnaireList.find(
+    (item) => item.id === screeningQuestionnaireId,
+  );
+  const {patientsForPhcWorker} = useSelector((state) => state.patient);
   const mergedQuestions = screeningQuestionnaire.sections.flatMap((section) =>
     section.questions.map((question) => ({
       ...question,
@@ -47,14 +54,14 @@ const Interview = ({navigation, route}) => {
       translate('phc.screening_questionnaire.leave_alert_confirm_description'),
       [
         {
-          text: translate('common.cancel'),
-          onPress: () => {},
-        },
-        {
           text: translate('common.ok'),
           onPress: () => {
             navigation.goBack();
           },
+        },
+        {
+          text: translate('common.cancel'),
+          onPress: () => {},
         },
       ],
       {cancelable: false},
@@ -66,6 +73,7 @@ const Interview = ({navigation, route}) => {
       question_id: Number(key.replace('question_', '')),
       answer: value,
     }));
+
     setIsLoading(true);
 
     try {
@@ -77,9 +85,27 @@ const Interview = ({navigation, route}) => {
             transformedData,
           ),
         );
-        dispatch(getPatientsListForPhcWorkerRequest());
+        const updatePatientList = patientsForPhcWorker.map((patient) => {
+          if (patient.id === patientId) {
+            const screeningQuestionnaireIdExist =
+              patient.interviewed_questionnaires.includes(
+                screeningQuestionnaire.id,
+              );
+            return {
+              ...patient,
+              interviewed_questionnaires: screeningQuestionnaireIdExist
+                ? patient.interviewed_questionnaires
+                : [
+                    ...patient.interviewed_questionnaires,
+                    screeningQuestionnaire.id,
+                  ],
+            };
+          }
+          return patient;
+        });
+        dispatch(mutation.patientsForPhcWorkerFetchSuccess(updatePatientList));
         navigation.replace(ROUTES.INTERVIEW_DETAIL, {
-          screeningQuestionnaire,
+          questionnaire_id: screeningQuestionnaire.id,
           answers: JSON.parse(res.data.answers),
           from: 'create-form',
         });
@@ -92,7 +118,7 @@ const Interview = ({navigation, route}) => {
           }),
         );
         navigation.replace(ROUTES.INTERVIEW_DETAIL, {
-          screeningQuestionnaire,
+          questionnaire_id: screeningQuestionnaire.id,
           answers: transformedData,
           from: 'create-form-offline',
         });

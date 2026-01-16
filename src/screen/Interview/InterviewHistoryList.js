@@ -91,7 +91,7 @@ const InterviewHistoryList = ({navigation, route}) => {
                   )}
                   OnViewDetail={() =>
                     navigation.push(ROUTES.INTERVIEW_DETAIL, {
-                      screeningQuestionnaire,
+                      questionnaire_id: screeningQuestionnaire.id,
                       answers: item?.isOffline
                         ? item?.answers
                         : JSON.parse(item?.answers),

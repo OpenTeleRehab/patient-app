@@ -61,8 +61,6 @@ export const calculateScoreBySection = (section, answers) => {
   return totalScore;
 };
 
-//Maping Score Function
-
 export const mapingScore = (sectionTotalScore, actions) => {
   const match = actions.find(
     (item) => sectionTotalScore >= item.from && sectionTotalScore <= item.to,
@@ -74,7 +72,14 @@ export const mapingScore = (sectionTotalScore, actions) => {
 const InterviewDetail = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {answers, screeningQuestionnaire} = route.params;
+  const {answers, questionnaire_id} = route.params;
+  const {screeningQuestionnaireList} = useSelector(
+    (state) => state.screeningQuestionnaire,
+  );
+
+  const screeningQuestionnaire = screeningQuestionnaireList.find(
+    (item) => item.id === questionnaire_id,
+  );
 
   const transformAnswer = (answer) => {
     let values = {};

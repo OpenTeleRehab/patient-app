@@ -64,7 +64,7 @@ const InterviewList = ({navigation, patientId}) => {
                 key={index}
                 onClickInterview={() => {
                   navigation.push(ROUTES.INTERVIEW, {
-                    screeningQuestionnaire: interview,
+                    screeningQuestionnaireId: interview.id,
                   });
                 }}
                 onClickViewInterviewHistory={() => {

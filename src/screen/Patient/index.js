@@ -18,6 +18,13 @@ import _ from 'lodash';
 import moment from 'moment';
 import {getTreatmentStatus} from '../../utils/patient';
 import {getScreeningQuestionnaireListRequest} from '../../store/screeningQuestionnaire/actions';
+import {getCountryRequest} from '../../store/country/actions';
+import {getRegionsRequest} from '../../store/region/actions';
+import {getProvincesRequest} from '../../store/province/actions';
+import {
+  getPhcServicesRequest,
+  getPhcWorkersRequest,
+} from '../../store/phcService/actions';
 
 const Patient = ({navigation}) => {
   const dispatch = useDispatch();
@@ -27,12 +34,18 @@ const Patient = ({navigation}) => {
   const [currentFilters, setCurrentFilters] = useState({});
   const [showFilter, setShowFilter] = useState(false);
   const [patientList, setPatientList] = useState([]);
+  const {profile} = useSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(getCountryRequest());
+    dispatch(getRegionsRequest());
+    dispatch(getProvincesRequest());
+    dispatch(getPhcServicesRequest());
+    dispatch(getPhcWorkersRequest(profile?.phc_service_id));
+  }, [dispatch, profile?.phc_service_id]);
 
   useEffect(() => {
     dispatch(getTransfersRequest());
-  }, [dispatch]);
-
-  useEffect(() => {
     dispatch(getPatientsListForPhcWorkerRequest());
     dispatch(getScreeningQuestionnaireListRequest());
   }, [dispatch]);
@@ -156,38 +169,46 @@ const Patient = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <FlatList
-          data={patientList}
-          keyExtractor={(item) => item?.id?.toString()}
-          style={componentStyles.listContainer}
-          contentContainerStyle={[componentStyles.contentContainer]}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              onPress={() =>
-                item.status === 'duplicate-create' ||
-                item.status === 'duplicate-update'
-                  ? navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {
-                      patientDetail: item,
-                    })
-                  : navigation.navigate(ROUTES.PATIENT_DETAIL, {
-                      patientDetail: item,
-                      patientId: item.id,
-                      treatmentPlan: item?.ongoingTreatmentPlan?.length
-                        ? item.ongoingTreatmentPlan[0]
-                        : item.upcomingTreatmentPlan
-                        ? item.upcomingTreatmentPlan
-                        : item.lastTreatmentPlan,
-                      referralTherapists: item.referral_therapists,
-                    })
-              }
-              activeOpacity={0.7}
-              style={styles.marginBottom}>
-              <PatientCard patient={item} />
-            </TouchableOpacity>
-          )}
-          onEndReachedThreshold={0.01}
-          showsVerticalScrollIndicator={false}
-        />
+        {patientList?.length > 0 ? (
+          <FlatList
+            data={patientList}
+            keyExtractor={(item) => item?.id?.toString()}
+            style={componentStyles.listContainer}
+            contentContainerStyle={[componentStyles.contentContainer]}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                onPress={() =>
+                  item.status === 'duplicate-create' ||
+                  item.status === 'duplicate-update'
+                    ? navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {
+                        patientId: item.id,
+                      })
+                    : navigation.navigate(ROUTES.PATIENT_DETAIL, {
+                        patientId: item.id,
+                      })
+                }
+                activeOpacity={0.7}
+                style={styles.marginBottom}>
+                <PatientCard patient={item} />
+              </TouchableOpacity>
+            )}
+            onEndReachedThreshold={0.01}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View
+            style={[
+              styles.alignItemsCenter,
+              styles.flexColumn,
+              styles.justifyContentCenter,
+            ]}>
+            <Text style={styles.fontSizeBase}>
+              {!currentFilters || Object.keys(currentFilters).length === 0
+                ? translate('phc.patient.list_no_data')
+                : translate('phc.patient.not_match_filter')}
+            </Text>
+          </View>
+        )}
       </View>
       <BottomSheet isVisible={showFilter} modalProps={{}}>
         <Filter filters={currentFilters} setShowFilter={setShowFilter} />

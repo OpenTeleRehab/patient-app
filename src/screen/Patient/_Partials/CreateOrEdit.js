@@ -49,7 +49,7 @@ import {useShowToast} from '../../../hook/useShowToast';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment/moment';
-import {TRANSFER_STATUS} from '../../../variables/constants';
+import {ROUTES, TRANSFER_STATUS} from '../../../variables/constants';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {mutation} from '../../../store/patient/mutations';
 import {mutation as questionnaireMutation} from '../../../store/screeningQuestionnaire/mutations';
@@ -76,7 +76,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
   const {offlineInterviews} = useSelector(
     (state) => state.screeningQuestionnaire,
   );
-  const {patientDetail} = route.params || {};
+  const {patientId} = route.params || {};
+  const [patientDetail, setPatientDetail] = useState();
+
   const defaultValues = {
     dial_code: '',
     phone: '',
@@ -107,6 +109,13 @@ const CreateOrEditPatient = ({navigation, route}) => {
   useEffect(() => {
     dispatch(getDefinedCountries());
   }, [dispatch]);
+
+  useEffect(() => {
+    const detailInfo = patientsForPhcWorker.find(
+      (item) => item.id === patientId,
+    );
+    setPatientDetail(detailInfo);
+  }, [patientId, patientsForPhcWorker]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -300,8 +309,13 @@ const CreateOrEditPatient = ({navigation, route}) => {
                     translate('phc.patient.message.update_success'),
                     translate('phc.patient.edit'),
                   );
-                  dispatch(getPatientsListForPhcWorkerRequest());
-                  handleGoback();
+                  const updatedPatients = patientsForPhcWorker.map((item) =>
+                    item.id === payload.id ? payload : item,
+                  );
+                  dispatch(
+                    mutation.patientsForPhcWorkerFetchSuccess(updatedPatients),
+                  );
+                  handleGoback(payload);
                 } else {
                   showToast(
                     translate(translate(res.message)),
@@ -361,7 +375,13 @@ const CreateOrEditPatient = ({navigation, route}) => {
     setDateValue('');
     setErrorPhoneExist(false);
     setSelectedSupplementary([]);
-    navigation.goBack();
+    patientDetail &&
+    patientDetail.status !== 'duplicate-create' &&
+    patientDetail.status !== 'duplicate-update'
+      ? navigation.navigate(ROUTES.PATIENT_DETAIL, {
+          patientId: patientDetail.id,
+        })
+      : navigation.goBack();
   };
 
   const renderSelectedItem = (item, unSelect) => {
@@ -392,7 +412,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
         barStyle="light-content"
       />
       <HeaderBar
-        onGoBack={handleGoback}
+        onGoBack={() => handleGoback()}
         title={translate(
           patientDetail ? 'phc.patient.edit' : 'phc.patient.create',
         )}
@@ -689,7 +709,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
               accessibilityLabel={translate('phc.patient.location')}
               style={componentStyles.labelStyle}>
               {translate('phc.patient.location')}
-              <Text style={theme.colors.error}> *</Text>
+              <Text style={componentStyles.requiredText}> *</Text>
             </Text>
             <View style={styles.formSelectPickerContainer}>
               <Controller
@@ -886,7 +906,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
             type="outline"
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.cancel')}
-            onPress={() => navigation.goBack()}
+            onPress={() => handleGoback()}
             disabled={loading}
           />
         </View>

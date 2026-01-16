@@ -68,8 +68,17 @@ const RadioRender = ({question, disabled, translate}) => {
     loadImages();
   }, [question]);
 
+  const uri = useCachedImage(question?.file);
+
   return (
     <View style={styles.rowGap10}>
+      {uri && (
+        <Image
+          source={{uri}}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
       <QuestionText error={error} questionText={question.question_text} />
       <View
         style={[
@@ -131,8 +140,17 @@ const CheckBoxRender = ({question, disabled, translate}) => {
     loadImages();
   }, [question]);
 
+  const uri = useCachedImage(question?.file);
+
   return (
     <View style={styles.rowGap10}>
+      {uri && (
+        <Image
+          source={{uri}}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
       <QuestionText error={error} questionText={question.question_text} />
       <View
         style={[
@@ -210,6 +228,13 @@ const InputTextRender = ({question, disabled, translate}) => {
 
   return (
     <View style={styles.rowGap10}>
+      {uri && (
+        <Image
+          source={{uri}}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
       <QuestionText error={error} questionText={question.question_text} />
       <Input
         value={field.value}
@@ -221,13 +246,6 @@ const InputTextRender = ({question, disabled, translate}) => {
         inputContainerStyle={styles.inputContainer}
         errorStyle={error ? styles.errorText : styles.displayNone}
       />
-      {uri && (
-        <Image
-          source={{uri}}
-          style={[styles.width100, styles.height150]}
-          resizeMode="contain"
-        />
-      )}
     </View>
   );
 };
@@ -255,6 +273,13 @@ const InputNumberRender = ({question, disabled, translate}) => {
 
   return (
     <View style={styles.rowGap10}>
+      {uri && (
+        <Image
+          source={{uri}}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
       <QuestionText error={error} questionText={question.question_text} />
       <Input
         keyboardType="numeric"
@@ -267,13 +292,6 @@ const InputNumberRender = ({question, disabled, translate}) => {
         inputContainerStyle={styles.inputContainer}
         errorStyle={error ? styles.errorText : styles.displayNone}
       />
-      {uri && (
-        <Image
-          source={{uri}}
-          style={[styles.width100, styles.height150]}
-          resizeMode="contain"
-        />
-      )}
     </View>
   );
 };
@@ -284,6 +302,7 @@ const SliderRender = ({question, disabled, translate}) => {
     fieldState: {error},
   } = useController({
     name: getQuestionName(question.id),
+    defaultValue: null,
     rules: {
       required: question.mandatory && translate('error.message.required'),
     },
@@ -293,6 +312,13 @@ const SliderRender = ({question, disabled, translate}) => {
 
   return (
     <View style={styles.rowGap10}>
+      {uri && (
+        <Image
+          source={{uri}}
+          style={[styles.width100, styles.height150]}
+          resizeMode="contain"
+        />
+      )}
       <QuestionText error={error} questionText={question.question_text} />
       <Text style={styles.fontWeightMedium}>Level of Difficulty</Text>
       <Text>Value: {field.value}</Text>
@@ -312,13 +338,6 @@ const SliderRender = ({question, disabled, translate}) => {
         {question.options[0].max} - {question.options[0].max_note}
       </Text>
       {error && <HelperText message={error.message} />}
-      {uri && (
-        <Image
-          source={{uri}}
-          style={[styles.width100, styles.height150]}
-          resizeMode="contain"
-        />
-      )}
     </View>
   );
 };
