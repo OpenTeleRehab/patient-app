@@ -12,7 +12,12 @@ import {
   createFirebaseToken,
   setInitialRouteName,
 } from './src/store/user/actions';
-import {CALL_STATUS, ROUTES, STORAGE_KEY} from './src/variables/constants';
+import {
+  CALL_STATUS,
+  ROUTES,
+  STORAGE_KEY,
+  TRANSFER_STATUS,
+} from './src/variables/constants';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
@@ -65,6 +70,7 @@ const AppProvider = ({children}) => {
     selectedRoom,
     offlineMessages,
   } = useSelector((state) => state.rocketchat);
+  const {transfers} = useSelector((state) => state.transfer);
   const localize = useSelector((state) => state.localize);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
     useSelector((state) => state.activity);
@@ -252,6 +258,15 @@ const AppProvider = ({children}) => {
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);
     dispatch(updateIndicatorList({hasUnreadMessage}));
   }, [dispatch, chatRooms]);
+
+  useEffect(() => {
+    const hasTransfer = transfers.some(
+      (item) =>
+        item.to_therapist_id === profile.id &&
+        item.status === TRANSFER_STATUS.INVITED,
+    );
+    dispatch(updateIndicatorList({hasTransfer}));
+  }, [dispatch, profile.id, transfers]);
 
   useEffect(() => {
     if (

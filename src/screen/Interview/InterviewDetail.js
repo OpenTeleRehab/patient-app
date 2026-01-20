@@ -40,7 +40,7 @@ export const calculateScoreBySection = (section, answers) => {
 
       case 'open-number': {
         const optionPoint = question.options?.[0]?.option_point;
-        if (optionPoint) {
+        if (optionPoint && answer) {
           totalScore += Number(optionPoint);
         }
         break;

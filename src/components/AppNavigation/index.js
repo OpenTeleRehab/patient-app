@@ -96,7 +96,7 @@ const tabs = [
     label: 'tab.transfer',
     icon: transferIcon,
     activeIcon: transferActiveIcon,
-    badge: 'noBadge',
+    badge: 'hasTransfer',
     group: USER_ROLE.HEALTH_WORKER,
   },
   {

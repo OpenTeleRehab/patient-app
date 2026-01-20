@@ -11,6 +11,7 @@ import _ from 'lodash';
 import {getPatientsByIds} from '../../store/patient/actions';
 import styles from '../../assets/styles';
 import TransferPatientCard from './_Partials/TransferPatientCard';
+import {TRANSFER_STATUS} from '../../variables/constants';
 
 const Transfer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -24,7 +25,8 @@ const Transfer = ({navigation}) => {
     if (transfers.length) {
       const receiveTransfers = transfers.filter(
         (item) =>
-          item.to_therapist_id === profile.id && item.status === 'invited',
+          item.to_therapist_id === profile.id &&
+          item.status === TRANSFER_STATUS.INVITED,
       );
       const patientIds = _.map(receiveTransfers, 'patient_id');
 
@@ -37,7 +39,11 @@ const Transfer = ({navigation}) => {
   }, [dispatch, transfers, profile.id]);
 
   const filteredTransfers = transfers
-    .filter((t) => t.to_therapist_id === profile.id && t.status === 'invited')
+    .filter(
+      (t) =>
+        t.to_therapist_id === profile.id &&
+        t.status === TRANSFER_STATUS.INVITED,
+    )
     .map((t) => ({
       ...t,
       patient: patients.find((p) => p.id === t.patient_id),

@@ -82,4 +82,14 @@ export default {
     borderRadius: variables.borderRadiusBase,
     paddingHorizontal: variables.spacingBase,
   },
+  containerStyle: {
+    paddingHorizontal: 0,
+    marginBottom: 12,
+  },
+  inputContainerStyle: {
+    backgroundColor: '#E6E8EA',
+    borderRadius: 6,
+    borderBottomWidth: 0,
+    paddingHorizontal: 8,
+  },
 };
