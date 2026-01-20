@@ -274,8 +274,10 @@ const AcceptCall = ({
       callInfo?.callUUID && RNCallKeep.endCall(callInfo?.callUUID);
     });
 
-    // Start foreground service
-    ForegroundService.startService();
+    if (Platform.OS === 'android') {
+      // Start foreground service
+      ForegroundService.startService();
+    }
   };
 
   const _onRoomDidDisconnect = () => {
@@ -284,8 +286,10 @@ const AcceptCall = ({
 
     setStatus('disconnected');
 
-    // Stop foreground service
-    ForegroundService.stopService();
+    if (Platform.OS === 'android') {
+      // Stop foreground service
+      ForegroundService.stopService();
+    }
 
     // Cleanup call access token
     dispatch(clearCallAccessToken());

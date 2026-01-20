@@ -193,7 +193,7 @@ const AppProvider = ({children}) => {
   }, [dispatch, loading, language]);
 
   useEffect(() => {
-    if (isOnline && profile.identity && profile.chat_password) {
+    if (accessToken && profile.identity && profile.chat_password && isOnline) {
       if (Platform.OS === 'ios' && appStateVisible === 'active') {
         const subscribeIds = {
           loginId: getUniqueId(profile.id),
@@ -246,7 +246,7 @@ const AppProvider = ({children}) => {
 
       dispatch(getChatRooms(chatSocket));
     }
-  }, [dispatch, isOnline, profile, appStateVisible]);
+  }, [appStateVisible, accessToken, dispatch, isOnline, profile]);
 
   useEffect(() => {
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);
