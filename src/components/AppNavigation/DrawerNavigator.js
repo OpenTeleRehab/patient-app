@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useContext, useState} from 'react';
-import {Switch, Text, View} from 'react-native';
+import {Linking, Switch, Text, View} from 'react-native';
 import styles from '../../assets/styles';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import FIcon from 'react-native-vector-icons/Feather';
@@ -12,6 +12,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {enableKidTheme, logoutRequest} from '../../store/user/actions';
 import {chatLogout, unSubscribeEvent} from '../../utils/rocketchat';
 import RocketchatContext from '../../context/RocketchatContext';
+import settings from '../../../config/settings';
+import {isPhcWorker} from '../../utils/helper';
 
 const iconRenderer = (route, size, color) => (
   <FIcon name={route.icon} color={color} size={size} />
@@ -39,6 +41,10 @@ const DrawerNavigator = ({
   const handleNavigate = (route) => {
     navigation.closeDrawer();
     navigation.navigate(route.name);
+  };
+
+  const handleOpenWebPortal = async () => {
+    await Linking.openURL(settings.therapistBaseURL);
   };
 
   const handleLogout = () => {
@@ -72,7 +78,9 @@ const DrawerNavigator = ({
         {drawerItems.map((route, index) => (
           <DrawerItem
             key={index}
-            focused={navProps.state.routeNames[navProps.state.index] === route.name}
+            focused={
+              navProps.state.routeNames[navProps.state.index] === route.name
+            }
             label={translate(route.label)}
             labelStyle={styles.textDefault}
             onPress={() => handleNavigate(route)}
@@ -81,17 +89,32 @@ const DrawerNavigator = ({
         ))}
       </DrawerContentScrollView>
       <View style={styles.navDrawerBottomContainer}>
+        {isPhcWorker(profile.type) && (
+          <Button
+            title={translate('common.web_portal')}
+            icon={{
+              name: 'phonelink',
+              size: 18,
+              color: 'white',
+            }}
+            onPress={handleOpenWebPortal}
+          />
+        )}
         <Button
-          containerStyle={styles.navDrawerBottom}
           title={translate('common.logout')}
-          onPress={() => handleLogout()}
+          icon={{
+            name: 'logout',
+            size: 18,
+            color: 'white',
+          }}
+          onPress={handleLogout}
+          buttonStyle={styles.navDrawerLogoutBotton}
         />
         <Button
-          type="outline"
-          containerStyle={styles.navDrawerBottom}
           title={translate('common.back')}
+          type="outline"
           onPress={() => navigation.closeDrawer()}
-          buttonStyle={styles.navDrawerBackBottom}
+          buttonStyle={styles.navDrawerBackBotton}
         />
       </View>
     </View>

@@ -28,15 +28,17 @@ export default {
   },
   navDrawerBottomContainer: {
     marginHorizontal: variables.spacingMd,
-  },
-  navDrawerBottom: {
-    marginTop: variables.spacingMd,
+    gap: 8,
   },
   navKidThemeWrapper: {
     backgroundColor: variables.grey6,
     padding: variables.spacingMd,
   },
-  navDrawerBackBottom: {
-    padding: variables.spacingBase - 4,
+  navDrawerLogoutBotton: {
+    backgroundColor: variables.danger,
+  },
+  navDrawerBackBotton: {
+    borderWidth: 1,
+    paddingVertical: variables.spacingBase - 3,
   },
 };

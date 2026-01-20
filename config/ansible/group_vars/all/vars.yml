@@ -10,6 +10,7 @@ patient_api_base_url:       'https://{{ stage }}-admin-rehabilitation.wehost.asi
 admin_api_base_url:         'https://{{ stage }}-admin-rehabilitation.wehost.asia/api/admin'
 therapist_api_base_url:     'https://{{ stage }}-admin-rehabilitation.wehost.asia/api/therapist'
 phone_api_base_url:         'https://{{ stage }}-admin-rehabilitation.wehost.asia/api/phone'
+therapist_base_url:         'https://{{ stage }}-therapist-rehabilitation.wehost.asia'
 rocketchat_base_url:        'https://{{ stage }}-chat-rehabilitation.wehost.asia'
 chat_websocket_url:         'wss://{{ stage }}-chat-rehabilitation.wehost.asia/websocket'
 
