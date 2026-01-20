@@ -116,23 +116,17 @@ const CreateOrEditPatient = ({navigation, route}) => {
     );
     setPatientDetail(detailInfo);
   }, [patientId, patientsForPhcWorker]);
-
   useFocusEffect(
     React.useCallback(() => {
       if (patientDetail) {
         reset(patientDetail);
         const formattedDOB = patientDetail.date_of_birth
           ? isValidDateFormat(patientDetail.date_of_birth)
-            ? patientDetail.date_of_birth
+            ? moment(patientDetail.date_of_birth, 'DD/MM/YYYY').toDate()
             : moment(patientDetail.date_of_birth).toDate()
           : '';
         setDateValue(formattedDOB);
-        setValue(
-          'date_of_birth',
-          patientDetail.date_of_birth
-            ? formatDate(patientDetail.date_of_birth)
-            : '',
-        );
+        setValue('date_of_birth', formattedDOB ? formatDate(formattedDOB) : '');
         setValue(
           'phone',
           patientDetail.phone?.replace(patientDetail.dial_code, ''),
