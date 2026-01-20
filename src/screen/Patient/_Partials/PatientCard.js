@@ -26,7 +26,7 @@ const PatientCard = ({patient, theme}) => {
           </Text>
           <Text style={componentStyles.contentText}>
             {patient?.date_of_birth
-              ? patient?.status === 'pending-create'
+              ? patient?.status
                 ? `(${patient?.date_of_birth})`
                 : `(${formatDate(patient?.date_of_birth)})`
               : ''}

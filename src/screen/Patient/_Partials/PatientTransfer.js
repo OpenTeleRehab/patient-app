@@ -124,6 +124,7 @@ const PatientTransfer = ({navigation, route}) => {
             placeholderTitle={translate('phc.select_phc_worker')}
             isRequire={true}
             itemList={phcWorkerOptions}
+            translate={translate}
           />
         </View>
         <View style={[styles.rowGap10, styles.marginTopMd]}>
