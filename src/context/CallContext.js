@@ -142,10 +142,6 @@ export const CallContextProvider = ({children}) => {
     updateMessage(chatSocket, {_id, rid, msg}, profile.id);
   };
 
-  const handleEndCall = (_id, rid, msg) => {
-    updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-  };
-
   const handlePushNotification = (notification) => {
     dispatch(sendPodcastNotification({...notification, translatable: false}));
   };
@@ -157,7 +153,6 @@ export const CallContextProvider = ({children}) => {
         setHasParticipant,
         handleAcceptCall,
         handleDeclineCall,
-        handleEndCall,
         handlePushNotification,
       }}>
       {children}

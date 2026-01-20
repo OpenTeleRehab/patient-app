@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Modal, NativeModules, StatusBar} from 'react-native';
+import {Modal, NativeModules} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
@@ -48,11 +48,6 @@ const VideoCall = ({theme}) => {
 
   return (
     <Modal transparent={false} visible={showModal}>
-      <StatusBar
-        backgroundColor={theme.colors.success}
-        barStyle="light-content"
-      />
-
       {callAccessToken && (
         <AcceptCall
           translate={translate}
