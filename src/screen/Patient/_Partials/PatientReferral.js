@@ -7,12 +7,12 @@ import styles from '../../../assets/styles';
 import {Text} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import SelectPicker from '../../../components/Common/SelectPicker';
-import {Button} from 'react-native-elements';
+import {Button, Input} from 'react-native-elements';
 import colors from '../../../assets/styles/variables/colors';
 import HelperText from '../../../components/ScreeningQuestionnaire/HelperText';
 import {
   getPatientRequest,
-  getPatientsListRequest,
+  getPatientsListForPhcWorkerRequest,
 } from '../../../store/patient/actions';
 import {getRegionsRequest} from '../../../store/region/actions';
 import {getProvincesByUserCountryRequest} from '../../../store/province/actions';
@@ -73,15 +73,21 @@ const PatientReferral = ({navigation, route}) => {
   }, [provincesByUserCountry, regionId]);
 
   const clinicOptions = useMemo(() => {
+    if (!Array.isArray(clinicList) || !provinceId) return [];
+
     return clinicList
       .filter((c) => c?.province?.id === provinceId)
-      .map((c) => ({label: c.name, value: c.id}));
+      .map((c) => ({
+        label: c?.name ?? '',
+        value: c?.id,
+      }));
   }, [clinicList, provinceId]);
 
   const onSubmit = async (data) => {
     const dataPayload = {
       patient_id: patientId,
       to_clinic_id: data.to_clinic_id,
+      request_reason: data.request_reason,
     };
     const res = await dispatch(createReferralRequest(dataPayload));
     if (res) {
@@ -114,13 +120,7 @@ const PatientReferral = ({navigation, route}) => {
       reset({});
       setIsSubmitSuccessful(false);
       dispatch(getPatientRequest(patient.id));
-      dispatch(
-        getPatientsListRequest({
-          page_size: 10,
-          page: 1,
-          filters: [],
-        }),
-      );
+      dispatch(getPatientsListForPhcWorkerRequest());
       onBack();
     }
   }, [isSubmitSuccessful, reset, navigation, patient, dispatch, onBack]);
@@ -150,6 +150,7 @@ const PatientReferral = ({navigation, route}) => {
             placeholderTitle={translate('phc.select_region')}
             isRequire={true}
             itemList={regionOptions}
+            translate={translate}
           />
           <SelectPickerField
             control={control}
@@ -158,6 +159,7 @@ const PatientReferral = ({navigation, route}) => {
             title={translate('phc.patient.province')}
             placeholderTitle={translate('phc.select_province')}
             itemList={provinceOptions}
+            translate={translate}
           />
           <SelectPickerField
             control={control}
@@ -167,6 +169,16 @@ const PatientReferral = ({navigation, route}) => {
             placeholderTitle={translate('phc.select_rehab_service')}
             isRequire={true}
             itemList={clinicOptions}
+            translate={translate}
+          />
+          <InputField
+            control={control}
+            errors={errors.to_clinic_id}
+            name="request_reason"
+            title={translate('phc.referral_reason')}
+            placeholderTitle={translate('phc.referral_reason_placeholder')}
+            isRequire={true}
+            translate={translate}
           />
         </View>
         <View style={[styles.rowGap10, styles.marginTopMd]}>
@@ -203,6 +215,7 @@ export const SelectPickerField = ({
   itemList,
   placeholderTitle,
   isRequire,
+  translate,
 }) => {
   return (
     <View>
@@ -215,7 +228,7 @@ export const SelectPickerField = ({
           control={control}
           name={name}
           rules={{
-            required: isRequire ? 'This is required' : false,
+            required: isRequire ? translate('error.message.required') : false,
           }}
           render={({field: {value, onChange}}) => (
             <SelectPicker
@@ -232,6 +245,45 @@ export const SelectPickerField = ({
         />
       </View>
       {errors && <HelperText message={errors.message} />}
+    </View>
+  );
+};
+
+export const InputField = ({
+  control,
+  errors,
+  name,
+  title,
+  placeholderTitle,
+  isRequire,
+  keyboardType = 'default',
+  translate,
+}) => {
+  return (
+    <View>
+      <Text accessibilityLabel={title} style={styles.marginBottom}>
+        {title}
+        {isRequire && <Text style={styles.textDanger}> *</Text>}
+      </Text>
+      <Controller
+        control={control}
+        name={name}
+        rules={{
+          required: isRequire ? translate('error.message.required') : false,
+        }}
+        render={({field: {value, onChange, onBlur}}) => (
+          <Input
+            containerStyle={styles.containerStyle}
+            inputContainerStyle={styles.inputContainerStyle}
+            placeholder={String(placeholderTitle ?? '')}
+            value={value == null ? '' : String(value)}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            errorMessage={errors?.message || ''}
+            keyboardType={keyboardType}
+          />
+        )}
+      />
     </View>
   );
 };

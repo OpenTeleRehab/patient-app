@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {CheckBox, Image, Input, Slider, withTheme} from 'react-native-elements';
 import styles from '../../assets/styles';
 import {useController, useFormContext, useWatch} from 'react-hook-form';
@@ -99,12 +99,19 @@ const RadioRender = ({question, disabled, translate}) => {
               textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
             />
             {uris[opt.id] && (
-              <Image
-                source={{uri: uris[opt.id]}}
-                style={[styles.width100, styles.height110]}
-                resizeMode="contain"
-                onPress={() => field.onChange([opt.id])}
-              />
+              <TouchableOpacity
+                disabled={disabled}
+                onPress={() => field.onChange([opt.id])}>
+                <Image
+                  source={{uri: uris[opt.id]}}
+                  style={[
+                    styles.width100,
+                    styles.height110,
+                    disabled && styles.disabled,
+                  ]}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
             )}
           </View>
         ))}
@@ -178,19 +185,26 @@ const CheckBoxRender = ({question, disabled, translate}) => {
                 textStyle={[styles.marginLeftSm, styles.fontWeightMedium]}
               />
               {uris[opt.id] && (
-                <Image
-                  source={{uri: uris[opt.id]}}
-                  style={[styles.width100, styles.height110]}
-                  resizeMode="contain"
+                <TouchableOpacity
+                  disabled={disabled}
                   onPress={() => {
                     const current = field.value || [];
-                    field.onChange(
-                      current.includes(opt.id)
-                        ? current.filter((x) => x !== opt.id)
-                        : [...current, opt.id],
-                    );
-                  }}
-                />
+                    const nextValue = current.includes(opt.id)
+                      ? current.filter((x) => x !== opt.id)
+                      : [...current, opt.id];
+
+                    field.onChange(nextValue);
+                  }}>
+                  <Image
+                    source={{uri: uris[opt.id]}}
+                    style={[
+                      styles.width100,
+                      styles.height110,
+                      disabled && styles.disabled,
+                    ]}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
               )}
             </View>
           );

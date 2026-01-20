@@ -9,4 +9,5 @@ export const initialState = {
   hasGoal: false,
   hasAppointment: false,
   hasUnreadMessage: false,
+  hasTransfer: false,
 };

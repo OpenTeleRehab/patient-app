@@ -6,7 +6,14 @@ import {Icon, Input, withTheme} from 'react-native-elements';
 import {StyleSheet} from 'react-native';
 
 const TextField = (props) => {
-  const {label, variant, secureTextEntry, labelStyle, inputStyle, keyboardType} = props;
+  const {
+    label,
+    variant,
+    secureTextEntry,
+    labelStyle,
+    inputStyle,
+    keyboardType,
+  } = props;
 
   const [showSecureTextEntry, setShowSecureTextEntry] =
     useState(secureTextEntry);
