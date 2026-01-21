@@ -8,18 +8,22 @@ import {getPhcServiceIdentity} from '../../utils/patient';
 import {getTransfersRequest} from '../transfer/actions';
 import uuid from 'react-native-uuid';
 import {syncOfflineScreeningQuestionnaires} from '../screeningQuestionnaire/actions';
+import {OFFLINE_STATUS} from '../../variables/constants';
 
 export const getPatientsListForPhcWorkerRequest =
   () => async (dispatch, getState) => {
     dispatch(mutation.patientsForPhcWorkerFetchRequest());
-    const {accessToken} = getState().user;
+    const {accessToken, profile} = getState().user;
     const res = await Patient.getPatientsForPhcWorker(accessToken);
     if (res.success) {
       try {
         const {patientsForPhcWorker} = getState().patient;
         const needActionPatients =
           patientsForPhcWorker?.filter(
-            (item) => item.status && item.status !== 'success',
+            (item) =>
+              item.status &&
+              item.status !== OFFLINE_STATUS.SUCCESS &&
+              item.phc_worker_id === profile.id,
           ) || [];
         dispatch(
           mutation.patientsForPhcWorkerFetchSuccess([
@@ -27,7 +31,9 @@ export const getPatientsListForPhcWorkerRequest =
             ...res.data.filter((item) => {
               if (!needActionPatients.length) return true;
               const found = needActionPatients.find(
-                (p) => p.id === item.id && p.status === 'duplicate-update',
+                (p) =>
+                  p.id === item.id &&
+                  p.status === OFFLINE_STATUS.DUPLICATE_UPDATE,
               );
               if (found) return false;
               return true;
@@ -109,12 +115,20 @@ export const updatePatientOfflineRequest =
       (item) => item.id === id,
     );
 
-    if (findPatientByPatientId.status === 'pending-create') {
+    if (findPatientByPatientId.status === OFFLINE_STATUS.PENDING_CREATE) {
       const newData = [payload, ...filterOutPatientUpdate];
+      dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
+    } else if (
+      findPatientByPatientId.status === OFFLINE_STATUS.DUPLICATE_CREATE
+    ) {
+      const newData = [
+        {...payload, status: OFFLINE_STATUS.PENDING_CREATE},
+        ...filterOutPatientUpdate,
+      ];
       dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
     } else {
       const newData = [
-        {...payload, status: 'pending-update'},
+        {...payload, status: OFFLINE_STATUS.PENDING_UPDATE},
         ...filterOutPatientUpdate,
       ];
       dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
@@ -125,7 +139,11 @@ export const createPatientOfflineRequest =
   (payload) => async (dispatch, getState) => {
     const {patientsForPhcWorker} = getState().patient;
     const localId = uuid.v4();
-    const data = {...payload, id: localId, status: 'pending-create'};
+    const data = {
+      ...payload,
+      id: localId,
+      status: OFFLINE_STATUS.PENDING_CREATE,
+    };
     const newData = [data, ...patientsForPhcWorker];
     dispatch(mutation.patientsForPhcWorkerFetchSuccess(newData));
   };
@@ -136,7 +154,8 @@ export const syncPatientOffline = (payload) => async (dispatch, getState) => {
 
   const offlinePatients = patientsForPhcWorker.filter(
     (item) =>
-      item.status === 'pending-create' || item.status === 'pending-update',
+      item.status === OFFLINE_STATUS.PENDING_CREATE ||
+      item.status === OFFLINE_STATUS.PENDING_UPDATE,
   );
   if (offlinePatients?.length > 0) {
     await dispatch(syncOfflineCreatePatient(offlinePatients));
@@ -195,7 +214,7 @@ export const syncOfflineCreatePatient =
         const response = await dispatch(
           getPatientByPhoneRequest(
             item.phone,
-            item.status === 'pending-update' ? item.id : null,
+            item.status === OFFLINE_STATUS.PENDING_UPDATE ? item.id : null,
           ),
         );
         if (response.success) {
@@ -228,13 +247,13 @@ export const syncOfflineCreatePatient =
               );
             }
           } else {
-            if (item.status === 'pending-update') {
+            if (item.status === OFFLINE_STATUS.PENDING_UPDATE) {
               await Patient.updatePatient(item.id, item, accessToken);
               const updatedPatient = updateListItem(
                 patientsForPhcWorker,
                 (patient) => patient.id === item.id,
                 {
-                  status: 'success',
+                  status: OFFLINE_STATUS.SUCCESS,
                 },
               );
               await dispatch(

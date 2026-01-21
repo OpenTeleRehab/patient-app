@@ -5,7 +5,6 @@ import {Text, ListItem, withTheme, Button} from 'react-native-elements';
 import {ScrollView, StatusBar, View, StyleSheet, Alert} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
-import {formatDate} from '../../../utils/helper';
 import {
   activateDeactivateAccount,
   deletePatientRequest,
@@ -24,6 +23,7 @@ import {
 import {useNetInfo} from '@react-native-community/netinfo';
 import {mutation} from '../../../store/patient/mutations';
 import variables from '../../../assets/styles/variables';
+import {showDateOfBirth} from './PatientCard';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -62,12 +62,7 @@ const PatientDetail = ({navigation, route}) => {
     {label: translate('phc.patient.phone'), value: displayPhone || ''},
     {
       label: translate('date.of.birth'),
-      value:
-        patientDetail?.status === 'pending-create'
-          ? patientDetail?.date_of_birth
-          : patientDetail?.date_of_birth
-          ? formatDate(patientDetail.date_of_birth)
-          : '',
+      value: showDateOfBirth(patientDetail?.date_of_birth),
     },
     {
       label: translate('phc.patient.therapist'),
