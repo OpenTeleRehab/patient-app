@@ -4,7 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import {Card, Text, Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {formatDate} from '../../../utils/helper';
+import {formatDate, isValidDateFormat} from '../../../utils/helper';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import Badge from '../../../components/Common/Badge';
 import {REFERRAL_STATUS} from '../../../variables/constants';
@@ -25,11 +25,7 @@ const PatientCard = ({patient, theme}) => {
             {patient.last_name} {patient.first_name}
           </Text>
           <Text style={componentStyles.contentText}>
-            {patient?.date_of_birth
-              ? patient?.status
-                ? `(${patient?.date_of_birth})`
-                : `(${formatDate(patient?.date_of_birth)})`
-              : ''}
+            {showDateOfBirth(patient?.date_of_birth)}
           </Text>
         </View>
         <View style={componentStyles.rightContainer}>
@@ -115,3 +111,11 @@ export const componentStyles = StyleSheet.create({
 });
 
 export default withTheme(PatientCard);
+
+export const showDateOfBirth = (dateOfBirth) => {
+  return dateOfBirth
+    ? isValidDateFormat(dateOfBirth)
+      ? `(${dateOfBirth})`
+      : `(${formatDate(dateOfBirth)})`
+    : '';
+};

@@ -7,7 +7,7 @@ import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
 import {BottomSheet, Icon} from 'react-native-elements';
 import {theme} from '../../../App';
-import {ROUTES} from '../../variables/constants';
+import {OFFLINE_STATUS, ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPatientsListForPhcWorkerRequest} from '../../store/patient/actions';
@@ -178,8 +178,8 @@ const Patient = ({navigation}) => {
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>
-                  item.status === 'duplicate-create' ||
-                  item.status === 'duplicate-update'
+                  item.status === OFFLINE_STATUS.DUPLICATE_CREATE ||
+                  item.status === OFFLINE_STATUS.DUPLICATE_UPDATE
                     ? navigation.navigate(ROUTES.CREATE_EDIT_PATIENT, {
                         patientId: item.id,
                       })

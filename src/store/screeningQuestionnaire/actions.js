@@ -1,5 +1,6 @@
 import {ScreeningQuestionnaire} from '../../services/screeningQuestionnaire';
 import {getCachedImage} from '../../utils/imageHelper';
+import {OFFLINE_STATUS} from '../../variables/constants';
 import {mutation} from './mutations';
 
 export const getScreeningQuestionnaireListRequest =
@@ -50,7 +51,7 @@ export const syncOfflineScreeningQuestionnaires =
     const failedItems = [];
 
     for (const item of offlineInterviews) {
-      if (item.status === 'user-duplicate') {
+      if (item.status === OFFLINE_STATUS.USER_DUPLICATE) {
         failedItems.push(item);
         continue;
       }

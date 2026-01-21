@@ -142,3 +142,12 @@ export const THERAPIST_TYPES = {
   LEAD: 'lead',
   SUPPLEMENTARY: 'supplementary',
 };
+
+export const OFFLINE_STATUS = {
+  SUCCESS: 'success',
+  PENDING_CREATE: 'pending-create',
+  PENDING_UPDATE: 'pending-update',
+  DUPLICATE_CREATE: 'duplicate-create',
+  DUPLICATE_UPDATE: 'duplicate-update',
+  USER_DUPLICATE: 'user-duplicate',
+};

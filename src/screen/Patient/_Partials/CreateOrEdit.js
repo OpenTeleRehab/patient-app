@@ -49,7 +49,11 @@ import {useShowToast} from '../../../hook/useShowToast';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment/moment';
-import {ROUTES, TRANSFER_STATUS} from '../../../variables/constants';
+import {
+  OFFLINE_STATUS,
+  ROUTES,
+  TRANSFER_STATUS,
+} from '../../../variables/constants';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {mutation} from '../../../store/patient/mutations';
 import {mutation as questionnaireMutation} from '../../../store/screeningQuestionnaire/mutations';
@@ -122,7 +126,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
         reset(patientDetail);
         const formattedDOB = patientDetail.date_of_birth
           ? isValidDateFormat(patientDetail.date_of_birth)
-            ? moment(patientDetail.date_of_birth, 'DD/MM/YYYY').toDate()
+            ? moment(patientDetail.date_of_birth, 'DD/MM/YYYY', true).toDate()
             : moment(patientDetail.date_of_birth).toDate()
           : '';
         setDateValue(formattedDOB);
@@ -134,6 +138,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
         setCountryPhoneCode(patientDetail.dial_code ?? '855');
       } else {
         reset(defaultValues);
+        setDateValue('');
         if (definedCountries.length) {
           const userCountryCode = countries.find(
             (country) => country.id === profile?.country_id,
@@ -186,7 +191,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
       if (patientDetail) {
         dispatch(updatePatientOfflineRequest(patientDetail.id, payload));
       } else {
-        dispatch(createPatientOfflineRequest(payload));
+        dispatch(
+          createPatientOfflineRequest({...payload, phc_worker_id: profile.id}),
+        );
       }
 
       showToast(translate('phc.patient.message.create_offline_success'));
@@ -208,7 +215,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
         } else {
           setErrorPhoneExist(false);
           if (patientDetail) {
-            if (patientDetail.status === 'duplicate-create') {
+            if (patientDetail.status === OFFLINE_STATUS.DUPLICATE_CREATE) {
               const updatePayload = Object.fromEntries(
                 Object.entries(payload).filter(
                   ([key]) => key !== 'id' && key !== 'status',
@@ -263,7 +270,9 @@ const CreateOrEditPatient = ({navigation, route}) => {
               });
 
               return;
-            } else if (patientDetail.status === 'duplicate-update') {
+            } else if (
+              patientDetail.status === OFFLINE_STATUS.DUPLICATE_CREATE
+            ) {
               dispatch(updatePatientRequest(patientDetail.id, payload)).then(
                 (res) => {
                   if (res.success) {
@@ -271,7 +280,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
                       patientsForPhcWorker,
                       (patient) => patient.id === patientDetail.id,
                       {
-                        status: 'success',
+                        status: OFFLINE_STATUS.SUCCESS,
                       },
                     );
                     dispatch(
@@ -370,8 +379,8 @@ const CreateOrEditPatient = ({navigation, route}) => {
     setErrorPhoneExist(false);
     setSelectedSupplementary([]);
     patientDetail &&
-    patientDetail.status !== 'duplicate-create' &&
-    patientDetail.status !== 'duplicate-update'
+    patientDetail.status !== OFFLINE_STATUS.DUPLICATE_CREATE &&
+    patientDetail.status !== OFFLINE_STATUS.DUPLICATE_UPDATE
       ? navigation.navigate(ROUTES.PATIENT_DETAIL, {
           patientId: patientDetail.id,
         })
