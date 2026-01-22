@@ -271,7 +271,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
 
               return;
             } else if (
-              patientDetail.status === OFFLINE_STATUS.DUPLICATE_CREATE
+              patientDetail.status === OFFLINE_STATUS.DUPLICATE_UPDATE
             ) {
               dispatch(updatePatientRequest(patientDetail.id, payload)).then(
                 (res) => {
