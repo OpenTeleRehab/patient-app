@@ -80,7 +80,7 @@ export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
               u: {
                 _id: chatRoom.chat_user_id,
                 username: chatRoom.identity,
-                status: chatUser.status ?? 'offline',
+                status: chatUser?.status ?? 'offline',
               },
               messages: [],
               lastMessage: {},
@@ -112,7 +112,7 @@ export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
               u: {
                 _id: chatRoom.chat_user_id,
                 username: chatRoom.identity,
-                status: chatUser.status ?? 'offline',
+                status: chatUser?.status ?? 'offline',
               },
               messages: [],
               lastMessage: {},
@@ -144,7 +144,7 @@ export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
               u: {
                 _id: chatRoom.chat_user_id,
                 username: chatRoom.identity,
-                status: chatUser.status ?? 'offline',
+                status: chatUser?.status ?? 'offline',
               },
               messages: [],
               lastMessage: {},
