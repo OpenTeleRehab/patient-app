@@ -1,6 +1,5 @@
 import {
   authenticateChatUser,
-  getMessagesInRoom,
   prependNewMessage,
   updateChatUserStatus,
   clearChatData,
@@ -10,6 +9,7 @@ import {
   updateIndicatorList,
   updateUnreadMessageIndicator,
 } from '../store/indicator/actions';
+import {mutation} from '../store/rocketchat/mutations';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../variables/constants';
 import {getUniqueId, getChatMessage} from './helper';
 import {Rocketchat} from '../services/rocketchat';
@@ -95,16 +95,31 @@ export const initialChatSocket = (
           }, 1000);
         } else if (result && result.messages) {
           // Load messages in a room
+          const {chatRooms} = store.getState().rocketchat;
+
           const allMessages = [];
-          result.messages.forEach((message) => {
-            const data = getChatMessage(message, userId, authToken);
-            allMessages.push(data);
-          });
-          dispatch(getMessagesInRoom(allMessages));
+
+          if (result.messages.length > 0) {
+            result.messages.forEach((message) => {
+              allMessages.push(getChatMessage(message, userId, authToken));
+            });
+
+            const roomId = result.messages[0].rid;
+            const fIndex = chatRooms.findIndex((cr) => cr.rid === roomId);
+
+            if (fIndex !== -1) {
+              chatRooms[fIndex].messages = allMessages;
+            }
+
+            dispatch(mutation.getChatRoomsSuccess(chatRooms));
+          }
+
+          dispatch(mutation.getMessagesInRoomSuccess(allMessages));
         }
       } else if (resMessage === 'changed') {
         if (collection === 'stream-room-messages') {
           // Trigger change in chat room
+          const {chatRooms} = store.getState().rocketchat;
           const {profile} = store.getState().user;
 
           const {_id, msg, rid, u} = fields.args[0];
@@ -121,6 +136,13 @@ export const initialChatSocket = (
 
           dispatch(prependNewMessage(newMessage));
           dispatch(updateUnreadMessageIndicator());
+
+          chatRooms.map((item) => {
+            if (item.rid === newMessage.rid) {
+              item.lastMessage = newMessage;
+            }
+          });
+          dispatch(mutation.getChatRoomsSuccess(chatRooms));
         } else if (collection === 'stream-notify-logged') {
           // Trigger therapist logged status
           const res = fields.args[0];

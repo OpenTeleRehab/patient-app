@@ -23,9 +23,9 @@ const getUserStatus = async (chatUsernames, userId, authToken) => {
   return await callChatApi('/users.list', userId, authToken, body);
 };
 
-const getLastMessages = async (chatRooms, userId, authToken) => {
+const getLastMessages = async (roomIds, userId, authToken) => {
   const fields = JSON.stringify({msgs: 1, lastMessage: 1});
-  const query = JSON.stringify({_id: {$in: chatRooms}});
+  const query = JSON.stringify({_id: {$in: roomIds}});
   const body = {fields, query, count: 999999};
   return await callChatApi('/im.list', userId, authToken, body);
 };

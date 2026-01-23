@@ -250,7 +250,7 @@ const AppProvider = ({children}) => {
         callPermission();
       }
 
-      dispatch(getChatRooms(chatSocket));
+      dispatch(getChatRooms());
     }
   }, [appStateVisible, accessToken, dispatch, isOnline, profile]);
 
