@@ -187,7 +187,7 @@ export const getChatRooms = (chatSocket) => async (dispatch, getState) => {
               u: {
                 _id: therapist.chat_user_id,
                 username: therapist.identity,
-                status: chatUser.status ?? 'offline',
+                status: chatUser?.status ?? 'offline',
               },
               messages: [],
               lastMessage: {},
