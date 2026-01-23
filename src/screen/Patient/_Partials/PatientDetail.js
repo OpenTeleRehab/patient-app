@@ -113,12 +113,12 @@ const PatientDetail = ({navigation, route}) => {
 
   const handleActivateDeactivateConfirm = () => {
     dispatch(
-      activateDeactivateAccount(patientDetail.id, !patientDetail.enabled),
+      activateDeactivateAccount(patientDetail.id, !patientDetail?.enabled),
     ).then((response) => {
       if (response.success) {
         showToast(
           translate(
-            patientDetail.enabled
+            patientDetail?.enabled
               ? 'phc.patient.message.account_deactivated'
               : 'phc.patient.message.account_activated',
           ),
@@ -126,12 +126,12 @@ const PatientDetail = ({navigation, route}) => {
         );
         const patientListUpdate = patientsForPhcWorker.map((item) =>
           item.id === patientDetail.id
-            ? {...item, enabled: !patientDetail.enabled ? 1 : 0}
+            ? {...item, enabled: !patientDetail?.enabled ? 1 : 0}
             : item,
         );
         setPatientDetail({
           ...patientDetail,
-          enabled: !patientDetail.enabled ? 1 : 0,
+          enabled: !patientDetail?.enabled ? 1 : 0,
         });
         dispatch(mutation.patientsForPhcWorkerFetchSuccess(patientListUpdate));
       } else {
@@ -167,12 +167,12 @@ const PatientDetail = ({navigation, route}) => {
   const handleDeactivateActivate = () => {
     Alert.alert(
       translate(
-        patientDetail.enabled
+        patientDetail?.enabled
           ? 'phc.patient.deactivate_account'
           : 'phc.patient.activate_account',
       ),
       translate(
-        patientDetail.enabled
+        patientDetail?.enabled
           ? 'phc.patient.message.confirm_deactivate_account'
           : 'phc.patient.message.confirm_activate_account',
       ),
@@ -282,7 +282,7 @@ const PatientDetail = ({navigation, route}) => {
               !netInfo.isConnected ||
               patientDetail?.referral_status === REFERRAL_STATUS.INVITED ||
               patientDetail?.referral_status === REFERRAL_STATUS.ACCEPTED ||
-              patientDetail.phc_worker_id !== profile.id
+              patientDetail?.phc_worker_id !== profile.id
             }
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_referral')}
@@ -297,7 +297,7 @@ const PatientDetail = ({navigation, route}) => {
             containerStyle={styles.marginBottom}
             title={translate('phc.patient.button.patient_transfer')}
             disabled={
-              !netInfo.isConnected || patientDetail.phc_worker_id !== profile.id
+              !netInfo.isConnected || patientDetail?.phc_worker_id !== profile.id
             }
             onPress={() => {
               navigation.navigate(ROUTES.PATIENT_TRANSFER, {
@@ -316,31 +316,31 @@ const PatientDetail = ({navigation, route}) => {
           {showMore && (
             <>
               <Button
-                disabled={patientDetail.phc_worker_id !== profile.id}
+                disabled={patientDetail?.phc_worker_id !== profile.id}
                 containerStyle={styles.marginBottom}
                 title={translate('phc.patient.button.edit_patient')}
                 onPress={handleEdit}
               />
               <Button
                 buttonStyle={
-                  patientDetail.enabled
+                  patientDetail?.enabled
                     ? componentStyles.buttonStyle
                     : componentStyles.buttonActivateStyle
                 }
                 titleStyle={
-                  patientDetail.enabled
+                  patientDetail?.enabled
                     ? componentStyles.titleButtonStyle
                     : componentStyles.titleActivateButtonStyle
                 }
                 containerStyle={styles.marginBottom}
                 title={translate(
-                  patientDetail.enabled
+                  patientDetail?.enabled
                     ? 'phc.patient.button.deactivate_account'
                     : 'phc.patient.button.activate_account',
                 )}
                 disabled={
                   !netInfo.isConnected ||
-                  patientDetail.phc_worker_id !== profile.id
+                  patientDetail?.phc_worker_id !== profile.id
                 }
                 onPress={handleDeactivateActivate}
               />
@@ -351,8 +351,8 @@ const PatientDetail = ({navigation, route}) => {
                 title={translate('phc.patient.button.delete_account')}
                 disabled={
                   !netInfo.isConnected ||
-                  !!patientDetail.enabled ||
-                  patientDetail.phc_worker_id !== profile.id
+                  !!patientDetail?.enabled ||
+                  patientDetail?.phc_worker_id !== profile.id
                 }
                 onPress={handleDeletePatient}
               />
