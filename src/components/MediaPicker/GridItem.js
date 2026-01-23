@@ -30,7 +30,7 @@ const GridItem = (props) => {
       {type.includes('video/') ? (
         <VideoPlayer
           muted
-          video={{uri: image.uri}}
+          source={{uri: image.uri}}
           thumbnail={{uri: image.uri}}
           endThumbnail={{uri: image.uri}}
           style={styles.mpMediaItem(itemSize, isSelected)}

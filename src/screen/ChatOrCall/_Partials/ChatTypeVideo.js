@@ -23,7 +23,7 @@ const ChatTypeVideo = ({
       <TouchableOpacity
         onPress={() => handleMediaClick(chatData.currentMessage.video)}>
         <VideoPlayer
-          video={{uri: chatData.currentMessage.video}}
+          source={{uri: chatData.currentMessage.video}}
           thumbnail={{uri: chatData.currentMessage.video}}
           endThumbnail={{uri: chatData.currentMessage.video}}
           style={styles.chatMessageVideo}
