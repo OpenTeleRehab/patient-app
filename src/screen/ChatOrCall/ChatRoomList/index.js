@@ -6,10 +6,14 @@ import {ListItem, Badge} from 'react-native-elements';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {renderMsgText} from '../../../utils/helper';
+import {renderLastMessageText} from '../../../utils/helper';
 import {CHAT_USER_STATUS, ROUTES} from '../../../variables/constants';
 import {mutation} from '../../../store/rocketchat/mutations';
 import {getProfessionRequest} from '../../../store/profession/actions';
+import {
+  getLastMessages,
+  getMessageCounters,
+} from '../../../store/rocketchat/actions';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {
@@ -37,6 +41,8 @@ const ChatRoomList = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getProfessionRequest());
+    dispatch(getLastMessages());
+    dispatch(getMessageCounters());
   }, [dispatch]);
 
   const handleToggleRoom = (key) => {
@@ -107,7 +113,7 @@ const ChatRoomList = ({navigation}) => {
                             />
                           </ListItem.Title>
                           <ListItem.Subtitle>
-                            {renderMsgText(item.lastMessage, translate)}
+                            {renderLastMessageText(item.lastMessage, translate)}
                           </ListItem.Subtitle>
                         </ListItem.Content>
                         {item.unreads > 0 && (

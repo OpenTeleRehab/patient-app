@@ -6,7 +6,6 @@ import {Text} from 'react-native-elements';
 import moment from 'moment';
 import _ from 'lodash';
 import settings from '../../config/settings';
-import {CALL_STATUS} from '../variables/constants';
 import styles from '../assets/styles';
 import store from '../store';
 
@@ -112,36 +111,31 @@ export const nEveryRow = (data, n) => {
   return result;
 };
 
-export const renderMsgText = (msg, translate) => {
-  const text = msg.text;
+export const renderLastMessageText = (lastMessage, translate) => {
+  if (!lastMessage) return null;
 
-  if (msg.isVideoCall) {
-    if (
-      text === CALL_STATUS.AUDIO_MISSED ||
-      text === CALL_STATUS.VIDEO_MISSED ||
-      text === CALL_STATUS.BUSY
-    ) {
-      return <Text style={styles.textDanger}>{translate(text)}</Text>;
-    } else if (
-      [
-        CALL_STATUS.AUDIO_STARTED,
-        CALL_STATUS.VIDEO_STARTED,
-        CALL_STATUS.ACCEPTED,
-        CALL_STATUS.AUDIO_ENDED,
-        CALL_STATUS.VIDEO_ENDED,
-      ].includes(text)
-    ) {
-      return <Text>{translate(text)}</Text>;
+  const msg = lastMessage.msg || lastMessage.text;
+  const isAttachment = lastMessage.file || lastMessage.image;
+
+  if (msg) {
+    if (msg.startsWith('jitsi_call')) {
+      const isDanger = msg.endsWith('_missed') || msg.endsWith('_busy');
+
+      return (
+        <Text style={isDanger ? styles.textDanger : undefined}>
+          {translate(msg)}
+        </Text>
+      );
     }
+
+    return <Text>{msg}</Text>;
   }
 
-  if ((msg.video && msg.video !== '') || (msg.image && msg.image !== '')) {
+  if (isAttachment) {
     return (
       <Text style={styles.textPrimary}>
         {translate('chat_attachment.title')}
       </Text>
     );
   }
-
-  return <Text>{text}</Text>;
 };

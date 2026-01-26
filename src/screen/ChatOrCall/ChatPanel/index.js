@@ -5,7 +5,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Text, withTheme} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useIsFocused} from '@react-navigation/native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Rocketchat} from '../../../services/rocketchat';
@@ -15,7 +14,7 @@ import {generateHash, isPhcWorker} from '../../../utils/helper';
 import {Platform, View, Keyboard} from 'react-native';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
-import {sendNewMessage} from '../../../utils/rocketchat';
+import {loadHistoryInRoom, sendNewMessage} from '../../../utils/rocketchat';
 import {updateIndicatorList} from '../../../store/indicator/actions';
 import {mutation} from '../../../store/rocketchat/mutations';
 import MediaPicker from '../../../components/MediaPicker';
@@ -43,18 +42,11 @@ const ChatPanel = ({navigation, theme}) => {
   const [allMessages, setAllMessages] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
   const isFocused = useIsFocused();
-  const [isLoading, setIsLoading] = useState(true);
   const [showMediaSlider, setShowMediaSlider] = useState(false);
   const [isVideoAttachment, setIsVideoAttachment] = useState(false);
   const [videoAttachments, setVideoAttachments] = useState(undefined);
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
-
-  useState(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  });
 
   useEffect(() => {
     navigation.getParent().setOptions({tabBarVisible: false});
@@ -68,13 +60,17 @@ const ChatPanel = ({navigation, theme}) => {
   }, [chatRooms, messages]);
 
   useEffect(() => {
-    if (isOnlineMode && isOnChatScreen) {
+    if (isOnlineMode && isOnChatScreen && chatSocket) {
       Rocketchat.markMessagesAsRead(
         selectedRoom.rid,
         chatAuth.userId,
         chatAuth.token,
       ).then((res) => {
         if (res.success) {
+          // Load message history in room
+          loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
+
+          // Reset unread message
           dispatch(mutation.updateUnreadSuccess(selectedRoom.rid));
         }
       });
@@ -82,9 +78,11 @@ const ChatPanel = ({navigation, theme}) => {
   }, [
     chatAuth.token,
     chatAuth.userId,
+    chatSocket,
     dispatch,
     isOnChatScreen,
     isOnlineMode,
+    profile.id,
     selectedRoom.rid,
   ]);
 
@@ -140,7 +138,8 @@ const ChatPanel = ({navigation, theme}) => {
       _id: generateHash(),
       rid: selectedRoom.rid,
       createdAt: new Date(),
-      pending: true,
+      received: true,
+      pending: false,
       text: caption,
       user: {_id: chatAuth.userId},
     };
@@ -264,12 +263,6 @@ const ChatPanel = ({navigation, theme}) => {
           title={selectedRoom.name}
         />
       )}
-      <Spinner
-        visible={isLoading}
-        textContent={translate('common.loading')}
-        textStyle={styles.textLight}
-        overlayColor={theme.colors.platform.android.primary}
-      />
       <GiftedChat
         isTyping={true}
         messages={allMessages}
