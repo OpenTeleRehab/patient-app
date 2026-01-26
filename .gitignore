@@ -70,5 +70,4 @@ buck-out/
 /config/settings.js
 /android/app/google-services.json
 /ios/GoogleService-Info.plist
-/ios/PatientApp/GoogleService-Info.plist
 firebase.json
