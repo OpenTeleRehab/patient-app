@@ -42,10 +42,6 @@ const Survey = () => {
     if (isOnline) {
       dispatch(getPublishSurvey({
         organization: organization,
-        type: 'patient',
-        user_id: profile.id,
-        country_id: profile.country_id,
-        clinic_id: profile.clinic_id,
         lang: profile.language_id ? profile.language_id : languages.length ? languages[0].id : '',
         location: profile.location,
         gender: profile.gender,
