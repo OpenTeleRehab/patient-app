@@ -331,7 +331,6 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
                   onChangeText={(text) =>
                     handleInputChange(currentQuestion.id, text, 'text')
                   }
-                  containerStyle={styles.inputContainer}
                 />
               )}
 
@@ -342,7 +341,6 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
                     handleInputChange(currentQuestion.id, text, 'number')
                   }
                   keyboardType="numeric"
-                  containerStyle={styles.inputContainer}
                 />
               )}
             </>

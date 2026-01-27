@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Web Essentials Co., Ltd
  */
-import {callGlobalAdminApi, callApi} from '../utils/request';
+import {callApi} from '../utils/request';
 
 const submitSurvey = async (payload, accessToken) => {
   return await callApi(
@@ -21,9 +21,10 @@ const skipSurvey = async (payload, accessToken) => {
   );
 };
 
-const getPublishSurvey = async (payload) => {
-  return await callGlobalAdminApi(
-    '/get-publish-survey',
+const getPublishSurvey = async (payload, accessToken) => {
+  return await callApi(
+    '/survey/list/publish-survey',
+    accessToken,
     payload,
   );
 };

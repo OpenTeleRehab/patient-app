@@ -1,9 +1,10 @@
 import {Survey} from '../../services/survey';
 import {mutation} from './mutations';
 
-export const getPublishSurvey = (payload) => async (dispatch) => {
+export const getPublishSurvey = (payload) => async (dispatch, getState) => {
+  const {accessToken} = getState().user;
   dispatch(mutation.publishSurveyfetchRequest());
-  const data = await Survey.getPublishSurvey(payload);
+  const data = await Survey.getPublishSurvey(payload, accessToken);
   if (data) {
     dispatch(mutation.publishSurveyfetchSuccess(data.data));
   } else {
