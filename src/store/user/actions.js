@@ -10,6 +10,7 @@ import {storeLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY, USER_ROLE} from '../../variables/constants';
 import {callApi, callTherapistApi} from '../../utils/request';
 import RNLocalize from 'react-native-localize';
+import messaging from '@react-native-firebase/messaging';
 
 export const verifyPhoneNumberRequest =
   (to, code, email) => async (dispatch) => {
@@ -345,18 +346,19 @@ export const enableKidTheme = (accessToken, payload) => async (dispatch) => {
   }
 };
 
-export const createFirebaseToken =
-  (accessToken, payload) => async (dispatch) => {
-    dispatch(mutation.userCreateFirebaseTokenRequest());
+export const generateFirebaseToken = (accessToken) => async (dispatch) => {
+  dispatch(mutation.userCreateFirebaseTokenRequest());
 
-    let data = await User.createFirebaseToken(accessToken, payload);
+  const fcmToken = await messaging().getToken();
 
-    if (data.success) {
-      dispatch(mutation.userCreateFirebaseTokenSuccess(data.data));
-    } else {
-      dispatch(mutation.userCreateFirebaseTokenFailure());
-    }
-  };
+  let data = await User.createFirebaseToken(accessToken, fcmToken);
+
+  if (data.success) {
+    dispatch(mutation.userCreateFirebaseTokenSuccess(data.data));
+  } else {
+    dispatch(mutation.userCreateFirebaseTokenFailure());
+  }
+};
 
 export const forgotPasswordRequest = (email) => async () => {
   const body = {email};
