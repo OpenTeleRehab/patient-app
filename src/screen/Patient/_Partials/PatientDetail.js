@@ -38,7 +38,12 @@ const PatientDetail = ({navigation, route}) => {
   const [patientDetail, setPatientDetail] = useState();
   const [treatmentPlan, setTreatmentPlan] = useState();
   const [referralTherapists, setReferralTherapists] = useState();
-
+  
+  const status = patientDetail?.referral_status;
+  const referralReason = patientDetail?.referral_reject_reason ?? patientDetail?.referral_request_reason;
+  const showReferralReason = [REFERRAL_STATUS.INVITED, REFERRAL_STATUS.DECLINED].includes(status);
+  const referralReasonColor = status === REFERRAL_STATUS.INVITED ? theme.colors.orangeDark : theme.colors.danger;
+  
   useEffect(() => {
     const detailInfo = patientsForPhcWorker.find(
       (item) => item.id === patientId,
@@ -75,7 +80,7 @@ const PatientDetail = ({navigation, route}) => {
     },
     {
       label: translate('phc.patient.referral_status'),
-      value: patientDetail?.referral_status ? (
+      value: patientDetail?.referral_status &&
         <Badge
           color={
             patientDetail.referral_status === REFERRAL_STATUS.INVITED
@@ -87,10 +92,11 @@ const PatientDetail = ({navigation, route}) => {
           value={translate(
             `phc.patient.referral_status.${patientDetail.referral_status}`,
           )}
-        />
-      ) : (
-        ''
-      ),
+        />,
+      description: showReferralReason &&
+        <View style={componentStyles.referralReasonContainer}>
+          <Text style={{...componentStyles.value, color:referralReasonColor}}>{referralReason}</Text>
+        </View>
     },
     {
       label: translate('phc.patient.transfer_status'),
@@ -242,25 +248,28 @@ const PatientDetail = ({navigation, route}) => {
         <View>
           {data.map((item, index) => (
             <ListItem bottomDivider key={index}>
-              <ListItem.Content style={componentStyles.row}>
-                <Text style={componentStyles.label}>{item.label}</Text>
-                {Array.isArray(item.value) ? (
-                  <View style={componentStyles.badgeContainer}>
-                    {item.value.map((value, itemIndex) => (
-                      <Badge
-                        key={itemIndex}
-                        value={`${value.last_name} ${value.first_name}`}
-                        color={
-                          value.type === THERAPIST_TYPES.LEAD
-                            ? theme.colors.primary
-                            : theme.colors.orangeDark2
-                        }
-                      />
-                    ))}
-                  </View>
-                ) : (
-                  <Text style={componentStyles.value}>{item.value}</Text>
-                )}
+              <ListItem.Content>
+                <View style={componentStyles.row}>
+                  <Text style={componentStyles.label}>{item.label}</Text>
+                  {Array.isArray(item.value) ? (
+                    <View style={componentStyles.badgeContainer}>
+                      {item.value.map((value, itemIndex) => (
+                        <Badge
+                          key={itemIndex}
+                          value={`${value.last_name} ${value.first_name}`}
+                          color={
+                            value.type === THERAPIST_TYPES.LEAD
+                              ? theme.colors.primary
+                              : theme.colors.orangeDark2
+                          }
+                        />
+                      ))}
+                    </View>
+                  ) : (
+                    <Text style={componentStyles.value}>{item.value}</Text>
+                  )}
+                </View>
+                {item?.description}
               </ListItem.Content>
             </ListItem>
           ))}
@@ -378,6 +387,7 @@ const componentStyles = StyleSheet.create({
     marginBottom: 10,
   },
   row: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -416,6 +426,9 @@ const componentStyles = StyleSheet.create({
     gap: 2,
     justifyContent: 'flex-end',
     flex: 1,
+  },
+  referralReasonContainer: {
+    marginTop: 6,
   },
 });
 
