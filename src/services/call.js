@@ -14,6 +14,7 @@ const getCallAccessToken = async (roomId) => {
     });
   } else {
     return await callApi('/patient/get-call-access-token', accessToken, {
+      identity: profile.identity,
       room_id: roomId,
     });
   }

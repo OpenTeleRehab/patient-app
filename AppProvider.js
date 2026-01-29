@@ -198,7 +198,7 @@ const AppProvider = ({children}) => {
   }, [dispatch, loading, language]);
 
   useEffect(() => {
-    if (accessToken && profile.identity && profile.chat_password && isOnline) {
+    if (isOnline && profile.identity && profile.chat_password) {
       if (Platform.OS === 'ios' && appStateVisible === 'active') {
         const subscribeIds = {
           loginId: getUniqueId(profile.id),
@@ -248,14 +248,18 @@ const AppProvider = ({children}) => {
         // Request phone calls permission
         callPermission();
       }
+    }
+  }, [appStateVisible, dispatch, isOnline, profile]);
 
+  useEffect(() => {
+    if (accessToken) {
       // Get chat rooms
       dispatch(getChatRooms());
 
       // Generate firebase token
       dispatch(generateFirebaseToken(accessToken));
     }
-  }, [appStateVisible, accessToken, dispatch, isOnline, profile]);
+  }, [accessToken, dispatch]);
 
   useEffect(() => {
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);

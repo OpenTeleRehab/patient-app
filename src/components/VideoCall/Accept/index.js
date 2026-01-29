@@ -240,7 +240,7 @@ const AcceptCall = ({
         );
 
         const _id = generateHash();
-        const rid = chatRoom.rid;
+        const rid = chatRoom?.rid;
         const text = CALL_STATUS.AUDIO_ENDED;
 
         // TODO: Update end call message
