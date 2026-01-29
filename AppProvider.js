@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
 import {
-  createFirebaseToken,
+  generateFirebaseToken,
   setInitialRouteName,
 } from './src/store/user/actions';
 import {
@@ -48,7 +48,6 @@ import {
   completeQuestionnaire,
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
-import messaging from '@react-native-firebase/messaging';
 import {callPermission, notificationPermission} from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
 
@@ -250,7 +249,11 @@ const AppProvider = ({children}) => {
         callPermission();
       }
 
+      // Get chat rooms
       dispatch(getChatRooms());
+
+      // Generate firebase token
+      dispatch(generateFirebaseToken(accessToken));
     }
   }, [appStateVisible, accessToken, dispatch, isOnline, profile]);
 
@@ -392,14 +395,6 @@ const AppProvider = ({children}) => {
       dispatch(completeGoal(offlineGoals));
     }
   }, [dispatch, accessToken, isOnline, offlineGoals]);
-
-  useEffect(() => {
-    messaging()
-      .getToken()
-      .then((fcmToken) => {
-        dispatch(createFirebaseToken(accessToken, fcmToken));
-      });
-  }, [dispatch, accessToken]);
 
   return loading ? (
     <SplashScreen />
