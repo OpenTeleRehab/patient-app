@@ -9,6 +9,7 @@ import TreatmentStatusBadge from './TreatmentStatusBadge';
 import Badge from '../../../components/Common/Badge';
 import {REFERRAL_STATUS} from '../../../variables/constants';
 import styles from '../../../assets/styles';
+import Notification from '../../../components/Notification';
 
 const PatientCard = ({patient, theme}) => {
   const localize = useSelector((state) => state.localize);
@@ -62,6 +63,7 @@ const PatientCard = ({patient, theme}) => {
           />
         </View>
       )}
+      <Notification patientDetail={patient}/>
       {patient?.status && (
         <Text style={styles.textOfflineStyle}>{patient?.status}</Text>
       )}

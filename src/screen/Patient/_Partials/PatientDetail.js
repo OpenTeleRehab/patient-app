@@ -24,6 +24,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import {mutation} from '../../../store/patient/mutations';
 import variables from '../../../assets/styles/variables';
 import {showDateOfBirth} from './PatientCard';
+import Notification from '../../../components/Notification';
 
 const PatientDetail = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -273,6 +274,7 @@ const PatientDetail = ({navigation, route}) => {
               </ListItem.Content>
             </ListItem>
           ))}
+          <Notification patientDetail={patientDetail}/>
         </View>
         <View style={componentStyles.buttonContainer}>
           <Button
