@@ -24,9 +24,6 @@ const VideoCall = ({theme}) => {
   useEffect(() => {
     if (videoCall.status?.startsWith('jitsi_call')) {
       if (videoCall.status === CALL_STATUS.ACCEPTED && !accessToken) {
-        // Ensure foreground service stopped
-        ForegroundService.stopService();
-
         // Need to enter pin to unlock accept call
         setShowModal(false);
       } else {
@@ -34,9 +31,6 @@ const VideoCall = ({theme}) => {
       }
     } else {
       setShowModal(false);
-
-      // Ensure foreground service stopped
-      ForegroundService.stopService();
     }
   }, [ForegroundService, accessToken, callAccessToken, videoCall]);
 

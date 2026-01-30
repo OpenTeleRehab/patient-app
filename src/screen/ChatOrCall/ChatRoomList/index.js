@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ListItem, Badge} from 'react-native-elements';
+import {ListItem, Badge, Icon} from 'react-native-elements';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -83,7 +83,7 @@ const ChatRoomList = ({navigation}) => {
                       {translate(`common.${key}`)}
                     </ListItem.Title>
                   </ListItem.Content>
-                  <ListItem.Chevron
+                  <Icon
                     name={
                       defaultExpanded.includes(key)
                         ? 'keyboard-arrow-up'

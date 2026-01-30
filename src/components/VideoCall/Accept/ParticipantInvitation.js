@@ -195,7 +195,7 @@ const ParticipantInvitation = ({
                         {translate(`common.${key}`)}
                       </ListItem.Title>
                     </ListItem.Content>
-                    <ListItem.Chevron
+                    <Icon
                       name={
                         defaultExpanded.includes(key)
                           ? 'keyboard-arrow-up'
