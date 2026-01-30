@@ -86,6 +86,7 @@ const PatientReferral = ({navigation, route}) => {
   const onSubmit = async (data) => {
     const dataPayload = {
       patient_id: patientId,
+      to_region_id: data.region_id,
       to_clinic_id: data.to_clinic_id,
       request_reason: data.request_reason,
     };
