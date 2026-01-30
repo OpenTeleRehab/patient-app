@@ -15,6 +15,7 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getPatientsListForPhcWorkerRequest} from '../../../store/patient/actions';
 import {useShowToast} from '../../../hook/useShowToast';
+import {THERAPIST_TYPES} from '../../../variables/constants';
 
 const TransferPatientCard = ({transferInfo, theme}) => {
   const localize = useSelector((state) => state.localize);
@@ -64,6 +65,7 @@ const TransferPatientCard = ({transferInfo, theme}) => {
             if (res?.success) {
               showToast(translate('phc.transfer.message.decline_success'));
               dispatch(getTransfersRequest());
+              dispatch(getPatientsListForPhcWorkerRequest());
             }
           },
         },
@@ -100,10 +102,17 @@ const TransferPatientCard = ({transferInfo, theme}) => {
           </View>
           <View>
             <Text>
-              {translate('phc.transfer_by', {
+              {transferInfo?.therapist_type===THERAPIST_TYPES.SUPPLEMENTARY?
+              translate('phc.supplementary_by', {
                 therapist_lastName: transferInfo?.from_therapist.last_name,
                 therapist_firstName: transferInfo?.from_therapist.first_name,
-              })}
+              })
+              :
+              translate('phc.transfer_by', {
+                therapist_lastName: transferInfo?.from_therapist.last_name,
+                therapist_firstName: transferInfo?.from_therapist.first_name,
+              })
+              }
             </Text>
           </View>
         </View>

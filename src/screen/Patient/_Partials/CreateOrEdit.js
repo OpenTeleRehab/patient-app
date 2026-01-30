@@ -332,6 +332,8 @@ const CreateOrEditPatient = ({navigation, route}) => {
 
           dispatch(createPatientRequest(payload)).then((res) => {
             if (res.success) {
+              reset(defaultValues);
+              setDateValue('');
               dispatch(getPatientsListForPhcWorkerRequest());
               showToast(
                 translate('phc.patient.message.create_success'),
