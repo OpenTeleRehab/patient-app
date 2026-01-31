@@ -40,25 +40,19 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     const callUUID = uuid.v4();
 
     if (remoteMessage.data.isLocal) {
-      const channelId = await notifee.createChannel({
-        id: 'default',
-        name: 'Default Channel',
-      });
       const splitedDates = remoteMessage.data.body.split('|');
-      const startDate = moment.utc(splitedDates[0]).local().format(settings.format.date + ' ' + settings.format.time);
-      const endDate = moment.utc(splitedDates[1]).local().format(settings.format.date + ' ' + settings.format.time);
 
-      await notifee.displayNotification({
-        title: remoteMessage.data.title,
-        body: startDate + ' - ' + endDate,
-        android: {
-          channelId,
-          localOnly: true,
-          pressAction: {
-            id: 'default',
-          },
-        },
-      });
+      await displayAppointmentNotification(
+        remoteMessage.data.title,
+        splitedDates[0],
+        splitedDates[1],
+      );
+    } else if (remoteMessage.data.event_type === 'appointment') {
+      await displayAppointmentNotification(
+        remoteMessage.data.title,
+        remoteMessage.data.start_date,
+        remoteMessage.data.end_date,
+      );
     } else if (remoteMessage.data.body.includes('missed')) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
       RNCallKeep.endCall(callInfo.callUUID);
@@ -159,6 +153,35 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     }
   }
 });
+
+const displayAppointmentNotification = async (title, startDate, endDate) => {
+  const startDateFormatted = moment
+    .utc(startDate)
+    .local()
+    .format(settings.format.date + ' ' + settings.format.time);
+
+  const endDateFormatted = moment
+    .utc(endDate)
+    .local()
+    .format(settings.format.date + ' ' + settings.format.time);
+
+  const channelId = await notifee.createChannel({
+    id: 'default',
+    name: 'Default Channel',
+  });
+
+  await notifee.displayNotification({
+    title: title,
+    body: startDateFormatted + ' - ' + endDateFormatted,
+    android: {
+      channelId,
+      localOnly: true,
+      pressAction: {
+        id: 'default',
+      },
+    },
+  });
+}
 
 const AppFake = () => {
   return null;
