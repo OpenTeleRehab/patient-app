@@ -71,6 +71,7 @@ const AppProvider = ({children}) => {
   } = useSelector((state) => state.rocketchat);
   const {transfers} = useSelector((state) => state.transfer);
   const localize = useSelector((state) => state.localize);
+  const {chatAuth} = useSelector((state) => state.rocketchat);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
     useSelector((state) => state.activity);
   const translate = getTranslate(localize);
@@ -252,14 +253,14 @@ const AppProvider = ({children}) => {
   }, [appStateVisible, dispatch, isOnline, profile]);
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && chatAuth && chatAuth.userId && chatAuth.token) {
       // Get chat rooms
       dispatch(getChatRooms());
 
       // Generate firebase token
       dispatch(generateFirebaseToken(accessToken));
     }
-  }, [accessToken, dispatch]);
+  }, [accessToken, chatAuth, dispatch]);
 
   useEffect(() => {
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);
