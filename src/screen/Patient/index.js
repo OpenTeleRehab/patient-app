@@ -25,12 +25,14 @@ import {
   getPhcServicesRequest,
   getPhcWorkersRequest,
 } from '../../store/phcService/actions';
+import {updateIndicatorList} from '../../store/indicator/actions';
 
 const Patient = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {patientsForPhcWorker, filters} = useSelector((state) => state.patient);
+  const {phcAppointmentsWithPatient, phcAppointments} = useSelector((state) => state.phcAppointment);
   const [currentFilters, setCurrentFilters] = useState({});
   const [showFilter, setShowFilter] = useState(false);
   const [patientList, setPatientList] = useState([]);
@@ -43,6 +45,22 @@ const Patient = ({navigation}) => {
     dispatch(getPhcServicesRequest());
     dispatch(getPhcWorkersRequest(profile?.phc_service_id));
   }, [dispatch, profile?.phc_service_id]);
+
+  useEffect(() => {
+    const todayAppointments = phcAppointments?.approves?.filter((appointment) =>
+      moment(appointment.end_date).isSame(moment(), 'day')
+    );
+    const todayAppointmentWithPatients = phcAppointmentsWithPatient?.approves?.filter((appointment) =>
+      moment(appointment.end_date).isSame(moment(), 'day')
+    );
+    const todayAppointmentsCount = (todayAppointments?.length || 0) + (todayAppointmentWithPatients?.length || 0);
+
+    dispatch(
+      updateIndicatorList({
+        hasAppointment: todayAppointmentsCount  > 0,
+      }),
+    );
+  }, [dispatch, phcAppointments, phcAppointmentsWithPatient]);
 
   useEffect(() => {
     dispatch(getTransfersRequest());
