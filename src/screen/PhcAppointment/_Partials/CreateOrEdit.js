@@ -407,6 +407,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
                     setShowDatePicker(Platform.OS === 'ios');
                     if (selectedDate) {
                       onChange(formatDate(selectedDate));
+                      setDate(moment(selectedDate).toDate());
                       setDateValue(moment(selectedDate).toDate());
                     }
                   }}

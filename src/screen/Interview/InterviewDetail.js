@@ -165,17 +165,14 @@ const InterviewDetail = ({navigation, route}) => {
             </Text>
             <View style={[styles.totalScoreCard, styles.rowGap5]}>
               <Text>{currentSection.title}</Text>
-              <Text>
-                {translate('phc.interview_total_score', {
-                  total_score: totalScore,
-                })}
-              </Text>
             </View>
-            <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
-              <Text style={styles.textLight}>
-                {mapingScore(totalScore, currentSection.actions)}
-              </Text>
-            </View>
+            {mapingScore(totalScore, currentSection.actions) && (
+              <View style={[styles.chipDiagnosis, styles.paddingYMd]}>
+                <Text style={styles.textLight}>
+                  {mapingScore(totalScore, currentSection.actions)}
+                </Text>
+              </View>
+            )}
           </View>
           <View
             style={[
