@@ -8,13 +8,11 @@ export const initialState = {
   chatAuth: undefined,
   subscribeIds: undefined,
   selectedRoom: undefined,
+  showIncomingCall: false,
+  showAcceptedCall: false,
+  hasStartedCall: false,
+  hasAcceptedCall: false,
   videoCall: {
-    _id: '',
-    rid: '',
-    status: '',
-    u: {},
-  },
-  secondaryVideoCall: {
     _id: '',
     rid: '',
     status: '',

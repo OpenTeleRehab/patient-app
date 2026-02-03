@@ -2,7 +2,7 @@ import {PermissionsAndroid, Platform} from 'react-native';
 import RNCallKeep from 'react-native-callkeep';
 import messaging from '@react-native-firebase/messaging';
 
-export const callPermission = () => {
+export const requestCallPermission = () => {
   const options = {
     ios: {
       appName: 'PatientApp',

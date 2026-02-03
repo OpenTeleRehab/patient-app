@@ -85,14 +85,17 @@ const blacklistTransform = createTransform(
         'isLoading',
       ]);
     } else if (key === 'rocketchat') {
-      inboundStateData = {
-        ...inboundState,
-        callAccessToken: undefined,
-        messages: [],
-        videoCall: {},
-        secondaryVideoCall: {},
-        selectedRoom: {},
-      };
+      inboundStateData = _.omit(inboundState, [
+        'callAccessToken',
+        'chatAuth',
+        'messages',
+        'videoCall',
+        'selectedRoom',
+        'showIncomingCall',
+        'showAcceptedCall',
+        'hasStartedCall',
+        'hasAcceptedCall',
+      ]);
     } else if (key === 'register') {
       inboundStateData = _.omit(inboundState, [
         'countryCode',

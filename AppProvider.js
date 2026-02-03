@@ -30,7 +30,6 @@ import {
 import {getUniqueId} from './src/utils/helper';
 import {
   clearOfflineMessages,
-  clearSecondaryVideoCallStatus,
   clearVideoCallStatus,
   getChatRooms,
   postAttachmentMessage,
@@ -48,7 +47,10 @@ import {
   completeQuestionnaire,
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
-import {callPermission, notificationPermission} from './src/utils/permission';
+import {
+  notificationPermission,
+  requestCallPermission,
+} from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
 
 let chatSocket = null;
@@ -222,7 +224,7 @@ const AppProvider = ({children}) => {
         setSocket(chatSocket);
 
         // Request phone calls permission
-        callPermission();
+        requestCallPermission();
       }
 
       if (Platform.OS === 'android' && chatSocket === null) {
@@ -233,7 +235,6 @@ const AppProvider = ({children}) => {
         };
 
         dispatch(clearVideoCallStatus());
-        dispatch(clearSecondaryVideoCallStatus());
         dispatch(setChatSubscribeIds(subscribeIds));
 
         chatSocket = initialChatSocket(
@@ -247,7 +248,7 @@ const AppProvider = ({children}) => {
         );
 
         // Request phone calls permission
-        callPermission();
+        requestCallPermission();
       }
     }
   }, [appStateVisible, dispatch, isOnline, profile]);

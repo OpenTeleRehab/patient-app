@@ -16,13 +16,14 @@ import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {TwilioVideo} from 'react-native-twilio-video-webrtc';
 import {useDispatch, useSelector} from 'react-redux';
 import {Icon, Text} from 'react-native-elements';
-import {getLocalData} from '../../../utils/local_storage';
+import {getLocalData, storeLocalData} from '../../../utils/local_storage';
 import {CALL_STATUS, STORAGE_KEY} from '../../../variables/constants';
 import {clearCallAccessToken} from '../../../store/rocketchat/actions';
 import {clearVideoCallStatus} from '../../../store/rocketchat/actions';
 import {sendNewMessage, updateMessage} from '../../../utils/rocketchat';
 import {generateHash, isPhcWorker} from '../../../utils/helper';
 import {useCallContext} from '../../../context/CallContext';
+import {mutation} from '../../../store/rocketchat/mutations';
 import CommonPopup from '../../Common/Popup';
 import RocketchatContext from '../../../context/RocketchatContext';
 import ParticipantInvitation from './ParticipantInvitation';
@@ -47,8 +48,8 @@ const AcceptCall = ({
   const callStartRef = useRef(null);
   const chatSocket = useContext(RocketchatContext);
   const {ForegroundService} = NativeModules;
-  const {isHostOwner, setHasParticipant} = useCallContext();
-  const {callAccessToken, chatRooms, videoCall} = useSelector(
+  const {setHasParticipant} = useCallContext();
+  const {callAccessToken, chatRooms, videoCall, hasStartedCall} = useSelector(
     (state) => state.rocketchat,
   );
   const {profile} = useSelector((state) => state.user);
@@ -59,7 +60,8 @@ const AcceptCall = ({
   const [invitingParticipants, setInvitingParticipants] = useState([]);
   const [permissionSettingPopup, setPermissionSettingPopup] = useState(false);
   const [permissionMessagePopup, setPermissionMessagePopup] = useState('');
-  const [forcePermissionMessagePopup, setForcePermissionMessagePopup] = useState(false);
+  const [forcePermissionMessagePopup, setForcePermissionMessagePopup] =
+    useState(false);
   const [isConnecting, setIsConnecting] = useState(true); // Prevent duplicate connections.
   const [isTranscripting, setIsTranscripting] = useState(false);
   const [transcriptedText, setTranscriptedText] = useState('');
@@ -233,7 +235,23 @@ const AcceptCall = ({
     // Disconnect from twilio call
     twilioRef.current.disconnect();
 
-    if (isHostOwner) {
+    setTimeout(() => {
+      ForegroundService.stopService();
+
+      // Cleanup call access token
+      dispatch(clearCallAccessToken());
+
+      dispatch(mutation.showIncomingCall(false));
+      dispatch(mutation.showAcceptedCall(false));
+
+      dispatch(mutation.hasStartedCall(false));
+      dispatch(mutation.hasAcceptedCall(false));
+
+      // Cleanup video call status
+      dispatch(clearVideoCallStatus());
+    }, 2000);
+
+    if (hasStartedCall) {
       participants.forEach(({participant}) => {
         const chatRoom = chatRooms.find((item) =>
           participant.identity.startsWith(item.u.username),
@@ -280,10 +298,15 @@ const AcceptCall = ({
     }
   };
 
-  const _onRoomDidDisconnect = () => {
+  const _onRoomDidDisconnect = (disconnect) => {
+    if (disconnect.error) {
+      return;
+    }
+
     // Stop call duration
     stopCallTimer();
 
+    // Set disconnected status
     setStatus('disconnected');
 
     if (Platform.OS === 'android') {
@@ -294,8 +317,17 @@ const AcceptCall = ({
     // Cleanup call access token
     dispatch(clearCallAccessToken());
 
+    dispatch(mutation.showIncomingCall(false));
+    dispatch(mutation.showAcceptedCall(false));
+
+    dispatch(mutation.hasStartedCall(false));
+    dispatch(mutation.hasAcceptedCall(false));
+
     // Cleanup video call status
     dispatch(clearVideoCallStatus());
+
+    // Cleanup call info
+    storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
   };
 
   const _onMuteButtonPress = async () => {
@@ -398,7 +430,7 @@ const AcceptCall = ({
 
     setParticipants(items);
 
-    if (!isHostOwner && items.length === 0) {
+    if (items.length === 0) {
       setTimeout(() => {
         // Disconnect from twilio call
         twilioRef?.current?.disconnect();
@@ -472,7 +504,7 @@ const AcceptCall = ({
           />
           <Participants participants={participants} />
 
-          {isHostOwner && (
+          {hasStartedCall && (
             <ParticipantInvitation
               isVideoEnabled={isVideoEnabled}
               participants={participants}

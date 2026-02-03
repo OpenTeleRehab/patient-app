@@ -2,17 +2,23 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Modal, NativeModules} from 'react-native';
+import {Modal, NativeModules, Platform} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
-import {CALL_STARTED_STATUSES, CALL_STATUS} from '../../variables/constants';
+import {
+  CALL_STARTED_STATUSES,
+  CALL_STATUS,
+  STORAGE_KEY,
+} from '../../variables/constants';
 import IncomingCall from './Incoming';
 import AcceptCall from './Accept';
+import {getLocalData} from '../../utils/local_storage';
 
 const VideoCall = ({theme}) => {
+  const {callAccessToken, videoCall, showIncomingCall, showAcceptedCall} =
+    useSelector((state) => state.rocketchat);
   const {ForegroundService} = NativeModules;
-  const {callAccessToken, videoCall} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {accessToken} = useSelector((state) => state.user);
@@ -22,28 +28,32 @@ const VideoCall = ({theme}) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (videoCall.status?.startsWith('jitsi_call')) {
-      if (videoCall.status === CALL_STATUS.ACCEPTED && !accessToken) {
-        // Need to enter pin to unlock accept call
-        setShowModal(false);
-      } else {
-        setShowModal(true);
-      }
+    if ((accessToken && showAcceptedCall) || showIncomingCall) {
+      setShowModal(true);
     } else {
       setShowModal(false);
+
+      if (Platform.OS === 'android') {
+        ForegroundService.stopService();
+      }
     }
-  }, [ForegroundService, accessToken, callAccessToken, videoCall]);
+  }, [
+    ForegroundService,
+    accessToken,
+    showIncomingCall,
+    showAcceptedCall,
+  ]);
 
   useEffect(() => {
-    if (CALL_STARTED_STATUSES.includes(videoCall.status)) {
+    if (CALL_STARTED_STATUSES.includes(videoCall?.status)) {
       setIsVideoOn(videoCall.status === CALL_STATUS.VIDEO_STARTED);
     }
   }, [videoCall]);
 
   return (
     <Modal transparent={false} visible={showModal}>
-      {callAccessToken && (
-        <AcceptCall
+      {showIncomingCall && !callAccessToken && (
+        <IncomingCall
           translate={translate}
           theme={theme}
           isVideoOn={isVideoOn}
@@ -54,9 +64,8 @@ const VideoCall = ({theme}) => {
           onMute={() => setIsMute(!isMute)}
         />
       )}
-
-      {!callAccessToken && CALL_STARTED_STATUSES.includes(videoCall.status) && (
-        <IncomingCall
+      {showAcceptedCall && callAccessToken && (
+        <AcceptCall
           translate={translate}
           theme={theme}
           isVideoOn={isVideoOn}
