@@ -274,6 +274,8 @@ export const InputField = ({
         }}
         render={({field: {value, onChange, onBlur}}) => (
           <Input
+            multiline
+            numberOfLines={3}
             containerStyle={styles.containerStyle}
             inputContainerStyle={styles.inputContainerStyle}
             placeholder={String(placeholderTitle ?? '')}
