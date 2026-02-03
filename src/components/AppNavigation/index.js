@@ -105,7 +105,7 @@ const tabs = [
     label: 'tab.appointments',
     icon: appointmentIcon,
     activeIcon: appointmentActiveIcon,
-    badge: 'noBadge',
+    badge: 'hasAppointment',
     group: USER_ROLE.HEALTH_WORKER,
   },
   {

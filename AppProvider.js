@@ -50,6 +50,7 @@ import {
 import {updateIndicatorList} from './src/store/indicator/actions';
 import {callPermission, notificationPermission} from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
+import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
 
 let chatSocket = null;
 let patientId = null;
@@ -80,6 +81,9 @@ const AppProvider = ({children}) => {
   const [language, setLanguage] = useState(undefined);
   const [socket, setSocket] = useState(null);
   const isOnline = useNetInfo().isConnected;
+
+  // Trigger appointment notifications
+  useAppointmentNotifications(dispatch, profile);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
