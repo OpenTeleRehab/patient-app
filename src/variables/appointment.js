@@ -38,3 +38,8 @@ export const PHC_APPOINTMENT_OPTIONS = [
     value: PHC_APPOINTMENT_RECIPIENT_TYPE.THERAPIST,
   },
 ];
+
+export const APPOINTMENT_TYPE = {
+  ONLINE: 'online',
+  IN_PERSON: 'in_person',
+};

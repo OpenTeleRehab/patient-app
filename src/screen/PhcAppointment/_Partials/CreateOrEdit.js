@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Divider, Text} from 'react-native-elements';
+import {Button, Divider, Text, CheckBox} from 'react-native-elements';
 import {Platform, View, StyleSheet} from 'react-native';
 import styles from '../../../assets/styles';
 import SelectPicker from '../../../components/Common/SelectPicker';
@@ -14,7 +14,8 @@ import settings from '../../../../config/settings';
 import CommonOverlay from '../../../components/Common/Overlay';
 import {
   PHC_APPOINTMENT_RECIPIENT_TYPE,
-  PHC_APPOINTMENT_OPTIONS
+  PHC_APPOINTMENT_OPTIONS,
+  APPOINTMENT_TYPE
 } from '../../../variables/appointment';
 import {useForm, Controller} from 'react-hook-form';
 import {theme} from '../../../../App';
@@ -57,6 +58,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
     fromTime: '',
     toTime: '',
     note: '',
+    type: APPOINTMENT_TYPE.ONLINE,
   };
   const {
     control,
@@ -85,6 +87,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
         recipient_id: appointment.recipient_id,
         patient_id: appointment.patient_id,
         note: appointment.note,
+        type: appointment?.type ?? null,
       });
       setDate(moment.utc(appointment.start_date).local().toDate());
       setFromTime(moment.utc(appointment.start_date).local().toDate());
@@ -126,7 +129,8 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
         therapist_id: profile.id,
         from: startDate,
         to: endDate,
-        note: data.note
+        note: data.note,
+        type: data.type,
       };
     } else {
       payload = {
@@ -134,6 +138,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
         from: startDate,
         to: endDate,
         note: data.note,
+        type: data.type,
       }
     }
 
@@ -385,6 +390,45 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
             )}
           </View>
         )}
+        <View style={styles.formGroup}>
+          <Text
+            accessibilityLabel={translate('appointment.type')}
+            style={[componentStyles.labelStyle, styles.marginTop]}
+          >
+            {translate('appointment.type')}
+            <Text style={componentStyles.requiredText}> *</Text>
+          </Text>
+          <Controller
+            control={control}
+            name="type"
+            rules={{required: translate('error.message.phc.appointment.type.required')}}
+            render={({field: {onChange, value}}) => {
+              return (
+                <View style={styles.flexRow}>
+                  <CheckBox
+                    title={translate('appointment.type.online')}
+                    checkedIcon='dot-circle-o'
+                    uncheckedIcon='circle-o'
+                    checked={value === APPOINTMENT_TYPE.ONLINE}
+                    onPress={() => onChange(APPOINTMENT_TYPE.ONLINE)}
+                    textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
+                  />
+                  <CheckBox
+                    title={translate('appointment.type.in_person')}
+                    checkedIcon='dot-circle-o'
+                    uncheckedIcon='circle-o'
+                    checked={value === APPOINTMENT_TYPE.IN_PERSON}
+                    onPress={() => onChange(APPOINTMENT_TYPE.IN_PERSON)}
+                    textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
+                  />
+                </View>
+              );
+            }}
+          />
+          {errors.type && (
+            <Text style={componentStyles.errorTextStyle}>{errors.type.message}</Text>
+          )}
+        </View>
         <View style={styles.formGroup}>
           <Text
               accessibilityLabel={translate('phc.appointment.date')}
