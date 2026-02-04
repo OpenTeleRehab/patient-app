@@ -32,7 +32,7 @@ const NoteRender = ({question}) => {
           resizeMode="contain"
         />
       )}
-      <QuestionText questionText={question.question_text} />
+      <QuestionText questionText={question.question_text} required={question.mandatory}/>
       {question.options?.[0] && (
         <Text accessibilityLabel={question.options[0].option_text}>
           {question.options[0].option_text}
@@ -79,7 +79,7 @@ const RadioRender = ({question, disabled, translate}) => {
           resizeMode="contain"
         />
       )}
-      <QuestionText error={error} questionText={question.question_text} />
+      <QuestionText error={error} questionText={question.question_text} required={question.mandatory} />
       <View
         style={[
           styles.flexRow,
@@ -158,7 +158,7 @@ const CheckBoxRender = ({question, disabled, translate}) => {
           resizeMode="contain"
         />
       )}
-      <QuestionText error={error} questionText={question.question_text} />
+      <QuestionText error={error} questionText={question.question_text} required={question.mandatory}/>
       <View
         style={[
           styles.flexRow,
@@ -249,7 +249,7 @@ const InputTextRender = ({question, disabled, translate}) => {
           resizeMode="contain"
         />
       )}
-      <QuestionText error={error} questionText={question.question_text} />
+      <QuestionText error={error} questionText={question.question_text} required={question.mandatory}/>
       <Input
         value={field.value}
         disabled={disabled}
@@ -294,7 +294,7 @@ const InputNumberRender = ({question, disabled, translate}) => {
           resizeMode="contain"
         />
       )}
-      <QuestionText error={error} questionText={question.question_text} />
+      <QuestionText error={error} questionText={question.question_text} required={question.mandatory}/>
       <Input
         keyboardType="numeric"
         disabled={disabled}
@@ -333,7 +333,7 @@ const SliderRender = ({question, disabled, translate}) => {
           resizeMode="contain"
         />
       )}
-      <QuestionText error={error} questionText={question.question_text} />
+      <QuestionText error={error} questionText={question.question_text} required={question.mandatory}/>
       <Text style={styles.fontWeightMedium}>Level of Difficulty</Text>
       <Text>Value: {field.value}</Text>
       <Slider
