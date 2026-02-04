@@ -82,6 +82,7 @@ const CreateOrEditPatient = ({navigation, route}) => {
   );
   const {patientId} = route.params || {};
   const [patientDetail, setPatientDetail] = useState();
+  const [highlightPhone, setHighlightPhone] = useState(false);
 
   const defaultValues = {
     dial_code: '',
@@ -136,6 +137,14 @@ const CreateOrEditPatient = ({navigation, route}) => {
           patientDetail.phone?.replace(patientDetail.dial_code, ''),
         );
         setCountryPhoneCode(patientDetail.dial_code ?? '855');
+        if (
+          patientDetail.status === OFFLINE_STATUS.DUPLICATE_CREATE ||
+          patientDetail.status === OFFLINE_STATUS.DUPLICATE_UPDATE
+        ) {
+          setHighlightPhone(true);
+        } else {
+          setHighlightPhone(false);
+        }
       } else {
         reset(defaultValues);
         setDateValue('');
@@ -235,8 +244,6 @@ const CreateOrEditPatient = ({navigation, route}) => {
                       updatePatientList,
                     ),
                   );
-                  dispatch(getPatientsListForPhcWorkerRequest());
-
                   showToast(
                     translate('phc.patient.message.create_success'),
                     translate('phc.patient.create'),
@@ -257,7 +264,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
                       syncOfflineScreeningQuestionnaires(
                         updateOfflineInterviews,
                       ),
-                    );
+                    ).then(() => {
+                      dispatch(getPatientsListForPhcWorkerRequest());
+                    });
+                  } else {
+                    dispatch(getPatientsListForPhcWorkerRequest());
                   }
 
                   handleGoback();
@@ -478,7 +489,12 @@ const CreateOrEditPatient = ({navigation, route}) => {
                     placeholder={translate('phc.patient.phone.placeholder')}
                     variant="filled"
                     value={value}
-                    onChangeText={onChange}
+                    onChangeText={(text) => {
+                      onChange(text);
+                      if (highlightPhone) {
+                        setHighlightPhone(false);
+                      }
+                    }}
                     errorMessage={
                       errors?.phone?.message ||
                       (errorPhoneExist
@@ -486,7 +502,10 @@ const CreateOrEditPatient = ({navigation, route}) => {
                         : undefined)
                     }
                     renderErrorMessage={!!errors.phone || errorPhoneExist}
-                    inputStyle={componentStyles.inputStyle}
+                    inputStyle={[
+                      componentStyles.inputStyle,
+                      highlightPhone && styles.textDanger,
+                    ]}
                     keyboardType="phone-pad"
                     maxLength={12}
                   />
@@ -606,13 +625,23 @@ const CreateOrEditPatient = ({navigation, route}) => {
               )}
             </View>
             <View style={componentStyles.columnContainer}>
+              <Text
+                accessibilityLabel={translate('phc.patient.date_of_birth')}
+                style={componentStyles.labelStyle}>
+                {translate('phc.patient.date_of_birth')}
+                <Text style={componentStyles.requiredText}> *</Text>
+              </Text>
               <Controller
                 control={control}
                 name="date_of_birth"
+                rules={{
+                  required: translate(
+                    'error.message.phc.patient.date_of_birth.required',
+                  ),
+                }}
                 render={({field: {onChange}}) => {
                   return (
                     <DatePicker
-                      label={translate('phc.patient.date_of_birth')}
                       placeholder={translate(
                         'phc.patient.date_of_birth.placeholder',
                       )}
@@ -634,6 +663,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
                   );
                 }}
               />
+              {errors.date_of_birth && (
+                <Text style={componentStyles.errorTextStyle}>
+                  {errors.date_of_birth.message}
+                </Text>
+              )}
               <Text
                 accessibilityLabel={translate('phc.patient.age')}
                 style={componentStyles.labelStyle}>

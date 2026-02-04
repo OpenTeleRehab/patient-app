@@ -1,7 +1,7 @@
 import store from '../store';
 import moment from 'moment';
 import settings from '../../config/settings';
-import {TREATMENT_STATUS} from '../variables/constants';
+import {TRANSFER_STATUS, TREATMENT_STATUS} from '../variables/constants';
 
 export const getRegionName = () => {
   const profile = store.getState().user.profile;
@@ -38,7 +38,12 @@ export const getPhcServiceIdentity = () => {
 export const getTransferStatus = (patientId) => {
   const transfers = store.getState().transfer.transfers;
   const transfer = transfers.find((item) => item.patient_id === patientId && item.therapist_type !== 'supplementary');
-  return transfer ? transfer.status : '';
+  const transferStatus = transfer ? transfer.status : '';
+  if(transferStatus === TRANSFER_STATUS.INVITED){
+    return 'pending';
+  }else{
+    return transferStatus;
+  }
 };
 
 export const getTreatmentStatus = (treatmentPlan) => {

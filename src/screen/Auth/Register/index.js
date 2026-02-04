@@ -58,9 +58,6 @@ const inputPhoneContainerStyle = {
   borderBottomWidth: 0,
 };
 
-const contentContainer = {
-  height: '100%',
-};
 
 const Register = ({theme, navigation, route}) => {
   const dispatch = useDispatch();
@@ -244,7 +241,7 @@ const Register = ({theme, navigation, route}) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.flex1}>
       <HeaderBar
         backgroundPrimary
         onGoBack={_.isEmpty(profile) ? undefined : () => navigation.goBack()}
@@ -253,7 +250,8 @@ const Register = ({theme, navigation, route}) => {
 
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        style={[styles.mainContainerLight, contentContainer]}>
+        style={styles.flex1}
+        contentContainerStyle={styles.mainContainerLight}>
         <View style={styles.paddingMd}>
           <View style={styles.marginBottom}>
             <Text accessibilityLabel={translate('register.as.label')}>

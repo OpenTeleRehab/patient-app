@@ -45,16 +45,17 @@ const AppointmentCard = ({appointment}) => {
   let additionTextStyle = {};
   let statusTextStyle = {
     color: theme.colors.primary,
+    fontWeight:'bold'
   };
   let statusText = 'phc.appointment.status.accept';
   if ([therapist_status, patient_status, requester_status, recipient_status].includes(APPOINTMENT_STATUS.INVITED)) {
-    statusTextStyle = {color: theme.colors.dark};
+    statusTextStyle = {color: theme.colors.dark, fontWeight:'bold'};
     statusText = 'phc.appointment.status.pending';
   } else if (
     [therapist_status, patient_status, requester_status, recipient_status].includes(APPOINTMENT_STATUS.REJECTED)
   ) {
     additionTextStyle = {textDecorationLine: 'line-through'};
-    statusTextStyle = {color: theme.colors.orange};
+    statusTextStyle = {color: theme.colors.orange, fontWeight:'bold'};
     statusText = 'phc.appointment.status.cancel';
   }
 
@@ -220,6 +221,14 @@ const AppointmentCard = ({appointment}) => {
   const isOwner = appointment.created_by_therapist || (appointment.requester_id === profile.id);
   const userStatus = appointment.therapist_status ? appointment.therapist_status : isOwner ? appointment.requester_status : appointment.recipient_status;
 
+  const appointmentWith=()=>{
+    if(appointment.with_user_type){
+      return `phc.appointment.${appointment.with_user_type}`
+    }else{
+      return 'phc.appointment.patient'
+    }
+  }
+
   return (
     <>
       <ListItem
@@ -247,7 +256,7 @@ const AppointmentCard = ({appointment}) => {
             </Text>
             <Divider style={styles.marginY} />
             <Text style={additionTextStyle}>
-              {translate('phc.appointment.appointment_with')}
+              {translate('phc.appointment.appointment_with')} <Text style={styles.fontWeightBold}>{translate(appointmentWith())}</Text>
             </Text>
             <Text style={[componentStyle.nameText, additionTextStyle]}>
               {appointment.patient
@@ -256,7 +265,6 @@ const AppointmentCard = ({appointment}) => {
             </Text>
             {appointment.note && (
               <View style={componentStyle.noteContainer}>
-                <Icon name="event-note" size={20} />
                 <Text
                   numberOfLines={1}
                 >
@@ -271,7 +279,7 @@ const AppointmentCard = ({appointment}) => {
                 !(appointment.note && appointment.note.trim() !== '') &&
                   styles.appointmentStatusAdditionalSpace,
               ]}>
-              <Text style={[styles.fontWeightBold, statusTextStyle]}>
+              <Text style={statusTextStyle}>
                 {translate(statusText)}
               </Text>
             </View>

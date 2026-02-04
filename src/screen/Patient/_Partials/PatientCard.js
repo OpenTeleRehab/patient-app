@@ -7,13 +7,26 @@ import {getTranslate} from 'react-localize-redux';
 import {formatDate, isValidDateFormat} from '../../../utils/helper';
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import Badge from '../../../components/Common/Badge';
-import {REFERRAL_STATUS} from '../../../variables/constants';
+import {OFFLINE_STATUS_TEXT, REFERRAL_STATUS} from '../../../variables/constants';
 import styles from '../../../assets/styles';
 import Notification from '../../../components/Notification';
+
+export const referralStatusText=(referralStatus)=>{
+  if(referralStatus === REFERRAL_STATUS.INVITED){
+    return 'pending';
+  }else{
+    return referralStatus;
+  }
+}
 
 const PatientCard = ({patient, theme}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+
+  const textPatientStatus = () => {
+    const key = OFFLINE_STATUS_TEXT?.[patient?.status];
+    return key ? translate(key) : null;
+  };
 
   return (
     <Card containerStyle={componentStyles.cardContainer}>
@@ -58,14 +71,14 @@ const PatientCard = ({patient, theme}) => {
                 : theme.colors.primary
             }
             value={translate(
-              `phc.patient.referral_status.${patient.referral_status}`,
+              `phc.patient.referral_status.${referralStatusText(patient.referral_status)}`,
             )}
           />
         </View>
       )}
       <Notification patientDetail={patient}/>
       {patient?.status && (
-        <Text style={styles.textOfflineStyle}>{patient?.status}</Text>
+        <Text style={styles.textOfflineStyle}>{textPatientStatus()}</Text>
       )}
     </Card>
   );

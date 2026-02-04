@@ -151,3 +151,11 @@ export const OFFLINE_STATUS = {
   DUPLICATE_UPDATE: 'duplicate-update',
   USER_DUPLICATE: 'user-duplicate',
 };
+
+export const OFFLINE_STATUS_TEXT = {
+  [OFFLINE_STATUS.PENDING_CREATE]: 'common.sync_pending',
+  [OFFLINE_STATUS.PENDING_UPDATE]: 'common.sync_pending',
+  [OFFLINE_STATUS.DUPLICATE_CREATE]: 'common.sync_duplicate',
+  [OFFLINE_STATUS.DUPLICATE_UPDATE]: 'common.sync_duplicate',
+  [OFFLINE_STATUS.SUCCESS]: 'common.sync_success',
+};
