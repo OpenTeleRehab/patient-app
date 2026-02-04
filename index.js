@@ -39,19 +39,11 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     // Message with data handled in the background
     const callUUID = uuid.v4();
 
-    if (remoteMessage.data.isLocal) {
-      const splitedDates = remoteMessage.data.body.split('|');
-
+    if (remoteMessage.data.event_type === 'appointment') {
       await displayAppointmentNotification(
-        remoteMessage.data.title,
-        splitedDates[0],
-        splitedDates[1],
-      );
-    } else if (remoteMessage.data.event_type === 'appointment') {
-      await displayAppointmentNotification(
-        remoteMessage.data.title,
-        remoteMessage.data.start_date,
-        remoteMessage.data.end_date,
+        remoteMessage.data?.title,
+        remoteMessage.data?.start_date,
+        remoteMessage.data?.end_date,
       );
     } else if (remoteMessage.data.body.includes('missed')) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);

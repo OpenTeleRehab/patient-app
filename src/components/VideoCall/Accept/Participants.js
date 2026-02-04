@@ -20,8 +20,8 @@ const Participants = ({theme, participants}) => {
   return (
     <ScrollView horizontal style={styles.participantContainer}>
       {participants.length > 0 &&
-        Array.from(participants, ({participant, track}) => (
-          <View key={participant.identity} style={styles.participantItem}>
+        Array.from(participants, ({participant, track}, index) => (
+          <View key={index} style={styles.participantItem}>
             {track ? (
               <TwilioVideoParticipantView
                 trackIdentifier={{

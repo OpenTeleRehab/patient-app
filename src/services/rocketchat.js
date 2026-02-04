@@ -16,9 +16,9 @@ const getSubscriptions = async (userId, authToken) => {
   return [];
 };
 
-const getUserStatus = async (chatUsernames, userId, authToken) => {
+const getUserStatus = async (usernames, userId, authToken) => {
   const fields = JSON.stringify({status: 1});
-  const query = JSON.stringify({username: {$in: chatUsernames}});
+  const query = JSON.stringify({username: {$in: usernames}});
   const body = {fields, query, count: 999999};
   return await callChatApi('/users.list', userId, authToken, body);
 };
@@ -28,10 +28,6 @@ const getLastMessages = async (roomIds, userId, authToken) => {
   const query = JSON.stringify({_id: {$in: roomIds}});
   const body = {fields, query, count: 999999};
   return await callChatApi('/im.list', userId, authToken, body);
-};
-
-const getMessageCounters = async (roomId, userId, authToken) => {
-  return await callChatApi(`/im.counters?roomId=${roomId}`, userId, authToken);
 };
 
 const markMessagesAsRead = async (roomId, userId, authToken) => {
@@ -65,7 +61,6 @@ export const Rocketchat = {
   getSubscriptions,
   getUserStatus,
   getLastMessages,
-  getMessageCounters,
   markMessagesAsRead,
   sendAttachmentMessage,
 };

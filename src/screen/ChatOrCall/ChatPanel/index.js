@@ -60,7 +60,7 @@ const ChatPanel = ({navigation, theme}) => {
   }, [chatRooms, messages]);
 
   useEffect(() => {
-    if (isOnlineMode && isOnChatScreen && chatSocket) {
+    if (isOnlineMode && isOnChatScreen && chatSocket && selectedRoom?.id) {
       Rocketchat.markMessagesAsRead(
         selectedRoom.rid,
         chatAuth.userId,
@@ -83,7 +83,7 @@ const ChatPanel = ({navigation, theme}) => {
     isOnChatScreen,
     isOnlineMode,
     profile.id,
-    selectedRoom.rid,
+    selectedRoom,
   ]);
 
   useEffect(() => {
@@ -219,7 +219,7 @@ const ChatPanel = ({navigation, theme}) => {
     navigation.goBack();
   };
 
-  const handleCall = (isVideo) => {
+  const handleCall = async (isVideo) => {
     const _id = generateHash();
     const rid = selectedRoom.rid;
     const text = isVideo
@@ -228,6 +228,9 @@ const ChatPanel = ({navigation, theme}) => {
 
     // Send call message
     sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
+
+    dispatch(mutation.showIncomingCall(true));
+    dispatch(mutation.hasStartedCall(true));
 
     // Send podcast notification
     if (selectedRoom.u.status === CHAT_USER_STATUS.OFFLINE) {
@@ -250,7 +253,7 @@ const ChatPanel = ({navigation, theme}) => {
         <HeaderBar
           backgroundPrimary
           onGoBack={() => handleGoBack()}
-          title={selectedRoom.name}
+          title={selectedRoom?.name}
           call={{
             onAudioCall: () => handleCall(false),
             onVideoCall: () => handleCall(true),
@@ -260,7 +263,7 @@ const ChatPanel = ({navigation, theme}) => {
         <HeaderBar
           backgroundPrimary
           onGoBack={() => handleGoBack()}
-          title={selectedRoom.name}
+          title={selectedRoom?.name}
         />
       )}
       <GiftedChat
