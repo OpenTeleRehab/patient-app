@@ -23,7 +23,7 @@ import {
 import {useNetInfo} from '@react-native-community/netinfo';
 import {mutation} from '../../../store/patient/mutations';
 import variables from '../../../assets/styles/variables';
-import {showDateOfBirth} from './PatientCard';
+import {referralStatusText, showDateOfBirth} from './PatientCard';
 import Notification from '../../../components/Notification';
 
 const PatientDetail = ({navigation, route}) => {
@@ -91,7 +91,7 @@ const PatientDetail = ({navigation, route}) => {
               : theme.colors.primary
           }
           value={translate(
-            `phc.patient.referral_status.${patientDetail.referral_status}`,
+            `phc.patient.referral_status.${referralStatusText(patientDetail.referral_status)}`,
           )}
         />,
       description: showReferralReason &&

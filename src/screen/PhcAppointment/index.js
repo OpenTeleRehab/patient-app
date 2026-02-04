@@ -37,6 +37,14 @@ const PhcAppointment = ({navigation}) => {
   const [showForm, setShowForm] = useState(false);
   const tabs = ['appointments', 'new_requested_appointments'];
 
+  const appointments = [...phcAppointmentsWithPatient?.approves,...phcAppointments?.approves].sort(
+    (a, b) => new Date(a.start_date) - new Date(b.start_date)
+  );
+
+  const newAppointments = [...phcAppointmentsWithPatient?.newAppointments,...phcAppointments?.newAppointments].sort(
+    (a, b) => new Date(a.start_date) - new Date(b.start_date)
+  );
+
   useEffect(() => {
     if (!_.isEmpty(currentFilters)) {
       dispatch(getAppointmentsWithPatientRequest(currentFilters));
@@ -122,9 +130,9 @@ const PhcAppointment = ({navigation}) => {
         </View>
         <Divider style={styles.marginTop} />
         {activeTab === 0 ? (
-          <AppointmentList navigation={navigation} appointmentWithPatients={phcAppointmentsWithPatient?.approves} appointments={phcAppointments?.approves} />
+          <AppointmentList navigation={navigation} appointments={appointments} />
         ) : (
-          <NewRequestedAppointmentList navigation={navigation} appointmentWithPatients={phcAppointmentsWithPatient?.newAppointments} appointments={phcAppointments?.newAppointments} />
+          <NewRequestedAppointmentList navigation={navigation} appointments={newAppointments}/>
         )}
       </View>
       <BottomSheet isVisible={showFilter}>
