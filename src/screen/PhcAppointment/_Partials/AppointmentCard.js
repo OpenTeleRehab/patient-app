@@ -256,7 +256,7 @@ const AppointmentCard = ({appointment}) => {
             </Text>
             <Divider style={styles.marginY} />
             <Text style={additionTextStyle}>
-              {translate('phc.appointment.appointment_with')} <Text style={styles.fontWeightBold}>{translate(appointmentWith())}</Text>
+              {translate('phc.appointment.appointment_with')} <Text style={styles.fontWeightBold}>{translate(appointmentWith())}</Text> {appointment.type && <Text>({translate(`appointment.type.${appointment.type}`)})</Text>}
             </Text>
             <Text style={[componentStyle.nameText, additionTextStyle]}>
               {appointment.patient
