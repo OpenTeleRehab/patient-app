@@ -60,7 +60,7 @@ const ChatPanel = ({navigation, theme}) => {
   }, [chatRooms, messages]);
 
   useEffect(() => {
-    if (isOnlineMode && isOnChatScreen && chatSocket && selectedRoom?.id) {
+    if (isOnlineMode && isOnChatScreen && chatSocket && selectedRoom?.rid) {
       Rocketchat.markMessagesAsRead(
         selectedRoom.rid,
         chatAuth.userId,
@@ -190,7 +190,7 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const renderFooter = () => {
-    if (selectedRoom.u?.status === CHAT_USER_STATUS.OFFLINE) {
+    if (selectedRoom?.u?.status === CHAT_USER_STATUS.OFFLINE) {
       return (
         <View style={[styles.flexCenter, styles.paddingXLg, styles.paddingYMd]}>
           <Text style={styles.chatTherapistNotOnlineText}>

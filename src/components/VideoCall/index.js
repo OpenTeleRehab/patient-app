@@ -6,14 +6,9 @@ import {Modal, NativeModules, Platform} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
-import {
-  CALL_STARTED_STATUSES,
-  CALL_STATUS,
-  STORAGE_KEY,
-} from '../../variables/constants';
+import {CALL_STARTED_STATUSES, CALL_STATUS} from '../../variables/constants';
 import IncomingCall from './Incoming';
 import AcceptCall from './Accept';
-import {getLocalData} from '../../utils/local_storage';
 
 const VideoCall = ({theme}) => {
   const {callAccessToken, videoCall, showIncomingCall, showAcceptedCall} =

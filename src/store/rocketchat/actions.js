@@ -118,11 +118,13 @@ export const getChatRooms = () => async (dispatch, getState) => {
       }
     } else {
       const primaryTherapistIds = [profile.therapist_id];
+      const primaryPhcWorkerIds = [profile.phc_worker_id];
       const secondaryTherapistIds = profile.secondary_therapists ?? [];
       const secondaryPhcWorkerIds = profile.supplementary_phc_workers ?? [];
       const therapists = await Therapist.getTherapists({
         ids: JSON.stringify([
           ...primaryTherapistIds,
+          ...primaryPhcWorkerIds,
           ...secondaryTherapistIds,
           ...secondaryPhcWorkerIds,
         ]),
@@ -131,7 +133,7 @@ export const getChatRooms = () => async (dispatch, getState) => {
       if (therapists.success) {
         for (const therapist of therapists.data) {
           const subscription = subscriptions.find((room) =>
-            room.rid.includes(chatAuth.userId),
+            room.rid.includes(therapist.chat_user_id),
           );
 
           if (subscription) {
