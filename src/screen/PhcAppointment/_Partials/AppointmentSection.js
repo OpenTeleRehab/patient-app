@@ -11,7 +11,7 @@ const AppointmentSection = ({sectionData}) => {
   return (
     <View style={styles.marginBottom}>
       {sectionData.map((group, index) => (
-        <View key={`${group.id}-${index}`} style={styles.marginBottom}>
+        <View key={`${group.month}-${index}`} style={styles.marginBottom}>
           <Text style={[styles.fontWeightBold, styles.marginBottom]}>
             {group.month}
           </Text>

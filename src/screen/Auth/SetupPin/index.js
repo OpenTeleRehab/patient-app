@@ -96,8 +96,8 @@ const SetupPin = ({navigation, route}) => {
   };
 
   const onSetProfileInfo = (data) => {
-    dispatch(setProfileInfo(data));
     dispatch(clearRegister());
+    dispatch(setProfileInfo(data));
   };
 
   const handleCodeInputPress = (ref) => {
