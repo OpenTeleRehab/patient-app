@@ -206,32 +206,7 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (isOnline && profile.identity && profile.chat_password) {
-      if (Platform.OS === 'ios' && appStateVisible === 'active') {
-        const subscribeIds = {
-          loginId: getUniqueId(profile.id),
-          roomMessageId: getUniqueId(profile.id),
-          notifyLoggedId: getUniqueId(profile.id),
-        };
-
-        dispatch(setChatSubscribeIds(subscribeIds));
-
-        chatSocket = initialChatSocket(
-          dispatch,
-          subscribeIds,
-          profile.identity,
-          profile.chat_password,
-          (newSocket) => {
-            chatSocket = newSocket; // Update the reference
-          },
-        );
-
-        setSocket(chatSocket);
-
-        // Request phone calls permission
-        requestCallPermission();
-      }
-
-      if (Platform.OS === 'android' && chatSocket === null) {
+      const initChatSocket = () => {
         const subscribeIds = {
           loginId: getUniqueId(profile.id),
           roomMessageId: getUniqueId(profile.id),
@@ -241,6 +216,7 @@ const AppProvider = ({children}) => {
         dispatch(clearVideoCallStatus());
         dispatch(setChatSubscribeIds(subscribeIds));
 
+        // Initial chat socket
         chatSocket = initialChatSocket(
           dispatch,
           subscribeIds,
@@ -251,11 +227,29 @@ const AppProvider = ({children}) => {
           },
         );
 
-        // Request phone calls permission
+        // Set chat socket
+        setSocket(chatSocket);
+
+        // Request phone call permission
         requestCallPermission();
+      };
+
+      if (Platform.OS === 'ios' && appStateVisible === 'active') {
+        initChatSocket();
+      }
+
+      if (Platform.OS === 'android' && chatSocket === null) {
+        initChatSocket();
       }
     }
-  }, [appStateVisible, dispatch, isOnline, profile]);
+  }, [
+    appStateVisible,
+    dispatch,
+    isOnline,
+    profile.chat_password,
+    profile.id,
+    profile.identity,
+  ]);
 
   useEffect(() => {
     if (accessToken && chatAuth && chatAuth.userId && chatAuth.token) {
