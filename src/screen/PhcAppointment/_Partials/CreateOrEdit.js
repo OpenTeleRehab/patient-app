@@ -240,6 +240,45 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
           )}
         </Text>
         <Divider style={styles.marginBottomMd} />
+        <View style={styles.formGroup}>
+          <Text
+            accessibilityLabel={translate('appointment.type')}
+            style={[componentStyles.labelStyle, styles.marginTop]}
+          >
+            {translate('appointment.type')}
+            <Text style={componentStyles.requiredText}> *</Text>
+          </Text>
+          <Controller
+            control={control}
+            name="type"
+            rules={{required: translate('error.message.phc.appointment.type.required')}}
+            render={({field: {onChange, value}}) => {
+              return (
+                <View style={styles.flexRow}>
+                  <CheckBox
+                    title={translate('appointment.type.online')}
+                    checkedIcon='dot-circle-o'
+                    uncheckedIcon='circle-o'
+                    checked={value === APPOINTMENT_TYPE.ONLINE}
+                    onPress={() => onChange(APPOINTMENT_TYPE.ONLINE)}
+                    textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
+                  />
+                  <CheckBox
+                    title={translate('appointment.type.in_person')}
+                    checkedIcon='dot-circle-o'
+                    uncheckedIcon='circle-o'
+                    checked={value === APPOINTMENT_TYPE.IN_PERSON}
+                    onPress={() => onChange(APPOINTMENT_TYPE.IN_PERSON)}
+                    textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
+                  />
+                </View>
+              );
+            }}
+          />
+          {errors.type && (
+            <Text style={componentStyles.errorTextStyle}>{errors.type.message}</Text>
+          )}
+        </View>
         <View>
           <Text
             accessibilityLabel={translate('phc.appointment.appointment_with')}
@@ -390,45 +429,6 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
             )}
           </View>
         )}
-        <View style={styles.formGroup}>
-          <Text
-            accessibilityLabel={translate('appointment.type')}
-            style={[componentStyles.labelStyle, styles.marginTop]}
-          >
-            {translate('appointment.type')}
-            <Text style={componentStyles.requiredText}> *</Text>
-          </Text>
-          <Controller
-            control={control}
-            name="type"
-            rules={{required: translate('error.message.phc.appointment.type.required')}}
-            render={({field: {onChange, value}}) => {
-              return (
-                <View style={styles.flexRow}>
-                  <CheckBox
-                    title={translate('appointment.type.online')}
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={value === APPOINTMENT_TYPE.ONLINE}
-                    onPress={() => onChange(APPOINTMENT_TYPE.ONLINE)}
-                    textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
-                  />
-                  <CheckBox
-                    title={translate('appointment.type.in_person')}
-                    checkedIcon='dot-circle-o'
-                    uncheckedIcon='circle-o'
-                    checked={value === APPOINTMENT_TYPE.IN_PERSON}
-                    onPress={() => onChange(APPOINTMENT_TYPE.IN_PERSON)}
-                    textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
-                  />
-                </View>
-              );
-            }}
-          />
-          {errors.type && (
-            <Text style={componentStyles.errorTextStyle}>{errors.type.message}</Text>
-          )}
-        </View>
         <View style={styles.formGroup}>
           <Text
               accessibilityLabel={translate('phc.appointment.date')}
