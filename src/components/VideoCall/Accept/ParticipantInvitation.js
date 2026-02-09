@@ -75,12 +75,10 @@ const ParticipantInvitation = ({
                 if (p.countdown === undefined) {
                   return p;
                 } else {
-                  const countryId = profile.country_id;
-                  const username = p.u.username;
-                  const identity = username + '_' + countryId;
-
-                  const joined = participants.find(
-                    (item) => item.identity === identity,
+                  const joined = participants.find((item) =>
+                    item.participant.identity.startsWith(
+                      p.u.username + '###' + profile.country_id,
+                    ),
                   );
 
                   if (joined) {
@@ -119,9 +117,8 @@ const ParticipantInvitation = ({
   };
 
   const checkParticipantJoined = (room) => {
-    return participants.some(
-      ({participant}) =>
-        participant.identity === room.u.username + '_' + profile.country_id,
+    return participants.some(({participant}) =>
+      participant.identity.startsWith(room.u.username + '###' + profile.country_id),
     );
   };
 

@@ -26,7 +26,7 @@ export const requestCallPermission = () => {
   RNCallKeep.setup(options);
 };
 
-export const notificationPermission = () => {
+export const requestNotificationPermission = () => {
   // iOS - Requesting permissions
   messaging().requestPermission();
 

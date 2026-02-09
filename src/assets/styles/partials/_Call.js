@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import variables from '../variables';
+import {Platform} from 'react-native';
 
 export default {
   incomingCallContainer: {
@@ -36,7 +37,7 @@ export default {
   },
   btnAddParticipant: {
     position: 'absolute',
-    top: 20,
+    top: Platform.OS === 'ios' ? 34 : 20,
     right: 20,
     zIndex: 99,
   },
@@ -64,9 +65,9 @@ export default {
     width: '100%',
   },
   participantContainer: {
-    padding: 8,
+    paddingHorizontal: 8,
     position: 'absolute',
-    bottom: 110,
+    bottom: 120,
     width: '100%',
     zIndex: 99,
   },
