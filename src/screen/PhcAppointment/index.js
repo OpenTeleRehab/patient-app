@@ -37,13 +37,17 @@ const PhcAppointment = ({navigation}) => {
   const [showForm, setShowForm] = useState(false);
   const tabs = ['appointments', 'new_requested_appointments'];
 
-  const appointments = [...phcAppointmentsWithPatient?.approves,...phcAppointments?.approves].sort(
-    (a, b) => new Date(a.start_date) - new Date(b.start_date)
-  );
+  const sortByStartDate = (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
 
-  const newAppointments = [...phcAppointmentsWithPatient?.newAppointments,...phcAppointments?.newAppointments].sort(
-    (a, b) => new Date(a.start_date) - new Date(b.start_date)
-  );
+  const appointments = [
+    ...(phcAppointmentsWithPatient?.approves ?? []),
+    ...(phcAppointments?.approves ?? []),
+  ].sort(sortByStartDate);
+
+  const newAppointments = [
+    ...(phcAppointmentsWithPatient?.newAppointments ?? []),
+    ...(phcAppointments?.newAppointments ?? []),
+  ].sort(sortByStartDate);
 
   useEffect(() => {
     if (!_.isEmpty(currentFilters)) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {getTranslate} from 'react-localize-redux';
 import {Alert, View} from 'react-native';
-import {Card, Icon, Text, withTheme} from 'react-native-elements';
+import {Card, Icon, Text} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {formatDate} from '../../../utils/helper';
 import {componentStyles} from '../../Patient/_Partials/PatientCard';
@@ -17,7 +17,7 @@ import {getPatientsListForPhcWorkerRequest} from '../../../store/patient/actions
 import {useShowToast} from '../../../hook/useShowToast';
 import {THERAPIST_TYPES} from '../../../variables/constants';
 
-const TransferPatientCard = ({transferInfo, theme}) => {
+const TransferPatientCard = ({transferInfo}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {showToast} = useShowToast();
@@ -83,8 +83,8 @@ const TransferPatientCard = ({transferInfo, theme}) => {
   return (
     <Card containerStyle={componentStyles.cardContainer}>
       <View style={componentStyles.contentContainer}>
-        <View>
-          <View style={componentStyles.leftSideContainer}>
+        <View style={styles.flex1}>
+          <View style={[componentStyles.leftSideContainer, styles.marginBottom]}>
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -146,4 +146,4 @@ const TransferPatientCard = ({transferInfo, theme}) => {
   );
 };
 
-export default withTheme(TransferPatientCard);
+export default TransferPatientCard;
