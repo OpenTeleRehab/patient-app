@@ -191,7 +191,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
               ]}
               title={translate('appointment.invitation.accept')}
               titleStyle={styles.marginLeftSm}
-              buttonStyle={styles.paddingY}
+              buttonStyle={styles.paddingYSm}
               disabled={acceptDisabled}
               onPress={() => handleAcceptPress(appointment.id)}
             />
