@@ -1,9 +1,8 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {Platform, AppState} from 'react-native';
-import _ from 'lodash';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 import SplashScreen from './src/components/SplashScreen';
@@ -30,7 +29,6 @@ import {
 import {getUniqueId} from './src/utils/helper';
 import {
   clearOfflineMessages,
-  clearVideoCallStatus,
   getChatRooms,
   postAttachmentMessage,
   setChatSubscribeIds,
@@ -47,12 +45,10 @@ import {
   completeQuestionnaire,
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
-import {
-  notificationPermission,
-  requestCallPermission,
-} from './src/utils/permission';
+import {requestCallPermission, requestNotificationPermission} from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
+import _ from 'lodash';
 
 let chatSocket = null;
 let patientId = null;
@@ -60,8 +56,6 @@ let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
-  const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const {accessToken, profile, isDataUpToDate} = useSelector(
     (state) => state.user,
   );
@@ -141,21 +135,6 @@ const AppProvider = ({children}) => {
   };
 
   useEffect(() => {
-    // Listen AppState change
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      appState.current = nextAppState;
-      setAppStateVisible(appState.current);
-    });
-
-    // Request notification permission
-    notificationPermission();
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     const answerCallListener = RNCallKeep.addEventListener(
       'answerCall',
       answerCall,
@@ -206,50 +185,36 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (isOnline && profile.identity && profile.chat_password) {
-      const initChatSocket = () => {
-        const subscribeIds = {
-          loginId: getUniqueId(profile.id),
-          roomMessageId: getUniqueId(profile.id),
-          notifyLoggedId: getUniqueId(profile.id),
-        };
-
-        dispatch(clearVideoCallStatus());
-        dispatch(setChatSubscribeIds(subscribeIds));
-
-        // Initial chat socket
-        chatSocket = initialChatSocket(
-          dispatch,
-          subscribeIds,
-          profile.identity,
-          profile.chat_password,
-          (newSocket) => {
-            chatSocket = newSocket; // Update the reference
-          },
-        );
-
-        // Set chat socket
-        setSocket(chatSocket);
-
-        // Request phone call permission
-        requestCallPermission();
+      const subscribeIds = {
+        loginId: getUniqueId(profile.id),
+        roomMessageId: getUniqueId(profile.id),
+        notifyLoggedId: getUniqueId(profile.id),
       };
 
-      if (Platform.OS === 'ios' && appStateVisible === 'active') {
-        initChatSocket();
-      }
+      // Set chat subscribe ids
+      dispatch(setChatSubscribeIds(subscribeIds));
 
-      if (Platform.OS === 'android' && chatSocket === null) {
-        initChatSocket();
-      }
+      // Initial chat socket
+      chatSocket = initialChatSocket(
+        dispatch,
+        subscribeIds,
+        profile.identity,
+        profile.chat_password,
+        (newSocket) => {
+          chatSocket = newSocket; // Update the reference
+        },
+      );
+
+      // Set chat socket
+      setSocket(chatSocket);
+
+      // Request notification permission
+      requestNotificationPermission();
+
+      // Request phone call permission
+      requestCallPermission();
     }
-  }, [
-    appStateVisible,
-    dispatch,
-    isOnline,
-    profile.chat_password,
-    profile.id,
-    profile.identity,
-  ]);
+  }, [dispatch, isOnline, profile.chat_password, profile.id, profile.identity]);
 
   useEffect(() => {
     if (accessToken && chatAuth && chatAuth.userId && chatAuth.token) {

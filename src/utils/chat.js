@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import store from '../store';
-import {CALL_STATUS} from '../variables/constants';
+import {CALL_STARTED_STATUSES, CALL_STATUS} from '../variables/constants';
 
 export const getPatientChatRooms = () => {
   const {chatRooms} = store.getState().rocketchat;
@@ -42,21 +42,11 @@ export const getPhcChatRooms = () => {
 export const checkCallBusy = (userId, msg) => {
   const {chatAuth, videoCall} = store.getState().rocketchat;
 
-  if (!_.isEmpty(videoCall)) {
-    const callStatuses = [
-      CALL_STATUS.AUDIO_STARTED,
-      CALL_STATUS.VIDEO_STARTED,
-      CALL_STATUS.BUSY,
-    ];
-
-    if (callStatuses.includes(msg)) {
-      if (chatAuth.userId !== userId) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  return (
+    !_.isEmpty(videoCall) &&
+    chatAuth.userId !== userId &&
+    [...CALL_STARTED_STATUSES, CALL_STATUS.BUSY].includes(msg)
+  );
 };
 
 export const formatCallDuration = (seconds) => {

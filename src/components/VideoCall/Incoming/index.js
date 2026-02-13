@@ -113,7 +113,7 @@ const IncomingCall = ({
           _id,
           rid,
           identity: chatRoom.u.username,
-          title: profile.first_name + ' ' + profile.last_name,
+          title: profile.last_name + ' ' + profile.first_name,
           body: msg,
         });
       }
@@ -133,7 +133,7 @@ const IncomingCall = ({
       <View style={styles.incomingCallContainer}>
         <View style={[styles.flexCenter, styles.justifyContentCenter]}>
           <Text style={styles.callerName}>
-            {hasStartedCall ? selectedRoom.name : videoCall.u.name}
+            {hasStartedCall ? selectedRoom?.name : videoCall?.u?.name}
           </Text>
           <Text style={styles.callingText}>
             {translate('video_call_starting')}

@@ -17,6 +17,7 @@ import {
 } from '../store/rocketchat/actions';
 import {getLocalData, storeLocalData} from '../utils/local_storage';
 import {mutation} from '../store/rocketchat/mutations';
+import _ from 'lodash';
 
 const CallContext = createContext(null);
 
@@ -34,6 +35,16 @@ export const CallContextProvider = ({children}) => {
   } = useSelector((state) => state.rocketchat);
   const {accessToken, profile} = useSelector((state) => state.user);
   const [hasParticipant, setHasParticipant] = useState(false);
+
+  useEffect(() => {
+    if (_.isEmpty(videoCall)) {
+      dispatch(mutation.showIncomingCall(false));
+      dispatch(mutation.showAcceptedCall(false));
+
+      dispatch(mutation.hasStartedCall(false));
+      dispatch(mutation.hasAcceptedCall(false));
+    }
+  }, [dispatch, videoCall]);
 
   useEffect(() => {
     // Call started listener
@@ -76,9 +87,6 @@ export const CallContextProvider = ({children}) => {
         } else {
           // Cleanup video call
           dispatch(clearVideoCallStatus());
-
-          // Hide incoming call
-          dispatch(mutation.showIncomingCall(false));
         }
       }
     };
@@ -97,9 +105,6 @@ export const CallContextProvider = ({children}) => {
         if (callAccessToken === undefined) {
           // Cleanup video call
           dispatch(clearVideoCallStatus());
-
-          // Hide incoming call
-          dispatch(mutation.showIncomingCall(false));
         }
       }
     };
@@ -113,17 +118,11 @@ export const CallContextProvider = ({children}) => {
 
           // Cleanup video call
           dispatch(clearVideoCallStatus());
-
-          // // Cleanup call info
-          // storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
         }
 
         if (callAccessToken === undefined) {
           // Cleanup video call
           dispatch(clearVideoCallStatus());
-
-          dispatch(mutation.showIncomingCall(false));
-          dispatch(mutation.hasStartedCall(false));
 
           // Cleanup call info
           storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
@@ -131,8 +130,8 @@ export const CallContextProvider = ({children}) => {
       }
     };
 
+    // Call ended listener
     const onEndedCallEvent = async () => {
-      // Call ended listener
       if (CALL_ENDED_STATUSES.includes(videoCall.status)) {
         if (callAccessToken === undefined) {
           // Cleanup video call

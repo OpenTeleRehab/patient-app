@@ -77,6 +77,11 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
   };
 };
 
+export const getParticipantName = (participant) => {
+  const parts = participant?.identity?.split('###');
+  return parts?.[2] ?? '';
+};
+
 export const toMB = (bytes) => {
   return bytes / Math.pow(1024, 2);
 };

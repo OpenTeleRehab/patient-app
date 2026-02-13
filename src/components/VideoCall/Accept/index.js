@@ -11,23 +11,34 @@ import {
   View,
   Platform,
   PermissionsAndroid,
+  FlatList,
 } from 'react-native';
+import {
+  TwilioVideo,
+  TwilioVideoParticipantView,
+} from 'react-native-twilio-video-webrtc';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {TwilioVideo} from 'react-native-twilio-video-webrtc';
 import {useDispatch, useSelector} from 'react-redux';
 import {Icon, Text} from 'react-native-elements';
 import {getLocalData, storeLocalData} from '../../../utils/local_storage';
-import {CALL_STATUS, STORAGE_KEY} from '../../../variables/constants';
+import {
+  CALL_ENDED_STATUSES,
+  CALL_STATUS,
+  STORAGE_KEY,
+} from '../../../variables/constants';
+import {
+  generateHash,
+  getParticipantName,
+  isPhcWorker,
+} from '../../../utils/helper';
 import {clearCallAccessToken} from '../../../store/rocketchat/actions';
 import {clearVideoCallStatus} from '../../../store/rocketchat/actions';
 import {sendNewMessage, updateMessage} from '../../../utils/rocketchat';
-import {generateHash, isPhcWorker} from '../../../utils/helper';
 import {useCallContext} from '../../../context/CallContext';
 import {mutation} from '../../../store/rocketchat/mutations';
 import CommonPopup from '../../Common/Popup';
 import RocketchatContext from '../../../context/RocketchatContext';
 import ParticipantInvitation from './ParticipantInvitation';
-import Participants from './Participants';
 import LocalParticipant from './LocalParticipant';
 import styles from '../../../assets/styles';
 import _ from 'lodash';
@@ -49,9 +60,13 @@ const AcceptCall = ({
   const chatSocket = useContext(RocketchatContext);
   const {ForegroundService} = NativeModules;
   const {setHasParticipant} = useCallContext();
-  const {callAccessToken, chatRooms, videoCall, hasStartedCall} = useSelector(
-    (state) => state.rocketchat,
-  );
+  const {
+    callAccessToken,
+    chatRooms,
+    videoCall,
+    hasStartedCall,
+    hasAcceptedCall,
+  } = useSelector((state) => state.rocketchat);
   const {profile} = useSelector((state) => state.user);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
@@ -66,6 +81,26 @@ const AcceptCall = ({
   const [isTranscripting, setIsTranscripting] = useState(false);
   const [transcriptedText, setTranscriptedText] = useState('');
   const [callDuration, setCallDuration] = useState(0);
+
+  useEffect(() => {
+    if (CALL_ENDED_STATUSES.includes(videoCall.status) && callAccessToken) {
+      if (hasAcceptedCall) {
+        // Disconnect from twilio call
+        twilioRef?.current?.disconnect();
+      }
+
+      if (hasStartedCall && participants.length === 0) {
+        // Disconnect from twilio call
+        twilioRef?.current?.disconnect();
+      }
+    }
+  }, [
+    callAccessToken,
+    hasAcceptedCall,
+    hasStartedCall,
+    participants,
+    videoCall,
+  ]);
 
   useEffect(() => {
     setHasParticipant(participants.length > 0);
@@ -117,26 +152,13 @@ const AcceptCall = ({
               enableAudio: !isMute && hasVoicePermission,
             });
 
-            if (Platform.OS === 'android') {
-              twilioRef.current
-                .setLocalVideoEnabled(videoOn && hasCameraPermission)
-                .then((isEnabled) => setIsVideoEnabled(isEnabled));
+            twilioRef.current
+              .setLocalVideoEnabled(videoOn && hasCameraPermission)
+              .then((isEnabled) => setIsVideoEnabled(isEnabled));
 
-              twilioRef.current
-                .setLocalAudioEnabled(!isMute && hasVoicePermission)
-                .then((isEnabled) => setIsAudioEnabled(isEnabled));
-            } else {
-              // Fix issue enabling video in audio call on iOS
-              setTimeout(() => {
-                twilioRef.current
-                  .setLocalVideoEnabled(videoOn && hasCameraPermission)
-                  .then((isEnabled) => setIsVideoEnabled(isEnabled));
-
-                twilioRef.current
-                  .setLocalAudioEnabled(!isMute && hasVoicePermission)
-                  .then((isEnabled) => setIsAudioEnabled(isEnabled));
-              }, 1500);
-            }
+            twilioRef.current
+              .setLocalAudioEnabled(!isMute && hasVoicePermission)
+              .then((isEnabled) => setIsAudioEnabled(isEnabled));
           }
         })
         .finally(() => setIsConnecting(false));
@@ -231,12 +253,36 @@ const AcceptCall = ({
     }
   };
 
+  const startForegroundService = () => {
+    if (Platform.OS === 'android') {
+      ForegroundService.startService();
+    }
+  };
+
+  const stopForegroundService = () => {
+    if (Platform.OS === 'android') {
+      ForegroundService.stopService();
+    }
+  };
+
+  const showTwilioVideoParticipantView = (track) => {
+    if (track) {
+      if (track.trackName === 'camera' && !track.enabled) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    return true;
+  };
+
   const _onEndButtonPress = () => {
     // Disconnect from twilio call
     twilioRef.current.disconnect();
 
     setTimeout(() => {
-      ForegroundService.stopService();
+      // Stop foreground service
+      stopForegroundService();
 
       // Cleanup call access token
       dispatch(clearCallAccessToken());
@@ -254,7 +300,7 @@ const AcceptCall = ({
     if (hasStartedCall) {
       participants.forEach(({participant}) => {
         const chatRoom = chatRooms.find((item) =>
-          participant.identity.startsWith(item.u.username),
+          participant.identity.includes(item.u.username + '###'),
         );
 
         const _id = generateHash();
@@ -285,6 +331,7 @@ const AcceptCall = ({
     // Start call duration
     startCallTimer();
 
+    // Set status connected
     setStatus('connected');
 
     // Get callUUID and end call keep
@@ -292,10 +339,22 @@ const AcceptCall = ({
       callInfo?.callUUID && RNCallKeep.endCall(callInfo?.callUUID);
     });
 
-    if (Platform.OS === 'android') {
-      // Start foreground service
-      ForegroundService.startService();
+    if (Platform.OS === 'ios') {
+      // Filter remote participants
+      const remoteParticipants = connected.participants
+        .filter((remote) => remote.sid !== connected.localParticipant.sid)
+        .map((remote) => ({
+          participant: remote,
+          roomName: connected.roomName,
+          roomSid: connected.roomSid,
+        }));
+
+      // Set remote participants
+      setParticipants(remoteParticipants);
     }
+
+    // Start foreground service
+    startForegroundService();
   };
 
   const _onRoomDidDisconnect = (disconnect) => {
@@ -309,19 +368,11 @@ const AcceptCall = ({
     // Set disconnected status
     setStatus('disconnected');
 
-    if (Platform.OS === 'android') {
-      // Stop foreground service
-      ForegroundService.stopService();
-    }
+    // Stop foreground service
+    stopForegroundService();
 
     // Cleanup call access token
     dispatch(clearCallAccessToken());
-
-    dispatch(mutation.showIncomingCall(false));
-    dispatch(mutation.showAcceptedCall(false));
-
-    dispatch(mutation.hasStartedCall(false));
-    dispatch(mutation.hasAcceptedCall(false));
 
     // Cleanup video call status
     dispatch(clearVideoCallStatus());
@@ -397,16 +448,9 @@ const AcceptCall = ({
       .setLocalVideoEnabled(!isVideoEnabled && hasCameraPermission)
       .then((isEnabled) => {
         setIsVideoEnabled(isEnabled);
-        if (Platform.OS === 'ios') {
-          if (!isEnabled) {
-            twilioRef.current.unpublishLocalVideo();
-          } else {
-            // Fix issue enabling video in audio call on iOS, but the issue still occurs sometimes when toggling multi times.
-            twilioRef.current.unpublishLocalVideo();
-            setTimeout(() => {
-              twilioRef.current.publishLocalVideo();
-            }, 1000);
-          }
+
+        if (Platform.OS === 'ios' && isEnabled) {
+          twilioRef.current.publishLocalVideo();
         }
       });
   };
@@ -424,24 +468,18 @@ const AcceptCall = ({
   };
 
   const _onRoomParticipantDidDisconnect = (participant) => {
-    const items = participants.filter(
-      (item) => item.participant.sid !== participant.participant.sid,
+    setParticipants(
+      participants.filter(
+        (item) => item.participant.sid !== participant.participant.sid,
+      ),
     );
-
-    setParticipants(items);
-
-    if (items.length === 0) {
-      setTimeout(() => {
-        // Disconnect from twilio call
-        twilioRef?.current?.disconnect();
-      }, 2000);
-    }
   };
 
   const _onParticipantAddedVideoTrack = (participant) => {
-    const sid = participant.participant.sid;
     setParticipants((prev) => [
-      ...prev.filter((item) => item.participant.sid !== sid),
+      ...prev.filter(
+        (item) => item.participant.sid !== participant.participant.sid,
+      ),
       participant,
     ]);
   };
@@ -456,6 +494,39 @@ const AcceptCall = ({
         return rest;
       }),
     );
+  };
+
+  const _onParticipantEnabledVideoTrack = (participant) => {
+    if (
+      Platform.OS === 'android' &&
+      participant.track.trackName === 'camera' &&
+      participant.track.enabled
+    ) {
+      setParticipants((prev) => [
+        ...prev.filter(
+          (item) => item.participant.sid !== participant.participant.sid,
+        ),
+        participant,
+      ]);
+    }
+  };
+
+  const _onParticipantDisabledVideoTrack = (participant) => {
+    if (
+      Platform.OS === 'android' &&
+      participant.track.trackName === 'camera' &&
+      !participant.track.enabled
+    ) {
+      setParticipants((prevParticipant) =>
+        prevParticipant.map((item) => {
+          if (item.participant.sid !== participant.participant.sid) {
+            return item;
+          }
+          const {track, ...rest} = item;
+          return rest;
+        }),
+      );
+    }
   };
 
   const _onDataTrackMessageReceived = (data) => {
@@ -502,8 +573,37 @@ const AcceptCall = ({
             callDuration={callDuration}
             participants={participants}
           />
-          <Participants participants={participants} />
-
+          <FlatList
+            data={participants}
+            horizontal
+            keyExtractor={(item) => item.sid}
+            removeClippedSubviews={false}
+            renderItem={({item}) => (
+              <View style={styles.participantItem}>
+                {showTwilioVideoParticipantView(item?.track) ? (
+                  <TwilioVideoParticipantView
+                    key={item.participant.sid}
+                    trackIdentifier={{
+                      participantSid: item.participant.sid,
+                      videoTrackSid: item.track.trackSid,
+                    }}
+                    style={styles.twilioVideoView}
+                  />
+                ) : (
+                  <Icon
+                    reverse
+                    name="person"
+                    color={theme.colors.primary}
+                    size={18}
+                  />
+                )}
+                <Text style={styles.participantName}>
+                  {getParticipantName(item.participant)}
+                </Text>
+              </View>
+            )}
+            style={styles.participantContainer}
+          />
           {hasStartedCall && (
             <ParticipantInvitation
               isVideoEnabled={isVideoEnabled}
@@ -579,6 +679,8 @@ const AcceptCall = ({
         onRoomDidFailToConnect={_onRoomDidFailToConnect}
         onParticipantAddedVideoTrack={_onParticipantAddedVideoTrack}
         onParticipantRemovedVideoTrack={_onParticipantRemovedVideoTrack}
+        onParticipantEnabledVideoTrack={_onParticipantEnabledVideoTrack}
+        onParticipantDisabledVideoTrack={_onParticipantDisabledVideoTrack}
         onDataTrackMessageReceived={_onDataTrackMessageReceived}
       />
     </View>
