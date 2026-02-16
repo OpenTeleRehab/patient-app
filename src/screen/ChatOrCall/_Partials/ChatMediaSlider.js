@@ -13,7 +13,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {Button, Text} from 'react-native-elements';
+import {Icon, Text} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
 import VideoPlayer from 'react-native-video-player';
 import RNFS from 'react-native-fs';
@@ -56,12 +56,13 @@ const RenderMediaItem = ({item, index}, currentIndex) => {
   if (item.video !== '') {
     return (
       <VideoPlayer
-        autoplay={index === currentIndex}
+        autoplay
         source={{uri: item.video}}
         resizeMode="contain"
-        style={mediaSize}
+        paused={index !== currentIndex}
         audioOnly={true}
         disableFullscreen={true}
+        style={mediaSize}
       />
     );
   }
@@ -124,36 +125,28 @@ const ChatMediaSlider = ({
           styles.flexRow,
           styles.justifyContentSpaceBetween,
           styles.flexCenter,
-          styles.paddingMd,
         ]}>
-        <View>
-          <Text style={[styles.textLight, styles.fontSizeMd]}>
-            {currentIndex + 1}/{items.length}
-          </Text>
-        </View>
-        <View>
-          <View style={styles.flexRow}>
-            <Button
-              type="clear"
-              icon={{
-                name: 'download',
-                type: 'antdesign',
-                size: 24,
-                color: theme.colors.white,
-              }}
-              onPress={() => handleDownloadMedia()}
-            />
-            <Button
-              type="clear"
-              icon={{
-                name: 'closecircleo',
-                type: 'antdesign',
-                size: 24,
-                color: theme.colors.white,
-              }}
-              onPress={() => onShowMediaSlider(false)}
-            />
-          </View>
+        <Text style={[styles.textLight, styles.fontSizeMd]}>
+          {currentIndex + 1}/{items.length}
+        </Text>
+        <View
+          style={[
+            styles.flexDirectionRow,
+            styles.alignItemsCenter,
+            styles.columnGap16,
+          ]}>
+          <Icon
+            name="save-alt"
+            size={26}
+            color={theme.colors.white}
+            onPress={handleDownloadMedia}
+          />
+          <Icon
+            name="close"
+            size={26}
+            color={theme.colors.white}
+            onPress={() => onShowMediaSlider(false)}
+          />
         </View>
       </View>
 
@@ -164,6 +157,7 @@ const ChatMediaSlider = ({
           sliderWidth={sliderWidth}
           itemWidth={sliderWidth}
           firstItem={currentIndex}
+          inactiveSlideScale={1}
           onSnapToItem={changeIndex}
         />
       </View>
