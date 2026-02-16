@@ -597,7 +597,7 @@ const AcceptCall = ({
                     size={18}
                   />
                 )}
-                <Text style={styles.participantName}>
+                <Text numberOfLines={1} style={styles.participantName}>
                   {getParticipantName(item.participant)}
                 </Text>
               </View>

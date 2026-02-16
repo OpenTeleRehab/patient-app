@@ -85,8 +85,9 @@ export default {
   },
   participantName: {
     color: variables.white,
-    position: 'absolute',
     bottom: 12,
+    position: 'absolute',
+    textAlign: 'center',
   },
   localVideoContainer: {
     backgroundColor: variables.black,
