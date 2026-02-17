@@ -2,9 +2,10 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
-import styles from '../../../assets/styles';
-import VideoPlayer from 'react-native-video-player';
-import {View, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
+import {Icon} from 'react-native-elements';
+import Video from 'react-native-video';
+import variables from '../../../assets/styles/variables';
 
 const ChatTypeVideo = ({
   chatData,
@@ -12,28 +13,54 @@ const ChatTypeVideo = ({
   onCurrentAttachment,
   isVideoAttachment,
 }) => {
-  const handleMediaClick = (currentMedia) => {
+  const handleMediaClick = () => {
     onShowMediaSlider(true);
     isVideoAttachment(true);
-    onCurrentAttachment(currentMedia);
+    onCurrentAttachment(chatData.currentMessage.video);
   };
 
   return (
-    <View style={styles.chatAttachmentContainer}>
-      <TouchableOpacity
-        onPress={() => handleMediaClick(chatData.currentMessage.video)}>
-        <VideoPlayer
-          source={{uri: chatData.currentMessage.video}}
-          thumbnail={{uri: chatData.currentMessage.video}}
-          endThumbnail={{uri: chatData.currentMessage.video}}
-          style={styles.chatMessageVideo}
-          onStart={() => handleMediaClick(chatData.currentMessage.video)}
-          onPlayPress={() => handleMediaClick(chatData.currentMessage.video)}
-          disableControlsAutoHide={true}
+    <View style={componentStyles.videoContainer}>
+      <Video
+        source={{uri: chatData.currentMessage.video}}
+        resizeMode="cover"
+        controls={false}
+        style={componentStyles.video}
+      />
+      <Pressable style={componentStyles.playBackdrop} onPress={handleMediaClick}>
+        <Icon
+          raised name="play-arrow"
+          size={18}
+          onPress={handleMediaClick}
         />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };
+
+const componentStyles = StyleSheet.create({
+  videoContainer: {
+    backgroundColor: variables.primary,
+    borderRadius: 12,
+    position: 'relative',
+    margin: 4,
+    overflow: 'hidden',
+    width: 142,
+  },
+  video: {
+    width: '100%',
+    height: 100,
+    borderRadius: 12,
+  },
+  playBackdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+  },
+});
 
 export default ChatTypeVideo;

@@ -56,10 +56,15 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     text = attachments[0].description;
     let baseUrl = store.getState().phone.chatBaseURL;
     let authParams = `?rc_uid=${userId}&rc_token=${authToken}`;
-    if (file.type.includes('video/')) {
-      video = encodeURI(`${baseUrl}${attachments[0].video_url}${authParams}`);
-    } else {
+
+    if (file.type.startsWith('image/')) {
       image = encodeURI(`${baseUrl}${attachments[0].image_url}${authParams}`);
+    }
+    if (file.type.startsWith('video/')) {
+      video = encodeURI(`${baseUrl}${attachments[0].video_url}${authParams}`);
+    }
+    if (file.type === 'application/octet-stream') {
+      video = encodeURI(`${baseUrl}${attachments[0].title_link}${authParams}`);
     }
   }
 

@@ -31,11 +31,6 @@ export default {
     resizeMode: 'cover',
     borderRadius: 15,
   },
-  chatMessageVideo: {
-    width: '100%',
-    height: 100,
-    borderRadius: 15,
-  },
   chatComposer: {
     borderRadius: variables.borderRadiusBase,
     fontSize: variables.fontSizeSm,
@@ -59,8 +54,8 @@ export default {
     lineHeight: 24,
   },
   modalHeaderAction: {
+    padding: variables.spacingBase,
     position: 'absolute',
-    padding: variables.spacingSm,
     top: 0,
     left: 0,
     width: '100%',
