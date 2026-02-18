@@ -4,6 +4,8 @@ import styles from '../../assets/styles';
 import {Text} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import moment from 'moment';
+import {getTranslate} from 'react-localize-redux';
+import {useSelector} from 'react-redux';
 
 const formatDate = (date) => {
   return moment.utc(date).local().format('DD/MM/YYYY');
@@ -15,6 +17,8 @@ const InterviewHistoryListCard = ({
   data,
   actionStatus,
 }) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   return (
     <TouchableOpacity onPress={OnViewDetail}>
       <View
@@ -31,7 +35,7 @@ const InterviewHistoryListCard = ({
             {data.title}
           </Text>
           {data?.isOffline ? (
-            <Text style={styles.textOrange}>Pending Submit</Text>
+            <Text style={styles.textOrange}>{translate('common.sync_pending')}</Text>
           ) : (
             <Text>{formatDate(data.created_at)}</Text>
           )}
