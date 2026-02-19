@@ -75,7 +75,6 @@ const TermCondition = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={false}
         title={translate('menu.tc')}
         onGoBack={() => navigation.goBack()}
       />

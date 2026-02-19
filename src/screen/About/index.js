@@ -141,7 +141,6 @@ const About = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={false}
         title={translate('menu.about.app')}
         onGoBack={() => navigation.goBack()}
       />

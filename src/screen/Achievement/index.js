@@ -40,11 +40,6 @@ const Achievement = ({theme, navigation}) => {
     };
   }, [navigation]);
 
-  const handleGoBack = () => {
-    navigation.getParent().setOptions({tabBarVisible: true});
-    navigation.goBack();
-  };
-
   const handleOpenAchievement = (item) => {
     setShowAchievementOverlay(true);
     setAchievement(item);
@@ -57,7 +52,11 @@ const Achievement = ({theme, navigation}) => {
 
   return (
     <>
-      <HeaderBar onGoBack={() => handleGoBack()} />
+      <HeaderBar
+        title={translate('common.achievement')}
+        onGoBack={() => navigation.goBack()}
+      />
+
       <ScrollView style={styles.backgroundWhite}>
         {achievements.map((item, i) => (
           <View opacity={item.obtained ? 1.0 : 0.3} key={i}>

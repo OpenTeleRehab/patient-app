@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, ListItem, withTheme, Button} from 'react-native-elements';
-import {ScrollView, StatusBar, View, StyleSheet, Alert} from 'react-native';
+import {ScrollView, View, StyleSheet, Alert} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {
@@ -39,12 +39,12 @@ const PatientDetail = ({navigation, route}) => {
   const [patientDetail, setPatientDetail] = useState();
   const [treatmentPlan, setTreatmentPlan] = useState();
   const [referralTherapists, setReferralTherapists] = useState();
-  
+
   const status = patientDetail?.referral_status;
   const referralReason = patientDetail?.referral_reject_reason ?? patientDetail?.referral_request_reason;
   const showReferralReason = [REFERRAL_STATUS.INVITED, REFERRAL_STATUS.DECLINED].includes(status);
   const referralReasonColor = status === REFERRAL_STATUS.INVITED ? theme.colors.orangeDark : theme.colors.danger;
-  
+
   useEffect(() => {
     const detailInfo = patientsForPhcWorker.find(
       (item) => item.id === patientId,
@@ -129,7 +129,11 @@ const PatientDetail = ({navigation, route}) => {
               ? 'phc.patient.message.account_deactivated'
               : 'phc.patient.message.account_activated',
           ),
-          translate('phc.patient.title'),
+          translate(
+            patientDetail?.enabled
+              ? 'phc.patient.deactivate_account'
+              : 'phc.patient.activate_account',
+          ),
         );
         const patientListUpdate = patientsForPhcWorker.map((item) =>
           item.id === patientDetail.id
@@ -144,7 +148,11 @@ const PatientDetail = ({navigation, route}) => {
       } else {
         showToast(
           translate(translate(response.message)),
-          translate('phc.patient.title'),
+          translate(
+            patientDetail?.enabled
+              ? 'phc.patient.deactivate_account'
+              : 'phc.patient.activate_account',
+          ),
         );
       }
     });
@@ -159,13 +167,13 @@ const PatientDetail = ({navigation, route}) => {
         dispatch(mutation.patientsForPhcWorkerFetchSuccess(patientListUpdate));
         showToast(
           translate('phc.patient.message.patient_account_deleted'),
-          translate('phc.patient.title'),
+          translate('phc.patient.delete_account'),
         );
         navigation.goBack();
       } else {
         showToast(
           translate(translate(response.message)),
-          translate('phc.patient.title'),
+          translate('phc.patient.delete_account'),
         );
       }
     });
@@ -229,15 +237,9 @@ const PatientDetail = ({navigation, route}) => {
 
   return (
     <>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
       <HeaderBar
-        onGoBack={handleGoback}
         title={translate('phc.patient.detail')}
-        backgroundPrimary={true}
+        onGoBack={handleGoback}
       />
       <ScrollView contentContainerStyle={styles.mainContainerLight}>
         <Text style={componentStyles.titleTextStyle}>

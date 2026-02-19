@@ -37,7 +37,6 @@ const Help = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={false}
         title={translate('menu.help')}
         onGoBack={() => navigation.goBack()}
       />

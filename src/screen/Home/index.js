@@ -196,7 +196,6 @@ const Home = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={true}
         achievement={{
           hasAchievement: kidTheme,
           onGoAchievement: () => navigation.navigate(ROUTES.ACHIEVEMENT),

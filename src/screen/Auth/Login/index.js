@@ -9,7 +9,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
 } from 'react-native';
 import {Text} from 'react-native-elements';
 import {
@@ -115,7 +114,7 @@ const Login = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.bgLight}>
+    <>
       <View style={!(profile && profile.kid_theme) && styles.authBanner}>
         {profile && profile.kid_theme ? (
           <Image source={kidLogo} style={styles.authKidLogo} />
@@ -263,7 +262,7 @@ const Login = ({navigation}) => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 };
 

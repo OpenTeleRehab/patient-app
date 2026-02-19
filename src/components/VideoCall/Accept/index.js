@@ -83,7 +83,7 @@ const AcceptCall = ({
   const [callDuration, setCallDuration] = useState(0);
 
   useEffect(() => {
-    if (CALL_ENDED_STATUSES.includes(videoCall.status) && callAccessToken) {
+    if (CALL_ENDED_STATUSES.includes(videoCall?.status) && callAccessToken) {
       if (hasAcceptedCall) {
         // Disconnect from twilio call
         twilioRef?.current?.disconnect();

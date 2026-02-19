@@ -62,7 +62,6 @@ const ExerciseDetail = ({theme, route, navigation}) => {
   if (!activity) {
     return (
       <HeaderBar
-        leftContent={{label: ''}}
         rightContent={{
           label: translate('common.close'),
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),

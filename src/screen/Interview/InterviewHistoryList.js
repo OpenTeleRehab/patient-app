@@ -53,7 +53,6 @@ const InterviewHistoryList = ({navigation, route}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary
         onGoBack={() => {
           navigation.goBack();
         }}

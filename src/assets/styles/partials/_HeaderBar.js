@@ -4,19 +4,11 @@
 import variables from '../variables';
 
 export default {
-  // TODO why video ended break header
-  headerWorkAround: {
-    height: 56,
-    paddingTop: 0,
-    borderBottomWidth: 0,
-  },
-  headerLogo: {
-    width: 150,
-    height: 40,
-  },
-  headerBackButton: {
-    paddingLeft: 0,
-    marginLeft: -5,
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 22,
   },
   headerButton: (hasLabel, backgroundPrimary) => ({
     paddingVertical: hasLabel ? variables.spacingSm : 0,
@@ -45,13 +37,6 @@ export default {
     color: variables.dark,
     fontSize: 18,
     marginLeft: variables.spacingSm,
-  },
-  offlineText: {
-    textAlign: 'center',
-    backgroundColor: variables.white,
-    color: variables.warning,
-    paddingTop: '7%',
-    paddingBottom: '0.6%',
   },
   backgroundPrimary: {
     backgroundColor: variables.primary,

@@ -250,9 +250,8 @@ const ChatPanel = ({navigation, theme}) => {
     <>
       {isPhcWorker(profile?.type) ? (
         <HeaderBar
-          backgroundPrimary
-          onGoBack={() => handleGoBack()}
           title={selectedRoom?.name}
+          onGoBack={() => handleGoBack()}
           call={{
             onAudioCall: () => handleCall(false),
             onVideoCall: () => handleCall(true),
@@ -260,7 +259,6 @@ const ChatPanel = ({navigation, theme}) => {
         />
       ) : (
         <HeaderBar
-          backgroundPrimary
           onGoBack={() => handleGoBack()}
           title={selectedRoom?.name}
         />

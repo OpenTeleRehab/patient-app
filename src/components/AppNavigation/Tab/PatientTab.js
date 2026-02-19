@@ -9,17 +9,17 @@ import DrawerNavigator from '../DrawerNavigator';
 
 const Drawer = createDrawerNavigator();
 
-const PatientTab = (props) => {
-  const renderDrawerContent = (navProps) => {
-    return (
-      <DrawerNavigator
-        navProps={navProps}
-        drawerItems={drawerItems.slice(0, -1)}
-        allowSwitchTheme={false}
-      />
-    );
-  };
+const renderDrawerContent = (navProps) => {
+  return (
+    <DrawerNavigator
+      navProps={navProps}
+      drawerItems={drawerItems.slice(0, -1)}
+      allowSwitchTheme={false}
+    />
+  );
+};
 
+const PatientTab = (props) => {
   return (
     <Drawer.Navigator
       drawerPosition="right"

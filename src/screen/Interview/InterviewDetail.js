@@ -127,7 +127,6 @@ const InterviewDetail = ({navigation, route}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary
         onGoBack={handleCancel}
         title={translate('phc.interview_detail')}
       />

@@ -47,7 +47,6 @@ const InterviewList = ({navigation, patientId}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary
         onGoBack={() => {
           navigation.goBack();
         }}

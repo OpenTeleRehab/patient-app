@@ -3,22 +3,17 @@
  */
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {drawerItems, homes} from '../../../variables/routes';
 import {withTheme} from 'react-native-elements';
+import {drawerItems, homes} from '../../../variables/routes';
 import DrawerNavigator from '../DrawerNavigator';
 
 const Drawer = createDrawerNavigator();
 
-const HomeTab = (props) => {
-  const renderDrawerContent = (navProps) => {
-    return (
-      <DrawerNavigator
-        navProps={navProps}
-        drawerItems={drawerItems}
-      />
-    );
-  };
+const renderDrawerContent = (navProps) => {
+  return <DrawerNavigator navProps={navProps} drawerItems={drawerItems} />;
+};
 
+const HomeTab = (props) => {
   return (
     <Drawer.Navigator
       drawerPosition="right"

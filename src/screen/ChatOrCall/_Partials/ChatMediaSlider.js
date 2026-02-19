@@ -4,6 +4,7 @@
 import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   Alert,
   Dimensions,
@@ -60,6 +61,8 @@ const ChatMediaSlider = ({
       : items.findIndex((item) => item.image === currentAttachment),
   );
 
+  const insets = useSafeAreaInsets();
+
   const changeIndex = (index) => {
     setCurrentIndex(index);
   };
@@ -101,6 +104,9 @@ const ChatMediaSlider = ({
           styles.flexRow,
           styles.justifyContentSpaceBetween,
           styles.flexCenter,
+          {
+            top: insets.top,
+          },
         ]}>
         <Text style={[styles.textLight, styles.fontSizeMd]}>
           {currentIndex + 1}/{items.length}

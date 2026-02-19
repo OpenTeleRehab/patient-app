@@ -2,7 +2,6 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import variables from '../variables';
-import {Platform} from 'react-native';
 
 export default {
   incomingCallContainer: {
@@ -34,12 +33,6 @@ export default {
     alignItems: 'center',
     paddingLeft: variables.spacingLg,
     paddingRight: variables.spacingLg,
-  },
-  btnAddParticipant: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 34 : 20,
-    right: 20,
-    zIndex: 99,
   },
   btnInviteParticipant: {
     alignItems: 'center',

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Dimensions, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Icon, Text, withTheme} from 'react-native-elements';
@@ -18,11 +17,10 @@ const LocalParticipant = ({
   const translate = getTranslate(localize);
   const {isChatConnected} = useSelector((state) => state.indicator);
   const {profile} = useSelector((state) => state.user);
-  const insets = useSafeAreaInsets();
 
   const videoContainerH = participants.length === 0
       ? {height: '100%'}
-      : {height: Dimensions.get('window').height - insets.bottom - insets.top - 250};
+      : {height: Dimensions.get('window').height - 290};
 
   return (
     <View style={{...styles.localVideoContainer, ...videoContainerH}}>

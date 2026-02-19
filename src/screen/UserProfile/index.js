@@ -175,7 +175,6 @@ const UserProfile = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={false}
         onGoBack={() => navigation.goBack()}
         title={translate('preferences')}
         rightContent={{

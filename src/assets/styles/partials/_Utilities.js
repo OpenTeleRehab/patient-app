@@ -85,9 +85,6 @@ export default {
   bgBlueDark: {
     backgroundColor: variables.blueDark,
   },
-  noneFlex: {
-    flex: 0,
-  },
   noneBorderBottom: {
     borderBottomWidth: 0,
   },

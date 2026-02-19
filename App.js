@@ -5,16 +5,17 @@ import React from 'react';
 import {ThemeProvider} from 'react-native-elements';
 import {LocalizeProvider} from 'react-localize-redux';
 import {Provider} from 'react-redux';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {PersistGate} from 'redux-persist/integration/react';
 import AppProvider from './AppProvider';
 import AppNavigation from './src/components/AppNavigation';
 import colors from './src/assets/styles/variables/colors';
 import VideoCall from './src/components/VideoCall';
-import {PersistGate} from 'redux-persist/integration/react';
 import {CallContextProvider} from './src/context/CallContext';
 import store, {persistor} from './src/store';
+import styles from './src/assets/styles';
 
 export const theme = {
   colors,
@@ -57,20 +58,22 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <LocalizeProvider store={store}>
-          <SafeAreaProvider>
-            <GestureHandlerRootView>
-              <BottomSheetModalProvider>
-                <AppProvider>
-                  <ThemeProvider theme={theme}>
-                    <AppNavigation />
-                    <CallContextProvider>
-                      <VideoCall />
-                    </CallContextProvider>
-                  </ThemeProvider>
-                </AppProvider>
-              </BottomSheetModalProvider>
-            </GestureHandlerRootView>
-          </SafeAreaProvider>
+          <GestureHandlerRootView>
+            <SafeAreaProvider>
+              <SafeAreaView edges={['top', 'left', 'right']} style={styles.safeAreaView}>
+                <BottomSheetModalProvider>
+                  <AppProvider>
+                    <ThemeProvider theme={theme}>
+                      <AppNavigation />
+                      <CallContextProvider>
+                        <VideoCall />
+                      </CallContextProvider>
+                    </ThemeProvider>
+                  </AppProvider>
+                </BottomSheetModalProvider>
+              </SafeAreaView>
+            </SafeAreaProvider>
+          </GestureHandlerRootView>
         </LocalizeProvider>
       </PersistGate>
     </Provider>
