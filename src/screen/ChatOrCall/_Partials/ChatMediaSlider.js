@@ -5,67 +5,43 @@ import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {
-  Image,
   Alert,
   Dimensions,
   Modal,
   Platform,
   ToastAndroid,
   View,
+  StyleSheet,
 } from 'react-native';
 import {Icon, Text} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
-import VideoPlayer from 'react-native-video-player';
+import Video from 'react-native-video';
 import RNFS from 'react-native-fs';
-import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 import styles from '../../../assets/styles';
 import {
   getDownloadDirectoryPath,
   getRocketChatAttachmentFilename,
 } from '../../../utils/fileSystem';
+import Gallery from 'react-native-awesome-gallery';
+import variables from '../../../assets/styles/variables';
 
-const styleCarouselContainer = {
-  flex: 1,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: '#000',
-};
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const mediaSize = {width: '100%', height: '100%'};
-const mediaResizeMode = {resizeMode: 'contain'};
 
-const RenderMediaItem = ({item, index}, currentIndex) => {
-  if (item.image !== '') {
-    return (
-      <View style={mediaSize}>
-        <ReactNativeZoomableView
-          maxZoom={2}
-          minZoom={1}
-          movementSensibility={0.5}>
-          <Image
-            style={[mediaSize, mediaResizeMode]}
-            source={{uri: item.image}}
-          />
-        </ReactNativeZoomableView>
-      </View>
-    );
+const renderItem = ({item, index}, currentIndex) => {
+  if (index !== currentIndex) {
+    return null;
   }
 
-  if (item.video !== '') {
-    return (
-      <VideoPlayer
-        autoplay
-        source={{uri: item.video}}
-        resizeMode="contain"
-        paused={index !== currentIndex}
-        audioOnly={true}
-        disableFullscreen={true}
-        style={mediaSize}
-      />
-    );
-  }
+  return (
+    <Video
+      source={{uri: item.video}}
+      resizeMode="contain"
+      controls
+      style={mediaSize}
+    />
+  );
 };
 
 const ChatMediaSlider = ({
@@ -136,33 +112,53 @@ const ChatMediaSlider = ({
             styles.columnGap16,
           ]}>
           <Icon
+            accessibilityLabel={translate('common.download')}
             name="save-alt"
-            size={26}
+            size={28}
             color={theme.colors.white}
             onPress={handleDownloadMedia}
           />
           <Icon
+            accessibilityLabel={translate('common.close')}
             name="close"
-            size={26}
+            size={28}
             color={theme.colors.white}
             onPress={() => onShowMediaSlider(false)}
           />
         </View>
       </View>
-
-      <View style={styleCarouselContainer}>
-        <Carousel
-          data={items}
-          renderItem={(props) => RenderMediaItem(props, currentIndex)}
-          sliderWidth={sliderWidth}
-          itemWidth={sliderWidth}
-          firstItem={currentIndex}
-          inactiveSlideScale={1}
-          onSnapToItem={changeIndex}
-        />
+      <View style={componentStyles.wrapper}>
+        {isVideoAttachment ? (
+          <Carousel
+            data={items}
+            renderItem={(props) => renderItem(props, currentIndex)}
+            sliderWidth={sliderWidth}
+            itemWidth={sliderWidth}
+            firstItem={currentIndex}
+            inactiveSlideScale={1}
+            onSnapToItem={changeIndex}
+          />
+        ) : (
+          <Gallery
+            data={items?.map((item) => item.image) ?? []}
+            initialIndex={currentIndex}
+            disableVerticalSwipe
+            onIndexChange={changeIndex}
+          />
+        )}
       </View>
     </Modal>
   );
 };
+
+const componentStyles = StyleSheet.create({
+  wrapper: {
+    alignItems: 'center',
+    backgroundColor: variables.dark,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+});
 
 export default ChatMediaSlider;

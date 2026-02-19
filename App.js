@@ -6,6 +6,8 @@ import {ThemeProvider} from 'react-native-elements';
 import {LocalizeProvider} from 'react-localize-redux';
 import {Provider} from 'react-redux';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import AppProvider from './AppProvider';
 import AppNavigation from './src/components/AppNavigation';
 import colors from './src/assets/styles/variables/colors';
@@ -56,14 +58,18 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <LocalizeProvider store={store}>
           <SafeAreaProvider>
-            <AppProvider>
-              <ThemeProvider theme={theme}>
-                <AppNavigation />
-                <CallContextProvider>
-                  <VideoCall />
-                </CallContextProvider>
-              </ThemeProvider>
-            </AppProvider>
+            <GestureHandlerRootView>
+              <BottomSheetModalProvider>
+                <AppProvider>
+                  <ThemeProvider theme={theme}>
+                    <AppNavigation />
+                    <CallContextProvider>
+                      <VideoCall />
+                    </CallContextProvider>
+                  </ThemeProvider>
+                </AppProvider>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
           </SafeAreaProvider>
         </LocalizeProvider>
       </PersistGate>

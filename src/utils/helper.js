@@ -99,28 +99,6 @@ export const isValidFileSize = (fileSize, maxFileSize = 0) => {
   return fileSize <= defaultMaxSize;
 };
 
-export const nEveryRow = (data, n) => {
-  const result = [];
-  let temp = [];
-
-  for (let i = 0; i < data.length; ++i) {
-    if (i > 0 && i % n === 0) {
-      result.push(temp);
-      temp = [];
-    }
-    temp.push(data[i]);
-  }
-
-  if (temp.length > 0) {
-    while (temp.length !== n) {
-      temp.push(null);
-    }
-    result.push(temp);
-  }
-
-  return result;
-};
-
 export const renderLastMessageText = (lastMessage, translate) => {
   if (!lastMessage) return null;
 

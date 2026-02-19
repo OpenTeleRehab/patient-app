@@ -12,10 +12,10 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^5",
     "@notifee/react-native": "^9.1.8",
     "@openspacelabs/react-native-zoomable-view": "^2.0.4",
     "@react-native-async-storage/async-storage": "^1.15.3",
-    "@react-native-camera-roll/camera-roll": "^7.8.3",
     "@react-native-community/datetimepicker": "^3.0.9",
     "@react-native-community/netinfo": "^11.4.1",
     "@react-native-community/push-notification-ios": "^1.10.1",
@@ -43,6 +43,7 @@
     "react-hook-form": "^7.68.0",
     "react-localize-redux": "^3.5.3",
     "react-native": "0.77.3",
+    "react-native-awesome-gallery": "^0.4.3",
     "react-native-background-timer": "^2.4.1",
     "react-native-callkeep": "4.3.16",
     "react-native-chart-kit": "^6.11.0",
@@ -56,6 +57,7 @@
     "react-native-gesture-handler": "2.25.0",
     "react-native-get-random-values": "^1.11.0",
     "react-native-gifted-chat": "^2.6.4",
+    "react-native-image-picker": "^8.2.1",
     "react-native-input-spinner": "^1.4.6",
     "react-native-keyboard-controller": "^1.16.6",
     "react-native-loading-spinner-overlay": "^2.0.0",
