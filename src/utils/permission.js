@@ -1,4 +1,5 @@
 import {PermissionsAndroid, Platform} from 'react-native';
+import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import RNCallKeep from 'react-native-callkeep';
 import messaging from '@react-native-firebase/messaging';
 
@@ -36,11 +37,28 @@ export const requestNotificationPermission = () => {
   }
 };
 
-export const cameraRollPermission = () => {
-  const permission =
-    Platform.Version >= 33
-      ? 'android.permission.READ_MEDIA_IMAGES'
-      : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+export const requestCameraPermission = async () => {
+  if (Platform.OS === 'android') {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+    );
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
+  } else {
+    const result = await request(PERMISSIONS.IOS.CAMERA);
+    return result === RESULTS.GRANTED;
+  }
+};
 
-  PermissionsAndroid.request(permission);
+export const requestGalleryPermission = async () => {
+  if (Platform.OS === 'android') {
+    const permission = Platform.Version >= 33
+      ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
+      : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE;
+
+    const result = await request(permission);
+    return result === RESULTS.GRANTED;
+  } else {
+    const result = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+    return result === RESULTS.GRANTED;
+  }
 };

@@ -9,7 +9,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Rocketchat} from '../../../services/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
-import settings from '../../../../config/settings';
 import {generateHash, isPhcWorker} from '../../../utils/helper';
 import {Platform, View, Keyboard} from 'react-native';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
@@ -282,16 +281,8 @@ const ChatPanel = ({navigation, theme}) => {
       {showPicker && (
         <MediaPicker
           visible={showPicker}
-          onClose={setShowPicker}
           onSend={onSendAttachment}
-          allPhotoText={translate('all_photos')}
-          allVideoText={translate('all_videos')}
-          emptyText={translate('no_photo')}
-          captionPlaceholder={translate('add_a_caption')}
-          sizeErrorText={translate('common.error_message_invalid_file_size', {
-            size: settings.fileMaxUploadSize,
-          })}
-          buttonOKLabel={translate('common.ok')}
+          onClose={setShowPicker}
         />
       )}
       {showMediaSlider && (

@@ -1,262 +1,189 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
+import {Alert} from 'react-native';
+import {Icon, ListItem, withTheme} from 'react-native-elements';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useSelector} from 'react-redux';
+import {getTranslate} from 'react-localize-redux';
 import {
-  Modal,
-  View,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  Platform,
-  Alert,
-  SafeAreaView,
-} from 'react-native';
-import {withTheme, Icon, Text, Input} from 'react-native-elements';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import RNPickerSelect from 'react-native-picker-select';
-import _ from 'lodash';
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
+import {
+  requestCameraPermission,
+  requestGalleryPermission,
+} from '../../utils/permission';
+import {isValidFileSize, toMB} from '../../utils/helper';
+import settings from '../../../config/settings';
 import styles from '../../assets/styles';
-import GridItem from './GridItem';
-import {isValidFileSize, nEveryRow, toMB} from '../../utils/helper';
-import {cameraRollPermission} from '../../utils/permission';
 
-const iconRenderer = (theme) => {
-  return (
-    <Icon
-      type="feather"
-      name="chevron-down"
-      color={theme.colors.black}
-      size={22}
-    />
+const MediaPicker = ({theme, visible, onSend, onClose}) => {
+  const bottomSheetModalRef = useRef(null);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+
+  const renderBackdrop = useCallback(
+    (backdropProps) => (
+      <BottomSheetBackdrop
+        {...backdropProps}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior="close"
+      />
+    ),
+    [],
   );
-};
 
-const VIDEO_TYPE = 'Videos';
-const FIRST_LOAD_MEDIAS = 15;
-const ITEM_PER_ROW = 3;
-const MediaPicker = (props) => {
-  const {
-    theme,
-    visible,
-    onClose,
-    onSend,
-    allPhotoText,
-    allVideoText,
-    emptyText,
-    captionPlaceholder,
-    sizeErrorText,
-    buttonOKLabel,
-  } = props;
-  const [albums, setAlbums] = useState([]);
-  const [medias, setMedias] = useState([]);
-  const [data, setData] = useState([]);
-  const [selectedAlbum, setSelectedAlbum] = useState('');
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [lastCursor, setLastCursor] = useState(null);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [noMore, setNoMore] = useState(false);
-  const [showInputCaption, setShowInputCaption] = useState(false);
-  const [captionText, setCaptionText] = useState('');
+  const handleSheetChanges = useCallback(
+    (index) => {
+      if (index === -1) {
+        onClose(false);
+      }
+    },
+    [onClose],
+  );
 
   useEffect(() => {
-    if (selectedMedia !== null) {
-      const validSize = isValidFileSize(toMB(selectedMedia.image.fileSize));
-      if (!validSize) {
+    if (visible) {
+      bottomSheetModalRef.current?.present();
+    } else {
+      bottomSheetModalRef.current?.close();
+    }
+  }, [visible]);
+
+  const handleLaunchCamera = async (mediaType) => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) return;
+
+    // Close bottom sheet
+    onClose(false);
+
+    // Launch camera to take photo or video
+    const options = {
+      mediaType: mediaType,
+      saveToPhotos: false,
+      includeBase64: false,
+      includeExtra: true,
+    };
+
+    await launchCamera(options, handleMediaPickerResponse);
+  };
+
+  const handleLaunchImageLibrary = async () => {
+    const hasPermission = await requestGalleryPermission();
+    if (!hasPermission) return;
+
+    // Close bottom sheet
+    onClose(false);
+
+    // Launch gallery to pick image or video
+    const options = {
+      mediaType: 'mixed',
+      saveToPhotos: false,
+      selectionLimit: 10,
+      includeBase64: false,
+      includeExtra: true,
+    };
+
+    await launchImageLibrary(options, handleMediaPickerResponse);
+  };
+
+  const handleMediaPickerResponse = (response) => {
+    if (response.assets && response.assets.length > 0) {
+      const totalFileSize = response.assets.reduce(
+        (accumulator, currentObject) => {
+          return accumulator + currentObject.fileSize;
+        },
+        0, // The '0' is the initial value of the accumulator
+      );
+
+      // Check valid file size
+      const validSize = isValidFileSize(toMB(totalFileSize));
+
+      if (validSize) {
+        response?.assets?.forEach((asset) => {
+          // Send attachment message
+          onSend('', asset, asset.type);
+        });
+      } else {
+        // Alert invalid file size
         Alert.alert(
-          '',
-          sizeErrorText,
-          [{text: buttonOKLabel, onPress: () => null}],
+          translate('common.error_title_invalid_file_size'),
+          translate('common.error_message_invalid_file_size', {
+            size: settings.fileMaxUploadSize,
+          }),
+          [
+            {
+              text: translate('common.ok'),
+              onPress: () => null,
+            },
+          ],
           {
             cancelable: false,
           },
         );
-      } else {
-        setShowInputCaption(true);
       }
     }
-  }, [buttonOKLabel, selectedMedia, sizeErrorText]);
-
-  const loadAlbums = async () => {
-    // Request camera roll permission
-    cameraRollPermission();
-
-    CameraRoll.getAlbums({assetType: 'All'})
-      .then((dataAlbums) => {
-        const fetchAlbums = [];
-        dataAlbums.forEach((album) => {
-          const {count, title} = album;
-          fetchAlbums.push({label: title, value: title, amount: count});
-        });
-        let sortedAlums = _.orderBy(fetchAlbums, ['label'], ['asc']);
-        const allVideos = [{label: allVideoText, value: VIDEO_TYPE}];
-        sortedAlums = allVideos.concat(sortedAlums);
-        setAlbums(sortedAlums);
-        loadMedias();
-      })
-      .catch((err) => {
-        console.error('Load Alums', err);
-      });
-  };
-
-  const onChangeAlbum = (selected) => {
-    setSelectedAlbum(selected);
-    setMedias([]);
-    setData([]);
-    setSelectedMedia(null);
-    setLastCursor(null);
-    setInitialLoading(true);
-    setLoadingMore(false);
-    setNoMore(false);
-    loadMedias(true, selected);
-  };
-
-  const onEndReached = () => {
-    if (!noMore) {
-      loadMedias();
-    }
-  };
-
-  const loadMedias = (isChangedAlbum = false, album = '') => {
-    let selected = selectedAlbum;
-    if (isChangedAlbum) {
-      selected = album;
-    }
-    if (!loadingMore) {
-      setLoadingMore(true);
-      const params = {
-        first: FIRST_LOAD_MEDIAS,
-        assetType: selected === VIDEO_TYPE ? selected : 'All',
-        groupTypes: 'All',
-        groupName: selected === VIDEO_TYPE ? '' : selected,
-        include: ['fileSize'],
-      };
-      if (lastCursor) {
-        params.after = lastCursor;
-      }
-      CameraRoll.getPhotos(params).then(
-        (res) => appendMedias(res, isChangedAlbum),
-        (err) => console.error('Load medias', err),
-      );
-    }
-  };
-
-  const appendMedias = (resData, isChangedAlbum) => {
-    const assets = resData.edges;
-    setInitialLoading(false);
-    setLoadingMore(false);
-    if (!resData.page_info.has_next_page) {
-      setNoMore(true);
-    }
-    if (assets.length > 0) {
-      const newMedias = isChangedAlbum ? assets : medias.concat(assets);
-      const newData = nEveryRow(newMedias, ITEM_PER_ROW);
-      setLastCursor(resData.page_info.end_cursor);
-      setMedias(newMedias);
-      setData(newData);
-    }
-  };
-
-  const onSendAttachment = () => {
-    const {type, image} = selectedMedia;
-    onClose(false);
-    onSend(captionText, image, type);
-  };
-
-  const renderMedia = (items) => {
-    const mediaItems = items.map((item, index) => {
-      if (item === null) {
-        return null;
-      }
-      return (
-        <GridItem
-          key={index}
-          item={item.node}
-          itemsPerRow={ITEM_PER_ROW}
-          selected={selectedMedia}
-          onSelected={setSelectedMedia}
-        />
-      );
-    });
-    return <View style={styles.flexRow}>{mediaItems}</View>;
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      onShow={loadAlbums}
-      onRequestClose={() => onClose(false)}>
-      <SafeAreaView>
-        <View style={styles.mpContainer}>
-          <View style={styles.mpHeader}>
-            <TouchableOpacity onPress={() => onClose(false)}>
-              <Icon
-                name="arrowleft"
-                type="antdesign"
-                size={30}
-                color={theme.colors.black}
-              />
-            </TouchableOpacity>
-            <View style={styles.mpMediaAlbum}>
-              <RNPickerSelect
-                placeholder={{label: allPhotoText, value: ''}}
-                onValueChange={(value) => onChangeAlbum(value)}
-                items={albums}
-                style={{
-                  inputAndroid: {
-                    backgroundColor: 'transparent',
-                  },
-                  iconContainer:
-                    Platform.OS === 'ios'
-                      ? styles.pickerSelectInputIOS
-                      : styles.pickerSelectInputAndroid,
-                }}
-                useNativeAndroidPickerStyle={false}
-                Icon={() => iconRenderer(theme)}
-              />
-            </View>
-          </View>
-          <View style={styles.mpWrapper}>
-            {initialLoading ? (
-              <ActivityIndicator size="large" color={theme.colors.primary} />
-            ) : data.length > 0 ? (
-              <FlatList
-                initialNumToRender={5}
-                data={data}
-                onEndReached={onEndReached}
-                renderItem={({item}) => renderMedia(item)}
-                keyExtractor={(item) => item[0].node.image.uri}
-              />
-            ) : (
-              <Text style={styles.textCenter}>{emptyText}</Text>
-            )}
-          </View>
-          {showInputCaption && (
-            <View style={styles.mpCaptionContainer}>
-              <Input
-                autoFocus
-                value={captionText}
-                onChangeText={(value) => setCaptionText(value)}
-                placeholder={captionPlaceholder}
-                containerStyle={styles.mpCaptionInput}
-                inputContainerStyle={styles.noneBorderBottom}
-                rightIcon={
-                  <Icon
-                    name="send"
-                    type="material"
-                    color={theme.colors.primary}
-                    size={28}
-                    onPress={() => onSendAttachment()}
-                  />
-                }
-              />
-            </View>
-          )}
-        </View>
-      </SafeAreaView>
-    </Modal>
+    <BottomSheetModal
+      ref={bottomSheetModalRef}
+      backdropComponent={renderBackdrop}
+      onChange={handleSheetChanges}>
+      <BottomSheetView style={styles.bottomSheetView}>
+        <ListItem
+          containerStyle={styles.bottomSheetListItemContainer}
+          onPress={() => handleLaunchCamera('photo')}>
+          <Icon
+            reverse
+            reverseColor={theme.colors.black}
+            color={theme.colors.grey9}
+            name="camera"
+            type="entypo"
+            size={20}
+          />
+          <ListItem.Content>
+            <ListItem.Title>{translate('common.take_photo')}</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+        <ListItem
+          containerStyle={styles.bottomSheetListItemContainer}
+          onPress={() => handleLaunchCamera('video')}>
+          <Icon
+            reverse
+            reverseColor={theme.colors.black}
+            color={theme.colors.grey9}
+            name="video-camera"
+            type="entypo"
+            size={20}
+          />
+          <ListItem.Content>
+            <ListItem.Title>{translate('common.record_video')}</ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+        <ListItem
+          containerStyle={styles.bottomSheetListItemContainer}
+          onPress={handleLaunchImageLibrary}>
+          <Icon
+            reverse
+            reverseColor={theme.colors.black}
+            color={theme.colors.grey9}
+            name="image-inverted"
+            type="entypo"
+            size={20}
+          />
+          <ListItem.Content>
+            <ListItem.Title>
+              {translate('common.choose_from_library')}
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+      </BottomSheetView>
+    </BottomSheetModal>
   );
 };
 
