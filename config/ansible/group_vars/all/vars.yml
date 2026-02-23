@@ -31,3 +31,6 @@ android_aab_release_file:   '{{ stage }}-{{ build_id }}-{{ ansible_date_time.dat
 
 store_pass:                 '{{ store_pass_vault }}'
 key_pass:                   '{{ key_pass_vault }}'
+
+appStoreURL:                'https://apps.apple.com/kh/app/opentelerehab/id1553715804'
+playStoreURL:               'market://details?id=org.hi.patient'

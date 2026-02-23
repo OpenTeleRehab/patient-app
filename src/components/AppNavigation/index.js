@@ -40,6 +40,7 @@ import {mutation} from '../../store/appSetting/mutations';
 import Survey from '../Survey';
 import JailMonkey from 'jail-monkey';
 import {PERMISSIONS, request} from 'react-native-permissions';
+import settings from '../../../config/settings';
 
 const AuthStack = createStackNavigator();
 const AppTab = createBottomTabNavigator();
@@ -288,10 +289,8 @@ const AppNavigation = (props) => {
             iconName="update"
             onConfirm={() =>
               Platform.OS === 'android'
-                ? Linking.openURL('market://details?id=org.hi.patient')
-                : Linking.openURL(
-                    'https://apps.apple.com/kh/app/opentelerehab/id1553715804',
-                  )
+                ? Linking.openURL(settings.playStoreURL)
+                : Linking.openURL(settings.appStoreURL)
             }
             tittle={translate('app.update.title')}
             message={translate(
