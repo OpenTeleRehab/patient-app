@@ -171,7 +171,7 @@ const Patient = ({navigation}) => {
             </Text>
             <TouchableOpacity
               onPress={() => navigation.navigate(ROUTES.CREATE_EDIT_PATIENT)}
-              style={componentStyles.buttonStyle}>
+              style={[componentStyles.buttonStyle, styles.backgroundPrimary]}>
               <Icon name="add" size={20} color={theme.colors.white} />
               <Text style={componentStyles.buttonTitleStyle}>
                 {translate('phc.patient.new')}
@@ -255,7 +255,6 @@ export const componentStyles = StyleSheet.create({
   buttonStyle: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#024b68ff',
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 20,

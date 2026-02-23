@@ -68,7 +68,7 @@ const PatientCard = ({patient, theme}) => {
                 ? theme.colors.orangeDark
                 : patient.referral_status === REFERRAL_STATUS.DECLINED
                 ? theme.colors.danger
-                : theme.colors.primary
+                : theme.colors.blueLight1
             }
             value={translate(
               `phc.patient.referral_status.${referralStatusText(patient.referral_status)}`,

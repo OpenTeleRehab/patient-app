@@ -26,7 +26,7 @@ const TreatmentStatusBadge = ({treatmentPlan}) => {
     badgeColor = theme.colors.success;
   } else if (start.isAfter(today)) {
     status = TREATMENT_STATUS.PLANNED;
-    badgeColor = theme.colors.primary;
+    badgeColor = theme.colors.blueLight1;
   } else if (end.isBefore(today)) {
     status = TREATMENT_STATUS.FINISHED;
   }
