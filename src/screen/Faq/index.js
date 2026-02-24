@@ -130,7 +130,6 @@ const Faq = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={false}
         title={translate('menu.faq')}
         onGoBack={() => navigation.goBack()}
       />

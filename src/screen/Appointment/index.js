@@ -21,17 +21,14 @@ import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
-import {useDrawerStatus} from '@react-navigation/drawer';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile} = useSelector((state) => state.user);
   const {appointments, listInfo, loading} = useSelector(
     (state) => state.appointment,
   );
-  const isDrawerOpen = useDrawerStatus() === 'open';
 
   const [appointmentObjs, setAppointmentObjs] = useState([]);
   const [groupedAppointments, setGroupedAppointments] = useState([]);
@@ -43,16 +40,6 @@ const Appointment = ({navigation}) => {
   useEffect(() => {
     dispatch(getProfessionRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    const tabNav = navigation.getParent();
-    if (isDrawerOpen) {
-      tabNav.setOptions({tabBarVisible: false});
-    }
-    return () => {
-      tabNav.setOptions({tabBarVisible: true});
-    };
-  }, [isDrawerOpen, navigation]);
 
   useEffect(() => {
     setAppointmentObjs(appointments);
@@ -86,17 +73,7 @@ const Appointment = ({navigation}) => {
 
   return (
     <>
-      <HeaderBar
-        leftContent={{label: translate('tab.appointments')}}
-        achievement={{
-          hasAchievement: profile.kid_theme,
-          onGoAchievement: () => navigation.navigate(ROUTES.ACHIEVEMENT),
-        }}
-        setting={{
-          hasSetting: true,
-          onGoSetting: () => navigation.toggleDrawer(),
-        }}
-      />
+      <HeaderBar leftContent={{label: translate('tab.appointments')}} />
 
       {showRequestOverlay && (
         <SubmitRequestOverlay
@@ -106,23 +83,21 @@ const Appointment = ({navigation}) => {
         />
       )}
 
-      <View style={styles.mainContainerLight}>
-        <Button
-          style={styles.textDefault}
-          title={translate('appointment.request_new_appointment')}
-          disabled={!netInfo.isConnected}
-          onPress={handleRequestAppointment}
-        />
-      </View>
+      <Button
+        title={translate('appointment.request_new_appointment')}
+        disabled={!netInfo.isConnected}
+        onPress={handleRequestAppointment}
+        containerStyle={[styles.paddingX, styles.paddingY]}
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={styles.mainContainerLight}
         contentContainerStyle={
           !groupedAppointments.length
             ? [styles.flexColumn, styles.justifyContentCenter]
             : []
-        }>
+        }
+        style={[styles.paddingX, styles.paddingY]}>
         {!groupedAppointments.length && !loading && (
           <Text
             style={[

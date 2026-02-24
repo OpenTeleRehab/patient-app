@@ -22,7 +22,6 @@ const TermOfServiceDetail = ({navigation}) => {
       <HeaderBar
         onGoBack={() => navigation.goBack()}
         title={translate('term.of.service.detail')}
-        backgroundPrimary={true}
       />
       <ScrollView style={styles.mainContainerLight}>
         <View>

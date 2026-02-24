@@ -132,7 +132,6 @@ const Interview = ({navigation, route}) => {
   return (
     <SafeAreaView style={styles.flex1}>
       <HeaderBar
-        backgroundPrimary
         onGoBack={() => {
           screeningQuestionnaire
             ? alertConfirmBeforeLeave()

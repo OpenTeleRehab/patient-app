@@ -9,11 +9,11 @@ import DrawerNavigator from '../DrawerNavigator';
 
 const Drawer = createDrawerNavigator();
 
-const AppointmentTab = (props) => {
-  const renderDrawerContent = (navProps) => {
-    return <DrawerNavigator navProps={navProps} />;
-  };
+const renderDrawerContent = (navProps) => {
+  return <DrawerNavigator navProps={navProps} />;
+};
 
+const AppointmentTab = (props) => {
   return (
     <Drawer.Navigator
       drawerPosition="right"

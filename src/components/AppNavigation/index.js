@@ -43,7 +43,7 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import settings from '../../../config/settings';
 
 const AuthStack = createStackNavigator();
-const AppTab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 const tabs = [
   {
@@ -165,11 +165,13 @@ const AppTabNavigator = (props) => {
   };
 
   return (
-    <AppTab.Navigator
+    <Tab.Navigator
       initialRouteName={
         registerAs === USER_ROLE.HEALTH_WORKER ? ROUTES.PATIENT : ROUTES.HOME
       }
-      screenOptions={{headerShown: false}}
+      screenOptions={{
+        headerShown: false
+      }}
       tabBarOptions={{
         keyboardHidesTabBar: true,
         activeTintColor: theme.colors.primary,
@@ -180,22 +182,22 @@ const AppTabNavigator = (props) => {
       }}>
       {tabs
         .filter((item) => item.group === registerAs)
-        .map((route, index) => {
+        .map((tab, index) => {
           return (
-            <AppTab.Screen
+            <Tab.Screen
               key={index}
-              name={route.name}
-              component={route.screen}
+              name={tab.name}
+              component={tab.screen}
               options={{
-                tabBarIcon: ({focused}) => iconRenderer(route, focused),
-                tabBarLabel: ({focused}) => renderText(translate(route.label)),
-                tabBarBadge: hasBadge(route.badge),
+                tabBarIcon: ({focused}) => iconRenderer(tab, focused),
+                tabBarLabel: ({focused}) => renderText(translate(tab.label)),
+                tabBarBadge: hasBadge(tab.badge),
                 tabBarBadgeStyle: styles.navTabBadge,
               }}
             />
           );
         })}
-    </AppTab.Navigator>
+    </Tab.Navigator>
   );
 };
 

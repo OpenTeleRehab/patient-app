@@ -16,12 +16,16 @@ export default {
   mainContainerLightPaddingMd: {
     flexGrow: 1,
     padding: variables.spacingMd,
-    backgroundColor: 'white',
+    backgroundColor: variables.white,
   },
   mainContainerLightPaddingYMd: {
     flexGrow: 1,
     paddingVertical: variables.spacingMd,
-    backgroundColor: 'white',
+    backgroundColor: variables.white,
+  },
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: variables.primary,
   },
   flex1: {
     flex: 1,

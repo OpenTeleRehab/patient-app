@@ -188,7 +188,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   if (!questionnaire) {
     return (
       <HeaderBar
-        leftContent={{label: ''}}
         rightContent={{
           label: translate('common.close'),
           onPress: () => navigation.navigate(ROUTES.ACTIVITY),

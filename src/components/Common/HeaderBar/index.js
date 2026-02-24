@@ -2,21 +2,20 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
-import {Header, Text, Button, Icon, withTheme} from 'react-native-elements';
-import styles from '../../../assets/styles';
-import logoWhite from '../../../assets/images/logo-white.png';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text, Button, Icon, withTheme} from 'react-native-elements';
 import {useSelector} from 'react-redux';
-import {CALL_STATUS} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import NetInfo from '@react-native-community/netinfo';
+import logoWhite from '../../../assets/images/logo-white.png';
+import variables from '../../../assets/styles/variables';
+import styles from '../../../assets/styles';
 
 let currentConnectionStatus = null;
+
 NetInfo.fetch().then((state) => {
   currentConnectionStatus = state.isConnected;
 });
-
-const leftContainerMaxWidth = {maxWidth: '70%'};
 
 const HeaderBar = (props) => {
   const {
@@ -25,12 +24,10 @@ const HeaderBar = (props) => {
     onGoBack,
     leftContent,
     rightContent,
-    backgroundPrimary,
     setting,
     achievement,
     call,
   } = props;
-  const {videoCall} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [isOnline, setIsOnline] = useState(currentConnectionStatus);
@@ -46,33 +43,28 @@ const HeaderBar = (props) => {
     if (onGoBack) {
       return (
         <Button
-          title=""
           accessible={true}
           accessibilityLabel={translate('common.back')}
+          title=""
+          type="clear"
           icon={
             <Icon
-              type="feather"
               name="chevron-left"
+              type="feather"
+              color={theme.colors.white}
               size={28}
-              color={
-                backgroundPrimary ? theme.colors.white : theme.colors.black
-              }
             />
           }
-          onPress={() => onGoBack()}
-          type="clear"
-          titleStyle={[
-            backgroundPrimary ? styles.textLight : styles.textDefault,
-            styles.paddingX,
-          ]}
-          buttonStyle={styles.headerBackButton}
+          titleStyle={styles.textLight}
+          buttonStyle={componentStyles.headerBackButton}
+          onPress={onGoBack}
         />
       );
     }
     if (leftContent) {
       const {hasLogo, label} = leftContent;
       if (hasLogo) {
-        return <Image source={logoWhite} style={styles.headerLogo} />;
+        return <Image source={logoWhite} style={componentStyles.headerLogo} />;
       }
       if (label) {
         return (
@@ -80,25 +72,14 @@ const HeaderBar = (props) => {
             accessible={true}
             accessibilityLabel={label}
             numberOfLines={1}
-            style={
-              backgroundPrimary
-                ? styles.headerLeftTitleLight
-                : styles.headerLeftTitleDark
-            }>
+            style={styles.headerLeftTitleLight}>
             {label}
           </Text>
         );
       }
       return leftContent;
     }
-    return (
-      <Text
-        accessible={false}
-        accessibilityElementsHidden={true}
-        style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
-        Empty
-      </Text>
-    );
+    return null;
   };
 
   const renderCenterComponent = () => {
@@ -107,15 +88,13 @@ const HeaderBar = (props) => {
         <Text
           accessible={true}
           accessibilityLabel={title}
-          style={
-            backgroundPrimary
-              ? styles.headerCenterTitleLight
-              : styles.headerCenterTitleDark
-          }>
+          numberOfLines={1}
+          style={styles.headerCenterTitleLight}>
           {title}
         </Text>
       );
     }
+    return null;
   };
 
   const renderRightComponent = () => {
@@ -131,18 +110,14 @@ const HeaderBar = (props) => {
               ? {
                   name: icon,
                   type: iconType,
-                  color: disabled
-                    ? theme.colors.disabled
-                    : backgroundPrimary
-                    ? theme.colors.white
-                    : theme.colors.primary,
+                  color: disabled ? theme.colors.disabled : theme.colors.white,
                   size: iconSize || 15,
                 }
               : null
           }
           type={label ? 'outline' : 'clear'}
-          titleStyle={backgroundPrimary ? styles.textLight : styles.textPrimary}
-          buttonStyle={styles.headerButton(label, backgroundPrimary)}
+          titleStyle={styles.textLight}
+          buttonStyle={styles.headerButton(label, true)}
           onPress={onPress}
           disabled={disabled}
         />
@@ -165,9 +140,7 @@ const HeaderBar = (props) => {
                 type="simple-line-icon"
                 name="badge"
                 size={24}
-                color={
-                  backgroundPrimary ? theme.colors.white : theme.colors.black
-                }
+                color={theme.colors.white}
               />
             }
             onPress={() => achievement.onGoAchievement()}
@@ -183,9 +156,7 @@ const HeaderBar = (props) => {
                 type="simple-line-icon"
                 name="settings"
                 size={24}
-                color={
-                  backgroundPrimary ? theme.colors.white : theme.colors.black
-                }
+                color={theme.colors.white}
               />
             }
             onPress={() => setting.onGoSetting()}
@@ -206,9 +177,7 @@ const HeaderBar = (props) => {
               type="simple-line-icon"
               name="settings"
               size={24}
-              color={
-                backgroundPrimary ? theme.colors.white : theme.colors.black
-              }
+              color={theme.colors.white}
             />
           }
           onPress={() => setting.onGoSetting()}
@@ -228,9 +197,7 @@ const HeaderBar = (props) => {
               type="simple-line-icon"
               name="badge"
               size={24}
-              color={
-                backgroundPrimary ? theme.colors.white : theme.colors.black
-              }
+              color={theme.colors.white}
             />
           }
           onPress={() => achievement.onGoAchievement()}
@@ -251,9 +218,7 @@ const HeaderBar = (props) => {
               type="material"
               name="call"
               size={24}
-              color={
-                backgroundPrimary ? theme.colors.white : theme.colors.black
-              }
+              color={theme.colors.white}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -265,22 +230,13 @@ const HeaderBar = (props) => {
               type="material"
               name="videocam"
               size={24}
-              color={
-                backgroundPrimary ? theme.colors.white : theme.colors.black
-              }
+              color={theme.colors.white}
             />
           </TouchableOpacity>
         </View>
       );
     }
-    return (
-      <Text
-        accessible={false}
-        accessibilityElementsHidden={true}
-        style={backgroundPrimary ? styles.textPrimary : styles.textLight}>
-        Empty
-      </Text>
-    );
+    return null;
   };
 
   return (
@@ -289,31 +245,70 @@ const HeaderBar = (props) => {
         <Text
           accessible={true}
           accessibilityLabel={translate('common.offline')}
-          style={styles.offlineText}>
+          style={componentStyles.offlineText}>
           {translate('common.offline')}
         </Text>
       )}
-      <Header
-        statusBarProps={{barStyle: 'light-content'}}
-        barStyle="light-content"
-        leftComponent={renderLeftComponent()}
-        centerComponent={renderCenterComponent()}
-        rightComponent={renderRightComponent()}
-        leftContainerStyle={[styles.noneFlex, leftContainerMaxWidth]}
-        centerContainerStyle={styles.textLight}
-        rightContainerStyle={styles.noneFlex}
-        containerStyle={[
-          videoCall &&
-          (videoCall.status === CALL_STATUS.AUDIO_ENDED ||
-            videoCall.status === CALL_STATUS.VIDEO_ENDED)
-            ? styles.headerWorkAround
-            : styles.noneBorderBottom,
-          !isOnline && styles.headerWorkAround,
-          backgroundPrimary ? styles.backgroundPrimary : styles.backgroundWhite,
-        ]}
-      />
+      <View style={componentStyles.header}>
+        <View style={componentStyles.headerLeft}>
+          {renderLeftComponent()}
+        </View>
+        <View style={componentStyles.headerCenter}>
+          {renderCenterComponent()}
+        </View>
+        <View style={componentStyles.headerRight}>
+          {renderRightComponent()}
+        </View>
+      </View>
     </>
   );
 };
+
+const componentStyles = StyleSheet.create({
+  header: {
+    alignItems: 'center',
+    backgroundColor: variables.primary,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'relative',
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    height: 64,
+  },
+  headerBackButton: {
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+    marginLeft: -4,
+  },
+  headerLogo: {
+    height: 40,
+    width: 150,
+  },
+  headerLeft: {
+    alignItems: 'flex-start',
+    position: 'relative',
+    zIndex: 1,
+  },
+  headerCenter: {
+    alignItems: 'center',
+    paddingHorizontal: 50,
+    position: 'absolute',
+    textAlign: 'center',
+    width: '100%',
+    zIndex: 0,
+  },
+  headerRight: {
+    alignItems: 'flex-end',
+    position: 'relative',
+    zIndex: 1,
+  },
+  offlineText: {
+    color: variables.warning,
+    backgroundColor: variables.white,
+    textAlign: 'center',
+    paddingVertical: 8,
+    fontSize: 15,
+  },
+});
 
 export default withTheme(HeaderBar);

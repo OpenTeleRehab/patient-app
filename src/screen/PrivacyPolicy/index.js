@@ -78,7 +78,6 @@ const PrivacyPolicy = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={false}
         title={translate('menu.privacy')}
         onGoBack={() => navigation.goBack()}
       />

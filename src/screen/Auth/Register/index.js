@@ -8,7 +8,6 @@ import {
   View,
   Platform,
   ScrollView,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -241,13 +240,11 @@ const Register = ({theme, navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={styles.flex1}>
+    <>
       <HeaderBar
-        backgroundPrimary
         onGoBack={_.isEmpty(profile) ? undefined : () => navigation.goBack()}
         title={translate('common.register')}
       />
-
       <ScrollView
         keyboardShouldPersistTaps="handled"
         style={styles.flex1}
@@ -425,7 +422,7 @@ const Register = ({theme, navigation, route}) => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 };
 

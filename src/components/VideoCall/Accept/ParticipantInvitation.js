@@ -4,6 +4,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Badge, BottomSheet, Icon, ListItem, Text} from 'react-native-elements';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {useCallContext} from '../../../context/CallContext';
@@ -39,6 +40,8 @@ const ParticipantInvitation = ({
   ]);
 
   const [invitingParticipants, setInvitingParticipants] = useState([]);
+
+  const insets = useSafeAreaInsets();
 
   const groupChatRooms = {
     patients: getPatientChatRooms(),
@@ -164,8 +167,11 @@ const ParticipantInvitation = ({
   return (
     <>
       <TouchableOpacity
-        style={styles.btnAddParticipant}
-        onPress={() => setIsVisible(true)}>
+        onPress={() => setIsVisible(true)}
+        style={{
+          ...componentStyles.btnAddParticipant,
+          top: insets.top
+        }}>
         <Icon name="person-add-alt-1" color={theme.colors.white} size={26} />
       </TouchableOpacity>
       <BottomSheet isVisible={isVisible} modalProps={{}}>
@@ -293,6 +299,12 @@ const ParticipantInvitation = ({
 };
 
 const componentStyles = StyleSheet.create({
+  btnAddParticipant: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 99,
+  },
   bottomSheetHeader: {
     justifyContent: 'space-between',
     flexDirection: 'row',

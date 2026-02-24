@@ -4,7 +4,6 @@ import {getTranslate} from 'react-localize-redux';
 import {Text, withTheme, Button, Icon} from 'react-native-elements';
 import {
   ScrollView,
-  StatusBar,
   StyleSheet,
   View,
   Platform,
@@ -422,17 +421,11 @@ const CreateOrEditPatient = ({navigation, route}) => {
 
   return (
     <>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
       <HeaderBar
-        onGoBack={() => handleGoback()}
         title={translate(
           patientDetail ? 'phc.patient.edit' : 'phc.patient.create',
         )}
-        backgroundPrimary={true}
+        onGoBack={() => handleGoback()}
       />
       <ScrollView
         contentContainerStyle={[styles.mainContainerLight, styles.paddingXMd]}>

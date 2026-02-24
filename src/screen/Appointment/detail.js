@@ -131,11 +131,7 @@ const AppointmentDetail = ({route, navigation}) => {
   return (
     <>
       <HeaderBar
-        leftContent={
-          <Text numberOfLines={1} style={styles.headerLeftTitleDark}>
-            {translate('appointment')}
-          </Text>
-        }
+        leftContent={{label: translate('appointment')}}
         rightContent={{
           label: translate('common.close'),
           onPress: () => handleGoBack(),

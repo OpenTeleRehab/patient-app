@@ -55,7 +55,6 @@ const TermOfService = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={true}
         title={translate('term.of.service')}
         onGoBack={() => navigation.goBack()}
       />

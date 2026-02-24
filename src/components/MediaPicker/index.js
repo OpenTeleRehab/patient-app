@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useCallback, useEffect, useRef} from 'react';
-import {Alert} from 'react-native';
+import {Alert, Keyboard} from 'react-native';
 import {Icon, ListItem, withTheme} from 'react-native-elements';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
@@ -48,8 +48,13 @@ const MediaPicker = ({theme, visible, onSend, onClose}) => {
 
   useEffect(() => {
     if (visible) {
+      // Dismiss keyboard
+      Keyboard.dismiss();
+
+      // Open bottom sheet
       bottomSheetModalRef.current?.present();
     } else {
+      // Close bottom sheet
       bottomSheetModalRef.current?.close();
     }
   }, [visible]);

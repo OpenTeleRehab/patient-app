@@ -24,6 +24,7 @@ const ChatTypeVideo = ({
       <Video
         source={{uri: chatData.currentMessage.video}}
         resizeMode="cover"
+        paused
         controls={false}
         style={componentStyles.video}
       />

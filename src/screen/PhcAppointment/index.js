@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text, StatusBar} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {BottomSheet, Icon, Divider} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -79,13 +79,7 @@ const PhcAppointment = ({navigation}) => {
 
   return (
     <>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
       <HeaderBar
-        backgroundPrimary={true}
         setting={{
           hasSetting: true,
           onGoSetting: () => navigation.toggleDrawer(),

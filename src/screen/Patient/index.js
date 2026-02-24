@@ -156,7 +156,6 @@ const Patient = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={true}
         setting={{
           hasSetting: true,
           onGoSetting: () => navigation.toggleDrawer(),

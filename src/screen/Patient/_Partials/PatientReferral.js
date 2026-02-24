@@ -129,12 +129,11 @@ const PatientReferral = ({navigation, route}) => {
   return (
     <>
       <HeaderBar
+        title={translate('phc.patient.referral')}
         onGoBack={() => {
           reset();
           onBack();
         }}
-        title={translate('phc.patient.referral')}
-        backgroundPrimary={true}
       />
       <ScrollView contentContainerStyle={styles.mainContainerLightPaddingMd}>
         <View style={styles.rowGap10}>

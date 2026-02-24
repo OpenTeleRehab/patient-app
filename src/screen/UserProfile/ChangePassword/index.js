@@ -77,7 +77,6 @@ const ChangePassword = ({navigation}) => {
   return (
     <>
       <HeaderBar
-        backgroundPrimary={true}
         title={translate('password.change')}
         onGoBack={() => navigation.goBack()}
       />

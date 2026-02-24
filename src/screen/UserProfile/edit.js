@@ -164,7 +164,6 @@ const UserProfileEdit = ({navigation}) => {
       <HeaderBar
         onGoBack={handleGoBack}
         title={translate('edit.profile.title')}
-        backgroundPrimary={true}
       />
       <ScrollView
         keyboardShouldPersistTaps="handled"

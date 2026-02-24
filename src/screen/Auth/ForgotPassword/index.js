@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, withTheme} from 'react-native-elements';
-import {Alert, SafeAreaView, View} from 'react-native';
+import {Alert, View} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -51,9 +51,8 @@ const ForgotPassword = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView>
+    <>
       <HeaderBar
-        backgroundPrimary
         onGoBack={() => navigation.goBack()}
         title={translate('common.forgot_password')}
       />
@@ -80,7 +79,7 @@ const ForgotPassword = ({navigation, route}) => {
           accessibilityLabel={translate('common.submit')}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 
