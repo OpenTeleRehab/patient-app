@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import FastImage from 'react-native-fast-image';
 import {TouchableOpacity, View} from 'react-native';
 import {ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text, Image} from 'react-native-elements';
@@ -29,7 +30,8 @@ const ImageCard = ({files, grayscale}) => {
   if (type === 'audio/mpeg') {
     uri = Image.resolveAssetSource(musicUrl).uri;
   }
-  return <Card.Image source={{uri}} style={[styles.activityCardImage]} />;
+
+  return <FastImage source={{uri}} style={[styles.activityCardImage]} />;
 };
 
 const RenderExerciseCard = ({
