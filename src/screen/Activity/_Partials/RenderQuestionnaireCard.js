@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import FastImage from 'react-native-fast-image';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
 import {Image, TouchableOpacity, View} from 'react-native';
@@ -22,7 +23,7 @@ const ImageCard = ({file, grayscale}) => {
       </Grayscale>
     );
   }
-  return <Card.Image source={file} style={styles.activityCardImage} />;
+  return <FastImage source={file} style={styles.activityCardImage} />;
 };
 
 const RenderQuestionnaireCard = ({

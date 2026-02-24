@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import FastImage from 'react-native-fast-image';
 import {MATERIAL_TYPE, ROUTES} from '../../../variables/constants';
 import {Card, Icon, Text} from 'react-native-elements';
 import styles from '../../../assets/styles';
@@ -21,7 +22,7 @@ const ImageCard = ({file, grayscale, kidTheme}) => {
     file.id
   }?thumbnail=${file.hasThumbnail}`;
   return (
-    <Card.Image
+    <FastImage
       source={kidTheme ? file : {uri}}
       style={styles.activityCardImage}
     />
