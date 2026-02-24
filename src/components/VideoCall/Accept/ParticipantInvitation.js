@@ -21,7 +21,7 @@ import {theme} from '../../../../App';
 import styles from '../../../assets/styles';
 
 const ParticipantInvitation = ({
-  isVideoOn,
+  isVideoEnabled,
   participants,
   onSetInvitingParticipants,
 }) => {
@@ -136,7 +136,7 @@ const ParticipantInvitation = ({
   const handleInviteParticipant = (participant) => {
     const _id = generateHash();
     const rid = participant.rid;
-    const text = isVideoOn
+    const text = isVideoEnabled
       ? CALL_STATUS.VIDEO_STARTED
       : CALL_STATUS.AUDIO_STARTED;
 
