@@ -48,9 +48,8 @@ const UserProfileEdit = ({navigation}) => {
             profession_id: profile.profession_id,
             country_id: profile.country_id,
             phc_service_id: profile.phc_service_id,
-            language_id: profile.language_id,
-            language_code: profile.language_code,
-            show_guidance: profile.show_guidance,
+            language_id: profile.language_id ?? languages[0].id,
+            language_code: profile.language_code ?? languages[0].code,
           },
           {
             keepDirtyValues: false,
@@ -77,7 +76,7 @@ const UserProfileEdit = ({navigation}) => {
         );
       }
     }
-  }, [profile, registerAs, reset]);
+  }, [languages, profile, registerAs, reset]);
 
   useEffect(() => {
     handleReset();
