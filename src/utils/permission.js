@@ -24,7 +24,7 @@ export const requestCallPermission = () => {
     },
   };
 
-  RNCallKeep.setup(options);
+  RNCallKeep.setup(options).then();
 };
 
 export const requestNotificationPermission = () => {

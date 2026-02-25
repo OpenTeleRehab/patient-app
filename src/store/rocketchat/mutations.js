@@ -132,10 +132,6 @@ const updateVideoCallStatusSuccess = (data) => ({
   data,
 });
 
-const clearChatDataSuccess = () => ({
-  type: 'CLEAR_CHAT_DATA_SUCCEED',
-});
-
 const clearCallAccessTokenSuccess = () => ({
   type: 'CLEAR_CALL_ACCESS_TOKEN_SUCCESS',
 });
@@ -173,7 +169,6 @@ export const mutation = {
   sendAttachmentMessagesSuccess,
   sendAttachmentMessagesFailure,
   updateVideoCallStatusSuccess,
-  clearChatDataSuccess,
   clearCallAccessTokenSuccess,
   clearOfflineMessagesSuccess,
 };

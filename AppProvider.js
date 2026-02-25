@@ -207,13 +207,13 @@ const AppProvider = ({children}) => {
 
       // Set chat socket
       setSocket(chatSocket);
-
-      // Request notification permission
-      requestNotificationPermission();
-
-      // Request phone call permission
-      requestCallPermission();
     }
+
+    // Request notification permission
+    requestNotificationPermission();
+
+    // Request phone call permission
+    requestCallPermission();
   }, [dispatch, isOnline, profile.chat_password, profile.id, profile.identity]);
 
   useEffect(() => {

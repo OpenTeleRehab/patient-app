@@ -2,7 +2,6 @@ import {
   authenticateChatUser,
   prependNewMessage,
   updateChatUserStatus,
-  clearChatData,
   updateVideoCallStatus,
 } from '../store/rocketchat/actions';
 import {
@@ -29,6 +28,7 @@ export const initialChatSocket = (
 
   let reconnectAttempts = 0;
   let reconnectTimeout;
+  let allowDisconnect = false;
 
   const connectSocket = () => {
     const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
@@ -156,8 +156,11 @@ export const initialChatSocket = (
       } else if (resMessage === 'removed' && collection === 'users') {
         // Close connection on logout
         socket.close();
+
+        // Disconnect from old user
+        allowDisconnect = true;
+
         dispatch(updateIndicatorList({isChatConnected: false}));
-        dispatch(clearChatData());
       }
     });
 
@@ -170,13 +173,13 @@ export const initialChatSocket = (
   };
 
   const attemptReconnect = () => {
-    if (reconnectTimeout) {return;} // Avoid multiple reconnection attempts
+    if (reconnectTimeout || allowDisconnect) {return;} // Avoid multiple reconnection attempts
 
     const reconnectDelay = Math.min(1000 * reconnectAttempts, 30000); // Exponential backoff, max 30 seconds
+
     reconnectTimeout = setTimeout(() => {
       reconnectTimeout = null;
       reconnectAttempts += 1;
-      console.log(`Reconnect attempt #${reconnectAttempts}`);
       connectSocket();
     }, reconnectDelay);
   };
