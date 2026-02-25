@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import {ScrollView, View, Alert, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
@@ -16,9 +16,13 @@ import {useSelector, useDispatch} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
 import {clearRegister} from '../../../store/register/actions';
+import RocketchatContext from '../../../context/RocketchatContext';
+import {chatLogout, unSubscribeEvent} from '../../../utils/rocketchat';
 
 const SetupPin = ({navigation, route}) => {
+  const chatSocket = useContext(RocketchatContext);
   const dispatch = useDispatch();
+  const {subscribeIds, chatAuth} = useSelector((state) => state.rocketchat);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [code, setCode] = useState('');
@@ -96,7 +100,18 @@ const SetupPin = ({navigation, route}) => {
   };
 
   const onSetProfileInfo = (data) => {
+    if (chatSocket && chatAuth?.userId && subscribeIds?.loginId) {
+      // Unsubscribe from websocket
+      unSubscribeEvent(chatSocket, subscribeIds.loginId);
+
+      // Logout from rocket chat
+      chatLogout(chatSocket, chatAuth.userId);
+    }
+
+    // Clear register information
     dispatch(clearRegister());
+
+    // Set user profile information
     dispatch(setProfileInfo(data));
   };
 

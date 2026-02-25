@@ -305,10 +305,6 @@ export const sendPodcastNotification = (payload) => async () => {
   await Call.sendPodcastNotification(payload);
 };
 
-export const clearChatData = () => (dispatch) => {
-  dispatch(mutation.clearChatDataSuccess());
-};
-
 export const clearVideoCallStatus = () => (dispatch) => {
   dispatch(mutation.updateVideoCallStatusSuccess({}));
 };

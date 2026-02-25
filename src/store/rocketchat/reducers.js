@@ -91,7 +91,6 @@ export const rocketchat = (state = initialState, action) => {
         videoCall: action.data,
       });
     }
-    case 'CLEAR_CHAT_DATA_SUCCEED':
     case 'CLEAR_CALL_ACCESS_TOKEN_SUCCESS': {
       return Object.assign({}, state, {
         callAccessToken: undefined,
