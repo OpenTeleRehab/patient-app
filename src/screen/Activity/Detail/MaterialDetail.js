@@ -8,7 +8,7 @@ import {
   withTheme,
 } from 'react-native-elements';
 import styles from '../../../assets/styles';
-import {MATERIAL_TYPE, ROUTES} from '../../../variables/constants';
+import {MATERIAL_TYPE} from '../../../variables/constants';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import _ from 'lodash';
 import {useDispatch, useSelector} from 'react-redux';
@@ -48,13 +48,6 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const {adminApiBaseURL} = useSelector((state) => state.phone);
 
   useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
-
-  useEffect(() => {
     if (id && treatmentPlan.activities.length) {
       const selectedMaterial = _.find(treatmentPlan.activities, {
         id,
@@ -79,24 +72,21 @@ const MaterialDetail = ({theme, route, navigation}) => {
     }
   }, [material, offlineActivities]);
 
-  const handleCompleteTask = () => {
+  const handleCompleteTask = async () => {
+    const data = {
+      id: material.id,
+      timezone: RNLocalize.getTimeZone(),
+    };
+
     if (netInfo.isConnected) {
-      dispatch(
-        completeActive({id: material.id, timezone: RNLocalize.getTimeZone()}),
-      ).then((res) => {
-        if (res) {
-          navigation.navigate(ROUTES.ACTIVITY);
-        }
-      });
+      await dispatch(completeActive(data));
     } else {
       let offlineActivityObj = _.cloneDeep(offlineActivities);
-      offlineActivityObj.push({
-        id: material.id,
-        timezone: RNLocalize.getTimeZone(),
-      });
-      dispatch(completeActivityOffline(offlineActivityObj));
-      navigation.navigate(ROUTES.ACTIVITY);
+      offlineActivityObj.push(data);
+      await dispatch(completeActivityOffline(offlineActivityObj));
     }
+
+    navigation.goBack();
   };
 
   const handleDownload = async () => {
@@ -128,7 +118,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
       <HeaderBar
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
     );
@@ -139,7 +129,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
       <HeaderBar
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
       <View

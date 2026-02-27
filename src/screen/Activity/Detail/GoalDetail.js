@@ -21,7 +21,7 @@ import {
   completeGoal,
   completeGoalOffline,
 } from '../../../store/activity/actions';
-import {ACTIVITY_TYPES, ROUTES} from '../../../variables/constants';
+import {ACTIVITY_TYPES} from '../../../variables/constants';
 import _ from 'lodash';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -55,13 +55,6 @@ const GoalDetail = ({theme, route, navigation}) => {
   const painLevelValueWidth = 20;
   const left =
     (satisfactionLevel * (screenWidth - (40 - painLevelValueWidth))) / 11;
-
-  useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
 
   useEffect(() => {
     if (activity_id && treatmentPlan.activities.length) {
@@ -98,50 +91,38 @@ const GoalDetail = ({theme, route, navigation}) => {
     }
   }, [goal, day, week, offlineGoals]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const data = {
+      satisfaction: satisfactionLevel,
+      week: goal.week,
+      day: goal.day,
+      goal_id: goal.activity_id,
+      treatment_plan_id: goal.treatment_plan_id,
+    };
+
     if (netInfo.isConnected) {
-      dispatch(
-        completeGoal({
-          satisfaction: satisfactionLevel,
-          week: goal.week,
-          day: goal.day,
-          goal_id: goal.activity_id,
-          treatment_plan_id: goal.treatment_plan_id,
-        }),
-      ).then((res) => {
-        if (res) {
-          navigation.navigate(ROUTES.ACTIVITY);
-        }
-      });
+      await dispatch(completeGoal(data));
     } else {
       let offlineGoalsObj = _.cloneDeep(offlineGoals);
       offlineGoalsObj.push({
-        satisfaction: satisfactionLevel,
-        week: goal.week,
-        day: goal.day,
-        goal_id: goal.activity_id,
-        treatment_plan_id: goal.treatment_plan_id,
+        ...data,
         activity_id: goal.activity_id,
       });
-      dispatch(completeGoalOffline(offlineGoalsObj));
-      navigation.navigate(ROUTES.ACTIVITY);
+      await dispatch(completeGoalOffline(offlineGoalsObj));
     }
-    navigation.navigate(ROUTES.ACTIVITY);
+
+    navigation.goBack();
   };
 
   return (
     <>
       <HeaderBar
+        title={translate('activity.goal.detail.question')}
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
-      <View style={[styles.bgPrimary, styles.paddingXMd, styles.paddingY]}>
-        <Text style={styles.textLight}>
-          {translate('activity.goal.detail.question')}
-        </Text>
-      </View>
       <ScrollView>
         <Card containerStyle={styles.activityCardContainer}>
           <View

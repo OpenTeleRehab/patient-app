@@ -12,7 +12,6 @@ import {
 import TreatmentStatusBadge from './TreatmentStatusBadge';
 import {ROUTES} from '../../../variables/constants';
 import {useShowToast} from '../../../hook/useShowToast';
-import {theme} from '../../../../App';
 import Badge from '../../../components/Common/Badge';
 import {getTransferStatus} from '../../../utils/patient';
 import {
@@ -26,7 +25,7 @@ import variables from '../../../assets/styles/variables';
 import {referralStatusText, showDateOfBirth} from './PatientCard';
 import Notification from '../../../components/Notification';
 
-const PatientDetail = ({navigation, route}) => {
+const PatientDetail = ({navigation, route, theme}) => {
   const dispatch = useDispatch();
   const netInfo = useNetInfo();
   const {showToast} = useShowToast();
@@ -419,10 +418,10 @@ const componentStyles = StyleSheet.create({
     backgroundColor: variables.blueLight4,
   },
   titleActivateButtonStyle: {
-    color: theme.colors.white,
+    color: variables.white,
   },
   titleButtonStyle: {
-    color: theme.colors.danger,
+    color: variables.danger,
   },
   badgeContainer: {
     flexDirection: 'row',

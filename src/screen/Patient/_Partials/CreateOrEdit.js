@@ -17,7 +17,6 @@ import DatePicker from '../../../components/Common/DatePicker';
 import TextField from '../../../components/Common/TextField';
 import {getDefinedCountries} from '../../../store/country/actions';
 import {MultiSelect} from 'react-native-element-dropdown';
-import {theme} from '../../../../App';
 import {getRegionsRequest} from '../../../store/region/actions';
 import {getProvincesRequest} from '../../../store/province/actions';
 import {
@@ -57,8 +56,9 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import {mutation} from '../../../store/patient/mutations';
 import {mutation as questionnaireMutation} from '../../../store/screeningQuestionnaire/mutations';
 import {syncOfflineScreeningQuestionnaires} from '../../../store/screeningQuestionnaire/actions';
+import variables from '../../../assets/styles/variables';
 
-const CreateOrEditPatient = ({navigation, route}) => {
+const CreateOrEditPatient = ({theme, navigation, route}) => {
   const dispatch = useDispatch();
   const {showToast} = useShowToast();
   const netInfo = useNetInfo();
@@ -975,7 +975,7 @@ const componentStyles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 12,
-    color: theme.colors.white,
+    color: variables.white,
   },
   iconStyle: {
     width: 25,
@@ -986,7 +986,7 @@ const componentStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: variables.primary,
     paddingVertical: 6,
     paddingHorizontal: 8,
     marginTop: 10,
@@ -998,7 +998,7 @@ const componentStyles = StyleSheet.create({
   labelStyle: {
     fontSize: 12,
     marginBottom: 8,
-    color: theme.colors.grey1,
+    color: variables.grey1,
     fontWeight: '200',
   },
   buttonContainer: {
@@ -1006,7 +1006,7 @@ const componentStyles = StyleSheet.create({
     marginTop: 25,
   },
   errorTextStyle: {
-    color: theme.colors.danger,
+    color: variables.danger,
     fontSize: 12,
     fontWeight: '500',
     marginTop: -5,
@@ -1029,13 +1029,13 @@ const componentStyles = StyleSheet.create({
     marginRight: 8,
   },
   requiredText: {
-    color: theme.colors.danger,
+    color: variables.danger,
   },
   declineBackgroundStyle: {
-    backgroundColor: theme.colors.danger,
+    backgroundColor: variables.danger,
   },
   pendingBackgroundStyle: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: variables.primary,
   },
 });
 

@@ -3,10 +3,9 @@
  */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
-import {BottomSheet, Icon, Divider} from 'react-native-elements';
+import {BottomSheet, Icon, Divider, withTheme} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
-import {theme} from '../../../App';
 import AppointmentList from './_Partials/AppointmentList';
 import NewRequestedAppointmentList from './_Partials/NewRequestedAppointmentList';
 import {
@@ -24,8 +23,9 @@ import {getAllPatientsRequest} from '../../store/patient/actions';
 import {getPhcWorkersRequest} from '../../store/phcService/actions';
 import {getReferralTherapistsRequest} from '../../store/therapist/actions';
 import _ from 'lodash';
+import variables from '../../assets/styles/variables';
 
-const PhcAppointment = ({navigation}) => {
+const PhcAppointment = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -155,7 +155,7 @@ const componentStyles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderBottomColor: theme.colors.primary,
+    borderBottomColor: variables.primary,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -165,14 +165,14 @@ const componentStyles = StyleSheet.create({
     fontSize: 12,
   },
   activeTitle: {
-    color: theme.colors.primary,
+    color: variables.primary,
     fontWeight: 'bold',
   },
   inactiveTitle: {
-    color: theme.colors.black,
+    color: variables.black,
   },
   badge: {
-    backgroundColor: theme.colors.danger,
+    backgroundColor: variables.danger,
     borderRadius: 5,
     paddingHorizontal: 5,
     marginLeft: 1,
@@ -180,7 +180,7 @@ const componentStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   badgeText: {
-    color: theme.colors.white,
+    color: variables.white,
     fontSize: 10,
     textAlign: 'center',
   },
@@ -199,8 +199,8 @@ const componentStyles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: theme.colors.danger,
+    backgroundColor: variables.danger,
   },
 });
 
-export default PhcAppointment;
+export default withTheme(PhcAppointment);

@@ -14,19 +14,17 @@ import VerifyPhoneScreen from '../screen/Auth/VerifyPhone';
 import SetupPinScreen from '../screen/Auth/SetupPin';
 
 // Home group
-import HomeScreen from '../screen/Home';
-import UserProfileEditScreen from '../screen/UserProfile/edit';
 import AboutScreen from '../screen/About';
 import HelpScreen from '../screen/Help';
 import FaqScreen from '../screen/Faq';
 import TermConditionScreen from '../screen/TermCondition';
 import PrivacyPolicyScreen from '../screen/PrivacyPolicy';
 import UserProfileScreen from '../screen/UserProfile';
+import UserProfileEditScreen from '../screen/UserProfile/edit';
 import ConfirmPinScreen from '../screen/UserProfile/ConfirmPin';
 import AchievementScreen from '../screen/Achievement';
 
 // Activity group
-import ActivityScreen from '../screen/Activity';
 import CompleteTaskScreen from '../screen/Activity/CompleteTask';
 import ExerciseDetailScreen from '../screen/Activity/Detail/ExerciseDetail';
 import MaterialDetailScreen from '../screen/Activity/Detail/MaterialDetail';
@@ -34,17 +32,12 @@ import QuestionnaireDetailScreen from '../screen/Activity/Detail/QuestionnaireDe
 import GoalDetailScreen from '../screen/Activity/Detail/GoalDetail';
 
 // Appointment group
-import AppointmentScreen from '../screen/Appointment';
 import AppointmentDetailScreen from '../screen/Appointment/detail';
 
 // Message group
-import ChatRoomListScreen from '../screen/ChatOrCall/ChatRoomList';
 import ChatPanelScreen from '../screen/ChatOrCall/ChatPanel';
 
 // Health worker group
-import PatientScreen from '../screen/Patient';
-import TransferScreen from '../screen/Transfer';
-import PhcAppointmentScreen from '../screen/PhcAppointment';
 import ChangePasswordScreen from '../screen/UserProfile/ChangePassword';
 import CreateOrEditPatientScreen from '../screen/Patient/_Partials/CreateOrEdit';
 import PatientDetailScreen from '../screen/Patient/_Partials/PatientDetail';
@@ -130,35 +123,7 @@ export const auths = [
   },
 ];
 
-export const homes = [
-  {
-    name: ROUTES.HOME,
-    screen: HomeScreen,
-  },
-  {
-    name: ROUTES.CONFIRM_PIN,
-    screen: ConfirmPinScreen,
-  },
-  {
-    name: ROUTES.SETUP_PIN,
-    screen: SetupPinScreen,
-  },
-  {
-    name: ROUTES.USER_PROFILE_EDIT,
-    screen: UserProfileEditScreen,
-  },
-  {
-    name: ROUTES.ACHIEVEMENT,
-    screen: AchievementScreen,
-  },
-  ...drawerItems,
-];
-
 export const activities = [
-  {
-    name: ROUTES.ACTIVITY,
-    screen: ActivityScreen,
-  },
   {
     name: ROUTES.EXERCISE_DETAIL,
     screen: ExerciseDetailScreen,
@@ -183,48 +148,12 @@ export const activities = [
 
 export const appointments = [
   {
-    name: ROUTES.APPOINTMENT,
-    screen: AppointmentScreen,
-  },
-  {
     name: ROUTES.APPOINTMENT_DETAIL,
     screen: AppointmentDetailScreen,
-  },
-  {
-    name: ROUTES.CONFIRM_PIN,
-    screen: ConfirmPinScreen,
-  },
-  {
-    name: ROUTES.SETUP_PIN,
-    screen: SetupPinScreen,
-  },
-  {
-    name: ROUTES.USER_PROFILE_EDIT,
-    screen: UserProfileEditScreen,
-  },
-  {
-    name: ROUTES.ACHIEVEMENT,
-    screen: AchievementScreen,
-  },
-  ...drawerItems,
-];
-
-export const messages = [
-  {
-    name: ROUTES.CHAT_ROOM_LIST,
-    screen: ChatRoomListScreen,
-  },
-  {
-    name: ROUTES.CHAT_PANEL,
-    screen: ChatPanelScreen,
   },
 ];
 
 export const patients = [
-  {
-    name: ROUTES.PATIENT,
-    screen: PatientScreen,
-  },
   {
     name: ROUTES.CREATE_EDIT_PATIENT,
     screen: CreateOrEditPatientScreen,
@@ -242,26 +171,9 @@ export const patients = [
     screen: PatientTransferScreen,
   },
   {
-    name: ROUTES.USER_PROFILE_EDIT,
-    screen: UserProfileEditScreen,
-  },
-  {
-    name: ROUTES.CONFIRM_PIN,
-    screen: ConfirmPinScreen,
-  },
-  {
-    name: ROUTES.SETUP_PIN,
-    screen: SetupPinScreen,
-  },
-  {
-    name: ROUTES.CHANGE_PASSWORD,
-    screen: ChangePasswordScreen,
-  },
-  {
     name: ROUTES.INTERVIEW_STACK,
     screen: InterviewStackNavigator,
   },
-  ...drawerItems,
 ];
 
 export const interviews = [
@@ -283,34 +195,17 @@ export const interviews = [
   },
 ];
 
-export const transfers = [
+export const messages = [
   {
-    name: ROUTES.TRANSFER,
-    screen: TransferScreen,
+    name: ROUTES.CHAT_PANEL,
+    screen: ChatPanelScreen,
   },
-  {
-    name: ROUTES.USER_PROFILE_EDIT,
-    screen: UserProfileEditScreen,
-  },
-  {
-    name: ROUTES.CONFIRM_PIN,
-    screen: ConfirmPinScreen,
-  },
-  {
-    name: ROUTES.SETUP_PIN,
-    screen: SetupPinScreen,
-  },
-  {
-    name: ROUTES.CHANGE_PASSWORD,
-    screen: ChangePasswordScreen,
-  },
-  ...drawerItems,
 ];
 
-export const phcAppointments = [
+export const miscellaneous = [
   {
-    name: ROUTES.PHC_APPOINTMENT,
-    screen: PhcAppointmentScreen,
+    name: ROUTES.ACHIEVEMENT,
+    screen: AchievementScreen,
   },
   {
     name: ROUTES.USER_PROFILE_EDIT,
@@ -328,5 +223,4 @@ export const phcAppointments = [
     name: ROUTES.CHANGE_PASSWORD,
     screen: ChangePasswordScreen,
   },
-  ...drawerItems,
 ];

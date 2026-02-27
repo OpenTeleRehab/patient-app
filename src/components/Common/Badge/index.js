@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import {theme} from '../../../../App';
+import variables from '../../../assets/styles/variables';
 
 const Badge = ({color, value}) => {
   return (
@@ -22,7 +22,7 @@ const componentStyles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 9,
-    color: theme.colors.white,
+    color: variables.white,
   },
 });
 

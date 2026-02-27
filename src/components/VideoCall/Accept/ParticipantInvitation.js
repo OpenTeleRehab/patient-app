@@ -3,7 +3,14 @@
  */
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Badge, BottomSheet, Icon, ListItem, Text} from 'react-native-elements';
+import {
+  Badge,
+  BottomSheet,
+  Icon,
+  ListItem,
+  Text,
+  withTheme,
+} from 'react-native-elements';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -17,10 +24,10 @@ import {generateHash} from '../../../utils/helper';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
 import {sendNewMessage} from '../../../utils/rocketchat';
 import RocketchatContext from '../../../context/RocketchatContext';
-import {theme} from '../../../../App';
 import styles from '../../../assets/styles';
 
 const ParticipantInvitation = ({
+  theme,
   isVideoEnabled,
   participants,
   onSetInvitingParticipants,
@@ -121,7 +128,9 @@ const ParticipantInvitation = ({
 
   const checkParticipantJoined = (room) => {
     return participants.some(({participant}) =>
-      participant.identity.startsWith(room.u.username + '###' + profile.country_id),
+      participant.identity.startsWith(
+        room.u.username + '###' + profile.country_id,
+      ),
     );
   };
 
@@ -170,7 +179,7 @@ const ParticipantInvitation = ({
         onPress={() => setIsVisible(true)}
         style={{
           ...componentStyles.btnAddParticipant,
-          top: insets.top
+          top: insets.top,
         }}>
         <Icon name="person-add-alt-1" color={theme.colors.white} size={26} />
       </TouchableOpacity>
@@ -327,4 +336,4 @@ const componentStyles = StyleSheet.create({
   },
 });
 
-export default ParticipantInvitation;
+export default withTheme(ParticipantInvitation);

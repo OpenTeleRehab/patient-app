@@ -16,7 +16,6 @@ import {
   requestAppointment,
 } from '../../../store/appointment/actions';
 import settings from '../../../../config/settings';
-import {ROUTES} from '../../../variables/constants';
 import CommonOverlay from '../../../components/Common/Overlay';
 import {
   CARE_PROVIDER_OPTIONS,
@@ -186,14 +185,14 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           toTimeThen
       ) {
         handleCloseOverlay();
-        navigation.navigate(ROUTES.APPOINTMENT);
+        navigation.goBack();
         setIsLoading(false);
       } else {
         dispatch(requestAppointment(data)).then((result) => {
           setIsLoading(false);
           if (result.success) {
             if (appointment) {
-              navigation.navigate(ROUTES.APPOINTMENT);
+              navigation.goBack();
             } else {
               handleCloseOverlay();
             }

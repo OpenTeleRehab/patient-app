@@ -2,13 +2,12 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {Icon} from 'react-native-elements';
 import ProgressBar from './ProgressBar';
-import {theme} from '../../../App';
 import {useSelector} from 'react-redux';
 import {ROUTES} from '../../variables/constants';
 import {useNavigation} from '@react-navigation/native';
+import variables from '../../assets/styles/variables';
 
 export default function Notification(patientDetail) {
-
   const navigation = useNavigation();
   const {chatRooms} = useSelector((state) => state.rocketchat);
   const room = chatRooms?.find(r => r?.rid?.includes(patientDetail?.chat_user_id));
@@ -30,7 +29,7 @@ export default function Notification(patientDetail) {
               name="alert-triangle"
               type="feather"
               size={20}
-              color={theme.colors.orangeDark}
+              color={variables.orangeDark}
             />
             <Badge value={painThreshold} />
           </View>
@@ -45,11 +44,11 @@ export default function Notification(patientDetail) {
               name="comment-dots"
               type="font-awesome-5"
               size={20}
-              color={theme.colors.primary}
+              color={variables.primary}
             />
             <Badge value={chatText} />
           </TouchableOpacity>
-         )}
+        )}
         {appointmentCount > 0 && (
           <TouchableOpacity
             style={styles.iconItem}
@@ -60,11 +59,11 @@ export default function Notification(patientDetail) {
               name="calendar-alt"
               type="font-awesome-5"
               size={20}
-              color={theme.colors.primary}
+              color={variables.primary}
             />
             <Badge value={appointmentCount} />
           </TouchableOpacity>
-         )}
+        )}
       </View>
     </View>
   );

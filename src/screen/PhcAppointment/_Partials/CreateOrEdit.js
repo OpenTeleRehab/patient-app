@@ -18,7 +18,6 @@ import {
   APPOINTMENT_TYPE
 } from '../../../variables/appointment';
 import {useForm, Controller} from 'react-hook-form';
-import {theme} from '../../../../App';
 import DatePicker from '../../../components/Common/DatePicker';
 import TextField from '../../../components/Common/TextField';
 import {useShowToast} from '../../../hook/useShowToast';
@@ -29,8 +28,9 @@ import {
   updateAppointment
 } from '../../../store/phcAppointment/actions';
 import Spinner from 'react-native-loading-spinner-overlay';
+import variables from '../../../assets/styles/variables';
 
-const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation}) => {
+const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -176,7 +176,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment, navigation})
               translate('phc.appointment.create')
             );
           }
-        });  
+        });
       }
     } else {
       if (appointment) {
@@ -642,11 +642,11 @@ const componentStyles = StyleSheet.create({
   labelStyle: {
     fontSize: 12,
     marginBottom: 8,
-    color: theme.colors.grey1,
+    color: variables.grey1,
     fontWeight: '200',
   },
   errorTextStyle: {
-    color: theme.colors.danger,
+    color: variables.danger,
     fontSize: 12,
     fontWeight: '500',
     marginTop: -5,
@@ -655,7 +655,7 @@ const componentStyles = StyleSheet.create({
     fontSize: 12,
   },
   requiredText: {
-    color: theme.colors.danger,
+    color: variables.danger,
   },
 });
 

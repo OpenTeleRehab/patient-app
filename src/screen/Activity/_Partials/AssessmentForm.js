@@ -22,7 +22,6 @@ import {
   completeActive,
   completeActivityOffline,
 } from '../../../store/activity/actions';
-import {ROUTES} from '../../../variables/constants';
 import styles from '../../../assets/styles';
 
 import quackerPain012 from '../../../assets/images/quacker-pain-1.png';
@@ -123,33 +122,24 @@ const AssessmentForm = ({
     }
   }, [painLevel]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const payload = {
+      id: activity.id,
+      pain_level: activity.get_pain_level ? painLevel : null,
+      sets: activity.include_feedback ? numberOfSets : null,
+      reps: activity.include_feedback ? numberOfReps : null,
+      timezone: RNLocalize.getTimeZone(),
+    };
+
     if (netInfo.isConnected) {
-      dispatch(
-        completeActive({
-          id: activity.id,
-          pain_level: activity.get_pain_level ? painLevel : null,
-          sets: activity.include_feedback ? numberOfSets : null,
-          reps: activity.include_feedback ? numberOfReps : null,
-          timezone: RNLocalize.getTimeZone(),
-        }),
-      ).then((res) => {
-        if (res) {
-          navigation.navigate(ROUTES.ACTIVITY);
-        }
-      });
+      await dispatch(completeActive(payload));
     } else {
       let offlineActivitiesObj = _.cloneDeep(offlineActivities);
-      offlineActivitiesObj.push({
-        id: activity.id,
-        pain_level: activity.get_pain_level ? painLevel : null,
-        sets: activity.include_feedback ? numberOfSets : null,
-        reps: activity.include_feedback ? numberOfReps : null,
-        timezone: RNLocalize.getTimeZone(),
-      });
-      dispatch(completeActivityOffline(offlineActivitiesObj));
-      navigation.navigate(ROUTES.ACTIVITY);
+      offlineActivitiesObj.push(payload);
+      await dispatch(completeActivityOffline(offlineActivitiesObj));
     }
+
+    navigation.goBack();
   };
 
   const handleNext = () => {

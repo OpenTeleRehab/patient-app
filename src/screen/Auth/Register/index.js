@@ -58,7 +58,7 @@ const inputPhoneContainerStyle = {
 };
 
 
-const Register = ({theme, navigation, route}) => {
+const Register = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -66,9 +66,7 @@ const Register = ({theme, navigation, route}) => {
   const {definedCountries, userCountryCode} = useSelector(
     (state) => state.country,
   );
-  const [registerAsSelectedIndex, setRegisterAsSelectedIndex] = useState(
-    route?.params?.registerIndexTab ?? 0,
-  );
+  const [registerAsSelectedIndex, setRegisterAsSelectedIndex] = useState(0);
   const {languages} = useSelector((state) => state.language);
   const [hash, setHash] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');

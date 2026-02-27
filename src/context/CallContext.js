@@ -17,6 +17,7 @@ import {
 } from '../store/rocketchat/actions';
 import {getLocalData, storeLocalData} from '../utils/local_storage';
 import {mutation} from '../store/rocketchat/mutations';
+import {requestCallPermission} from '../utils/permission';
 import _ from 'lodash';
 
 const CallContext = createContext(null);
@@ -35,6 +36,13 @@ export const CallContextProvider = ({children}) => {
   } = useSelector((state) => state.rocketchat);
   const {accessToken, profile} = useSelector((state) => state.user);
   const [hasParticipant, setHasParticipant] = useState(false);
+
+  useEffect(() => {
+    if (accessToken) {
+      // Request phone call permission
+      requestCallPermission();
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     if (_.isEmpty(videoCall)) {
