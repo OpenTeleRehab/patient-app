@@ -140,8 +140,14 @@ const ChatMediaSlider = ({
             renderItem={(props) => renderItem(props, currentIndex)}
             sliderWidth={sliderWidth}
             itemWidth={sliderWidth}
-            firstItem={currentIndex}
             inactiveSlideScale={1}
+            firstItem={currentIndex}
+            initialScrollIndex={currentIndex}
+            getItemLayout={(_, index) => ({
+              length: sliderWidth,
+              offset: sliderWidth * index,
+              index,
+            })}
             onSnapToItem={changeIndex}
           />
         ) : (
