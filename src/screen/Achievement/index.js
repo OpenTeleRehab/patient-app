@@ -33,13 +33,6 @@ const Achievement = ({theme, navigation}) => {
     dispatch(getAchievementRequest());
   }, [dispatch, isFocused]);
 
-  useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
-
   const handleOpenAchievement = (item) => {
     setShowAchievementOverlay(true);
     setAchievement(item);

@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {Text, Button, Icon, Divider} from 'react-native-elements';
+import {Text, Button, Icon, Divider, withTheme} from 'react-native-elements';
 import {StyleSheet, View, Platform} from 'react-native';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
 import DatePicker from '../../../components/Common/DatePicker';
-import {theme} from '../../../../App';
 import {formatDate} from '../../../utils/helper';
 import moment from 'moment/moment';
 import {_} from 'lodash';
+import variables from '../../../assets/styles/variables';
 
-const Filter = ({filters, setFilters, setShowFilter}) => {
+const Filter = ({theme, filters, setFilters, setShowFilter}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -130,7 +130,7 @@ const componentStyles = StyleSheet.create({
   labelStyle: {
     fontSize: 12,
     marginBottom: 8,
-    color: theme.colors.grey1,
+    color: variables.grey1,
     fontWeight: '200',
   },
   inputStyle: {
@@ -140,11 +140,11 @@ const componentStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   errorTextStyle: {
-    color: theme.colors.danger,
+    color: variables.danger,
     fontSize: 12,
     fontWeight: '500',
     marginTop: -7,
   },
 });
 
-export default Filter;
+export default withTheme(Filter);

@@ -48,13 +48,6 @@ const ChatPanel = ({navigation, theme}) => {
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
 
   useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
-
-  useEffect(() => {
     setAllMessages(messages);
   }, [chatRooms, messages]);
 
@@ -213,7 +206,6 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const handleGoBack = () => {
-    navigation.getParent().setOptions({tabBarVisible: true});
     Keyboard.dismiss();
     navigation.goBack();
   };

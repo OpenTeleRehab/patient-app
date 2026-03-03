@@ -4,11 +4,10 @@ import moment from 'moment';
 import settings from '../../../../config/settings';
 import {TREATMENT_STATUS} from '../../../variables/constants';
 import {View, StyleSheet, Text} from 'react-native';
-import {theme} from '../../../../App';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
 
-const TreatmentStatusBadge = ({treatmentPlan}) => {
+const TreatmentStatusBadge = ({theme, treatmentPlan}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 

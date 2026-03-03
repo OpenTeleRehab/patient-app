@@ -62,12 +62,12 @@ const InterviewList = ({navigation, patientId}) => {
               <InterviewItemCard
                 key={index}
                 onClickInterview={() => {
-                  navigation.push(ROUTES.INTERVIEW, {
+                  navigation.navigate(ROUTES.INTERVIEW, {
                     screeningQuestionnaireId: interview.id,
                   });
                 }}
                 onClickViewInterviewHistory={() => {
-                  navigation.push(ROUTES.INTERVIEW_HISTORY_LIST, {
+                  navigation.navigate(ROUTES.INTERVIEW_HISTORY_LIST, {
                     screeningQuestionnaire: interview,
                   });
                 }}

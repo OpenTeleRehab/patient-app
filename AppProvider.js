@@ -45,7 +45,7 @@ import {
   completeQuestionnaire,
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
-import {requestCallPermission, requestNotificationPermission} from './src/utils/permission';
+import {requestNotificationPermission} from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
 import _ from 'lodash';
@@ -208,15 +208,12 @@ const AppProvider = ({children}) => {
       // Set chat socket
       setSocket(chatSocket);
     }
-
-    // Request notification permission
-    requestNotificationPermission();
-
-    // Request phone call permission
-    requestCallPermission();
   }, [dispatch, isOnline, profile.chat_password, profile.id, profile.identity]);
 
   useEffect(() => {
+    // Request notification permission
+    requestNotificationPermission();
+
     if (accessToken && chatAuth && chatAuth.userId && chatAuth.token) {
       // Get chat rooms
       dispatch(getChatRooms());

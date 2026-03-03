@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ListItem, Badge, Icon} from 'react-native-elements';
+import {ListItem, Badge, Icon, Text} from 'react-native-elements';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -19,11 +19,13 @@ import {
   getPhcChatRooms,
   getTherapistChatRooms,
 } from '../../../utils/chat';
+import variables from '../../../assets/styles/variables';
 
 const ChatRoomList = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {chatAuth} = useSelector((state) => state.rocketchat);
   const {professions} = useSelector((state) => state.profession);
   const [defaultExpanded, setDefaultExpanded] = useState([
     'patients',
@@ -67,68 +69,82 @@ const ChatRoomList = ({navigation}) => {
   return (
     <>
       <HeaderBar leftContent={{label: translate('tab.messages')}} />
-      <ScrollView>
-        {Object.keys(rooms).map((key) => (
-          <View key={key}>
-            {rooms[key].length > 0 && (
-              <View style={componentStyles.listItemWrapper}>
-                <ListItem
-                  bottomDivider
-                  containerStyle={componentStyles.listItemContainerStyle}
-                  onPress={() => handleToggleRoom(key)}>
-                  <ListItem.Content>
-                    <ListItem.Title style={styles.textPrimary}>
-                      {translate(`common.${key}`)}
-                    </ListItem.Title>
-                  </ListItem.Content>
-                  <Icon
-                    name={
-                      defaultExpanded.includes(key)
-                        ? 'keyboard-arrow-up'
-                        : 'keyboard-arrow-down'
-                    }
-                    size={20}
-                  />
-                </ListItem>
-                {defaultExpanded.includes(key) && (
-                  <>
-                    {rooms[key].map((item, i) => (
-                      <ListItem
-                        key={i}
-                        bottomDivider
-                        containerStyle={componentStyles.listItemContainerStyle}
-                        onPress={() => handleSelectRoom(item)}>
-                        <ListItem.Content>
-                          <ListItem.Title>
-                            {item.name}
-                            {getProfession(item.professionId)}{' '}
+
+      {chatAuth ? (
+        <ScrollView>
+          {Object.keys(rooms).map((key) => (
+            <View key={key}>
+              {rooms[key].length > 0 && (
+                <View style={componentStyles.listItemWrapper}>
+                  <ListItem
+                    bottomDivider
+                    containerStyle={componentStyles.listItemContainerStyle}
+                    onPress={() => handleToggleRoom(key)}>
+                    <ListItem.Content>
+                      <ListItem.Title style={styles.textPrimary}>
+                        {translate(`common.${key}`)}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                    <Icon
+                      name={
+                        defaultExpanded.includes(key)
+                          ? 'keyboard-arrow-up'
+                          : 'keyboard-arrow-down'
+                      }
+                      size={20}
+                    />
+                  </ListItem>
+                  {defaultExpanded.includes(key) && (
+                    <>
+                      {rooms[key].map((item, i) => (
+                        <ListItem
+                          key={i}
+                          bottomDivider
+                          containerStyle={
+                            componentStyles.listItemContainerStyle
+                          }
+                          onPress={() => handleSelectRoom(item)}>
+                          <ListItem.Content>
+                            <ListItem.Title>
+                              {item.name}
+                              {getProfession(item.professionId)}{' '}
+                              <Badge
+                                badgeStyle={
+                                  item.u.status === CHAT_USER_STATUS.ONLINE
+                                    ? styles.bgSuccess
+                                    : styles.bgGrey
+                                }
+                              />
+                            </ListItem.Title>
+                            <ListItem.Subtitle>
+                              {renderLastMessageText(
+                                item.lastMessage,
+                                translate,
+                              )}
+                            </ListItem.Subtitle>
+                          </ListItem.Content>
+                          {item.unreads > 0 && (
                             <Badge
-                              badgeStyle={
-                                item.u.status === CHAT_USER_STATUS.ONLINE
-                                  ? styles.bgSuccess
-                                  : styles.bgGrey
-                              }
+                              value={item.unreads > 99 ? '99+' : item.unreads}
+                              status="error"
                             />
-                          </ListItem.Title>
-                          <ListItem.Subtitle>
-                            {renderLastMessageText(item.lastMessage, translate)}
-                          </ListItem.Subtitle>
-                        </ListItem.Content>
-                        {item.unreads > 0 && (
-                          <Badge
-                            value={item.unreads > 99 ? '99+' : item.unreads}
-                            status="error"
-                          />
-                        )}
-                      </ListItem>
-                    ))}
-                  </>
-                )}
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
+                          )}
+                        </ListItem>
+                      ))}
+                    </>
+                  )}
+                </View>
+              )}
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={styles.paddingMd}>
+          <Text style={componentStyles.serverDownText}>
+            {translate('chat_message.server_down')}
+          </Text>
+        </View>
+      )}
     </>
   );
 };
@@ -139,6 +155,11 @@ const componentStyles = StyleSheet.create({
   },
   listItemContainerStyle: {
     paddingHorizontal: 12,
+  },
+  serverDownText: {
+    color: variables.danger,
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
 

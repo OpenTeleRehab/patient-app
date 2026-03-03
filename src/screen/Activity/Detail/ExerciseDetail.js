@@ -7,7 +7,6 @@ import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
-import {ROUTES} from '../../../variables/constants';
 import _ from 'lodash';
 import TaskDetail from '../_Partials/TaskDetail';
 import AssessmentForm from '../_Partials/AssessmentForm';
@@ -26,13 +25,6 @@ const ExerciseDetail = ({theme, route, navigation}) => {
   const [isCompletedOffline, setIsCompletedOffline] = useState(false);
   const [steps, setSteps] = useState(0);
   const [step, setStep] = useState(1);
-
-  useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
 
   useEffect(() => {
     if (id && treatmentPlan.activities.length) {
@@ -64,7 +56,7 @@ const ExerciseDetail = ({theme, route, navigation}) => {
       <HeaderBar
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
     );
@@ -75,7 +67,7 @@ const ExerciseDetail = ({theme, route, navigation}) => {
       <HeaderBar
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
 

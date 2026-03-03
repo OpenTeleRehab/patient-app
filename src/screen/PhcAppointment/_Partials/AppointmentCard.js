@@ -19,7 +19,6 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {View, Alert, StyleSheet} from 'react-native';
 import styles from '../../../assets/styles';
 import {APPOINTMENT_STATUS} from '../../../variables/constants';
-import {theme} from '../../../../App';
 import CreateOrEditAppointment from './CreateOrEdit';
 import {
   deleteAppointmentWithPatient,
@@ -29,8 +28,9 @@ import {
   declineAppointment
 } from '../../../store/phcAppointment/actions';
 import {useShowToast} from '../../../hook/useShowToast';
+import variables from '../../../assets/styles/variables';
 
-const AppointmentCard = ({appointment}) => {
+const AppointmentCard = ({theme, appointment}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const showToast = useShowToast();
@@ -387,11 +387,11 @@ const componentStyle = StyleSheet.create({
   nameText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: theme.colors.primary,
+    color: variables.primary,
   },
   leftContainer: {
-    backgroundColor: theme.colors.primary,
-    color: theme.colors.white,
+    backgroundColor: variables.primary,
+    color: variables.white,
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomLeftRadius: 10,
@@ -399,7 +399,7 @@ const componentStyle = StyleSheet.create({
     width: 100,
     height: '100%',
   },
-  noteContainer: { 
+  noteContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -409,7 +409,7 @@ const componentStyle = StyleSheet.create({
     borderRadius: 5,
   },
   cancelButtonStyle: {
-    backgroundColor: theme.colors.danger,
+    backgroundColor: variables.danger,
   },
 });
 

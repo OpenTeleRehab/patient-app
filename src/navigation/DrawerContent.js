@@ -2,28 +2,25 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {Linking, Switch, Text, View} from 'react-native';
-import styles from '../../assets/styles';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import FIcon from 'react-native-vector-icons/Feather';
-import {Button} from 'react-native-elements';
+import {Linking, StyleSheet, Switch, View} from 'react-native';
+import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
+import {Button, Text} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
-import {enableKidTheme, logoutRequest} from '../../store/user/actions';
-import settings from '../../../config/settings';
-import {isPhcWorker} from '../../utils/helper';
+import {enableKidTheme, logoutRequest} from '../store/user/actions';
+import {isPhcWorker} from '../utils/helper';
+import settings from '../../config/settings';
+import {drawerItems} from '../variables/routes';
+import variables from '../assets/styles/variables';
+import styles from '../assets/styles';
 
-const iconRenderer = (route, size, color) => (
-  <FIcon name={route.icon} color={color} size={size} />
+const renderDrawerIcon = (item, size, color) => (
+  <FIcon name={item.icon} color={color} size={size} />
 );
 
-const DrawerNavigator = ({
-  allowSwitchTheme = true,
-  drawerItems = [],
-  navProps,
-}) => {
+const DrawerContent = ({navigation}) => {
   const dispatch = useDispatch();
-  const {navigation} = navProps;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {accessToken, profile} = useSelector((state) => state.user);
@@ -48,40 +45,35 @@ const DrawerNavigator = ({
   };
 
   return (
-    <View style={styles.navDrawerContainer}>
-      <DrawerContentScrollView {...navProps}>
-        {allowSwitchTheme && (
-          <View
-            style={[
-              styles.navKidThemeWrapper,
-              styles.flexRow,
-              styles.flexCenter,
-              styles.justifyContentSpaceAround,
-            ]}>
-            <Text style={styles.width70}>{translate('common.theme.kid')}</Text>
+    <View style={componentStyles.drawerContainer}>
+      {!isPhcWorker(profile.type) && (
+        <View style={componentStyles.drawerHeader}>
+          <View style={componentStyles.childThemeWrapper}>
+            <Text accessible accessibilityLabel={translate('common.theme.kid')}>
+              {translate('common.theme.kid')}
+            </Text>
             <Switch
-              trackColor={{false: '#767577', true: '#0077C8'}}
-              thumbColor={'#ffffff'}
-              ios_backgroundColor="#767577"
+              trackColor={{false: variables.grey, true: variables.primary}}
+              thumbColor={variables.white}
+              ios_backgroundColor={variables.grey}
               onValueChange={(value) => handleKidThemeChange(value)}
               value={isKidTheme}
             />
           </View>
-        )}
-        {drawerItems.map((route, index) => (
+        </View>
+      )}
+      <DrawerContentScrollView>
+        {drawerItems.map((item, index) => (
           <DrawerItem
             key={index}
-            focused={
-              navProps.state.routeNames[navProps.state.index] === route.name
-            }
-            label={translate(route.label)}
+            label={translate(item.label)}
             labelStyle={styles.textDefault}
-            onPress={() => handleNavigate(route)}
-            icon={({size, color}) => iconRenderer(route, size, color)}
+            onPress={() => handleNavigate(item)}
+            icon={({size, color}) => renderDrawerIcon(item, size, color)}
           />
         ))}
       </DrawerContentScrollView>
-      <View style={styles.navDrawerBottomContainer}>
+      <View style={componentStyles.drawerFooter}>
         {isPhcWorker(profile.type) && (
           <Button
             title={translate('common.web_portal')}
@@ -114,4 +106,29 @@ const DrawerNavigator = ({
   );
 };
 
-export default DrawerNavigator;
+const componentStyles = StyleSheet.create({
+  drawerContainer: {
+    flex: 1,
+    backgroundColor: variables.white,
+    paddingVertical: 24,
+  },
+  drawerHeader: {
+    marginBottom: 22,
+    paddingHorizontal: 12,
+  },
+  drawerFooter: {
+    gap: 8,
+    marginTop: 22,
+    paddingHorizontal: 12,
+  },
+  childThemeWrapper: {
+    alignItems: 'center',
+    backgroundColor: variables.grey6,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: variables.spacingMd,
+  },
+});
+
+export default DrawerContent;

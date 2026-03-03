@@ -5,8 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
-import {BottomSheet, Icon} from 'react-native-elements';
-import {theme} from '../../../App';
+import {BottomSheet, Icon, withTheme} from 'react-native-elements';
 import {OFFLINE_STATUS, ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
@@ -26,8 +25,9 @@ import {
   getPhcWorkersRequest,
 } from '../../store/phcService/actions';
 import {updateIndicatorList} from '../../store/indicator/actions';
+import variables from '../../assets/styles/variables';
 
-const Patient = ({navigation}) => {
+const Patient = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -248,7 +248,7 @@ export const componentStyles = StyleSheet.create({
     padding: 15,
   },
   buttonTitleStyle: {
-    color: theme.colors.white,
+    color: variables.white,
     fontSize: 12,
   },
   buttonStyle: {
@@ -278,8 +278,8 @@ export const componentStyles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: theme.colors.danger,
+    backgroundColor: variables.danger,
   },
 });
 
-export default Patient;
+export default withTheme(Patient);

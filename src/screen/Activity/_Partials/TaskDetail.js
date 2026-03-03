@@ -78,25 +78,22 @@ const TaskDetail = ({
   const [activePaginationIndex, setActivePaginationIndex] = useState(0);
   const netInfo = useNetInfo();
 
-  const handleCompleteTask = () => {
+  const handleCompleteTask = async () => {
     if (!activity.include_feedback && !activity.get_pain_level) {
+      const data = {
+        id: activity.id,
+        timezone: RNLocalize.getTimeZone(),
+      };
+
       if (netInfo.isConnected) {
-        dispatch(
-          completeActive({id: activity.id, timezone: RNLocalize.getTimeZone()}),
-        ).then((res) => {
-          if (res) {
-            navigation.navigate(ROUTES.ACTIVITY);
-          }
-        });
+        await dispatch(completeActive(data));
       } else {
         let offlineActivityObj = _.cloneDeep(offlineActivities);
-        offlineActivityObj.push({
-          id: activity.id,
-          timezone: RNLocalize.getTimeZone(),
-        });
-        dispatch(completeActivityOffline(offlineActivityObj));
-        navigation.navigate(ROUTES.ACTIVITY);
+        offlineActivityObj.push(data);
+        await dispatch(completeActivityOffline(offlineActivityObj));
       }
+
+      navigation.goBack();
     } else {
       navigation.navigate(ROUTES.COMPLETE_EXERCISE, {
         id: activity.id,

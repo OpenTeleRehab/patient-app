@@ -5,7 +5,6 @@ import styles from '../../../assets/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {ScrollView, View} from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
-import {ROUTES} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import _ from 'lodash';
 import RenderQuestion from '../_Partials/RenderQuestion';
@@ -57,13 +56,6 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const [patientAnswers, setPatientAnswers] = useState([]);
   const [thresholdErrors, setThresholdErrors] = useState({});
   const isOnline = useNetInfo().isConnected;
-
-  useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
 
   useEffect(() => {
     if (id && treatmentPlan.activities.length) {
@@ -139,8 +131,9 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
     }
   };
 
-  const handleCompleteTask = () => {
+  const handleCompleteTask = async () => {
     const currentQuestion = questionnaire.questions[activePaginationIndex];
+
     if (currentQuestion.type === 'open-number') {
       const threshold = currentQuestion.answers[0]?.threshold;
       const minValue = 0;
@@ -159,30 +152,26 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
         return;
       }
     }
+
     Tts.stop();
+
+    const data = {
+      id: id,
+      answers: patientAnswers,
+      timezone: RNLocalize.getTimeZone(),
+    };
+
     if (isOnline) {
-      const data = {
-        id: id,
-        answers: patientAnswers,
-        timezone: RNLocalize.getTimeZone(),
-      };
-      dispatch(completeQuestionnaire(data)).then((res) => {
-        if (res) {
-          navigation.navigate(ROUTES.ACTIVITY);
-        }
-      });
+      await dispatch(completeQuestionnaire(data));
     } else {
       let offlineQuestionnaireAnswersObj = _.cloneDeep(
         offlineQuestionnaireAnswers,
       );
-      offlineQuestionnaireAnswersObj.push({
-        id: id,
-        answers: patientAnswers,
-        timezone: RNLocalize.getTimeZone(),
-      });
-      dispatch(completeQuestionnaireOffline(offlineQuestionnaireAnswersObj));
-      navigation.navigate(ROUTES.ACTIVITY);
+      offlineQuestionnaireAnswersObj.push(data);
+      await dispatch(completeQuestionnaireOffline(offlineQuestionnaireAnswersObj));
     }
+
+    navigation.goBack();
   };
 
   if (!questionnaire) {
@@ -190,7 +179,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
       <HeaderBar
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
     );
@@ -202,7 +191,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
         leftContent={
           <Text
             numberOfLines={1}
-            style={[styles.fontSizeXLg, styles.fontWeightBold]}>
+            style={[styles.fontSizeXLg, styles.fontWeightBold, styles.textLight]}>
             {questionnaire.title}
             {!!questionnaire.completed && (
               <Icon
@@ -217,7 +206,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
         }
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.navigate(ROUTES.ACTIVITY),
+          onPress: () => navigation.goBack(),
         }}
       />
       <View

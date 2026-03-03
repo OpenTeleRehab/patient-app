@@ -9,7 +9,7 @@ import SurveyModal from './SurveyModal';
 const Survey = () => {
   const dispatch = useDispatch();
   const languages = useSelector(state => state.language.languages);
-  const {profile} = useSelector((state) => state.user);
+  const {accessToken, profile} = useSelector((state) => state.user);
   const {publishSurveys} = useSelector(state => state.survey);
   const {treatmentPlan} = useSelector((state) => state.activity);
   const {organization} = useSelector((state) => state.phone);
@@ -19,10 +19,10 @@ const Survey = () => {
   const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
-    if (publishSurveys?.length) {
+    if (accessToken && publishSurveys?.length) {
       setSurveys(publishSurveys);
     }
-  }, [publishSurveys]);
+  }, [accessToken, publishSurveys]);
 
   useEffect(() => {
     if (surveys.length > 0) {
@@ -65,8 +65,12 @@ const Survey = () => {
 
   return (
     <>
-      {currentSurvey && (
-        <SurveyModal publishSurvey={currentSurvey} surveyPhase={surveyPhase} setSurveys={setSurveys} />
+      {accessToken && currentSurvey && (
+        <SurveyModal
+          publishSurvey={currentSurvey}
+          surveyPhase={surveyPhase}
+          setSurveys={setSurveys}
+        />
       )}
     </>
   );

@@ -78,7 +78,7 @@ const ChangePassword = ({navigation}) => {
     <>
       <HeaderBar
         title={translate('password.change')}
-        onGoBack={() => navigation.goBack()}
+        onGoBack={() => navigation.navigate(ROUTES.USER_PROFILE)}
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -135,7 +135,7 @@ const ChangePassword = ({navigation}) => {
           <Button
             title={translate('common.cancel')}
             type="outline"
-            onPress={() => navigation.navigate(ROUTES.USER_PROFILE_EDIT)}
+            onPress={() => navigation.navigate(ROUTES.USER_PROFILE)}
           />
         </ScrollView>
       </KeyboardAvoidingView>

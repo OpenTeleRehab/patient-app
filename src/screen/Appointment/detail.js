@@ -1,14 +1,13 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import {Divider, Text, Button, Icon} from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import HeaderBar from '../../components/Common/HeaderBar';
-import styles from '../../assets/styles';
-import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
+import {APPOINTMENT_STATUS} from '../../variables/constants';
 import {ScrollView, View, Alert} from 'react-native';
 import {getTherapistName} from '../../utils/therapist';
 import {
@@ -20,6 +19,7 @@ import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {displayNotification} from '../../utils/appointmentNotification';
+import styles from '../../assets/styles';
 
 const AppointmentDetail = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -31,13 +31,6 @@ const AppointmentDetail = ({route, navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const netInfo = useNetInfo();
   const therapistData = [...therapists, ...phcWorkers];
-
-  useEffect(() => {
-    navigation.getParent().setOptions({tabBarVisible: false});
-    return () => {
-      navigation.getParent().setOptions({tabBarVisible: true});
-    };
-  }, [navigation]);
 
   const handleRemove = () => {
     Alert.alert(
@@ -52,7 +45,7 @@ const AppointmentDetail = ({route, navigation}) => {
               setIsLoading(false);
               if (res) {
                 dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
-                navigation.navigate(ROUTES.APPOINTMENT);
+                handleGoBack();
               }
             });
           },
@@ -98,7 +91,7 @@ const AppointmentDetail = ({route, navigation}) => {
       setIsLoading(false);
       if (res) {
         displayNotification(appointment, therapistData, translate);
-        navigation.navigate(ROUTES.APPOINTMENT);
+        handleGoBack();
       }
     });
   };
@@ -111,14 +104,13 @@ const AppointmentDetail = ({route, navigation}) => {
     ).then((res) => {
       setIsLoading(false);
       if (res) {
-        navigation.navigate(ROUTES.APPOINTMENT);
+        handleGoBack();
       }
     });
   };
 
   const handleGoBack = () => {
-    navigation.getParent().setOptions({tabBarVisible: true});
-    navigation.navigate(ROUTES.APPOINTMENT);
+    navigation.goBack();
   };
 
   const acceptDisabled =
@@ -134,7 +126,7 @@ const AppointmentDetail = ({route, navigation}) => {
         leftContent={{label: translate('appointment')}}
         rightContent={{
           label: translate('common.close'),
-          onPress: () => handleGoBack(),
+          onPress: handleGoBack,
         }}
       />
       <ScrollView style={styles.mainContainerLight}>

@@ -7,7 +7,6 @@ import {getTranslate} from 'react-localize-redux';
 import styles from '../../../assets/styles';
 import TextField from '../../../components/Common/TextField';
 import validateEmail from '../../../utils/validateEmail';
-import {ROUTES} from '../../../variables/constants';
 import {forgotPasswordRequest} from '../../../store/user/actions';
 
 const ForgotPassword = ({navigation, route}) => {
@@ -34,7 +33,7 @@ const ForgotPassword = ({navigation, route}) => {
               {
                 text: translate('common.ok'),
                 onPress: () =>
-                  navigation.navigate(ROUTES.REGISTER, {registerIndexTab: 1}),
+                  navigation.goBack(),
               },
             ],
             {cancelable: false},
