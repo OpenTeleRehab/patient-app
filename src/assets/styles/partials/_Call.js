@@ -60,7 +60,7 @@ export default {
   participantContainer: {
     paddingHorizontal: 8,
     position: 'absolute',
-    bottom: 120,
+    bottom: 122,
     width: '100%',
     zIndex: 99,
   },
@@ -115,7 +115,7 @@ export default {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    paddingVertical: 20,
+    paddingVertical: 14,
     position: 'absolute',
     left: 0,
     bottom: 0,
