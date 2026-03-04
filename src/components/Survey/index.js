@@ -33,13 +33,13 @@ const Survey = () => {
   }, [surveys]);
 
   useEffect(() => {
-    if (isOnline) {
+    if (isOnline && accessToken) {
       dispatch(getTreatmentPlanRequest());
     }
-  }, [dispatch, isOnline]);
+  }, [dispatch, isOnline, accessToken]);
 
   useEffect(() => {
-    if (isOnline) {
+    if (isOnline && accessToken) {
       dispatch(getPublishSurvey({
         organization: organization,
         lang: profile.language_id ? profile.language_id : languages.length ? languages[0].id : '',
@@ -49,7 +49,7 @@ const Survey = () => {
         survey_phase: surveyPhase,
       }));
     }
-  }, [profile, dispatch, isOnline, organization, languages, treatmentPlan, surveyPhase]);
+  }, [profile, dispatch, isOnline, organization, languages, treatmentPlan, surveyPhase, accessToken]);
 
   useEffect(() => {
     if (treatmentPlan.id) {
