@@ -3,6 +3,7 @@
  */
 import React, {useState, useEffect, useRef} from 'react';
 import {Button, Input, Text} from 'react-native-elements';
+import {getHash, useOtpVerification} from 'react-native-otp-auto-verify';
 import {
   ScrollView,
   TouchableOpacity,
@@ -22,20 +23,16 @@ import formatPhoneNumber from '../../../utils/phoneNumber';
 import useInterval from '../../../hook/useInterval';
 import validateEmail from '../../../utils/validateEmail';
 
-let RNOtpVerify;
-if (Platform.OS === 'android') {
-  RNOtpVerify = require('@webessentials/react-native-otp-verify').default;
-}
-
 const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
-  const [code, setCode] = useState('');
+  const {otp, startListening, stopListening} = useOtpVerification();
   const formattedNumber = useSelector((state) => state.register.phone);
   const dialCode = useSelector((state) => state.user.dial_code);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
   const [hash, setHash] = useState('');
+  const [code, setCode] = useState('');
   const [count, setCount] = useState(30);
   const [resentCount, setResentCount] = useState(0);
   const [showEmail, setShowEmail] = useState(false);
@@ -48,6 +45,37 @@ const VerifyPhone = ({navigation}) => {
   const codeLength = 6;
   const codeInputRef = useRef(null);
 
+  useEffect(() => {
+    setTimeout(() => {
+      codeInputRef.current?.focus();
+    }, 200);
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      getHash().then((hashes) => {
+        if (hashes?.length > 0) {
+          setHash(hashes[0]);
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      startListening();
+    }
+    return () => {
+      stopListening();
+    };
+  }, [startListening, stopListening]);
+
+  useEffect(() => {
+    if (otp) {
+      setCode(otp);
+    }
+  }, [otp]);
+
   useInterval(() => {
     if (count > 0) {
       setCount(count - 1);
@@ -59,17 +87,6 @@ const VerifyPhone = ({navigation}) => {
       setDelay(null);
     }
   }, delay);
-
-  useEffect(() => {
-    if (RNOtpVerify && hash === '') {
-      RNOtpVerify.getHash().then((hasCode) => {
-        setHash(hasCode);
-      });
-      RNOtpVerify.getOtp()
-        .then((p) => RNOtpVerify.addListener(otpHandler))
-        .catch((p) => console.log(p));
-    }
-  }, [hash]);
 
   useEffect(() => {
     if (code.length === codeLength) {
@@ -89,15 +106,16 @@ const VerifyPhone = ({navigation}) => {
     dispatch(verifyPhoneNumberRequest(formattedNumber, verifyCode, email)).then(
       (result) => {
         if (result) {
-          if (RNOtpVerify) {
-            RNOtpVerify.removeListener();
-          }
           navigation.navigate(ROUTES.TERM_OF_SERVICE);
         } else {
           Alert.alert(
             translate('error.message.incorrect.code').toString(),
             translate('prompt.enter.code').toString(),
-            [{text: translate('common.ok').toString(), onPress: () => reset()}],
+            [
+              {
+                text: translate('common.ok').toString(),
+              },
+            ],
             {cancelable: false},
           );
           setErrorCode(true);
@@ -116,24 +134,6 @@ const VerifyPhone = ({navigation}) => {
     setCount(30);
     setResentCount(resentCount + 1);
     dispatch(registerRequest(dialCode, formattedNumber, hash, null, email));
-  };
-
-  const reset = () => {
-    setCode('');
-  };
-
-  const otpHandler = (message) => {
-    try {
-      if (message) {
-        const messageArray = message.split(': ');
-        if (messageArray[1]) {
-          const otp = messageArray[1].substring(0, 6);
-          setCode(otp);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   return (
