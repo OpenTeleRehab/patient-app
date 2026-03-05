@@ -1,7 +1,7 @@
 ---
 
 - name: Change node version
-  shell: n 18.20.5
+  shell: n 20
 
 - name: remove node_modules folder
   shell: rm -rf node_modules
@@ -31,7 +31,6 @@
     - {src: 'build.gradle.j2', dest: '{{ workspace }}/android/build.gradle'}
     - {src: 'local.properties.j2', dest: '{{ workspace }}/android/local.properties'}
     - {src: 'gradle.properties.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/gradle.properties'}
-    - {src: 'AndroidManifest.xml.j2', dest: '{{ workspace }}/{{ android_build_path }}/app/src/main/AndroidManifest.xml'}
 
 - name: Configure firebase google services for development
   copy:
