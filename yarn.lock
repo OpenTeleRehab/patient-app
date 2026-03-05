@@ -2936,10 +2936,6 @@
     prop-types "^15.6.0"
     recyclerlistview "^3.0.0"
 
-"@webessentials/react-native-otp-verify@webessentials/react-native-otp-verify#2.0.0":
-  version "2.0.0"
-  resolved "https://codeload.github.com/webessentials/react-native-otp-verify/tar.gz/4ac9c354e080f08d4034144f61b7839c194a0808"
-
 "@webessentials/react-native-picker-scrollview@webessentials/react-native-picker-scrollview#master":
   version "1.0.1"
   resolved "https://codeload.github.com/webessentials/react-native-picker-scrollview/tar.gz/20bdd17d75aa56cc81e9b215556b0bbdbc2c5d7d"
@@ -8421,6 +8417,11 @@ react-native-orientation-locker@^1.2.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/react-native-orientation-locker/-/react-native-orientation-locker-1.7.0.tgz#47ef2b9c24618e40f0a521f184b51270e576b028"
   integrity sha512-2PhG4UyRJktb3KCTISStuu8/q+Q3q3oPesGg9DhdY0b6Cu/ZzxkCvkbJte2TPWRYkS0JpClimvqVaonulGvDrA==
+
+react-native-otp-auto-verify@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/react-native-otp-auto-verify/-/react-native-otp-auto-verify-0.1.8.tgz#0dcdf6e254e625ce3a88f96bbccbbd4091f77f53"
+  integrity sha512-sapX+Ln7kUgzIszixSApiIdvpRfwsbyo0u5FRuUgv/hs18Y3RQOPjj28ERscJO4ZjyyKz1M346HLrRRDO1L0yA==
 
 react-native-parsed-text@^0.0.22:
   version "0.0.22"

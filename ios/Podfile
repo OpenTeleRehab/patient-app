@@ -13,6 +13,7 @@ node_require('react-native-permissions/scripts/setup.rb')
 setup_permissions([
   'Camera',
   'Microphone',
+  'PhotoLibrary',
 ])
 
 platform :ios, min_ios_version_supported
@@ -35,7 +36,7 @@ target 'PatientApp' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-  
+
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'Firebase', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true

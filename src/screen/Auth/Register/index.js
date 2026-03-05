@@ -19,6 +19,7 @@ import {
   withTheme,
 } from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
+import {getHash} from 'react-native-otp-auto-verify';
 import _ from 'lodash';
 import styles from '../../../assets/styles';
 
@@ -36,12 +37,6 @@ import {Country} from '../../../services/country';
 import {ROUTES, USER_ROLE} from '../../../variables/constants';
 import TextField from '../../../components/Common/TextField';
 import validateEmail from '../../../utils/validateEmail';
-
-let RNOtpVerify;
-
-if (Platform.OS === 'android') {
-  RNOtpVerify = require('@webessentials/react-native-otp-verify').default;
-}
 
 const phoneCodeContainerStyle = {
   width: '35%',
@@ -94,12 +89,14 @@ const Register = ({theme, navigation}) => {
   );
 
   useEffect(() => {
-    if (RNOtpVerify && hash === '') {
-      RNOtpVerify.getHash().then((code) => {
-        setHash(code);
+    if (Platform.OS === 'android') {
+      getHash().then((hashes) => {
+        if (hashes?.length > 0) {
+          setHash(hashes[0]);
+        }
       });
     }
-  }, [hash]);
+  }, []);
 
   useEffect(() => {
     dispatch(getDefinedCountries());
