@@ -32,21 +32,16 @@ const VideoCall = ({theme}) => {
         ForegroundService.stopService();
       }
     }
-  }, [
-    ForegroundService,
-    accessToken,
-    showIncomingCall,
-    showAcceptedCall,
-  ]);
+  }, [ForegroundService, accessToken, showIncomingCall, showAcceptedCall]);
 
   useEffect(() => {
-    if (CALL_STARTED_STATUSES.includes(videoCall?.status)) {
+    if (CALL_STARTED_STATUSES.includes(videoCall?.status) && !callAccessToken) {
       setIsVideoOn(videoCall.status === CALL_STATUS.VIDEO_STARTED);
     }
-  }, [videoCall]);
+  }, [videoCall, callAccessToken]);
 
   return (
-    <Modal transparent={false} visible={showModal}>
+    <Modal statusBarTranslucent transparent={false} visible={showModal}>
       {showIncomingCall && !callAccessToken && (
         <IncomingCall
           translate={translate}

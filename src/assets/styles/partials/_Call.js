@@ -20,6 +20,7 @@ export default {
   callerName: {
     fontSize: 48,
     paddingBottom: variables.spacingBase,
+    textAlign: 'center',
   },
   callingText: {
     color: variables.blueLight,
