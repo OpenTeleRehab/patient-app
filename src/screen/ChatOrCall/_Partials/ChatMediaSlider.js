@@ -97,7 +97,7 @@ const ChatMediaSlider = ({
   };
 
   return (
-    <Modal animationType="fade" visible>
+    <Modal animationType="fade" statusBarTranslucent visible>
       <View
         style={[
           styles.modalHeaderAction,

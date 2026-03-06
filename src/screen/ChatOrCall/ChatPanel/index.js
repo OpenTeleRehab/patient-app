@@ -4,6 +4,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Text, withTheme} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -30,6 +31,7 @@ import styles from '../../../assets/styles';
 const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
+  const insets = useSafeAreaInsets();
   const localize = useSelector((state) => state.localize);
   const {chatAuth, messages, selectedRoom, chatRooms, offlineMessages} =
     useSelector((state) => state.rocketchat);
@@ -256,11 +258,17 @@ const ChatPanel = ({navigation, theme}) => {
         />
       )}
       <GiftedChat
-        isTyping={true}
         messages={allMessages}
         placeholder={translate('chat.type.message')}
         messagesContainerStyle={styles.chatMainContainer}
         messageIdGenerator={() => generateHash()}
+        keyboardAvoidingViewProps={{
+          behavior: Platform.OS === 'ios' ? 'padding' : 'height',
+          keyboardVerticalOffset: 64 + insets.top + insets.bottom,
+        }}
+        keyboardProviderProps={{
+          navigationBarTranslucent: false,
+        }}
         textInputProps={{selectionColor: theme.colors.primary}}
         user={{_id: profile.chat_user_id}}
         renderMessage={renderMessage}
