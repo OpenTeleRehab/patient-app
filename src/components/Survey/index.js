@@ -5,11 +5,12 @@ import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import moment from 'moment';
 import SurveyModal from './SurveyModal';
+import {USER_ROLE} from '../../variables/constants';
 
 const Survey = () => {
   const dispatch = useDispatch();
   const languages = useSelector(state => state.language.languages);
-  const {accessToken, profile} = useSelector((state) => state.user);
+  const {accessToken, profile, registerAs} = useSelector((state) => state.user);
   const {publishSurveys} = useSelector(state => state.survey);
   const {treatmentPlan} = useSelector((state) => state.activity);
   const {organization} = useSelector((state) => state.phone);
@@ -40,16 +41,18 @@ const Survey = () => {
 
   useEffect(() => {
     if (isOnline && accessToken) {
-      dispatch(getPublishSurvey({
+      const lang = profile.language_id ? profile.language_id : languages.length ? languages[0].id : '';
+      const payload = {
         organization: organization,
-        lang: profile.language_id ? profile.language_id : languages.length ? languages[0].id : '',
+        lang,
         location: profile.location,
         gender: profile.gender,
         treatment_plan_id: treatmentPlan.id,
         survey_phase: surveyPhase,
-      }));
+      };
+      dispatch(getPublishSurvey(registerAs === USER_ROLE.HEALTH_WORKER ? {lang} : payload));
     }
-  }, [profile, dispatch, isOnline, organization, languages, treatmentPlan, surveyPhase, accessToken]);
+  }, [profile, dispatch, isOnline, organization, languages, treatmentPlan, surveyPhase, accessToken, registerAs]);
 
   useEffect(() => {
     if (treatmentPlan.id) {
