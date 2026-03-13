@@ -2,13 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  View,
-} from 'react-native';
+import {Alert, ScrollView, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Button} from 'react-native-elements';
@@ -18,6 +12,7 @@ import TextField from '../../../components/Common/TextField';
 import {ROUTES} from '../../../variables/constants';
 import styles from '../../../assets/styles';
 import {changePasswordRequest} from '../../../store/user/actions';
+import AppKeyboardView from '../../../components/Common/AppKeyboardView';
 
 const ChangePassword = ({navigation}) => {
   const dispatch = useDispatch();
@@ -80,8 +75,7 @@ const ChangePassword = ({navigation}) => {
         title={translate('password.change')}
         onGoBack={() => navigation.navigate(ROUTES.USER_PROFILE)}
       />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <AppKeyboardView>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -136,9 +130,10 @@ const ChangePassword = ({navigation}) => {
             title={translate('common.cancel')}
             type="outline"
             onPress={() => navigation.navigate(ROUTES.USER_PROFILE)}
+            containerStyle={styles.marginBottomMd}
           />
         </ScrollView>
-      </KeyboardAvoidingView>
+      </AppKeyboardView>
     </>
   );
 };

@@ -37,6 +37,7 @@ import {Country} from '../../../services/country';
 import {ROUTES, USER_ROLE} from '../../../variables/constants';
 import TextField from '../../../components/Common/TextField';
 import validateEmail from '../../../utils/validateEmail';
+import AppKeyboardView from '../../../components/Common/AppKeyboardView';
 
 const phoneCodeContainerStyle = {
   width: '35%',
@@ -51,7 +52,6 @@ const phoneContainerStyle = {
 const inputPhoneContainerStyle = {
   borderBottomWidth: 0,
 };
-
 
 const Register = ({theme, navigation}) => {
   const dispatch = useDispatch();
@@ -240,183 +240,185 @@ const Register = ({theme, navigation}) => {
         onGoBack={_.isEmpty(profile) ? undefined : () => navigation.goBack()}
         title={translate('common.register')}
       />
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        style={styles.flex1}
-        contentContainerStyle={styles.mainContainerLight}>
-        <View style={styles.paddingMd}>
-          <View style={styles.marginBottom}>
-            <Text accessibilityLabel={translate('register.as.label')}>
-              {translate('register.as.label')}
-            </Text>
-            <ButtonGroup
-              buttons={[
-                translate('register.as.patient'),
-                translate('register.as.health_worker'),
-              ]}
-              selectedIndex={registerAsSelectedIndex}
-              innerBorderStyle={componentStyles.buttonGroupInnerBorderStyle}
-              buttonStyle={componentStyles.buttonGroupButtonStyle}
-              containerStyle={componentStyles.buttonGroupContainerStyle}
-              underlayColor="transparent"
-              onPress={setRegisterAsSelectedIndex}
-            />
-          </View>
-
-          <Text
-            style={styles.marginBottomMd}
-            accessibilityLabel={translate('register.intro_text')}>
-            {translate('register.intro_text')}
-          </Text>
-
-          <View style={styles.marginBottomMd}>
-            <Text
-              style={[styles.formLabel, styles.fontWeightBold]}
-              accessibilityLabel={translate('register.language.label')}>
-              {translate('register.language.label')}
-            </Text>
-            <View
-              style={[
-                styles.formControl,
-                styles.bgGreyLight,
-                {borderColor: theme.colors.grey9},
-              ]}
-              accessible={true}
-              accessibilityLabel={translate('register.language.label')}>
-              <SelectPicker
-                placeholder={{}}
-                value={language}
-                onValueChange={handleLanguageChange}
-                items={
-                  language
-                    ? languages.map((lang) => ({
-                        label: lang.name,
-                        value: lang.id,
-                      }))
-                    : []
-                }
-                accessibilityLabel={translate('register.language.label')}
+      <AppKeyboardView>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          style={styles.flex1}
+          contentContainerStyle={styles.mainContainerLight}>
+          <View style={styles.paddingMd}>
+            <View style={styles.marginBottom}>
+              <Text accessibilityLabel={translate('register.as.label')}>
+                {translate('register.as.label')}
+              </Text>
+              <ButtonGroup
+                buttons={[
+                  translate('register.as.patient'),
+                  translate('register.as.health_worker'),
+                ]}
+                selectedIndex={registerAsSelectedIndex}
+                innerBorderStyle={componentStyles.buttonGroupInnerBorderStyle}
+                buttonStyle={componentStyles.buttonGroupButtonStyle}
+                containerStyle={componentStyles.buttonGroupContainerStyle}
+                underlayColor="transparent"
+                onPress={setRegisterAsSelectedIndex}
               />
             </View>
-          </View>
 
-          {registerAsSelectedIndex === 0 && (
-            <>
+            <Text
+              style={styles.marginBottomMd}
+              accessibilityLabel={translate('register.intro_text')}>
+              {translate('register.intro_text')}
+            </Text>
+
+            <View style={styles.marginBottomMd}>
               <Text
                 style={[styles.formLabel, styles.fontWeightBold]}
-                accessibilityLabel={translate('register.phone.label')}>
-                {translate('register.phone.label')}
+                accessibilityLabel={translate('register.language.label')}>
+                {translate('register.language.label')}
               </Text>
-              <View style={styles.flexRow}>
-                <View
-                  style={[
-                    phoneCodeContainerStyle,
-                    styles.formControl,
-                    styles.bgGreyLight,
-                    {borderColor: theme.colors.grey9},
-                  ]}
-                  accessible={true}
-                  accessibilityLabel={translate('register.phone.country_code')}>
-                  <SelectPicker
-                    placeholder={{}}
-                    value={countryIsoCode}
-                    onValueChange={handleCountryCodeChange}
-                    items={
-                      countryPhoneCode
-                        ? definedCountries.map((country) => ({
-                            label: `${country.name} (+${country.phone_code})`,
-                            value: country.iso_code,
-                            inputLabel: `+${country.phone_code}`,
-                          }))
-                        : []
-                    }
-                    accessibilityLabel={translate(
-                      'register.phone.country_code',
-                    )}
-                  />
-                </View>
-                <View
-                  style={[
-                    phoneContainerStyle,
-                    styles.bgGreyLight,
-                    styles.formControl,
-                    {borderColor: theme.colors.grey9},
-                  ]}
-                  accessible={true}
-                  accessibilityLabel={translate('register.phone.placeholder')}>
-                  <Input
-                    placeholder={translate('register.placeholder.phone')}
-                    keyboardType="phone-pad"
-                    value={phoneNumber}
-                    onChangeText={(number) => setPhoneNumber(number)}
-                    inputContainerStyle={inputPhoneContainerStyle}
-                    accessibilityLabel={translate('register.phone.placeholder')}
-                  />
-                </View>
+              <View
+                style={[
+                  styles.formControl,
+                  styles.bgGreyLight,
+                  {borderColor: theme.colors.grey9},
+                ]}
+                accessible={true}
+                accessibilityLabel={translate('register.language.label')}>
+                <SelectPicker
+                  placeholder={{}}
+                  value={language}
+                  onValueChange={handleLanguageChange}
+                  items={
+                    language
+                      ? languages.map((lang) => ({
+                          label: lang.name,
+                          value: lang.id,
+                        }))
+                      : []
+                  }
+                  accessibilityLabel={translate('register.language.label')}
+                />
               </View>
-              {errorPhoneNumber && (
-                <View style={styles.marginBottom}>
-                  <Text
-                    style={styles.textDanger}
-                    accessibilityLabel={translate(
-                      'error.message.phone.created',
-                    )}>
-                    {translate('error.message.phone.created')}
-                  </Text>
-                </View>
-              )}
-            </>
-          )}
+            </View>
 
-          {registerAsSelectedIndex === 1 && (
-            <>
-              <TextField
-                label={translate('register.email.label')}
-                placeholder={translate('register.email.placeholder')}
-                keyboardType="email-address"
-                variant="filled"
-                value={email}
-                onChangeText={setEmail}
-                renderErrorMessage={errorEmail}
-                errorMessage={
-                  errorEmail ? translate('error.message.email') : null
-                }
-              />
-              <TextField
-                label={translate('register.password.label')}
-                placeholder={translate('register.password.placeholder')}
-                variant="filled"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                renderErrorMessage={errorPassword}
-                errorMessage={
-                  errorPassword ? translate('error.message.password') : null
-                }
-              />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(ROUTES.FORGOTPASSWORD, {email})
-                }>
+            {registerAsSelectedIndex === 0 && (
+              <>
                 <Text
-                  style={styles.textPrimaryBold}
-                  accessibilityLabel={translate(
-                    'common.forgot_password_button',
-                  )}>
-                  {translate('common.forgot_password_button')}
+                  style={[styles.formLabel, styles.fontWeightBold]}
+                  accessibilityLabel={translate('register.phone.label')}>
+                  {translate('register.phone.label')}
                 </Text>
-              </TouchableOpacity>
-            </>
-          )}
-          <Button
-            onPress={handleRegister}
-            title={translate('common.next')}
-            containerStyle={styles.marginTopLg}
-            disabled={!shouldRegister}
-            accessibilityLabel={translate('common.next')}
-          />
-        </View>
-      </ScrollView>
+                <View style={styles.flexRow}>
+                  <View
+                    style={[
+                      phoneCodeContainerStyle,
+                      styles.formControl,
+                      styles.bgGreyLight,
+                      {borderColor: theme.colors.grey9},
+                    ]}
+                    accessible={true}
+                    accessibilityLabel={translate('register.phone.country_code')}>
+                    <SelectPicker
+                      placeholder={{}}
+                      value={countryIsoCode}
+                      onValueChange={handleCountryCodeChange}
+                      items={
+                        countryPhoneCode
+                          ? definedCountries.map((country) => ({
+                              label: `${country.name} (+${country.phone_code})`,
+                              value: country.iso_code,
+                              inputLabel: `+${country.phone_code}`,
+                            }))
+                          : []
+                      }
+                      accessibilityLabel={translate(
+                        'register.phone.country_code',
+                      )}
+                    />
+                  </View>
+                  <View
+                    style={[
+                      phoneContainerStyle,
+                      styles.bgGreyLight,
+                      styles.formControl,
+                      {borderColor: theme.colors.grey9},
+                    ]}
+                    accessible={true}
+                    accessibilityLabel={translate('register.phone.placeholder')}>
+                    <Input
+                      placeholder={translate('register.placeholder.phone')}
+                      keyboardType="phone-pad"
+                      value={phoneNumber}
+                      onChangeText={(number) => setPhoneNumber(number)}
+                      inputContainerStyle={inputPhoneContainerStyle}
+                      accessibilityLabel={translate('register.phone.placeholder')}
+                    />
+                  </View>
+                </View>
+                {errorPhoneNumber && (
+                  <View style={styles.marginBottom}>
+                    <Text
+                      style={styles.textDanger}
+                      accessibilityLabel={translate(
+                        'error.message.phone.created',
+                      )}>
+                      {translate('error.message.phone.created')}
+                    </Text>
+                  </View>
+                )}
+              </>
+            )}
+
+            {registerAsSelectedIndex === 1 && (
+              <>
+                <TextField
+                  label={translate('register.email.label')}
+                  placeholder={translate('register.email.placeholder')}
+                  keyboardType="email-address"
+                  variant="filled"
+                  value={email}
+                  onChangeText={setEmail}
+                  renderErrorMessage={errorEmail}
+                  errorMessage={
+                    errorEmail ? translate('error.message.email') : null
+                  }
+                />
+                <TextField
+                  label={translate('register.password.label')}
+                  placeholder={translate('register.password.placeholder')}
+                  variant="filled"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  renderErrorMessage={errorPassword}
+                  errorMessage={
+                    errorPassword ? translate('error.message.password') : null
+                  }
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(ROUTES.FORGOTPASSWORD, {email})
+                  }>
+                  <Text
+                    style={styles.textPrimaryBold}
+                    accessibilityLabel={translate(
+                      'common.forgot_password_button',
+                    )}>
+                    {translate('common.forgot_password_button')}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+            <Button
+              onPress={handleRegister}
+              title={translate('common.next')}
+              containerStyle={styles.marginTopLg}
+              disabled={!shouldRegister}
+              accessibilityLabel={translate('common.next')}
+            />
+          </View>
+        </ScrollView>
+      </AppKeyboardView>
     </>
   );
 };

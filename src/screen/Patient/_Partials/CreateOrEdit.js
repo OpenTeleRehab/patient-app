@@ -57,6 +57,7 @@ import {mutation} from '../../../store/patient/mutations';
 import {mutation as questionnaireMutation} from '../../../store/screeningQuestionnaire/mutations';
 import {syncOfflineScreeningQuestionnaires} from '../../../store/screeningQuestionnaire/actions';
 import variables from '../../../assets/styles/variables';
+import AppKeyboardView from '../../../components/Common/AppKeyboardView';
 
 const CreateOrEditPatient = ({theme, navigation, route}) => {
   const dispatch = useDispatch();
@@ -427,527 +428,529 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
         )}
         onGoBack={() => handleGoback()}
       />
-      <ScrollView
-        contentContainerStyle={[styles.mainContainerLight, styles.paddingXMd]}>
-        <View>
-          <Text
-            accessibilityLabel={translate('phc.patient.phone')}
-            style={componentStyles.labelStyle}>
-            {translate('phc.patient.phone')}
-            <Text style={componentStyles.requiredText}> *</Text>
-          </Text>
-          <View style={componentStyles.twoColumnContainer}>
-            <View
-              style={[
-                styles.formSelectPickerContainer,
-                componentStyles.phoneCodeContainer,
-              ]}>
-              <Controller
-                control={control}
-                name="dial_code"
-                render={({field: {value, onChange}}) => (
-                  <SelectPicker
-                    placeholder={{}}
-                    value={countryPhoneCode}
-                    items={
-                      countryPhoneCode
-                        ? definedCountries.map((country) => ({
-                            label: `${country.name} (+${country.phone_code})`,
-                            value: country.phone_code,
-                            inputLabel: `+${country.phone_code}`,
-                          }))
-                        : []
-                    }
-                    onValueChange={() => {
-                      onChange(value);
-                      setCountryPhoneCode(value);
-                    }}
-                    accessibilityLabel={translate('phc.patient.dial_code')}
-                    customeFontSize={13}
-                  />
-                )}
-              />
-            </View>
-            <View style={componentStyles.columnContainer}>
-              <Controller
-                control={control}
-                name="phone"
-                rules={{
-                  required: translate(
-                    'error.message.phc.patient.phone.required',
-                  ),
-                }}
-                render={({field: {value, onChange}}) => (
-                  <TextField
-                    placeholder={translate('phc.patient.phone.placeholder')}
-                    variant="filled"
-                    value={value}
-                    onChangeText={(text) => {
-                      onChange(text);
-                      if (highlightPhone) {
-                        setHighlightPhone(false);
-                      }
-                    }}
-                    errorMessage={
-                      errors?.phone?.message ||
-                      (errorPhoneExist
-                        ? translate('error.message.phc.patient.phone_exist')
-                        : undefined)
-                    }
-                    renderErrorMessage={!!errors.phone || errorPhoneExist}
-                    inputStyle={[
-                      componentStyles.inputStyle,
-                      highlightPhone && styles.textDanger,
-                    ]}
-                    keyboardType="phone-pad"
-                    maxLength={12}
-                  />
-                )}
-              />
-            </View>
-          </View>
-          <View style={componentStyles.twoColumnContainer}>
-            <View
-              style={[
-                componentStyles.columnContainer,
-                componentStyles.columnContainerHeight,
-              ]}>
-              <TextField
-                variant="filled"
-                value={getCountryName()}
-                label={translate('phc.patient.country')}
-                disabled
-                labelStyle={componentStyles.labelStyle}
-                inputStyle={componentStyles.inputStyle}
-              />
-            </View>
-            <View
-              style={[
-                componentStyles.columnContainer,
-                componentStyles.columnContainerHeight,
-              ]}>
-              <TextField
-                variant="filled"
-                value={getRegionName()}
-                label={translate('phc.patient.region')}
-                disabled
-                labelStyle={componentStyles.labelStyle}
-                inputStyle={componentStyles.inputStyle}
-              />
-            </View>
-          </View>
-          <View style={componentStyles.twoColumnContainer}>
-            <View
-              style={[
-                componentStyles.columnContainer,
-                componentStyles.columnContainerHeight,
-              ]}>
-              <TextField
-                variant="filled"
-                value={getProvinceName()}
-                label={translate('phc.patient.province')}
-                disabled
-                labelStyle={componentStyles.labelStyle}
-                inputStyle={componentStyles.inputStyle}
-              />
-            </View>
-            <View
-              style={[
-                componentStyles.columnContainer,
-                componentStyles.columnContainerHeight,
-              ]}>
-              <TextField
-                variant="filled"
-                value={getPhcServiceName()}
-                label={translate('phc.patient.phc_service')}
-                disabled
-                labelStyle={componentStyles.labelStyle}
-                inputStyle={componentStyles.inputStyle}
-              />
-            </View>
-          </View>
-          <View style={componentStyles.twoColumnContainer}>
-            <View style={componentStyles.columnContainer}>
-              <Text
-                accessibilityLabel={translate('phc.patient.gender')}
-                style={componentStyles.labelStyle}>
-                {translate('phc.patient.gender')}
-                <Text style={componentStyles.requiredText}> *</Text>
-              </Text>
-              <View style={styles.formSelectPickerContainer}>
+      <AppKeyboardView>
+        <ScrollView
+          contentContainerStyle={[styles.mainContainerLight, styles.paddingXMd]}>
+          <View>
+            <Text
+              accessibilityLabel={translate('phc.patient.phone')}
+              style={componentStyles.labelStyle}>
+              {translate('phc.patient.phone')}
+              <Text style={componentStyles.requiredText}> *</Text>
+            </Text>
+            <View style={componentStyles.twoColumnContainer}>
+              <View
+                style={[
+                  styles.formSelectPickerContainer,
+                  componentStyles.phoneCodeContainer,
+                ]}>
                 <Controller
                   control={control}
-                  name="gender"
-                  rules={{
-                    required: translate(
-                      'error.message.phc.patient.gender.required',
-                    ),
-                  }}
+                  name="dial_code"
                   render={({field: {value, onChange}}) => (
                     <SelectPicker
-                      placeholder={{
-                        label: translate('phc.patient.gender.placeholder'),
-                        value: null,
+                      placeholder={{}}
+                      value={countryPhoneCode}
+                      items={
+                        countryPhoneCode
+                          ? definedCountries.map((country) => ({
+                              label: `${country.name} (+${country.phone_code})`,
+                              value: country.phone_code,
+                              inputLabel: `+${country.phone_code}`,
+                            }))
+                          : []
+                      }
+                      onValueChange={() => {
+                        onChange(value);
+                        setCountryPhoneCode(value);
                       }}
-                      value={value}
-                      items={[
-                        {
-                          label: translate('phc.patient.gender.male'),
-                          value: 'male',
-                        },
-                        {
-                          label: translate('phc.patient.gender.female'),
-                          value: 'female',
-                        },
-                        {
-                          label: translate('phc.patient.gender.other'),
-                          value: 'other',
-                        },
-                      ]}
-                      onValueChange={onChange}
-                      accessibilityLabel={translate('phc.patient.gender')}
+                      accessibilityLabel={translate('phc.patient.dial_code')}
                       customeFontSize={13}
                     />
                   )}
                 />
               </View>
-              {errors.gender && (
-                <Text style={componentStyles.errorTextStyle}>
-                  {errors.gender.message}
-                </Text>
-              )}
-            </View>
-            <View style={componentStyles.columnContainer}>
-              <Text
-                accessibilityLabel={translate('phc.patient.date_of_birth')}
-                style={componentStyles.labelStyle}>
-                {translate('phc.patient.date_of_birth')}
-                <Text style={componentStyles.requiredText}> *</Text>
-              </Text>
-              <Controller
-                control={control}
-                name="date_of_birth"
-                rules={{
-                  required: translate(
-                    'error.message.phc.patient.date_of_birth.required',
-                  ),
-                }}
-                render={({field: {onChange}}) => {
-                  return (
-                    <DatePicker
-                      placeholder={translate(
-                        'phc.patient.date_of_birth.placeholder',
-                      )}
-                      value={dateValue}
-                      mode="date"
-                      onSetDate={(event, selectedDate) => {
-                        setShowDatePicker(Platform.OS === 'ios');
-                        if (selectedDate) {
-                          onChange(formatDate(selectedDate));
-                          setDateValue(moment(selectedDate).toDate());
+              <View style={componentStyles.columnContainer}>
+                <Controller
+                  control={control}
+                  name="phone"
+                  rules={{
+                    required: translate(
+                      'error.message.phc.patient.phone.required',
+                    ),
+                  }}
+                  render={({field: {value, onChange}}) => (
+                    <TextField
+                      placeholder={translate('phc.patient.phone.placeholder')}
+                      variant="filled"
+                      value={value}
+                      onChangeText={(text) => {
+                        onChange(text);
+                        if (highlightPhone) {
+                          setHighlightPhone(false);
                         }
                       }}
-                      show={showDatePicker}
-                      onClickIcon={() => setShowDatePicker(true)}
-                      labelStyle={componentStyles.labelStyle}
-                      inputStyle={componentStyles.inputStyle}
-                      maximumDate={new Date()}
+                      errorMessage={
+                        errors?.phone?.message ||
+                        (errorPhoneExist
+                          ? translate('error.message.phc.patient.phone_exist')
+                          : undefined)
+                      }
+                      renderErrorMessage={!!errors.phone || errorPhoneExist}
+                      inputStyle={[
+                        componentStyles.inputStyle,
+                        highlightPhone && styles.textDanger,
+                      ]}
+                      keyboardType="phone-pad"
+                      maxLength={12}
                     />
-                  );
-                }}
-              />
-              {errors.date_of_birth && (
-                <Text style={componentStyles.errorTextStyle}>
-                  {errors.date_of_birth.message}
-                </Text>
-              )}
-              <Text
-                accessibilityLabel={translate('phc.patient.age')}
-                style={componentStyles.labelStyle}>
-                {translate('phc.patient.age', {
-                  value: ageCalculation(dateValue, translate),
-                })}
-              </Text>
-            </View>
-          </View>
-          <View style={componentStyles.twoColumnContainer}>
-            <View style={componentStyles.columnContainer}>
-              <Text
-                accessibilityLabel={translate('phc.patient.last_name')}
-                style={componentStyles.labelStyle}>
-                {translate('phc.patient.last_name')}
-                <Text style={componentStyles.requiredText}> *</Text>
-              </Text>
-              <Controller
-                control={control}
-                name="last_name"
-                rules={{
-                  required: translate(
-                    'error.message.phc.patient.last_name.required',
-                  ),
-                }}
-                render={({field: {value, onChange}}) => (
-                  <TextField
-                    placeholder={translate('phc.patient.last_name.placeholder')}
-                    variant="filled"
-                    value={value}
-                    onChangeText={onChange}
-                    errorMessage={
-                      errors ? errors.last_name?.message : undefined
-                    }
-                    renderErrorMessage={!!errors.last_name}
-                    labelStyle={componentStyles.labelStyle}
-                    inputStyle={componentStyles.inputStyle}
-                  />
-                )}
-              />
-            </View>
-            <View style={componentStyles.columnContainer}>
-              <Text
-                accessibilityLabel={translate('phc.patient.first_name')}
-                style={componentStyles.labelStyle}>
-                {translate('phc.patient.first_name')}
-                <Text style={componentStyles.requiredText}> *</Text>
-              </Text>
-              <Controller
-                control={control}
-                name="first_name"
-                rules={{
-                  required: translate(
-                    'error.message.phc.patient.first_name.required',
-                  ),
-                }}
-                render={({field: {value, onChange}}) => (
-                  <TextField
-                    placeholder={translate(
-                      'phc.patient.first_name.placeholder',
-                    )}
-                    variant="filled"
-                    value={value}
-                    onChangeText={onChange}
-                    errorMessage={
-                      errors ? errors.first_name?.message : undefined
-                    }
-                    renderErrorMessage={!!errors.first_name}
-                    labelStyle={componentStyles.labelStyle}
-                    inputStyle={componentStyles.inputStyle}
-                  />
-                )}
-              />
-            </View>
-          </View>
-          <View>
-            <Text
-              accessibilityLabel={translate('phc.patient.location')}
-              style={componentStyles.labelStyle}>
-              {translate('phc.patient.location')}
-              <Text style={componentStyles.requiredText}> *</Text>
-            </Text>
-            <View style={styles.formSelectPickerContainer}>
-              <Controller
-                control={control}
-                name="location"
-                rules={{
-                  required: translate(
-                    'error.message.phc.patient.location.required',
-                  ),
-                }}
-                render={({field: {value, onChange}}) => (
-                  <SelectPicker
-                    placeholder={{
-                      label: translate('phc.patient.location.placeholder'),
-                      value: null,
-                    }}
-                    value={value}
-                    items={[
-                      {
-                        label: translate('phc.patient.location.rural_area'),
-                        value: 'rural_area',
-                      },
-                      {
-                        label: translate('phc.patient.location.urban_area'),
-                        value: 'urban_area',
-                      },
-                      {
-                        label: translate('phc.patient.location.n/a'),
-                        value: 'n/a',
-                      },
-                    ]}
-                    onValueChange={onChange}
-                    accessibilityLabel={translate('phc.patient.location')}
-                    customeFontSize={13}
-                  />
-                )}
-              />
-            </View>
-            {errors.location && (
-              <Text style={componentStyles.errorTextStyle}>
-                {errors.location.message}
-              </Text>
-            )}
-          </View>
-          <View style={[styles.marginBottom, styles.marginTop]}>
-            <Text style={componentStyles.labelStyle}>
-              {translate('phc.patient.supplementary_phc_workers')}
-            </Text>
-            <Controller
-              control={control}
-              name="supplementary_phc_workers"
-              render={({field: {onChange, value}}) => (
-                <MultiSelect
-                  style={componentStyles.dropdown}
-                  placeholder={translate(
-                    'phc.patient.supplementary_phc_workers.placeholder',
                   )}
-                  placeholderStyle={componentStyles.placeholderStyle}
-                  selectedTextStyle={componentStyles.selectedTextStyle}
-                  iconStyle={componentStyles.iconStyle}
-                  data={(phcWorkers ?? [])
-                    .filter(
-                      (worker) =>
-                        !pendingTransfers.some(
-                          (pt) => pt.therapist_id === worker.id,
-                        ) && worker.id !== profile.id,
-                    )
-                    .map((worker) => ({
-                      label: `${worker.last_name} ${worker.first_name}`,
-                      value: worker.id,
-                    }))
-                    .concat(
-                      pendingTransfers.length ===
-                        phcWorkers.filter((worker) => worker.id !== profile.id)
-                          .length
-                        ? [
-                            {
-                              label: translate('phc.patient.no_more_option'),
-                              value: null,
-                            },
-                          ]
-                        : [],
-                    )}
-                  labelField="label"
-                  valueField="value"
-                  value={value}
-                  onChange={(selected) => {
-                    if (selected.includes(null)) {
-                      return;
-                    }
-                    const newlySelected = selected.filter(
-                      (id) => !value.includes(id),
-                    );
-                    const newPending = newlySelected.map((id) => {
-                      const worker = phcWorkers.find(
-                        (phcWorker) => phcWorker.id === id,
-                      );
-                      return {
-                        therapist_id: worker.id,
-                        first_name: worker.first_name,
-                        last_name: worker.last_name,
-                        status: TRANSFER_STATUS.INVITED,
-                      };
-                    });
-                    if (newPending.length) {
-                      setPendingTransfers((prev) => [...prev, ...newPending]);
-                    }
-                    const updatedAssigned = value.filter((id) =>
-                      selected.includes(id),
-                    );
-                    setSelectedSupplementary([...value, ...selected]);
-                    onChange(updatedAssigned);
-                  }}
-                  renderSelectedItem={renderSelectedItem}
                 />
-              )}
-            />
-            {pendingTransfers.length > 0 && (
-              <>
-                <Text style={[componentStyles.labelStyle, styles.marginTop]}>
-                  {translate(
-                    'phc.patient.supplementary_phc_workers.pending_accept_decline',
-                  )}
-                </Text>
-                <View style={componentStyles.badgeContainer}>
-                  {pendingTransfers.map((item, index) => (
-                    <View
-                      key={index}
-                      style={
-                        item.id && item.status === TRANSFER_STATUS.DECLINED
-                          ? [
-                              componentStyles.declineBackgroundStyle,
-                              componentStyles.pendingBadge,
-                            ]
-                          : [
-                              componentStyles.pendingBackgroundStyle,
-                              componentStyles.pendingBadge,
-                            ]
-                      }>
-                      <Text style={componentStyles.selectedTextStyle}>
-                        {item.last_name} {item.first_name}
-                      </Text>
-                      <Icon
-                        name="highlight-off"
-                        type="material"
-                        size={20}
-                        color={theme.colors.white}
-                        onPress={() =>
-                          handleRemovePendingSupplementary(
-                            item.id,
-                            item.therapist_id,
-                          )
-                        }
-                        containerStyle={styles.marginLeftSm}
-                      />
-                    </View>
-                  ))}
-                </View>
-              </>
-            )}
-          </View>
-          <View>
-            <Controller
-              control={control}
-              name="note"
-              render={({field: {value, onChange}}) => (
+              </View>
+            </View>
+            <View style={componentStyles.twoColumnContainer}>
+              <View
+                style={[
+                  componentStyles.columnContainer,
+                  componentStyles.columnContainerHeight,
+                ]}>
                 <TextField
-                  label={translate('phc.patient.note')}
-                  placeholder={translate('phc.patient.note.placeholder')}
                   variant="filled"
-                  value={value}
-                  onChangeText={onChange}
-                  multiline
-                  numberOfLines={4}
+                  value={getCountryName()}
+                  label={translate('phc.patient.country')}
+                  disabled
                   labelStyle={componentStyles.labelStyle}
                   inputStyle={componentStyles.inputStyle}
                 />
+              </View>
+              <View
+                style={[
+                  componentStyles.columnContainer,
+                  componentStyles.columnContainerHeight,
+                ]}>
+                <TextField
+                  variant="filled"
+                  value={getRegionName()}
+                  label={translate('phc.patient.region')}
+                  disabled
+                  labelStyle={componentStyles.labelStyle}
+                  inputStyle={componentStyles.inputStyle}
+                />
+              </View>
+            </View>
+            <View style={componentStyles.twoColumnContainer}>
+              <View
+                style={[
+                  componentStyles.columnContainer,
+                  componentStyles.columnContainerHeight,
+                ]}>
+                <TextField
+                  variant="filled"
+                  value={getProvinceName()}
+                  label={translate('phc.patient.province')}
+                  disabled
+                  labelStyle={componentStyles.labelStyle}
+                  inputStyle={componentStyles.inputStyle}
+                />
+              </View>
+              <View
+                style={[
+                  componentStyles.columnContainer,
+                  componentStyles.columnContainerHeight,
+                ]}>
+                <TextField
+                  variant="filled"
+                  value={getPhcServiceName()}
+                  label={translate('phc.patient.phc_service')}
+                  disabled
+                  labelStyle={componentStyles.labelStyle}
+                  inputStyle={componentStyles.inputStyle}
+                />
+              </View>
+            </View>
+            <View style={componentStyles.twoColumnContainer}>
+              <View style={componentStyles.columnContainer}>
+                <Text
+                  accessibilityLabel={translate('phc.patient.gender')}
+                  style={componentStyles.labelStyle}>
+                  {translate('phc.patient.gender')}
+                  <Text style={componentStyles.requiredText}> *</Text>
+                </Text>
+                <View style={styles.formSelectPickerContainer}>
+                  <Controller
+                    control={control}
+                    name="gender"
+                    rules={{
+                      required: translate(
+                        'error.message.phc.patient.gender.required',
+                      ),
+                    }}
+                    render={({field: {value, onChange}}) => (
+                      <SelectPicker
+                        placeholder={{
+                          label: translate('phc.patient.gender.placeholder'),
+                          value: null,
+                        }}
+                        value={value}
+                        items={[
+                          {
+                            label: translate('phc.patient.gender.male'),
+                            value: 'male',
+                          },
+                          {
+                            label: translate('phc.patient.gender.female'),
+                            value: 'female',
+                          },
+                          {
+                            label: translate('phc.patient.gender.other'),
+                            value: 'other',
+                          },
+                        ]}
+                        onValueChange={onChange}
+                        accessibilityLabel={translate('phc.patient.gender')}
+                        customeFontSize={13}
+                      />
+                    )}
+                  />
+                </View>
+                {errors.gender && (
+                  <Text style={componentStyles.errorTextStyle}>
+                    {errors.gender.message}
+                  </Text>
+                )}
+              </View>
+              <View style={componentStyles.columnContainer}>
+                <Text
+                  accessibilityLabel={translate('phc.patient.date_of_birth')}
+                  style={componentStyles.labelStyle}>
+                  {translate('phc.patient.date_of_birth')}
+                  <Text style={componentStyles.requiredText}> *</Text>
+                </Text>
+                <Controller
+                  control={control}
+                  name="date_of_birth"
+                  rules={{
+                    required: translate(
+                      'error.message.phc.patient.date_of_birth.required',
+                    ),
+                  }}
+                  render={({field: {onChange}}) => {
+                    return (
+                      <DatePicker
+                        placeholder={translate(
+                          'phc.patient.date_of_birth.placeholder',
+                        )}
+                        value={dateValue}
+                        mode="date"
+                        onSetDate={(event, selectedDate) => {
+                          setShowDatePicker(Platform.OS === 'ios');
+                          if (selectedDate) {
+                            onChange(formatDate(selectedDate));
+                            setDateValue(moment(selectedDate).toDate());
+                          }
+                        }}
+                        show={showDatePicker}
+                        onClickIcon={() => setShowDatePicker(true)}
+                        labelStyle={componentStyles.labelStyle}
+                        inputStyle={componentStyles.inputStyle}
+                        maximumDate={new Date()}
+                      />
+                    );
+                  }}
+                />
+                {errors.date_of_birth && (
+                  <Text style={componentStyles.errorTextStyle}>
+                    {errors.date_of_birth.message}
+                  </Text>
+                )}
+                <Text
+                  accessibilityLabel={translate('phc.patient.age')}
+                  style={componentStyles.labelStyle}>
+                  {translate('phc.patient.age', {
+                    value: ageCalculation(dateValue, translate),
+                  })}
+                </Text>
+              </View>
+            </View>
+            <View style={componentStyles.twoColumnContainer}>
+              <View style={componentStyles.columnContainer}>
+                <Text
+                  accessibilityLabel={translate('phc.patient.last_name')}
+                  style={componentStyles.labelStyle}>
+                  {translate('phc.patient.last_name')}
+                  <Text style={componentStyles.requiredText}> *</Text>
+                </Text>
+                <Controller
+                  control={control}
+                  name="last_name"
+                  rules={{
+                    required: translate(
+                      'error.message.phc.patient.last_name.required',
+                    ),
+                  }}
+                  render={({field: {value, onChange}}) => (
+                    <TextField
+                      placeholder={translate('phc.patient.last_name.placeholder')}
+                      variant="filled"
+                      value={value}
+                      onChangeText={onChange}
+                      errorMessage={
+                        errors ? errors.last_name?.message : undefined
+                      }
+                      renderErrorMessage={!!errors.last_name}
+                      labelStyle={componentStyles.labelStyle}
+                      inputStyle={componentStyles.inputStyle}
+                    />
+                  )}
+                />
+              </View>
+              <View style={componentStyles.columnContainer}>
+                <Text
+                  accessibilityLabel={translate('phc.patient.first_name')}
+                  style={componentStyles.labelStyle}>
+                  {translate('phc.patient.first_name')}
+                  <Text style={componentStyles.requiredText}> *</Text>
+                </Text>
+                <Controller
+                  control={control}
+                  name="first_name"
+                  rules={{
+                    required: translate(
+                      'error.message.phc.patient.first_name.required',
+                    ),
+                  }}
+                  render={({field: {value, onChange}}) => (
+                    <TextField
+                      placeholder={translate(
+                        'phc.patient.first_name.placeholder',
+                      )}
+                      variant="filled"
+                      value={value}
+                      onChangeText={onChange}
+                      errorMessage={
+                        errors ? errors.first_name?.message : undefined
+                      }
+                      renderErrorMessage={!!errors.first_name}
+                      labelStyle={componentStyles.labelStyle}
+                      inputStyle={componentStyles.inputStyle}
+                    />
+                  )}
+                />
+              </View>
+            </View>
+            <View>
+              <Text
+                accessibilityLabel={translate('phc.patient.location')}
+                style={componentStyles.labelStyle}>
+                {translate('phc.patient.location')}
+                <Text style={componentStyles.requiredText}> *</Text>
+              </Text>
+              <View style={styles.formSelectPickerContainer}>
+                <Controller
+                  control={control}
+                  name="location"
+                  rules={{
+                    required: translate(
+                      'error.message.phc.patient.location.required',
+                    ),
+                  }}
+                  render={({field: {value, onChange}}) => (
+                    <SelectPicker
+                      placeholder={{
+                        label: translate('phc.patient.location.placeholder'),
+                        value: null,
+                      }}
+                      value={value}
+                      items={[
+                        {
+                          label: translate('phc.patient.location.rural_area'),
+                          value: 'rural_area',
+                        },
+                        {
+                          label: translate('phc.patient.location.urban_area'),
+                          value: 'urban_area',
+                        },
+                        {
+                          label: translate('phc.patient.location.n/a'),
+                          value: 'n/a',
+                        },
+                      ]}
+                      onValueChange={onChange}
+                      accessibilityLabel={translate('phc.patient.location')}
+                      customeFontSize={13}
+                    />
+                  )}
+                />
+              </View>
+              {errors.location && (
+                <Text style={componentStyles.errorTextStyle}>
+                  {errors.location.message}
+                </Text>
               )}
+            </View>
+            <View style={[styles.marginBottom, styles.marginTop]}>
+              <Text style={componentStyles.labelStyle}>
+                {translate('phc.patient.supplementary_phc_workers')}
+              </Text>
+              <Controller
+                control={control}
+                name="supplementary_phc_workers"
+                render={({field: {onChange, value}}) => (
+                  <MultiSelect
+                    style={componentStyles.dropdown}
+                    placeholder={translate(
+                      'phc.patient.supplementary_phc_workers.placeholder',
+                    )}
+                    placeholderStyle={componentStyles.placeholderStyle}
+                    selectedTextStyle={componentStyles.selectedTextStyle}
+                    iconStyle={componentStyles.iconStyle}
+                    data={(phcWorkers ?? [])
+                      .filter(
+                        (worker) =>
+                          !pendingTransfers.some(
+                            (pt) => pt.therapist_id === worker.id,
+                          ) && worker.id !== profile.id,
+                      )
+                      .map((worker) => ({
+                        label: `${worker.last_name} ${worker.first_name}`,
+                        value: worker.id,
+                      }))
+                      .concat(
+                        pendingTransfers.length ===
+                          phcWorkers.filter((worker) => worker.id !== profile.id)
+                            .length
+                          ? [
+                              {
+                                label: translate('phc.patient.no_more_option'),
+                                value: null,
+                              },
+                            ]
+                          : [],
+                      )}
+                    labelField="label"
+                    valueField="value"
+                    value={value}
+                    onChange={(selected) => {
+                      if (selected.includes(null)) {
+                        return;
+                      }
+                      const newlySelected = selected.filter(
+                        (id) => !value.includes(id),
+                      );
+                      const newPending = newlySelected.map((id) => {
+                        const worker = phcWorkers.find(
+                          (phcWorker) => phcWorker.id === id,
+                        );
+                        return {
+                          therapist_id: worker.id,
+                          first_name: worker.first_name,
+                          last_name: worker.last_name,
+                          status: TRANSFER_STATUS.INVITED,
+                        };
+                      });
+                      if (newPending.length) {
+                        setPendingTransfers((prev) => [...prev, ...newPending]);
+                      }
+                      const updatedAssigned = value.filter((id) =>
+                        selected.includes(id),
+                      );
+                      setSelectedSupplementary([...value, ...selected]);
+                      onChange(updatedAssigned);
+                    }}
+                    renderSelectedItem={renderSelectedItem}
+                  />
+                )}
+              />
+              {pendingTransfers.length > 0 && (
+                <>
+                  <Text style={[componentStyles.labelStyle, styles.marginTop]}>
+                    {translate(
+                      'phc.patient.supplementary_phc_workers.pending_accept_decline',
+                    )}
+                  </Text>
+                  <View style={componentStyles.badgeContainer}>
+                    {pendingTransfers.map((item, index) => (
+                      <View
+                        key={index}
+                        style={
+                          item.id && item.status === TRANSFER_STATUS.DECLINED
+                            ? [
+                                componentStyles.declineBackgroundStyle,
+                                componentStyles.pendingBadge,
+                              ]
+                            : [
+                                componentStyles.pendingBackgroundStyle,
+                                componentStyles.pendingBadge,
+                              ]
+                        }>
+                        <Text style={componentStyles.selectedTextStyle}>
+                          {item.last_name} {item.first_name}
+                        </Text>
+                        <Icon
+                          name="highlight-off"
+                          type="material"
+                          size={20}
+                          color={theme.colors.white}
+                          onPress={() =>
+                            handleRemovePendingSupplementary(
+                              item.id,
+                              item.therapist_id,
+                            )
+                          }
+                          containerStyle={styles.marginLeftSm}
+                        />
+                      </View>
+                    ))}
+                  </View>
+                </>
+              )}
+            </View>
+            <View>
+              <Controller
+                control={control}
+                name="note"
+                render={({field: {value, onChange}}) => (
+                  <TextField
+                    label={translate('phc.patient.note')}
+                    placeholder={translate('phc.patient.note.placeholder')}
+                    variant="filled"
+                    value={value}
+                    onChangeText={onChange}
+                    multiline
+                    numberOfLines={4}
+                    labelStyle={componentStyles.labelStyle}
+                    inputStyle={componentStyles.inputStyle}
+                  />
+                )}
+              />
+            </View>
+          </View>
+          <View style={componentStyles.buttonContainer}>
+            <Button
+              containerStyle={styles.marginBottom}
+              title={translate(
+                patientDetail
+                  ? 'phc.patient.button.confirm_change'
+                  : 'phc.patient.button.create',
+              )}
+              onPress={handleSubmit(onSubmit)}
+              disabled={!isDirty || loading}
+            />
+            <Button
+              type="outline"
+              containerStyle={styles.marginBottom}
+              title={translate('phc.patient.button.cancel')}
+              onPress={() => handleGoback()}
+              disabled={loading}
             />
           </View>
-        </View>
-        <View style={componentStyles.buttonContainer}>
-          <Button
-            containerStyle={styles.marginBottom}
-            title={translate(
-              patientDetail
-                ? 'phc.patient.button.confirm_change'
-                : 'phc.patient.button.create',
-            )}
-            onPress={handleSubmit(onSubmit)}
-            disabled={!isDirty || loading}
+          <Spinner
+            visible={loading}
+            overlayColor="rgba(0, 0, 0, 0.5)"
+            textStyle={styles.textLight}
           />
-          <Button
-            type="outline"
-            containerStyle={styles.marginBottom}
-            title={translate('phc.patient.button.cancel')}
-            onPress={() => handleGoback()}
-            disabled={loading}
-          />
-        </View>
-        <Spinner
-          visible={loading}
-          overlayColor="rgba(0, 0, 0, 0.5)"
-          textStyle={styles.textLight}
-        />
-      </ScrollView>
+        </ScrollView>
+      </AppKeyboardView>
     </>
   );
 };
@@ -1004,6 +1007,7 @@ const componentStyles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 15,
     marginTop: 25,
+    marginBottom: 20,
   },
   errorTextStyle: {
     color: variables.danger,
