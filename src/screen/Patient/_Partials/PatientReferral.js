@@ -20,6 +20,7 @@ import {getClinicListRequest} from '../../../store/clinic/actions';
 import {createReferralRequest} from '../../../store/referral/actions';
 import {ROUTES} from '../../../variables/constants';
 import Spinner from 'react-native-loading-spinner-overlay';
+import AppKeyboardView from '../../../components/Common/AppKeyboardView';
 
 const PatientReferral = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
@@ -135,72 +136,75 @@ const PatientReferral = ({navigation, route}) => {
           onBack();
         }}
       />
-      <ScrollView contentContainerStyle={styles.mainContainerLightPaddingMd}>
-        <View style={styles.rowGap10}>
-          <Text>{patient.identity}</Text>
-          <Text style={[styles.fontWeightBold, styles.fontSizeLg]}>
-            {patient?.last_name} {patient?.first_name}
-          </Text>
-          <Text>{translate('phc.referral_patient_description')}</Text>
-          <SelectPickerField
-            control={control}
-            errors={errors.region_id}
-            name="region_id"
-            title={translate('phc.patient.region')}
-            placeholderTitle={translate('phc.select_region')}
-            isRequire={true}
-            itemList={regionOptions}
-            translate={translate}
+      <AppKeyboardView>
+        <ScrollView contentContainerStyle={styles.mainContainerLightPaddingMd}>
+          <View style={styles.rowGap10}>
+            <Text>{patient.identity}</Text>
+            <Text style={[styles.fontWeightBold, styles.fontSizeLg]}>
+              {patient?.last_name} {patient?.first_name}
+            </Text>
+            <Text>{translate('phc.referral_patient_description')}</Text>
+            <SelectPickerField
+              control={control}
+              errors={errors.region_id}
+              name="region_id"
+              title={translate('phc.patient.region')}
+              placeholderTitle={translate('phc.select_region')}
+              isRequire={true}
+              itemList={regionOptions}
+              translate={translate}
+            />
+            <SelectPickerField
+              control={control}
+              errors={errors.province_id}
+              name="province_id"
+              title={translate('phc.patient.province')}
+              placeholderTitle={translate('phc.select_province')}
+              itemList={provinceOptions}
+              translate={translate}
+            />
+            <SelectPickerField
+              control={control}
+              errors={errors.to_clinic_id}
+              name="to_clinic_id"
+              title={translate('phc.rehab_service')}
+              placeholderTitle={translate('phc.select_rehab_service')}
+              isRequire={true}
+              itemList={clinicOptions}
+              translate={translate}
+            />
+            <InputField
+              control={control}
+              errors={errors.to_clinic_id}
+              name="request_reason"
+              title={translate('phc.referral_reason')}
+              placeholderTitle={translate('phc.referral_reason_placeholder')}
+              isRequire={true}
+              translate={translate}
+            />
+          </View>
+          <View
+            style={[styles.rowGap10, styles.marginTopMd, styles.marginBottom]}>
+            <Button
+              title={translate('phc.refer')}
+              onPress={handleSubmit(onSubmit)}
+            />
+            <Button
+              title={translate('common.cancel')}
+              type="outline"
+              onPress={() => {
+                reset();
+                onBack();
+              }}
+            />
+          </View>
+          <Spinner
+            visible={loading}
+            overlayColor="rgba(0, 0, 0, 0.5)"
+            textStyle={styles.textLight}
           />
-          <SelectPickerField
-            control={control}
-            errors={errors.province_id}
-            name="province_id"
-            title={translate('phc.patient.province')}
-            placeholderTitle={translate('phc.select_province')}
-            itemList={provinceOptions}
-            translate={translate}
-          />
-          <SelectPickerField
-            control={control}
-            errors={errors.to_clinic_id}
-            name="to_clinic_id"
-            title={translate('phc.rehab_service')}
-            placeholderTitle={translate('phc.select_rehab_service')}
-            isRequire={true}
-            itemList={clinicOptions}
-            translate={translate}
-          />
-          <InputField
-            control={control}
-            errors={errors.to_clinic_id}
-            name="request_reason"
-            title={translate('phc.referral_reason')}
-            placeholderTitle={translate('phc.referral_reason_placeholder')}
-            isRequire={true}
-            translate={translate}
-          />
-        </View>
-        <View style={[styles.rowGap10, styles.marginTopMd]}>
-          <Button
-            title={translate('phc.refer')}
-            onPress={handleSubmit(onSubmit)}
-          />
-          <Button
-            title={translate('common.cancel')}
-            type="outline"
-            onPress={() => {
-              reset();
-              onBack();
-            }}
-          />
-        </View>
-        <Spinner
-          visible={loading}
-          overlayColor="rgba(0, 0, 0, 0.5)"
-          textStyle={styles.textLight}
-        />
-      </ScrollView>
+        </ScrollView>
+      </AppKeyboardView>
     </>
   );
 };

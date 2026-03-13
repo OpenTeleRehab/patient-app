@@ -39,6 +39,8 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const [errorTherapistId, setErrorTherapistId] = useState(false);
   const [errorFromTime, setErrorFromTime] = useState(false);
   const [errorToTime, setErrorToTime] = useState(false);
+  const [errorFromTimeRequired, setErrorFromTimeRequired] = useState(false);
+  const [errorToTimeRequired, setErrorToTimeRequired] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState('');
   const [errorType, setErrorType] = useState(false);
@@ -130,16 +132,28 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       setErrorTherapistId(false);
     }
 
-    if (fromTime === '' || fromTimeDuration < 0) {
-      setErrorFromTime(true);
-    } else {
+    if (fromTime === '') {
+      setErrorFromTimeRequired(true);
       setErrorFromTime(false);
+    } else {
+      setErrorFromTimeRequired(false);
+      if (fromTimeDuration < 0) {
+        setErrorFromTime(true);
+      } else {
+        setErrorFromTime(false);
+      }
     }
 
-    if (toTime === '' || toTimeDuration < 0) {
-      setErrorToTime(true);
-    } else {
+    if (toTime === '') {
+      setErrorToTimeRequired(true);
       setErrorToTime(false);
+    } else {
+      setErrorToTimeRequired(false);
+      if (toTimeDuration < 0) {
+        setErrorToTime(true);
+      } else {
+        setErrorToTime(false);
+      }
     }
 
     if (type === '') {
@@ -154,7 +168,8 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       fromTime !== '' &&
       fromTimeDuration > 0 &&
       toTime !== '' &&
-      toTimeDuration > 0
+      toTimeDuration > 0 &&
+      type !== ''
     ) {
       setIsLoading(true);
 
@@ -442,13 +457,18 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             inputContainerStyle={styles.noneBorderBottom}
             disabledInputStyle={styles.formControlDateInput}
           />
-          {errorFromTime && (
+          {errorFromTimeRequired && (
             <Text style={styles.textDanger}>
               {translate('error.message.select.time')}
             </Text>
           )}
+          {errorFromTime && (
+            <Text style={styles.textDanger}>
+              {translate('error.message.appointment.from.validate.error')}
+            </Text>
+          )}
           <Divider
-            style={[styles.marginTop, errorFromTime ? styles.bgDanger : null]}
+            style={[styles.marginTop, errorFromTime || errorFromTimeRequired ? styles.bgDanger : null]}
           />
         </View>
         {showFromTimePicker && (
@@ -483,13 +503,18 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             inputContainerStyle={styles.noneBorderBottom}
             disabledInputStyle={styles.formControlDateInput}
           />
-          {errorToTime && (
+          {errorToTimeRequired && (
             <Text style={styles.textDanger}>
               {translate('error.message.select.time')}
             </Text>
           )}
+          {errorToTime && (
+            <Text style={styles.textDanger}>
+              {translate('error.message.appointment.to.validate.error')}
+            </Text>
+          )}
           <Divider
-            style={[styles.marginTop, errorToTime ? styles.bgDanger : null]}
+            style={[styles.marginTop, errorToTime || errorToTimeRequired ? styles.bgDanger : null]}
           />
         </View>
         {showToTimePicker && (

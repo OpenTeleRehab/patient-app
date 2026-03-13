@@ -21,6 +21,7 @@ import AppointmentCard from './_Partials/AppointmentCard';
 import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
+import colors from '../../assets/styles/variables/colors';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
@@ -140,7 +141,7 @@ const Appointment = ({navigation}) => {
                   style={[
                     netInfo.type !== 'unknown' && netInfo.isConnected === false
                       ? styles.textLightGrey
-                      : styles.textLight,
+                      : styles.textBlack,
                     styles.fontWeightBold,
                   ]}>
                   {translate('appointment.show_more', {
@@ -150,7 +151,7 @@ const Appointment = ({navigation}) => {
                 <Icon
                   name="chevron-down"
                   type="font-awesome"
-                  color={netInfo.isConnected ? 'white' : 'darkgrey'}
+                  color={netInfo.isConnected ? colors.grey1 : colors.grey4}
                 />
               </TouchableOpacity>
             )}
