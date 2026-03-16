@@ -109,7 +109,19 @@ const ChatPanel = ({navigation, theme}) => {
       newMessage[0].received = true;
       newMessage[0].pending = false;
 
+      // Send chat message
       sendNewMessage(chatSocket, newMessage[0], profile.id);
+
+      // Push chat message notification
+      dispatch(
+        sendPodcastNotification({
+          _id: newMessage[0].id,
+          rid: newMessage[0].rid,
+          identity: selectedRoom.u.username,
+          title: profile.last_name + ' ' + profile.first_name,
+          body: newMessage[0].text,
+        }),
+      );
     } else {
       newMessage[0].received = false;
       newMessage[0].pending = true;
@@ -160,6 +172,17 @@ const ChatPanel = ({navigation, theme}) => {
     newMessage.attachment = attachment;
     if (isOnlineMode) {
       dispatch(postAttachmentMessage(selectedRoom.rid, attachment));
+
+      dispatch(
+        sendPodcastNotification({
+          _id: newMessage._id,
+          rid: newMessage.rid,
+          identity: selectedRoom.u.username,
+          title: profile.last_name + ' ' + profile.first_name,
+          body: 'chat_attachment.title',
+          translatable: true,
+        }),
+      );
     } else {
       dispatch(
         mutation.setOfflineMessagesSuccess(
@@ -224,20 +247,16 @@ const ChatPanel = ({navigation, theme}) => {
 
     dispatch(mutation.showIncomingCall(true));
     dispatch(mutation.hasStartedCall(true));
-
-    // Send podcast notification
-    if (selectedRoom.u.status === CHAT_USER_STATUS.OFFLINE) {
-      const notification = {
+    dispatch(
+      sendPodcastNotification({
         _id,
         rid,
         identity: selectedRoom.u.username,
         title: profile.first_name + ' ' + profile.last_name,
         body: text,
         translatable: false,
-      };
-
-      dispatch(sendPodcastNotification(notification));
-    }
+      }),
+    );
   };
 
   return (
