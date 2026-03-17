@@ -41,7 +41,7 @@ const VideoCall = ({theme}) => {
   }, [videoCall, callAccessToken]);
 
   return (
-    <Modal statusBarTranslucent transparent={false} visible={showModal}>
+    <Modal transparent={false} visible={showModal}>
       {showIncomingCall && !callAccessToken && (
         <IncomingCall
           translate={translate}
