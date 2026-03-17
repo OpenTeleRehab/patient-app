@@ -50,7 +50,7 @@ const HealthWorkerProfile = ({control, errors, editable}) => {
     {
       name: 'profession_id',
       label: 'common.profession',
-      disabled: !editable,
+      disabled: true,
       items: professions.map((profession) => ({
         label: profession.name,
         value: profession.id,

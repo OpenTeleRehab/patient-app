@@ -24,7 +24,7 @@ const LocalParticipant = ({
   const videoContainerH =
     participants.length === 0
       ? {height: '100%'}
-      : {height: screenHeight - 292 - insets.top - insets.bottom};
+      : {height: screenHeight - 320 - insets.top - insets.bottom};
 
   return (
     <View style={{...styles.localVideoContainer, ...videoContainerH}}>

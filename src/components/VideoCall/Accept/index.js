@@ -579,7 +579,7 @@ const AcceptCall = ({
             keyExtractor={(item) => item.sid}
             removeClippedSubviews={false}
             renderItem={({item}) => (
-              <View key={item.participant.identity} style={styles.participantItem}>
+              <View style={styles.participantItem}>
                 {showTwilioVideoParticipantView(item?.track) ? (
                   <TwilioVideoParticipantView
                     key={item.participant.sid}

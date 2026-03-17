@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   Badge,
   BottomSheet,
@@ -49,6 +49,7 @@ const ParticipantInvitation = ({
   const [invitingParticipants, setInvitingParticipants] = useState([]);
 
   const insets = useSafeAreaInsets();
+  const btnAddParticipantTop = Platform.OS === 'ios' ? insets.top + 16 : 16;
 
   const groupChatRooms = {
     patients: getPatientChatRooms(),
@@ -179,7 +180,7 @@ const ParticipantInvitation = ({
         onPress={() => setIsVisible(true)}
         style={{
           ...componentStyles.btnAddParticipant,
-          top: insets.top,
+          top: btnAddParticipantTop,
         }}>
         <Icon name="person-add-alt-1" color={theme.colors.white} size={26} />
       </TouchableOpacity>
