@@ -328,6 +328,9 @@ const AcceptCall = ({
   };
 
   const _onRoomDidConnect = (connected) => {
+    // Start foreground service
+    startForegroundService();
+
     // Start call duration
     startCallTimer();
 
@@ -352,9 +355,6 @@ const AcceptCall = ({
       // Set remote participants
       setParticipants(remoteParticipants);
     }
-
-    // Start foreground service
-    startForegroundService();
   };
 
   const _onRoomDidDisconnect = (disconnect) => {
@@ -362,14 +362,14 @@ const AcceptCall = ({
       return;
     }
 
+    // Stop foreground service
+    stopForegroundService();
+
     // Stop call duration
     stopCallTimer();
 
     // Set disconnected status
     setStatus('disconnected');
-
-    // Stop foreground service
-    stopForegroundService();
 
     // Cleanup call access token
     dispatch(clearCallAccessToken());
