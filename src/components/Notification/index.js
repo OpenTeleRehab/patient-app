@@ -7,11 +7,11 @@ import {ROUTES} from '../../variables/constants';
 import {useNavigation} from '@react-navigation/native';
 import variables from '../../assets/styles/variables';
 
-export default function Notification(patientDetail) {
+export default function Notification({patientDetail}) {
   const navigation = useNavigation();
   const {chatRooms} = useSelector((state) => state.rocketchat);
   const room = chatRooms?.find(r => r?.rid?.includes(patientDetail?.chat_user_id));
-  const percent = patientDetail?.percent;
+  const percent = patientDetail?.completed_percent;
   const painThreshold = patientDetail?.total_pain_threshold;
   const unread = room ? room?.unread : 0;
   const appointmentCount = patientDetail?.invited_appointment_count + patientDetail?.unread_appointment_count;

@@ -115,6 +115,10 @@ const PatientDetail = ({navigation, route, theme}) => {
         ''
       ),
     },
+    {
+      label: translate('common.notification'),
+      value: <Notification patientDetail={patientDetail}/>,
+    },
   ];
 
   const handleActivateDeactivateConfirm = () => {
@@ -275,7 +279,6 @@ const PatientDetail = ({navigation, route, theme}) => {
               </ListItem.Content>
             </ListItem>
           ))}
-          <Notification patientDetail={patientDetail}/>
         </View>
         <View style={componentStyles.buttonContainer}>
           <Button
