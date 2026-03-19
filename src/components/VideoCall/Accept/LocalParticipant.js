@@ -43,7 +43,7 @@ const LocalParticipant = ({
         <>
           <Icon reverse name="person" color={theme.colors.primary} />
           <Text style={styles.textLight}>
-            {profile.first_name} {profile.last_name}
+            {profile.last_name} {profile.first_name}
           </Text>
           <Text style={styles.textLight}>
             {formatCallDuration(callDuration)}

@@ -32,22 +32,36 @@ const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const localize = useSelector((state) => state.localize);
-  const {chatAuth, messages, selectedRoom, chatRooms, offlineMessages} =
-    useSelector((state) => state.rocketchat);
   const {isOnlineMode, isOnChatScreen} = useSelector(
     (state) => state.indicator,
   );
+  const {
+    chatAuth,
+    messages,
+    showIncomingCall,
+    showAcceptedCall,
+    selectedRoom,
+    chatRooms,
+    offlineMessages,
+  } = useSelector((state) => state.rocketchat);
   const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
   const [allMessages, setAllMessages] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
-  const isFocused = useIsFocused();
+  const [disabledCall, setDisabledCall] = useState(false);
   const [showMediaSlider, setShowMediaSlider] = useState(false);
   const [isVideoAttachment, setIsVideoAttachment] = useState(false);
   const [videoAttachments, setVideoAttachments] = useState(undefined);
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
+
+  useEffect(() => {
+    if (!showIncomingCall && !showAcceptedCall) {
+      setDisabledCall(false);
+    }
+  }, [showIncomingCall, showAcceptedCall]);
 
   useEffect(() => {
     setAllMessages(messages);
@@ -242,6 +256,9 @@ const ChatPanel = ({navigation, theme}) => {
       ? CALL_STATUS.VIDEO_STARTED
       : CALL_STATUS.AUDIO_STARTED;
 
+    // Avoid multiple press
+    setDisabledCall(true);
+
     // Send call message
     sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
 
@@ -266,15 +283,13 @@ const ChatPanel = ({navigation, theme}) => {
           title={selectedRoom?.name}
           onGoBack={() => handleGoBack()}
           call={{
+            disabledCall: disabledCall,
             onAudioCall: () => handleCall(false),
             onVideoCall: () => handleCall(true),
           }}
         />
       ) : (
-        <HeaderBar
-          onGoBack={() => handleGoBack()}
-          title={selectedRoom?.name}
-        />
+        <HeaderBar onGoBack={() => handleGoBack()} title={selectedRoom?.name} />
       )}
       <GiftedChat
         messages={allMessages}

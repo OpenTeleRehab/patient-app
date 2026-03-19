@@ -36,9 +36,6 @@ TextInput.defaultProps = {
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!_.isEmpty(remoteMessage.data)) {
-    // Message with data handled in the background
-    const callUUID = uuid.v4();
-
     if (remoteMessage.data.event_type === 'appointment') {
       await displayAppointmentNotification(
         remoteMessage.data?.title,
@@ -47,9 +44,12 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       );
     } else if (remoteMessage.data.body.includes('missed')) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+      RNCallKeep.removeEventListener('endCall');
       RNCallKeep.endCall(callInfo.callUUID);
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     } else {
+      const callUUID = uuid.v4();
+
       const callInfo = {
         callUUID,
         rid: remoteMessage.data.rid,
@@ -98,7 +98,6 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
         RNCallKeep.checkPhoneAccountEnabled()
           .then(() => {
-            let isOnCall = false;
             RNCallKeep.registerPhoneAccount(options);
             RNCallKeep.registerAndroidEvents();
             RNCallKeep.setAvailable(true);
@@ -111,21 +110,19 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             );
 
             RNCallKeep.addEventListener('answerCall', async () => {
-              isOnCall = true;
               await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false', false);
               RNCallKeep.backToForeground();
+              RNCallKeep.removeEventListener('endCall');
               RNCallKeep.endCall(callUUID);
             });
 
             RNCallKeep.addEventListener('endCall', async () => {
-              if (isOnCall !== true) {
-                await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true', false);
-                RNCallKeep.backToForeground();
-              }
+              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true', false);
+              RNCallKeep.backToForeground();
             });
 
             BackgroundTimer.setTimeout(() => {
-              isOnCall = true;
+              RNCallKeep.removeEventListener('endCall');
               RNCallKeep.endCall(callUUID);
             }, 60000);
           })

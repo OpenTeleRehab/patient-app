@@ -212,7 +212,7 @@ const HeaderBar = (props) => {
           <TouchableOpacity
             accessible={true}
             accessibilityLabel="Audio call"
-            disabled={!isOnline}
+            disabled={!isOnline || call.disabledCall}
             onPress={call.onAudioCall}>
             <Icon
               type="material"
@@ -224,7 +224,7 @@ const HeaderBar = (props) => {
           <TouchableOpacity
             accessible={true}
             accessibilityLabel="Video call"
-            disabled={!isOnline}
+            disabled={!isOnline || call.disabledCall}
             onPress={call.onVideoCall}>
             <Icon
               type="material"

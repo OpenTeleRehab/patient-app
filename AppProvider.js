@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
+import {mutation} from './src/store/rocketchat/mutations';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
 import {
@@ -92,26 +93,35 @@ const AppProvider = ({children}) => {
     setLanguage(lang || 1);
   }, []);
 
-  const answerCall = async () => {
+  const answerCall = useCallback(async () => {
+    dispatch(mutation.hasAcceptedCall(true));
+    dispatch(mutation.showIncomingCall(false));
+
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
     if (!_.isEmpty(callInfo) && patientId) {
       isAnswerCall = true;
+
       const message = {
         _id: callInfo._id,
         rid: callInfo.rid,
         msg: CALL_STATUS.ACCEPTED,
       };
-      updateMessage(chatSocket, message, patientId);
+
+      setTimeout(() => {
+        updateMessage(chatSocket, message, patientId);
+      }, 3000);
 
       if (Platform.OS === 'android') {
         RNCallKeep.backToForeground();
         RNCallKeep.endCall(callInfo.callUUID);
       }
     }
-  };
+  }, [dispatch]);
 
-  const endCall = async () => {
+  const endCall = useCallback(async () => {
+    dispatch(mutation.showIncomingCall(false));
+
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
     if (!_.isEmpty(callInfo) && patientId && !isAnswerCall) {
@@ -123,8 +133,11 @@ const AppProvider = ({children}) => {
           : CALL_STATUS.VIDEO_MISSED,
       };
 
-      updateMessage(chatSocket, message, patientId);
+      setTimeout(() => {
+        updateMessage(chatSocket, message, patientId);
+      }, 3000);
 
+      // Kill call keep
       RNCallKeep.endCall(callInfo.callUUID);
 
       // Clean call info local data
@@ -132,20 +145,17 @@ const AppProvider = ({children}) => {
     }
 
     isAnswerCall = false;
-  };
+  }, [dispatch]);
 
   useEffect(() => {
-    const answerCallListener = RNCallKeep.addEventListener(
-      'answerCall',
-      answerCall,
-    );
+    const answerCallListener = RNCallKeep.addEventListener('answerCall', answerCall);
     const endCallListener = RNCallKeep.addEventListener('endCall', endCall);
 
     return () => {
       answerCallListener.remove();
       endCallListener.remove();
     };
-  }, []);
+  }, [answerCall, endCall]);
 
   useEffect(() => {
     if (!_.isEmpty(profile)) {
@@ -296,6 +306,10 @@ const AppProvider = ({children}) => {
 
                   isAnswerCall = true;
 
+                  // Mark as accepted call
+                  dispatch(mutation.hasAcceptedCall(true));
+
+                  // Send accepted call message
                   updateMessage(chatSocket, message, profile.id);
                 }
               }
