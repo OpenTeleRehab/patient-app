@@ -13,7 +13,6 @@ const iconRenderer = (translate, theme, onShowPicker) => (
     size={26}
     type="feather"
     color={theme.colors.grey3}
-    onPress={() => onShowPicker(true)}
   />
 );
 
@@ -32,6 +31,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
         <Actions
           {...chatData}
           icon={() => iconRenderer(translate, theme, onShowPicker)}
+          onPressActionButton={() => onShowPicker(true)}
           containerStyle={styles.chatAttachment}
         />
       )}
