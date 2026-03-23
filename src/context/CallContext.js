@@ -1,4 +1,11 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import {AppState} from 'react-native';
 import {updateMessage} from '../utils/rocketchat';
 import RocketchatContext from './RocketchatContext';
 import {useDispatch, useSelector} from 'react-redux';
@@ -25,6 +32,7 @@ const CallContext = createContext(null);
 export const useCallContext = () => useContext(CallContext);
 
 export const CallContextProvider = ({children}) => {
+  const appState = useRef(AppState.currentState);
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
   const {
@@ -35,7 +43,19 @@ export const CallContextProvider = ({children}) => {
     hasAcceptedCall,
   } = useSelector((state) => state.rocketchat);
   const {accessToken, profile} = useSelector((state) => state.user);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [hasParticipant, setHasParticipant] = useState(false);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (accessToken) {
@@ -57,9 +77,12 @@ export const CallContextProvider = ({children}) => {
   useEffect(() => {
     // Call started listener
     const onStartedCallEvent = async () => {
+      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+
       if (CALL_STARTED_STATUSES.includes(videoCall.status)) {
         if (
           videoCall.u._id !== chatAuth.userId &&
+          _.isEmpty(callInfo) &&
           !hasStartedCall &&
           !hasAcceptedCall
         ) {
@@ -89,6 +112,17 @@ export const CallContextProvider = ({children}) => {
         if (hasAcceptedCall || hasStartedCall || callInfo.callUUID) {
           // Get call access token
           dispatch(getCallAccessToken(videoCall.u._id));
+
+          // Send accepted call notification
+          dispatch(
+            sendPodcastNotification({
+              _id: videoCall._id,
+              rid: videoCall.rid,
+              identity: profile.identity,
+              title: profile.last_name + ' ' + profile.first_name,
+              body: CALL_STATUS.ACCEPTED,
+            }),
+          );
 
           dispatch(mutation.showIncomingCall(false));
           dispatch(mutation.showAcceptedCall(true));
@@ -148,13 +182,16 @@ export const CallContextProvider = ({children}) => {
       }
     };
 
-    onStartedCallEvent().then();
-    onAcceptCallEvent().then();
-    onBusyCallEvent().then();
-    onMissedCallEvent().then();
-    onEndedCallEvent().then();
+    if (appStateVisible === 'active') {
+      onStartedCallEvent().then();
+      onAcceptCallEvent().then();
+      onBusyCallEvent().then();
+      onMissedCallEvent().then();
+      onEndedCallEvent().then();
+    }
   }, [
     accessToken,
+    appStateVisible,
     callAccessToken,
     chatAuth,
     chatSocket,
@@ -162,7 +199,10 @@ export const CallContextProvider = ({children}) => {
     hasAcceptedCall,
     hasParticipant,
     hasStartedCall,
+    profile.first_name,
     profile.id,
+    profile.identity,
+    profile.last_name,
     videoCall,
   ]);
 
@@ -189,7 +229,7 @@ export const CallContextProvider = ({children}) => {
   };
 
   const handlePushNotification = (notification) => {
-    dispatch(sendPodcastNotification({...notification, translatable: false}));
+    dispatch(sendPodcastNotification(notification));
   };
 
   return (

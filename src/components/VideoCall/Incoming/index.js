@@ -108,15 +108,14 @@ const IncomingCall = ({
       // Send decline call message
       updateMessage(chatSocket, {_id, rid, msg}, profile.id);
 
-      if (chatRoom.u.status === 'offline') {
-        handlePushNotification({
-          _id,
-          rid,
-          identity: chatRoom.u.username,
-          title: profile.last_name + ' ' + profile.first_name,
-          body: msg,
-        });
-      }
+      // Send decline call notification
+      handlePushNotification({
+        _id,
+        rid,
+        identity: hasStartedCall ? chatRoom.u.username : profile.identity,
+        title: profile.last_name + ' ' + profile.first_name,
+        body: msg,
+      });
     }
 
     if (!netInfo.isConnected) {

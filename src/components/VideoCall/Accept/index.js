@@ -59,7 +59,7 @@ const AcceptCall = ({
   const callStartRef = useRef(null);
   const chatSocket = useContext(RocketchatContext);
   const {ForegroundService} = NativeModules;
-  const {setHasParticipant} = useCallContext();
+  const {setHasParticipant, handlePushNotification} = useCallContext();
   const {
     callAccessToken,
     chatRooms,
@@ -305,7 +305,9 @@ const AcceptCall = ({
 
         const _id = generateHash();
         const rid = chatRoom?.rid;
-        const text = CALL_STATUS.AUDIO_ENDED;
+        const text = videoCall.status === CALL_STATUS.AUDIO_STARTED
+          ? CALL_STATUS.AUDIO_ENDED
+          : CALL_STATUS.VIDEO_ENDED;
 
         // TODO: Update end call message
         sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
@@ -314,9 +316,21 @@ const AcceptCall = ({
       invitingParticipants.forEach((participant) => {
         const _id = participant._id;
         const rid = participant.rid;
-        const msg = CALL_STATUS.AUDIO_ENDED;
+        const msg = videoCall.status === CALL_STATUS.AUDIO_STARTED
+          ? CALL_STATUS.AUDIO_MISSED
+          : CALL_STATUS.VIDEO_MISSED;
 
+        // Send ended call chat message to inviting participant
         updateMessage(chatSocket, {_id, rid, msg}, profile.id);
+
+        // Send ended call notification to inviting participant
+        handlePushNotification({
+          _id,
+          rid,
+          identity: participant.u.username,
+          title: participant.u.username,
+          body: msg,
+        });
       });
     } else {
       const _id = videoCall._id;
@@ -576,10 +590,10 @@ const AcceptCall = ({
           <FlatList
             data={participants}
             horizontal
-            keyExtractor={(item) => item.sid}
+            keyExtractor={(item) => item.participant.sid}
             removeClippedSubviews={false}
             renderItem={({item}) => (
-              <View style={styles.participantItem}>
+              <View key={item.participant.sid} style={styles.participantItem}>
                 {showTwilioVideoParticipantView(item?.track) ? (
                   <TwilioVideoParticipantView
                     key={item.participant.sid}
