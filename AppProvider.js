@@ -32,6 +32,7 @@ import {
   clearOfflineMessages,
   getChatRooms,
   postAttachmentMessage,
+  sendPodcastNotification,
   setChatSubscribeIds,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
@@ -102,15 +103,21 @@ const AppProvider = ({children}) => {
     if (!_.isEmpty(callInfo) && patientId) {
       isAnswerCall = true;
 
-      const message = {
-        _id: callInfo._id,
-        rid: callInfo.rid,
-        msg: CALL_STATUS.ACCEPTED,
-      };
+      const intervalID = setInterval(() => {
+        if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
+          const message = {
+            _id: callInfo._id,
+            rid: callInfo.rid,
+            msg: CALL_STATUS.ACCEPTED,
+          };
 
-      setTimeout(() => {
-        updateMessage(chatSocket, message, patientId);
-      }, 3000);
+          setTimeout(() => {
+            updateMessage(chatSocket, message, patientId);
+          }, 1000);
+
+          clearInterval(intervalID);
+        }
+      }, 1000);
 
       if (Platform.OS === 'android') {
         RNCallKeep.backToForeground();
@@ -120,32 +127,47 @@ const AppProvider = ({children}) => {
   }, [dispatch]);
 
   const endCall = useCallback(async () => {
-    dispatch(mutation.showIncomingCall(false));
+    // Force back to foreground in case app still alive
+    RNCallKeep.backToForeground();
 
+    // Get call information from local storage
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
-    if (!_.isEmpty(callInfo) && patientId && !isAnswerCall) {
-      const message = {
-        _id: callInfo._id,
-        rid: callInfo.rid,
-        msg: callInfo.body.includes('audio')
-          ? CALL_STATUS.AUDIO_MISSED
-          : CALL_STATUS.VIDEO_MISSED,
-      };
+    if (!_.isEmpty(callInfo) && patientId) {
+      const intervalID = setInterval(() => {
+        if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
+          const _id = callInfo._id;
+          const rid = callInfo.rid;
+          const msg = callInfo.body.includes('audio')
+            ? CALL_STATUS.AUDIO_MISSED
+            : CALL_STATUS.VIDEO_MISSED;
 
-      setTimeout(() => {
-        updateMessage(chatSocket, message, patientId);
-      }, 3000);
+          setTimeout(async () => {
+            // Send missed call chat message
+            updateMessage(chatSocket, {_id, rid, msg}, patientId);
+
+            dispatch(
+              sendPodcastNotification({
+                _id,
+                rid,
+                identity: profile.identity,
+                title: profile.last_name + ' ' + profile.first_name,
+                body: msg,
+              }),
+            );
+
+            // Clean call info from local storage
+            await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+          }, 1000);
+
+          clearInterval(intervalID);
+        }
+      }, 1000);
 
       // Kill call keep
       RNCallKeep.endCall(callInfo.callUUID);
-
-      // Clean call info local data
-      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     }
-
-    isAnswerCall = false;
-  }, [dispatch]);
+  }, [dispatch, profile]);
 
   useEffect(() => {
     const answerCallListener = RNCallKeep.addEventListener('answerCall', answerCall);
@@ -285,16 +307,27 @@ const AppProvider = ({children}) => {
           getLocalData(STORAGE_KEY.REJECTED_CALL, false).then(
             (rejectedCall) => {
               if (rejectedCall === 'true') {
-                const message = {
-                  _id: callInfo._id,
-                  rid: callInfo.rid,
-                  msg: callInfo.body.includes('audio')
-                    ? CALL_STATUS.AUDIO_MISSED
-                    : CALL_STATUS.VIDEO_MISSED,
-                };
+                const _id = callInfo._id;
+                const rid = callInfo.rid;
+                const msg = callInfo.body.includes('audio')
+                  ? CALL_STATUS.AUDIO_MISSED
+                  : CALL_STATUS.VIDEO_MISSED;
 
-                updateMessage(chatSocket, message, profile.id);
+                // Send missed call chat message
+                updateMessage(chatSocket, {_id, rid, msg}, profile.id);
 
+                // Send missed call notification
+                dispatch(
+                  sendPodcastNotification({
+                    _id,
+                    rid,
+                    identity: profile.identity,
+                    title: profile.last_name + ' ' + profile.first_name,
+                    body: msg,
+                  }),
+                );
+
+                // kill call keep
                 RNCallKeep.endCall(callInfo.callUUID);
               } else {
                 if (!_.isEmpty(callInfo)) {

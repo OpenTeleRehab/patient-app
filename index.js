@@ -42,7 +42,12 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         remoteMessage.data?.start_date,
         remoteMessage.data?.end_date,
       );
-    } else if (remoteMessage.data.body.includes('missed')) {
+    } else if (remoteMessage.data.body.includes('_missed')) {
+      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+      RNCallKeep.removeEventListener('endCall');
+      RNCallKeep.endCall(callInfo.callUUID);
+      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+    } else if (remoteMessage.data.body.includes('_accepted')) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
       RNCallKeep.removeEventListener('endCall');
       RNCallKeep.endCall(callInfo.callUUID);
