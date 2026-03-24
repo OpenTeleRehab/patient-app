@@ -93,6 +93,7 @@ const AssessmentForm = ({
         } else {
           setNumberOfSets(activity.sets);
           setNumberOfReps(activity.reps);
+          setPainLevel(0);
         }
       }
     }
@@ -138,7 +139,7 @@ const AssessmentForm = ({
       offlineActivitiesObj.push(payload);
       await dispatch(completeActivityOffline(offlineActivitiesObj));
     }
-
+    setStep(1);
     navigation.goBack();
   };
 
@@ -310,7 +311,7 @@ const AssessmentForm = ({
                 <View style={[styles.flexCenter, styles.marginBottomMd]}>
                   <Text style={styles.marginBottom}>
                     {translate('activity.step', {
-                      step: step + '/2',
+                      step: step + '/1',
                     }).toUpperCase()}
                   </Text>
                   <Text style={[styles.fontSizeXLg, styles.fontWeightBold]}>

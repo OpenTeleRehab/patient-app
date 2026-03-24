@@ -67,7 +67,10 @@ const ExerciseDetail = ({theme, route, navigation}) => {
       <HeaderBar
         rightContent={{
           label: translate('common.close'),
-          onPress: () => navigation.goBack(),
+          onPress: () => {
+            setStep(1);
+            navigation.goBack();
+          },
         }}
       />
 
