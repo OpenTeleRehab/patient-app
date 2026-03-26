@@ -26,6 +26,7 @@ import {
 } from '../../store/phcService/actions';
 import {updateIndicatorList} from '../../store/indicator/actions';
 import variables from '../../assets/styles/variables';
+import {getAppointmentsRequest, getAppointmentsWithPatientRequest} from '../../store/phcAppointment/actions';
 
 const Patient = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -47,17 +48,17 @@ const Patient = ({navigation, theme}) => {
   }, [dispatch, profile?.phc_service_id]);
 
   useEffect(() => {
-    const todayAppointments = phcAppointments?.approves?.filter((appointment) =>
-      moment(appointment.end_date).isSame(moment(), 'day')
-    );
-    const todayAppointmentWithPatients = phcAppointmentsWithPatient?.approves?.filter((appointment) =>
-      moment(appointment.end_date).isSame(moment(), 'day')
-    );
-    const todayAppointmentsCount = (todayAppointments?.length || 0) + (todayAppointmentWithPatients?.length || 0);
+      const now = new Date();
+      const formattedNow = moment(now).utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
+      const formattedDate = moment(now).utc().locale('en').format('DD/MM/YYYY');
+      dispatch(getAppointmentsWithPatientRequest({date: formattedDate, now: formattedNow}));
+      dispatch(getAppointmentsRequest({date: formattedDate, now: formattedNow}));
+  }, [dispatch]);
 
+  useEffect(() => {
     dispatch(
       updateIndicatorList({
-        hasAppointment: todayAppointmentsCount  > 0,
+        hasAppointment: phcAppointments?.upcomingAppointments + phcAppointmentsWithPatient?.upcomingAppointments  > 0,
       }),
     );
   }, [dispatch, phcAppointments, phcAppointmentsWithPatient]);

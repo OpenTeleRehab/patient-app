@@ -136,6 +136,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
           'phone',
           patientDetail.phone?.replace(patientDetail.dial_code, ''),
         );
+        setValue('note',patientDetail.note?? '');
         setCountryPhoneCode(patientDetail.dial_code ?? '855');
         if (
           patientDetail.status === OFFLINE_STATUS.DUPLICATE_CREATE ||
