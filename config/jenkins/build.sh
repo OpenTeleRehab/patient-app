@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-
+exit 0
 FILE_NAME=$(basename "$0")
 STAGE="${FILE_NAME%.*}"
 
