@@ -2,13 +2,15 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {Icon} from 'react-native-elements';
 import ProgressBar from './ProgressBar';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {ROUTES} from '../../variables/constants';
+import {mutation} from '../../store/rocketchat/mutations';
 import {useNavigation} from '@react-navigation/native';
 import variables from '../../assets/styles/variables';
 
 export default function Notification({patientDetail}) {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const {chatRooms} = useSelector((state) => state.rocketchat);
   const room = chatRooms?.find(r => r?.rid?.includes(patientDetail?.chat_user_id));
   const percent = patientDetail?.completed_percent;
@@ -37,7 +39,17 @@ export default function Notification({patientDetail}) {
         {unread > 0 && (
           <TouchableOpacity
             style={styles.iconItem}
-            onPress={()=>{navigation.navigate(ROUTES.CHAT_ROOM_LIST)}}
+            onPress={() => {
+              if (room) {
+                dispatch(mutation.selectRoomSuccess(room));
+                dispatch(mutation.getMessagesInRoomSuccess(room.messages));
+                navigation.navigate(ROUTES.CHAT_PANEL);
+              } else {
+                navigation.navigate('TabNavigation', {
+                  screen: ROUTES.CHAT_ROOM_LIST,
+                });
+              }
+            }}
             activeOpacity={0.7}
           >
             <Icon
@@ -52,7 +64,11 @@ export default function Notification({patientDetail}) {
         {appointmentCount > 0 && (
           <TouchableOpacity
             style={styles.iconItem}
-            onPress={() => navigation.navigate(ROUTES.PHC_APPOINTMENT)}
+            onPress={() =>
+              navigation.navigate('TabNavigation', {
+                screen: ROUTES.PHC_APPOINTMENT,
+              })
+            }
             activeOpacity={0.7}
           >
             <Icon
