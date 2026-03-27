@@ -3,6 +3,7 @@
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {Platform} from 'react-native';
+import BackgroundTimer from 'react-native-background-timer';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 import {mutation} from './src/store/rocketchat/mutations';
@@ -101,8 +102,6 @@ const AppProvider = ({children}) => {
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
     if (!_.isEmpty(callInfo) && patientId) {
-      isAnswerCall = true;
-
       const intervalID = setInterval(() => {
         if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
           const message = {
@@ -111,61 +110,54 @@ const AppProvider = ({children}) => {
             msg: CALL_STATUS.ACCEPTED,
           };
 
-          setTimeout(() => {
-            updateMessage(chatSocket, message, patientId);
-          }, 1000);
+          updateMessage(chatSocket, message, patientId);
 
           clearInterval(intervalID);
         }
       }, 1000);
-
-      if (Platform.OS === 'android') {
-        RNCallKeep.backToForeground();
-        RNCallKeep.endCall(callInfo.callUUID);
-      }
     }
   }, [dispatch]);
 
   const endCall = useCallback(async () => {
-    // Force back to foreground in case app still alive
-    RNCallKeep.backToForeground();
-
-    // Get call information from local storage
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+    const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
 
-    if (!_.isEmpty(callInfo) && patientId) {
-      const intervalID = setInterval(() => {
-        if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-          const _id = callInfo._id;
-          const rid = callInfo.rid;
-          const msg = callInfo.body.includes('audio')
-            ? CALL_STATUS.AUDIO_MISSED
-            : CALL_STATUS.VIDEO_MISSED;
+    if (!_.isEmpty(callInfo) && patientId && rejectedCall === 'true') {
+      const _id = callInfo._id;
+      const rid = callInfo.rid;
+      const identity = profile.identity;
+      const title = profile.identity;
+      const msg = callInfo.body.includes('audio')
+        ? CALL_STATUS.AUDIO_MISSED
+        : CALL_STATUS.VIDEO_MISSED;
 
-          setTimeout(async () => {
-            // Send missed call chat message
+      if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
+        updateMessage(chatSocket, {_id, rid, msg}, patientId);
+
+        if (profile.type === 'phc_worker') {
+          dispatch(sendPodcastNotification({_id, rid, identity, title, body: msg}));
+        }
+
+        BackgroundTimer.setTimeout(async () => {
+          await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        }, 1000);
+      } else {
+        const intervalID = setInterval(async () => {
+          if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
             updateMessage(chatSocket, {_id, rid, msg}, patientId);
 
-            dispatch(
-              sendPodcastNotification({
-                _id,
-                rid,
-                identity: profile.identity,
-                title: profile.last_name + ' ' + profile.first_name,
-                body: msg,
-              }),
-            );
+            if (profile.type === 'phc_worker') {
+              dispatch(sendPodcastNotification({_id, rid, identity, title, body: msg}));
+            }
 
-            // Clean call info from local storage
-            await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-          }, 1000);
+            BackgroundTimer.setTimeout(async () => {
+              await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+            }, 1000);
 
-          clearInterval(intervalID);
-        }
-      }, 1000);
-
-      // Kill call keep
-      RNCallKeep.endCall(callInfo.callUUID);
+            clearInterval(intervalID);
+          }
+        }, 1000);
+      }
     }
   }, [dispatch, profile]);
 
@@ -295,85 +287,70 @@ const AppProvider = ({children}) => {
   ]);
 
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      if (
-        isOnline &&
-        profile &&
-        profile.id &&
-        chatSocket &&
-        chatSocket.readyState === chatSocket.OPEN
-      ) {
-        getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-          getLocalData(STORAGE_KEY.REJECTED_CALL, false).then(
-            (rejectedCall) => {
-              if (rejectedCall === 'true') {
-                const _id = callInfo._id;
-                const rid = callInfo.rid;
-                const msg = callInfo.body.includes('audio')
-                  ? CALL_STATUS.AUDIO_MISSED
-                  : CALL_STATUS.VIDEO_MISSED;
+    const androidAcceptRejectHandler = async () => {
+      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+      const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
 
-                // Send missed call chat message
-                updateMessage(chatSocket, {_id, rid, msg}, profile.id);
+      if (callInfo && callInfo._id && callInfo.rid) {
+        const _id = callInfo._id;
+        const rid = callInfo.rid;
 
-                // Send missed call notification
-                dispatch(
-                  sendPodcastNotification({
-                    _id,
-                    rid,
-                    identity: profile.identity,
-                    title: profile.last_name + ' ' + profile.first_name,
-                    body: msg,
-                  }),
-                );
+        if (rejectedCall === 'true') {
+          const msg = callInfo.body.includes('audio')
+            ? CALL_STATUS.AUDIO_MISSED
+            : CALL_STATUS.VIDEO_MISSED;
 
-                // kill call keep
-                RNCallKeep.endCall(callInfo.callUUID);
-              } else {
-                if (!_.isEmpty(callInfo)) {
-                  const message = {
-                    _id: callInfo._id,
-                    rid: callInfo.rid,
-                    msg: CALL_STATUS.ACCEPTED,
-                  };
+          updateMessage(chatSocket, {_id, rid, msg}, profile.id);
 
-                  isAnswerCall = true;
+          notificationHandler(_id, rid, msg);
+        } else {
+          const msg = CALL_STATUS.ACCEPTED;
 
-                  // Mark as accepted call
-                  dispatch(mutation.hasAcceptedCall(true));
+          dispatch(mutation.hasAcceptedCall(true));
 
-                  // Send accepted call message
-                  updateMessage(chatSocket, message, profile.id);
-                }
-              }
-            },
-          );
-        });
+          updateMessage(chatSocket, {_id, rid, msg}, profile.id);
+
+          notificationHandler(_id, rid, msg);
+        }
+      }
+    };
+
+    const iosAcceptHandler = async () => {
+      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+
+      if (callInfo && callInfo._id && callInfo.rid) {
+        setTimeout(() => {
+          const message = {
+            _id: callInfo._id,
+            rid: callInfo.rid,
+            msg: CALL_STATUS.ACCEPTED,
+          };
+
+          updateMessage(socket, message, profile.id);
+        }, 1000);
       }
     }
 
-    if (Platform.OS === 'ios') {
-      if (
-        isOnline &&
-        isAnswerCall &&
-        accessToken &&
-        profile &&
-        profile.id &&
-        socket
-      ) {
-        getLocalData(STORAGE_KEY.CALL_INFO, true).then((res) => {
-          if (!_.isEmpty(res)) {
-            setTimeout(() => {
-              const message = {
-                _id: res._id,
-                rid: res.rid,
-                msg: CALL_STATUS.ACCEPTED,
-              };
+    const notificationHandler = (_id, rid, body) => {
+      if (profile.type === 'phc_worker') {
+        const identity = profile.identity;
+        const title = profile.identity;
 
-              updateMessage(socket, message, profile.id);
-            }, 1000);
-          }
-        });
+        dispatch(sendPodcastNotification({_id, rid, identity, title, body}));
+      }
+    };
+
+    if (isOnline && profile && profile.id) {
+      if (Platform.OS === 'android') {
+        if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
+          androidAcceptRejectHandler().then();
+        }
+      }
+
+      if (Platform.OS === 'ios') {
+        if (isAnswerCall && accessToken && socket) {
+          iosAcceptHandler().then();
+        }
       }
     }
   }, [dispatch, profile, isOnline, socket, accessToken]);

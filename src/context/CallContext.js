@@ -113,16 +113,18 @@ export const CallContextProvider = ({children}) => {
           // Get call access token
           dispatch(getCallAccessToken(videoCall.u._id));
 
-          // Send accepted call notification
-          dispatch(
-            sendPodcastNotification({
-              _id: videoCall._id,
-              rid: videoCall.rid,
-              identity: profile.identity,
-              title: profile.last_name + ' ' + profile.first_name,
-              body: CALL_STATUS.ACCEPTED,
-            }),
-          );
+          if (profile?.type === 'phc_worker') {
+            // Send accepted call notification
+            dispatch(
+              sendPodcastNotification({
+                _id: videoCall._id,
+                rid: videoCall.rid,
+                identity: profile.identity,
+                title: profile.identity,
+                body: CALL_STATUS.ACCEPTED,
+              }),
+            );
+          }
 
           dispatch(mutation.showIncomingCall(false));
           dispatch(mutation.showAcceptedCall(true));
@@ -203,6 +205,7 @@ export const CallContextProvider = ({children}) => {
     profile.id,
     profile.identity,
     profile.last_name,
+    profile?.type,
     videoCall,
   ]);
 
