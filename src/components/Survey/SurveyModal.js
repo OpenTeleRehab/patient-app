@@ -263,6 +263,7 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
     const payload = {
       survey_id: publishSurvey.id,
       user_id: profile.id,
+      survey_phase: surveyPhase,
     };
     dispatch(skipSurvey(payload, accessToken)).then((result) => {
       if (result) {
