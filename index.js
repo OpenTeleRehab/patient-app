@@ -36,22 +36,25 @@ TextInput.defaultProps = {
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!_.isEmpty(remoteMessage.data)) {
+    let allowBackToForeground = true;
+
     if (remoteMessage.data.event_type === 'appointment') {
       await displayAppointmentNotification(
         remoteMessage.data?.title,
         remoteMessage.data?.start_date,
         remoteMessage.data?.end_date,
       );
-    } else if (remoteMessage.data.body.includes('_missed')) {
+    } else if (
+      remoteMessage.data.body.endsWith('_missed') ||
+      remoteMessage.data.body.endsWith('_accepted')
+    ) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-      RNCallKeep.removeEventListener('endCall');
-      RNCallKeep.endCall(callInfo.callUUID);
-      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-    } else if (remoteMessage.data.body.includes('_accepted')) {
-      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-      RNCallKeep.removeEventListener('endCall');
-      RNCallKeep.endCall(callInfo.callUUID);
-      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+
+      if (callInfo?.callUUID) {
+        allowBackToForeground = false;
+        RNCallKeep.endCall(callInfo.callUUID);
+        await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+      }
     } else {
       const callUUID = uuid.v4();
 
@@ -65,13 +68,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
 
       if (Platform.OS === 'ios') {
-        RNCallKeep.displayIncomingCall(
-          callUUID,
-          remoteMessage.data.body,
-          remoteMessage.data.title,
-          'generic',
-          true,
-        );
+        displayIncomingCall(callUUID, remoteMessage);
       } else {
         const options = {
           ios: {
@@ -106,29 +103,45 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             RNCallKeep.registerPhoneAccount(options);
             RNCallKeep.registerAndroidEvents();
             RNCallKeep.setAvailable(true);
-            RNCallKeep.displayIncomingCall(
-              callUUID,
-              remoteMessage.data.title,
-              remoteMessage.data.title,
-              'generic',
-              remoteMessage.data.body.includes('video'),
-            );
+
+            displayIncomingCall(callUUID, remoteMessage);
 
             RNCallKeep.addEventListener('answerCall', async () => {
               await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false', false);
+
+              // Avoid back to foreground
+              allowBackToForeground = false;
+
+              // Back to foreground
               RNCallKeep.backToForeground();
-              RNCallKeep.removeEventListener('endCall');
+
+              // End native call UI
               RNCallKeep.endCall(callUUID);
             });
 
             RNCallKeep.addEventListener('endCall', async () => {
-              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true', false);
+              if (!allowBackToForeground) return;
+
+              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
+
+              // Back to foreground
               RNCallKeep.backToForeground();
             });
 
             BackgroundTimer.setTimeout(() => {
-              RNCallKeep.removeEventListener('endCall');
-              RNCallKeep.endCall(callUUID);
+              getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
+                if (item?.callUUID === callUUID) {
+                  // Cleanup call info and rejected call from local storage
+                  await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+                  await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
+
+                  // Avoid back to foreground
+                  allowBackToForeground = false;
+
+                  // End native call UI
+                  RNCallKeep.endAllCalls();
+                }
+              });
             }, 60000);
           })
           .catch((e) => {
@@ -176,6 +189,14 @@ const displayAppointmentNotification = async (title, startDate, endDate) => {
     },
   });
 }
+
+const displayIncomingCall = (callUUID, remoteMessage) => {
+  const handle = remoteMessage.data.title;
+  const localizedCallerName = remoteMessage.data.title;
+  const hasVideo = remoteMessage.data.body.includes('video');
+
+  RNCallKeep.displayIncomingCall(callUUID, handle, localizedCallerName, 'generic', hasVideo);
+};
 
 const AppFake = () => {
   return null;

@@ -129,7 +129,7 @@ const ChatPanel = ({navigation, theme}) => {
       // Push chat message notification
       dispatch(
         sendPodcastNotification({
-          _id: newMessage[0].id,
+          _id: newMessage[0]._id,
           rid: newMessage[0].rid,
           identity: selectedRoom.u.username,
           title: profile.last_name + ' ' + profile.first_name,
