@@ -34,10 +34,10 @@ const Survey = () => {
   }, [surveys]);
 
   useEffect(() => {
-    if (isOnline && accessToken) {
+    if (isOnline && accessToken && registerAs !== USER_ROLE.HEALTH_WORKER) {
       dispatch(getTreatmentPlanRequest());
     }
-  }, [dispatch, isOnline, accessToken]);
+  }, [dispatch, isOnline, accessToken, registerAs]);
 
   useEffect(() => {
     if (isOnline && accessToken) {
