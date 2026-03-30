@@ -2,7 +2,6 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import {callApi, callGlobalAdminApi} from '../utils/request';
-import {getCountryCodeFromStore} from '../utils/country';
 import store from '../store';
 import {USER_ROLE} from '../variables/constants';
 
@@ -13,10 +12,10 @@ const register = async (to, hash, country, email) => {
   });
 };
 
-const verifyPhoneNumber = async (to, code, email) => {
+const verifyPhoneNumber = async (to, code, email, countryCode) => {
   const body = {to, code, email};
   return await callApi('/register/verify-code', '', body, 'post', false, {
-    country: getCountryCodeFromStore(),
+    country: countryCode,
   });
 };
 
@@ -27,6 +26,7 @@ const setupPinNumber = async (
   termOfServiceId,
   privacyPolicyId,
   language,
+  countryCode,
 ) => {
   const body = {
     pin,
@@ -37,7 +37,7 @@ const setupPinNumber = async (
     privacy_and_policy_id: privacyPolicyId,
   };
   return await callApi('/auth/add-new-pin', '', body, 'post', false, {
-    country: getCountryCodeFromStore(),
+    country: countryCode,
   });
 };
 
