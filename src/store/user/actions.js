@@ -12,10 +12,9 @@ import {callApi, callTherapistApi} from '../../utils/request';
 import RNLocalize from 'react-native-localize';
 import messaging from '@react-native-firebase/messaging';
 
-export const verifyPhoneNumberRequest =
-  (to, code, email) => async (dispatch) => {
+export const verifyPhoneNumberRequest = (to, code, email, countryCode) => async (dispatch) => {
     dispatch(mutation.userVerifyPhoneNumberRequest());
-    const data = await User.verifyPhoneNumber(to, code, email);
+    const data = await User.verifyPhoneNumber(to, code, email, countryCode);
     if (data.success) {
       dispatch(mutation.userVerifyPhoneNumberSuccess({code}));
       return true;

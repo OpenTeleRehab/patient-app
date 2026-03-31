@@ -27,6 +27,7 @@ const VerifyPhone = ({navigation}) => {
   const dispatch = useDispatch();
   const {otp, startListening, stopListening} = useOtpVerification();
   const formattedNumber = useSelector((state) => state.register.phone);
+  const countryCode = useSelector((state) => state.register.countryCode);
   const dialCode = useSelector((state) => state.user.dial_code);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -103,25 +104,23 @@ const VerifyPhone = ({navigation}) => {
   };
 
   const onConfirm = (verifyCode) => {
-    dispatch(verifyPhoneNumberRequest(formattedNumber, verifyCode, email)).then(
-      (result) => {
-        if (result) {
-          navigation.navigate(ROUTES.TERM_OF_SERVICE);
-        } else {
-          Alert.alert(
-            translate('error.message.incorrect.code').toString(),
-            translate('prompt.enter.code').toString(),
-            [
-              {
-                text: translate('common.ok').toString(),
-              },
-            ],
-            {cancelable: false},
-          );
-          setErrorCode(true);
-        }
-      },
-    );
+    dispatch(verifyPhoneNumberRequest(formattedNumber, verifyCode, email, countryCode)).then((result) => {
+      if (result) {
+        navigation.navigate(ROUTES.TERM_OF_SERVICE);
+      } else {
+        Alert.alert(
+          translate('error.message.incorrect.code').toString(),
+          translate('prompt.enter.code').toString(),
+          [
+            {
+              text: translate('common.ok').toString(),
+            },
+          ],
+          {cancelable: false},
+        );
+        setErrorCode(true);
+      }
+    });
   };
 
   const onResent = () => {

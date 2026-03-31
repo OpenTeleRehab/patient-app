@@ -8,10 +8,6 @@ export const getUserCountryIsoCode = () => {
   return country ? country.iso_code : '';
 };
 
-export const getCountryCodeFromStore = () => {
-  return store.getState().user.countryCode;
-};
-
 export const getCountryName = () => {
   const profile = store.getState().user.profile;
   const countries = store.getState().country.countries;
