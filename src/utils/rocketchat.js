@@ -1,6 +1,8 @@
 import {
   authenticateChatUser,
+  getChatRooms,
   prependNewMessage,
+  sendOfflineMessages,
   updateChatUserStatus,
   updateVideoCallStatus,
 } from '../store/rocketchat/actions';
@@ -93,6 +95,12 @@ export const initialChatSocket = (
           setTimeout(() => {
             subscribeUserLoggedStatus(socket, notifyLoggedId);
           }, 1000);
+
+          // Send offline messages
+          dispatch(sendOfflineMessages(socket));
+
+          // Get chat rooms
+          dispatch(getChatRooms());
         } else if (result && result.messages) {
           // Load messages in a room
           const {chatRooms} = store.getState().rocketchat;

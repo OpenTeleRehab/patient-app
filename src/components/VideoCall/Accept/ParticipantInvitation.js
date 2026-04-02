@@ -12,17 +12,13 @@ import {
   withTheme,
 } from 'react-native-elements';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {useCallContext} from '../../../context/CallContext';
-import {
-  getPatientChatRooms,
-  getPhcChatRooms,
-  getTherapistChatRooms,
-} from '../../../utils/chat';
+import {sendTextMessage} from '../../../store/rocketchat/actions';
+import {getPatientChatRooms, getPhcChatRooms, getTherapistChatRooms} from '../../../utils/chat';
 import {generateHash} from '../../../utils/helper';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
-import {sendNewMessage} from '../../../utils/rocketchat';
 import RocketchatContext from '../../../context/RocketchatContext';
 import styles from '../../../assets/styles';
 
@@ -32,8 +28,8 @@ const ParticipantInvitation = ({
   participants,
   onSetInvitingParticipants,
 }) => {
+  const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
-  const {handlePushNotification} = useCallContext();
   const {handleDeclineCall} = useCallContext();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -145,10 +141,18 @@ const ParticipantInvitation = ({
 
   const handleInviteParticipant = (participant) => {
     const _id = generateHash();
-    const rid = participant.rid;
-    const text = isVideoEnabled
-      ? CALL_STATUS.VIDEO_STARTED
-      : CALL_STATUS.AUDIO_STARTED;
+
+    const message = {
+      _id: _id,
+      rid: participant.rid,
+      user: {
+        _id: participant.u._id,
+        username: participant.u.username,
+      },
+      text: isVideoEnabled
+        ? CALL_STATUS.VIDEO_STARTED
+        : CALL_STATUS.AUDIO_STARTED,
+    };
 
     setInvitingParticipants((prev) =>
       prev.map((item) =>
@@ -158,20 +162,7 @@ const ParticipantInvitation = ({
       ),
     );
 
-    // Send call message
-    sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
-
-    // Send podcast notification
-    if (participant.u.status === CHAT_USER_STATUS.OFFLINE) {
-      const notification = {
-        _id,
-        rid,
-        identity: participant.u.username,
-        title: profile.first_name + ' ' + profile.last_name,
-        body: text,
-      };
-      handlePushNotification(notification);
-    }
+    dispatch(sendTextMessage(chatSocket, message));
   };
 
   return (

@@ -11,6 +11,7 @@ import {
   changePinNumberRequest,
   setupPinNumberRequest,
   setProfileInfo,
+  generateFirebaseToken,
 } from '../../../store/user/actions';
 import {useSelector, useDispatch} from 'react-redux';
 import HeaderBar from '../../../components/Common/HeaderBar';
@@ -113,6 +114,9 @@ const SetupPin = ({navigation, route}) => {
 
     // Set user profile information
     dispatch(setProfileInfo(data));
+
+    // Generate firebase token
+    dispatch(generateFirebaseToken(data.token));
   };
 
   const handleCodeInputPress = (ref) => {

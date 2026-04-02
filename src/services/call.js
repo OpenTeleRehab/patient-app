@@ -19,13 +19,6 @@ const getCallAccessToken = async (roomId) => {
   }
 };
 
-const sendPodcastNotification = async (payload) => {
-  const {accessToken} = store.getState().user;
-
-  return await callApi('/push-notification', accessToken, payload);
-};
-
 export const Call = {
   getCallAccessToken,
-  sendPodcastNotification,
 };

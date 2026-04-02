@@ -6,6 +6,8 @@ import {Chat} from '../../services/chat';
 import {Call} from '../../services/call';
 import {isPhcWorker} from '../../utils/helper';
 import {CHAT_USER_STATUS} from '../../variables/constants';
+import {Notification} from '../../services/notification';
+import {sendNewMessage, updateMessage} from '../../utils/rocketchat';
 import _ from 'lodash';
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
@@ -22,7 +24,7 @@ export const updateVideoCallStatus = (payload) => (dispatch) => {
 
 export const getChatRooms = () => async (dispatch, getState) => {
   const {accessToken, profile} = getState().user;
-  const {chatAuth} = getState().rocketchat;
+  const {chatAuth, selectedRoom} = getState().rocketchat;
 
   const chatRooms = [];
 
@@ -159,7 +161,10 @@ export const getChatRooms = () => async (dispatch, getState) => {
 
     if (chatRooms.length > 0) {
       dispatch(mutation.getChatRoomsSuccess(chatRooms));
-      dispatch(mutation.selectRoomSuccess(chatRooms[0]));
+      if (selectedRoom === undefined) {
+        dispatch(mutation.selectRoomSuccess(chatRooms[0]));
+      }
+      dispatch(getLastMessages());
       return true;
     }
   }
@@ -269,19 +274,80 @@ export const updateChatUserStatus = (payload) => (dispatch, getState) => {
   }
 };
 
-export const postAttachmentMessage = (roomId, attachment) => async (
-  dispatch,
-  getState
-) => {
+export const sendOfflineMessages = (chatSocket) => (dispatch, getState) => {
+  const {offlineMessages} = getState().rocketchat;
+
+  if (offlineMessages.length) {
+    offlineMessages.forEach((message) => {
+      if (message.attachment) {
+        dispatch(postAttachmentMessage(message));
+      } else {
+        dispatch(sendTextMessage(chatSocket, message));
+      }
+    });
+
+    dispatch(clearOfflineMessages());
+  }
+};
+
+export const sendTextMessage = (chatSocket, message, notifiable = true) => (dispatch, getState) => {
+  const {profile} = getState().user;
+
+  sendNewMessage(chatSocket, message, profile.id);
+
+  if (notifiable && message?.user?.username?.startsWith('P')) {
+    const notification = {
+      _id: message._id,
+      rid: message.rid,
+      identity: message.user.username,
+      title: profile.last_name + ' ' + profile.first_name,
+      body: message.text,
+    };
+
+    dispatch(sendPodcastNotification(notification));
+  }
+};
+
+export const updateTextMessage = (chatSocket, message, notifiable = true) => (dispatch, getState) => {
+  const {profile} = getState().user;
+
+  updateMessage(chatSocket, {_id: message._id, rid: message.rid, msg: message.text}, profile.id);
+
+  if (notifiable && message?.user?.username?.startsWith('P')) {
+    const notification = {
+      _id: message._id,
+      rid: message.rid,
+      identity: message.user.username,
+      title: profile.last_name + ' ' + profile.first_name,
+      body: message.text,
+    };
+
+    dispatch(sendPodcastNotification(notification));
+  }
+};
+
+export const postAttachmentMessage = (message) => async (dispatch, getState) => {
   const {chatAuth} = getState().rocketchat;
+  const {profile} = getState().user;
+
+  const notification = {
+    _id: message._id,
+    rid: message.rid,
+    identity: message.user.username,
+    title: profile.last_name + ' ' + profile.first_name,
+    body: 'chat_attachment.title',
+    translatable: true,
+  };
+
   const data = await Rocketchat.sendAttachmentMessage(
-    roomId,
     chatAuth.userId,
     chatAuth.token,
-    attachment,
+    message.rid,
+    message.attachment,
   );
   if (data.success) {
     dispatch(mutation.sendAttachmentMessagesSuccess());
+    dispatch(sendPodcastNotification(notification));
     return true;
   } else {
     dispatch(mutation.sendAttachmentMessagesFailure());
@@ -302,7 +368,11 @@ export const getCallAccessToken = (roomId) => async (dispatch) => {
 };
 
 export const sendPodcastNotification = (payload) => async () => {
-  await Call.sendPodcastNotification(payload);
+  if (payload.identity.startsWith('P')) {
+    await Notification.send(payload);
+    return true;
+  }
+  return false;
 };
 
 export const clearVideoCallStatus = () => (dispatch) => {

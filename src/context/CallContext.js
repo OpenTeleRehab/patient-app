@@ -20,11 +20,10 @@ import {
   clearCallAccessToken,
   clearVideoCallStatus,
   getCallAccessToken,
-  sendPodcastNotification,
+  updateTextMessage,
 } from '../store/rocketchat/actions';
 import {getLocalData, storeLocalData} from '../utils/local_storage';
 import {mutation} from '../store/rocketchat/mutations';
-import {requestCallPermission} from '../utils/permission';
 import _ from 'lodash';
 
 const CallContext = createContext(null);
@@ -56,13 +55,6 @@ export const CallContextProvider = ({children}) => {
       subscription.remove();
     };
   }, []);
-
-  useEffect(() => {
-    if (accessToken) {
-      // Request phone call permission
-      requestCallPermission();
-    }
-  }, [accessToken]);
 
   useEffect(() => {
     if (_.isEmpty(videoCall)) {
@@ -110,26 +102,10 @@ export const CallContextProvider = ({children}) => {
         }
 
         if (hasAcceptedCall || hasStartedCall || callInfo.callUUID) {
-          // Get call access token
           dispatch(getCallAccessToken(videoCall.u._id));
-
-          if (profile?.type === 'phc_worker') {
-            // Send accepted call notification
-            dispatch(
-              sendPodcastNotification({
-                _id: videoCall._id,
-                rid: videoCall.rid,
-                identity: profile.identity,
-                title: profile.identity,
-                body: CALL_STATUS.ACCEPTED,
-              }),
-            );
-          }
-
           dispatch(mutation.showIncomingCall(false));
           dispatch(mutation.showAcceptedCall(true));
         } else {
-          // Cleanup video call
           dispatch(clearVideoCallStatus());
         }
       }
@@ -210,13 +186,17 @@ export const CallContextProvider = ({children}) => {
   ]);
 
   const handleAcceptCall = () => {
-    const _id = videoCall._id;
-    const rid = videoCall.rid;
-    const msg = CALL_STATUS.ACCEPTED;
+    const message = {
+      _id: videoCall._id,
+      rid: videoCall.rid,
+      user: {
+        _id: profile.chat_user_id,
+        username: profile.identity,
+      },
+      text: CALL_STATUS.ACCEPTED,
+    };
 
-    // Send accept call message
-    updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-
+    dispatch(updateTextMessage(chatSocket, message));
     dispatch(mutation.showIncomingCall(false));
     dispatch(mutation.hasAcceptedCall(true));
 
@@ -231,10 +211,6 @@ export const CallContextProvider = ({children}) => {
     updateMessage(chatSocket, {_id, rid, msg}, profile.id);
   };
 
-  const handlePushNotification = (notification) => {
-    dispatch(sendPodcastNotification(notification));
-  };
-
   return (
     <CallContext.Provider
       value={{
@@ -242,7 +218,6 @@ export const CallContextProvider = ({children}) => {
         setHasParticipant,
         handleAcceptCall,
         handleDeclineCall,
-        handlePushNotification,
       }}>
       {children}
     </CallContext.Provider>

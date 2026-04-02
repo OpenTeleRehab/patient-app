@@ -13,11 +13,11 @@ import {TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {CALL_STATUS} from '../../../variables/constants';
 import {useCallContext} from '../../../context/CallContext';
-import {updateMessage} from '../../../utils/rocketchat';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {
   clearCallAccessToken,
   clearVideoCallStatus,
+  updateTextMessage,
 } from '../../../store/rocketchat/actions';
 import styles from '../../../assets/styles';
 import {mutation} from '../../../store/rocketchat/mutations';
@@ -37,7 +37,6 @@ const IncomingCall = ({
   const netInfo = useNetInfo();
   const chatSocket = useContext(RocketchatContext);
   const {handleAcceptCall} = useCallContext();
-  const {handlePushNotification} = useCallContext();
   const {
     videoCall,
     selectedRoom,
@@ -51,15 +50,19 @@ const IncomingCall = ({
   useEffect(() => {
     callTimeout.current = setTimeout(() => {
       if (hasStartedCall) {
-        const _id = videoCall._id;
-        const rid = videoCall.rid;
-        const msg =
-          videoCall.status === CALL_STATUS.AUDIO_STARTED
-            ? CALL_STATUS.AUDIO_MISSED
-            : CALL_STATUS.VIDEO_MISSED;
-
-        // Send missed call message
-        updateMessage(chatSocket, {_id, rid, msg}, profile.id);
+        const message = {
+          _id: videoCall._id,
+          rid: videoCall.rid,
+          user: {
+            _id: videoCall.u._id,
+            username: videoCall.u.username,
+          },
+          text:
+            videoCall.status === CALL_STATUS.AUDIO_STARTED
+              ? CALL_STATUS.AUDIO_MISSED
+              : CALL_STATUS.VIDEO_MISSED,
+        };
+        dispatch(updateTextMessage(chatSocket, message, false));
 
         // Hide incoming call
         dispatch(mutation.showIncomingCall(false));
@@ -99,23 +102,19 @@ const IncomingCall = ({
     const chatRoom = chatRooms.find((cr) => cr.rid === videoCall.rid);
 
     if (chatRoom) {
-      const _id = videoCall._id;
-      const rid = videoCall.rid;
-      const msg = videoCall.status === CALL_STATUS.AUDIO_STARTED
-          ? CALL_STATUS.AUDIO_MISSED
-          : CALL_STATUS.VIDEO_MISSED;
-
-      // Send decline call message
-      updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-
-      // Send decline call notification
-      handlePushNotification({
-        _id,
-        rid,
-        identity: hasStartedCall ? chatRoom.u.username : profile.identity,
-        title: profile.last_name + ' ' + profile.first_name,
-        body: msg,
-      });
+      const message = {
+        _id: videoCall._id,
+        rid: videoCall.rid,
+        user: {
+          _id: profile.chat_user_id,
+          username: profile.identity,
+        },
+        text:
+          videoCall.status === CALL_STATUS.AUDIO_STARTED
+            ? CALL_STATUS.AUDIO_MISSED
+            : CALL_STATUS.VIDEO_MISSED,
+      };
+      dispatch(updateTextMessage(chatSocket, message));
     }
 
     if (!netInfo.isConnected) {
