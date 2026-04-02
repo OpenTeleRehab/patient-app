@@ -42,7 +42,7 @@ const markMessagesAsRead = async (roomId, userId, authToken) => {
   );
 };
 
-const sendAttachmentMessage = async (roomId, userId, authToken, attachment) => {
+const sendAttachmentMessage = async (userId, authToken, roomId, attachment) => {
   const formData = new FormData();
   formData.append('description', attachment.caption);
   formData.append('file', attachment.file);

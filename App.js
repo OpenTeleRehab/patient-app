@@ -63,7 +63,7 @@ const App = () => {
         <LocalizeProvider store={store}>
           <GestureHandlerRootView>
             <SafeAreaProvider>
-              <SafeAreaView edges={['top', 'left', 'right']} style={styles.safeAreaView}>
+              <SafeAreaView edges={['top', 'left', 'right', 'bottom']} style={styles.safeAreaView}>
                 <BottomSheetModalProvider>
                   <DeviceSecurityContextProvider>
                     <AppProvider>

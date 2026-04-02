@@ -11,17 +11,17 @@ import {getTranslate} from 'react-localize-redux';
 import {Rocketchat} from '../../../services/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {generateHash, isPhcWorker} from '../../../utils/helper';
-import {Platform, View, Keyboard} from 'react-native';
+import {Keyboard, Platform, View} from 'react-native';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
-import {loadHistoryInRoom, sendNewMessage} from '../../../utils/rocketchat';
+import {loadHistoryInRoom} from '../../../utils/rocketchat';
 import {updateIndicatorList} from '../../../store/indicator/actions';
 import {mutation} from '../../../store/rocketchat/mutations';
 import MediaPicker from '../../../components/MediaPicker';
 import {
   postAttachmentMessage,
   prependNewMessage,
-  sendPodcastNotification,
+  sendTextMessage,
 } from '../../../store/rocketchat/actions';
 import ChatContainer from '../_Partials/ChatContainer';
 import ChatToolbar from '../_Partials/ChatToolbar';
@@ -34,9 +34,7 @@ const ChatPanel = ({navigation, theme}) => {
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused();
   const localize = useSelector((state) => state.localize);
-  const {isOnlineMode, isOnChatScreen} = useSelector(
-    (state) => state.indicator,
-  );
+  const {isOnlineMode, isOnChatScreen} = useSelector((state) => state.indicator);
   const {
     chatAuth,
     messages,
@@ -57,6 +55,10 @@ const ChatPanel = ({navigation, theme}) => {
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
 
+  const keyboardVerticalOffset = isOnlineMode
+    ? 64 + insets.top + insets.bottom
+    : 102 + insets.top + insets.bottom;
+
   useEffect(() => {
     if (!showIncomingCall && !showAcceptedCall) {
       setDisabledCall(false);
@@ -68,31 +70,32 @@ const ChatPanel = ({navigation, theme}) => {
   }, [chatRooms, messages]);
 
   useEffect(() => {
-    if (isOnlineMode && isOnChatScreen && chatSocket && selectedRoom?.rid) {
-      Rocketchat.markMessagesAsRead(
-        selectedRoom.rid,
-        chatAuth.userId,
-        chatAuth.token,
-      ).then((res) => {
-        if (res.success) {
-          // Load message history in room
+    let intervalID;
+
+    if (isOnlineMode) {
+      intervalID = setInterval(() => {
+        if (chatSocket && chatSocket.OPEN === chatSocket.readyState) {
           loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
 
-          // Reset unread message
-          dispatch(mutation.updateUnreadSuccess(selectedRoom.rid));
+          Rocketchat.markMessagesAsRead(
+            selectedRoom.rid,
+            chatAuth.userId,
+            chatAuth.token,
+          ).then((res) => {
+            if (res.success) {
+              dispatch(mutation.updateUnreadSuccess(selectedRoom.rid));
+            }
+          });
+
+          clearInterval(intervalID);
         }
-      });
+      }, 1000);
     }
-  }, [
-    chatAuth.token,
-    chatAuth.userId,
-    chatSocket,
-    dispatch,
-    isOnChatScreen,
-    isOnlineMode,
-    profile.id,
-    selectedRoom,
-  ]);
+
+    return () => {
+      clearInterval(intervalID);
+    };
+  }, [chatAuth, chatSocket, dispatch, profile.id, selectedRoom, isOnlineMode]);
 
   useEffect(() => {
     const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
@@ -118,33 +121,19 @@ const ChatPanel = ({navigation, theme}) => {
 
   const onSend = (newMessage = []) => {
     newMessage[0].rid = selectedRoom.rid;
+    newMessage[0].received = false;
+    newMessage[0].pending = true;
+    newMessage[0].user = {
+      ...newMessage[0].user,
+      username: selectedRoom.u.username,
+    };
 
     if (isOnlineMode) {
-      newMessage[0].received = true;
-      newMessage[0].pending = false;
-
-      // Send chat message
-      sendNewMessage(chatSocket, newMessage[0], profile.id);
-
-      // Push chat message notification
-      dispatch(
-        sendPodcastNotification({
-          _id: newMessage[0]._id,
-          rid: newMessage[0].rid,
-          identity: selectedRoom.u.username,
-          title: profile.last_name + ' ' + profile.first_name,
-          body: newMessage[0].text,
-        }),
-      );
+      dispatch(sendTextMessage(chatSocket, newMessage[0]));
     } else {
-      newMessage[0].received = false;
-      newMessage[0].pending = true;
+      const allOfflineMessages = offlineMessages.concat([newMessage[0]]);
 
-      dispatch(
-        mutation.setOfflineMessagesSuccess(
-          offlineMessages.concat([newMessage[0]]),
-        ),
-      );
+      dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
       dispatch(prependNewMessage(newMessage[0]));
     }
 
@@ -158,10 +147,13 @@ const ChatPanel = ({navigation, theme}) => {
       _id: generateHash(),
       rid: selectedRoom.rid,
       createdAt: new Date(),
-      received: true,
-      pending: false,
+      received: false,
+      pending: true,
       text: caption,
-      user: {_id: chatAuth.userId},
+      user: {
+        _id: chatAuth.userId,
+        username: selectedRoom.u.username,
+      },
     };
     if (type.includes('video/')) {
       newMessage.video = file.uri;
@@ -172,7 +164,7 @@ const ChatPanel = ({navigation, theme}) => {
       GiftedChat.append(previousMessages, [newMessage]),
     );
 
-    const attachment = {
+    newMessage.attachment = {
       caption,
       file: {
         uri:
@@ -183,20 +175,9 @@ const ChatPanel = ({navigation, theme}) => {
         name: file.uri.replace(/^.*[\\/]/, ''),
       },
     };
-    newMessage.attachment = attachment;
-    if (isOnlineMode) {
-      dispatch(postAttachmentMessage(selectedRoom.rid, attachment));
 
-      dispatch(
-        sendPodcastNotification({
-          _id: newMessage._id,
-          rid: newMessage.rid,
-          identity: selectedRoom.u.username,
-          title: profile.last_name + ' ' + profile.first_name,
-          body: 'chat_attachment.title',
-          translatable: true,
-        }),
-      );
+    if (isOnlineMode) {
+      dispatch(postAttachmentMessage(newMessage));
     } else {
       dispatch(
         mutation.setOfflineMessagesSuccess(
@@ -250,30 +231,21 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const handleCall = async (isVideo) => {
-    const _id = generateHash();
-    const rid = selectedRoom.rid;
-    const text = isVideo
-      ? CALL_STATUS.VIDEO_STARTED
-      : CALL_STATUS.AUDIO_STARTED;
+    const message = {
+      _id: generateHash(),
+      rid: selectedRoom.rid,
+      user: {
+        _id: chatAuth.userId,
+        username: selectedRoom.u.username,
+      },
+      text: isVideo ? CALL_STATUS.VIDEO_STARTED : CALL_STATUS.AUDIO_STARTED,
+    };
 
-    // Avoid multiple press
-    setDisabledCall(true);
+    setDisabledCall(true); // Avoid multiple press
 
-    // Send call message
-    sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
-
+    dispatch(sendTextMessage(chatSocket, message));
     dispatch(mutation.showIncomingCall(true));
     dispatch(mutation.hasStartedCall(true));
-    dispatch(
-      sendPodcastNotification({
-        _id,
-        rid,
-        identity: selectedRoom.u.username,
-        title: profile.first_name + ' ' + profile.last_name,
-        body: text,
-        translatable: false,
-      }),
-    );
   };
 
   return (
@@ -298,7 +270,7 @@ const ChatPanel = ({navigation, theme}) => {
         messageIdGenerator={() => generateHash()}
         keyboardAvoidingViewProps={{
           behavior: Platform.OS === 'ios' ? 'padding' : 'height',
-          keyboardVerticalOffset: 64 + insets.top + insets.bottom,
+          keyboardVerticalOffset: keyboardVerticalOffset,
         }}
         keyboardProviderProps={{
           navigationBarTranslucent: false,

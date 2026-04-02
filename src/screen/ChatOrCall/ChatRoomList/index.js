@@ -3,6 +3,7 @@
  */
 import React, {useEffect, useState} from 'react';
 import {ListItem, Badge, Icon, Text} from 'react-native-elements';
+import {useNetInfo} from '@react-native-community/netinfo';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
@@ -11,7 +12,6 @@ import {CHAT_USER_STATUS, ROUTES} from '../../../variables/constants';
 import {mutation} from '../../../store/rocketchat/mutations';
 import {getProfessionRequest} from '../../../store/profession/actions';
 import {getCurrentChatUsersStatus} from '../../../store/rocketchat/actions';
-import {getLastMessages} from '../../../store/rocketchat/actions';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {
@@ -23,6 +23,7 @@ import variables from '../../../assets/styles/variables';
 
 const ChatRoomList = ({navigation}) => {
   const dispatch = useDispatch();
+  const isOnline = useNetInfo().isConnected;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {chatAuth} = useSelector((state) => state.rocketchat);
@@ -33,6 +34,8 @@ const ChatRoomList = ({navigation}) => {
     'phc_workers',
   ]);
 
+  const unauthorizedRocketChat = isOnline && chatAuth === undefined;
+
   const rooms = {
     patients: getPatientChatRooms(),
     therapists: getTherapistChatRooms(),
@@ -41,7 +44,6 @@ const ChatRoomList = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getProfessionRequest());
-    dispatch(getLastMessages());
     dispatch(getCurrentChatUsersStatus());
   }, [dispatch]);
 
@@ -70,7 +72,13 @@ const ChatRoomList = ({navigation}) => {
     <>
       <HeaderBar leftContent={{label: translate('tab.messages')}} />
 
-      {chatAuth ? (
+      {unauthorizedRocketChat ? (
+        <View style={styles.paddingMd}>
+          <Text style={componentStyles.serverDownText}>
+            {translate('chat_message.server_down')}
+          </Text>
+        </View>
+      ) : (
         <ScrollView>
           {Object.keys(rooms).map((key) => (
             <View key={key}>
@@ -138,12 +146,6 @@ const ChatRoomList = ({navigation}) => {
             </View>
           ))}
         </ScrollView>
-      ) : (
-        <View style={styles.paddingMd}>
-          <Text style={componentStyles.serverDownText}>
-            {translate('chat_message.server_down')}
-          </Text>
-        </View>
       )}
     </>
   );

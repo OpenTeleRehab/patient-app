@@ -31,9 +31,11 @@ import {
   getParticipantName,
   isPhcWorker,
 } from '../../../utils/helper';
-import {clearCallAccessToken} from '../../../store/rocketchat/actions';
+import {
+  clearCallAccessToken,
+  sendTextMessage, updateTextMessage,
+} from '../../../store/rocketchat/actions';
 import {clearVideoCallStatus} from '../../../store/rocketchat/actions';
-import {sendNewMessage, updateMessage} from '../../../utils/rocketchat';
 import {useCallContext} from '../../../context/CallContext';
 import {mutation} from '../../../store/rocketchat/mutations';
 import CommonPopup from '../../Common/Popup';
@@ -59,7 +61,7 @@ const AcceptCall = ({
   const callStartRef = useRef(null);
   const chatSocket = useContext(RocketchatContext);
   const {ForegroundService} = NativeModules;
-  const {setHasParticipant, handlePushNotification} = useCallContext();
+  const {setHasParticipant} = useCallContext();
   const {
     callAccessToken,
     chatRooms,
@@ -303,41 +305,52 @@ const AcceptCall = ({
           participant.identity.includes(item.u.username + '###'),
         );
 
-        const _id = generateHash();
-        const rid = chatRoom?.rid;
-        const text = videoCall.status === CALL_STATUS.AUDIO_STARTED
-          ? CALL_STATUS.AUDIO_ENDED
-          : CALL_STATUS.VIDEO_ENDED;
-
-        // TODO: Update end call message
-        sendNewMessage(chatSocket, {_id, rid, text}, profile.id);
+        if (chatRoom) {
+          const message = {
+            _id: generateHash(),
+            rid: chatRoom.rid,
+            user: {
+              _id: chatRoom.u._id,
+              username: chatRoom.u.username,
+            },
+            text:
+              videoCall.status === CALL_STATUS.AUDIO_STARTED
+                ? CALL_STATUS.AUDIO_ENDED
+                : CALL_STATUS.VIDEO_ENDED,
+          };
+          dispatch(sendTextMessage(chatSocket, message, false));
+        }
       });
 
       invitingParticipants.forEach((participant) => {
-        const _id = participant._id;
-        const rid = participant.rid;
-        const msg = videoCall.status === CALL_STATUS.AUDIO_STARTED
-          ? CALL_STATUS.AUDIO_MISSED
-          : CALL_STATUS.VIDEO_MISSED;
-
-        // Send ended call chat message to inviting participant
-        updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-
-        // Send ended call notification to inviting participant
-        handlePushNotification({
-          _id,
-          rid,
-          identity: participant.u.username,
-          title: participant.u.username,
-          body: msg,
-        });
+        const message = {
+          _id: participant._id,
+          rid: participant.rid,
+          user: {
+            _id: participant.u._id,
+            username: participant.u.username,
+          },
+          text:
+            videoCall.status === CALL_STATUS.AUDIO_STARTED
+              ? CALL_STATUS.AUDIO_MISSED
+              : CALL_STATUS.VIDEO_MISSED,
+        };
+        dispatch(updateTextMessage(chatSocket, message));
       });
     } else {
-      const _id = videoCall._id;
-      const rid = videoCall.rid;
-      const msg = CALL_STATUS.AUDIO_ENDED;
-
-      updateMessage(chatSocket, {_id, rid, msg}, profile.id);
+      const message = {
+        _id: videoCall._id,
+        rid: videoCall.rid,
+        user: {
+          _id: videoCall.u._id,
+          username: videoCall.u.username,
+        },
+        text:
+          videoCall.status === CALL_STATUS.AUDIO_STARTED
+            ? CALL_STATUS.AUDIO_ENDED
+            : CALL_STATUS.VIDEO_ENDED,
+      };
+      dispatch(updateTextMessage(chatSocket, message, false));
     }
   };
 

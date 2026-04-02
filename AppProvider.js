@@ -9,33 +9,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {mutation} from './src/store/rocketchat/mutations';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
-import {
-  generateFirebaseToken,
-  setInitialRouteName,
-} from './src/store/user/actions';
-import {
-  CALL_STATUS,
-  ROUTES,
-  STORAGE_KEY,
-  TRANSFER_STATUS,
-} from './src/variables/constants';
+import {setInitialRouteName} from './src/store/user/actions';
+import {CALL_STATUS, ROUTES, STORAGE_KEY, TRANSFER_STATUS} from './src/variables/constants';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
-import {
-  initialChatSocket,
-  sendNewMessage,
-  updateMessage,
-} from './src/utils/rocketchat';
+import {initialChatSocket, updateMessage} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
-import {
-  clearOfflineMessages,
-  getChatRooms,
-  postAttachmentMessage,
-  sendPodcastNotification,
-  setChatSubscribeIds,
-} from './src/store/rocketchat/actions';
+import {setChatSubscribeIds, updateTextMessage} from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from 'react-native-callkeep';
 import {Alert} from 'react-native';
@@ -48,7 +30,10 @@ import {
   completeQuestionnaire,
 } from './src/store/activity/actions';
 import {updateIndicatorList} from './src/store/indicator/actions';
-import {requestNotificationPermission} from './src/utils/permission';
+import {
+  requestCallPermission,
+  requestNotificationPermission,
+} from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
 import _ from 'lodash';
@@ -63,15 +48,9 @@ const AppProvider = ({children}) => {
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
-  const {
-    messages: chatMessages,
-    chatRooms,
-    selectedRoom,
-    offlineMessages,
-  } = useSelector((state) => state.rocketchat);
+  const {chatRooms} = useSelector((state) => state.rocketchat);
   const {transfers} = useSelector((state) => state.transfer);
   const localize = useSelector((state) => state.localize);
-  const {chatAuth} = useSelector((state) => state.rocketchat);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
     useSelector((state) => state.activity);
   const translate = getTranslate(localize);
@@ -107,36 +86,40 @@ const AppProvider = ({children}) => {
           const message = {
             _id: callInfo._id,
             rid: callInfo.rid,
-            msg: CALL_STATUS.ACCEPTED,
+            user: {
+              _id: profile.chat_user_id,
+              username: profile.identity,
+            },
+            text: CALL_STATUS.ACCEPTED,
           };
 
-          updateMessage(chatSocket, message, patientId);
+          dispatch(updateTextMessage(chatSocket, message));
 
           clearInterval(intervalID);
         }
       }, 1000);
     }
-  }, [dispatch]);
+  }, [dispatch, profile.chat_user_id, profile.identity]);
 
   const endCall = useCallback(async () => {
     const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
     const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
 
     if (!_.isEmpty(callInfo) && patientId && rejectedCall === 'true') {
-      const _id = callInfo._id;
-      const rid = callInfo.rid;
-      const identity = profile.identity;
-      const title = profile.identity;
-      const msg = callInfo.body.includes('audio')
-        ? CALL_STATUS.AUDIO_MISSED
-        : CALL_STATUS.VIDEO_MISSED;
+      const message = {
+        _id: callInfo._id,
+        rid: callInfo.rid,
+        user: {
+          _id: profile.chat_user_id,
+          username: profile.identity,
+        },
+        text: callInfo.body.includes('audio')
+          ? CALL_STATUS.AUDIO_MISSED
+          : CALL_STATUS.VIDEO_MISSED,
+      };
 
       if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-        updateMessage(chatSocket, {_id, rid, msg}, patientId);
-
-        if (profile.type === 'phc_worker') {
-          dispatch(sendPodcastNotification({_id, rid, identity, title, body: msg}));
-        }
+        dispatch(updateTextMessage(chatSocket, message));
 
         BackgroundTimer.setTimeout(async () => {
           await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
@@ -144,11 +127,7 @@ const AppProvider = ({children}) => {
       } else {
         const intervalID = setInterval(async () => {
           if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-            updateMessage(chatSocket, {_id, rid, msg}, patientId);
-
-            if (profile.type === 'phc_worker') {
-              dispatch(sendPodcastNotification({_id, rid, identity, title, body: msg}));
-            }
+            dispatch(updateTextMessage(chatSocket, message));
 
             BackgroundTimer.setTimeout(async () => {
               await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
@@ -170,6 +149,16 @@ const AppProvider = ({children}) => {
       endCallListener.remove();
     };
   }, [answerCall, endCall]);
+
+  useEffect(() => {
+    // Request notification permission
+    requestNotificationPermission();
+
+    if (accessToken) {
+      // Request phone call permission
+      requestCallPermission();
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     if (!_.isEmpty(profile)) {
@@ -208,7 +197,7 @@ const AppProvider = ({children}) => {
   }, [dispatch, loading, language]);
 
   useEffect(() => {
-    if (isOnline && profile.identity && profile.chat_password) {
+    if (profile.identity && profile.chat_password) {
       const subscribeIds = {
         loginId: getUniqueId(profile.id),
         roomMessageId: getUniqueId(profile.id),
@@ -232,20 +221,7 @@ const AppProvider = ({children}) => {
       // Set chat socket
       setSocket(chatSocket);
     }
-  }, [dispatch, isOnline, profile.chat_password, profile.id, profile.identity]);
-
-  useEffect(() => {
-    // Request notification permission
-    requestNotificationPermission();
-
-    if (accessToken && chatAuth && chatAuth.userId && chatAuth.token) {
-      // Get chat rooms
-      dispatch(getChatRooms());
-
-      // Generate firebase token
-      dispatch(generateFirebaseToken(accessToken));
-    }
-  }, [accessToken, chatAuth, dispatch]);
+  }, [dispatch, profile.chat_password, profile.id, profile.identity]);
 
   useEffect(() => {
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);
@@ -262,55 +238,33 @@ const AppProvider = ({children}) => {
   }, [dispatch, profile.id, transfers]);
 
   useEffect(() => {
-    if (
-      isOnline &&
-      chatSocket !== null &&
-      chatSocket.readyState === chatSocket.OPEN &&
-      selectedRoom
-    ) {
-      if (offlineMessages.length) {
-        offlineMessages.map((item) => {
-          item.attachment !== undefined
-            ? dispatch(postAttachmentMessage(item.rid, item.attachment))
-            : sendNewMessage(chatSocket, item, profile.id);
-        });
-        dispatch(clearOfflineMessages());
-      }
-    }
-  }, [
-    dispatch,
-    isOnline,
-    chatMessages,
-    profile,
-    selectedRoom,
-    offlineMessages,
-  ]);
-
-  useEffect(() => {
     const androidAcceptRejectHandler = async () => {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
       const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
 
       if (callInfo && callInfo._id && callInfo.rid) {
-        const _id = callInfo._id;
-        const rid = callInfo.rid;
+        let message = {
+          _id: callInfo._id,
+          rid: callInfo.rid,
+          user: {
+            _id: profile.chat_user_id,
+            username: profile.identity,
+          },
+          text: CALL_STATUS.ACCEPTED,
+        };
 
         if (rejectedCall === 'true') {
-          const msg = callInfo.body.includes('audio')
-            ? CALL_STATUS.AUDIO_MISSED
-            : CALL_STATUS.VIDEO_MISSED;
+          message = {
+            ...message,
+            text: callInfo.body.includes('audio')
+              ? CALL_STATUS.AUDIO_MISSED
+              : CALL_STATUS.VIDEO_MISSED,
+          };
 
-          updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-
-          notificationHandler(_id, rid, msg);
+          dispatch(updateTextMessage(chatSocket, message));
         } else {
-          const msg = CALL_STATUS.ACCEPTED;
-
           dispatch(mutation.hasAcceptedCall(true));
-
-          updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-
-          notificationHandler(_id, rid, msg);
+          dispatch(updateTextMessage(chatSocket, message));
         }
       }
     };
@@ -330,15 +284,6 @@ const AppProvider = ({children}) => {
         }, 1000);
       }
     }
-
-    const notificationHandler = (_id, rid, body) => {
-      if (profile.type === 'phc_worker') {
-        const identity = profile.identity;
-        const title = profile.identity;
-
-        dispatch(sendPodcastNotification({_id, rid, identity, title, body}));
-      }
-    };
 
     if (isOnline && profile && profile.id) {
       if (Platform.OS === 'android') {
