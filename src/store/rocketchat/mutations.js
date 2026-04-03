@@ -63,32 +63,6 @@ const getCallAccessTokenFailure = () => ({
   type: 'GET_CALL_ACCESS_TOKEN_FAILED',
 });
 
-const getLastMessagesRequest = () => ({
-  type: 'GET_LAST_MESSAGES_REQUEST',
-});
-
-const getLastMessagesSuccess = (data) => ({
-  type: 'GET_LAST_MESSAGES_SUCCEED',
-  data,
-});
-
-const getLastMessagesFailure = () => ({
-  type: 'GET_LAST_MESSAGES_FAILED',
-});
-
-const getChatUsersStatusRequest = () => ({
-  type: 'GET_CHAT_USERS_STATUS_REQUEST',
-});
-
-const getChatUsersStatusSuccess = (data) => ({
-  type: 'GET_CHAT_USERS_STATUS_SUCCEED',
-  data,
-});
-
-const getChatUsersStatusFailure = () => ({
-  type: 'GET_CHAT_USERS_STATUS_FAILED',
-});
-
 const selectRoomSuccess = (data) => ({
   type: 'SELECT_ROOM_SUCCEED',
   data,
@@ -154,12 +128,6 @@ export const mutation = {
   getCallAccessTokenRequest,
   getCallAccessTokenSuccess,
   getCallAccessTokenFailure,
-  getLastMessagesRequest,
-  getLastMessagesSuccess,
-  getLastMessagesFailure,
-  getChatUsersStatusRequest,
-  getChatUsersStatusSuccess,
-  getChatUsersStatusFailure,
   selectRoomSuccess,
   updateUnreadSuccess,
   getMessagesInRoomSuccess,
