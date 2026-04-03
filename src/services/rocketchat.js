@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import {callChatApi} from '../utils/request';
+import store from '../store';
 
 const login = async (user, password) => {
   const body = JSON.stringify({user, password});
@@ -16,18 +17,24 @@ const getSubscriptions = async (userId, authToken) => {
   return [];
 };
 
-const getUserStatus = async (usernames, userId, authToken) => {
-  const fields = JSON.stringify({status: 1});
-  const query = JSON.stringify({username: {$in: usernames}});
-  const body = {fields, query, count: 999999};
-  return await callChatApi('/users.list', userId, authToken, body);
+const getUserPresence = async (username) => {
+  const {chatAuth} = store.getState().rocketchat;
+
+  return await callChatApi(
+    `/users.getPresence?username=${username}`,
+    chatAuth.userId,
+    chatAuth.token,
+  );
 };
 
-const getLastMessages = async (roomIds, userId, authToken) => {
-  const fields = JSON.stringify({msgs: 1, lastMessage: 1});
-  const query = JSON.stringify({_id: {$in: roomIds}});
-  const body = {fields, query, count: 999999};
-  return await callChatApi('/im.list', userId, authToken, body);
+const getLastMessage = async (roomId) => {
+  const {chatAuth} = store.getState().rocketchat;
+
+  return await callChatApi(
+    `/im.history?roomId=${roomId}&count=1`,
+    chatAuth.userId,
+    chatAuth.token,
+  );
 };
 
 const markMessagesAsRead = async (roomId, userId, authToken) => {
@@ -59,8 +66,8 @@ const sendAttachmentMessage = async (userId, authToken, roomId, attachment) => {
 export const Rocketchat = {
   login,
   getSubscriptions,
-  getUserStatus,
-  getLastMessages,
+  getUserPresence,
+  getLastMessage,
   markMessagesAsRead,
   sendAttachmentMessage,
 };

@@ -11,7 +11,6 @@ import {renderLastMessageText} from '../../../utils/helper';
 import {CHAT_USER_STATUS, ROUTES} from '../../../variables/constants';
 import {mutation} from '../../../store/rocketchat/mutations';
 import {getProfessionRequest} from '../../../store/profession/actions';
-import {getCurrentChatUsersStatus} from '../../../store/rocketchat/actions';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
 import {
@@ -44,7 +43,6 @@ const ChatRoomList = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getProfessionRequest());
-    dispatch(getCurrentChatUsersStatus());
   }, [dispatch]);
 
   const handleToggleRoom = (key) => {

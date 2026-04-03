@@ -46,16 +46,6 @@ export const rocketchat = (state = initialState, action) => {
         chatRooms: action.data,
       });
     }
-    case 'GET_LAST_MESSAGES_SUCCEED': {
-      return Object.assign({}, state, {
-        chatRooms: action.data,
-      });
-    }
-    case 'GET_CHAT_USERS_STATUS_SUCCEED': {
-      return Object.assign({}, state, {
-        chatRooms: action.data,
-      });
-    }
     case 'GET_CALL_ACCESS_TOKEN_SUCCEED': {
       return Object.assign({}, state, {
         callAccessToken: action.token,
