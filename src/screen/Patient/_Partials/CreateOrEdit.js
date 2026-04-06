@@ -146,6 +146,24 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
         } else {
           setHighlightPhone(false);
         }
+        if (transfers && transfers.length) {
+          const pending = transfers.filter(
+            (transfer) =>
+              transfer.patient_id === patientDetail.id &&
+              transfer.therapist_type === 'supplementary',
+          );
+          setPendingTransfers(
+            pending.map((transfer) => ({
+              id: transfer.id,
+              therapist_id: transfer.to_therapist.id,
+              first_name: transfer.to_therapist.first_name,
+              last_name: transfer.to_therapist.last_name,
+              status: transfer.status,
+            })),
+          );
+        } else {
+          setPendingTransfers([]);
+        }
       } else {
         reset(defaultValues);
         setDateValue('');
@@ -166,29 +184,12 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
           setCountryPhoneCode(defaultCountry.phone_code);
           setValue('dial_code', defaultCountry.phone_code);
         }
+        setPendingTransfers([]);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [patientDetail, reset, setValue, definedCountries, countries, profile]),
+    }, [patientDetail, reset, setValue, definedCountries, countries, profile, transfers]),
   );
 
-  useEffect(() => {
-    if (transfers && transfers.length && patientDetail) {
-      const pending = transfers.filter(
-        (transfer) =>
-          transfer.patient_id === patientDetail.id &&
-          transfer.therapist_type === 'supplementary',
-      );
-      setPendingTransfers(
-        pending.map((transfer) => ({
-          id: transfer.id,
-          therapist_id: transfer.to_therapist.id,
-          first_name: transfer.to_therapist.first_name,
-          last_name: transfer.to_therapist.last_name,
-          status: transfer.status,
-        })),
-      );
-    }
-  }, [transfers, patientDetail]);
 
   const onSubmit = (data) => {
     const payload = {

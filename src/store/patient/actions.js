@@ -259,6 +259,7 @@ export const syncOfflineCreatePatient =
               await dispatch(
                 mutation.patientsForPhcWorkerFetchSuccess(updatedPatient),
               );
+              dispatch(getTransfersRequest());
             } else {
               const res = await Patient.createPatient(
                 {...item, phc_service_identity: getPhcServiceIdentity()},
@@ -288,6 +289,7 @@ export const syncOfflineCreatePatient =
                 await dispatch(
                   mutation.patientsForPhcWorkerFetchSuccess(updatedPatient),
                 );
+                dispatch(getTransfersRequest());
               }
             }
           }
@@ -352,6 +354,7 @@ export const deletePendingSupplementary =
     const data = await Patient.deletePendingSupplementary(id, accessToken);
     if (data.success) {
       dispatch(mutation.deletePendingSupplementarySuccess());
+      dispatch(getTransfersRequest());
       return {success: true};
     } else {
       dispatch(mutation.deletePendingSupplementaryFailure());
