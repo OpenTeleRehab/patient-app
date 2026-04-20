@@ -128,6 +128,7 @@ export default {
     color: variables.white,
     textAlign: 'center',
     paddingVertical: 20,
+    paddingHorizontal: 16,
     position: 'absolute',
     top: 0,
     width: '100%',

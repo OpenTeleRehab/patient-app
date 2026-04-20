@@ -33,7 +33,8 @@ import {
 } from '../../../utils/helper';
 import {
   clearCallAccessToken,
-  sendTextMessage, updateTextMessage,
+  sendTextMessage,
+  updateTextMessage,
 } from '../../../store/rocketchat/actions';
 import {clearVideoCallStatus} from '../../../store/rocketchat/actions';
 import {useCallContext} from '../../../context/CallContext';
@@ -77,8 +78,7 @@ const AcceptCall = ({
   const [invitingParticipants, setInvitingParticipants] = useState([]);
   const [permissionSettingPopup, setPermissionSettingPopup] = useState(false);
   const [permissionMessagePopup, setPermissionMessagePopup] = useState('');
-  const [forcePermissionMessagePopup, setForcePermissionMessagePopup] =
-    useState(false);
+  const [forcePermissionMessagePopup, setForcePermissionMessagePopup] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true); // Prevent duplicate connections.
   const [isTranscripting, setIsTranscripting] = useState(false);
   const [transcriptedText, setTranscriptedText] = useState('');
