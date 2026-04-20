@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux';
 import {Text} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ROUTES} from '../variables/constants';
 
 import HomeScreen from '../screen/Home';
@@ -57,7 +56,6 @@ const tabBarLabel = (label, focused) => (
 );
 
 const BottomTabNavigator = () => {
-  const insets = useSafeAreaInsets();
   const indicator = useSelector((state) => state.indicator);
   const {profile} = useSelector((state) => state.user);
   const {chatRooms} = useSelector((state) => state.rocketchat);
@@ -163,9 +161,6 @@ const BottomTabNavigator = () => {
             headerShown: false,
             tabBarIcon: ({focused}) => tabBarIcon(tab, focused),
             tabBarLabel: ({focused}) => tabBarLabel(translate(tab.label), focused),
-            tabBarStyle: {
-              height: 56 + insets.bottom,
-            },
             tabBarBadge: hasBadge(tab.badge),
             tabBarBadgeStyle: {
               backgroundColor: variables.danger,
