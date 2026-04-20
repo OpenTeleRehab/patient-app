@@ -11,7 +11,7 @@ import {getTranslate} from 'react-localize-redux';
 import {Rocketchat} from '../../../services/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import {generateHash, isPhcWorker} from '../../../utils/helper';
-import {Keyboard, Platform, View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {loadHistoryInRoom} from '../../../utils/rocketchat';
@@ -56,8 +56,8 @@ const ChatPanel = ({navigation, theme}) => {
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
 
   const keyboardVerticalOffset = isOnlineMode
-    ? 64 + insets.top + insets.bottom
-    : 102 + insets.top + insets.bottom;
+    ? 64 + insets.top
+    : 100 + insets.top;
 
   useEffect(() => {
     if (!showIncomingCall && !showAcceptedCall) {
@@ -226,7 +226,6 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const handleGoBack = () => {
-    Keyboard.dismiss();
     navigation.goBack();
   };
 
@@ -271,9 +270,6 @@ const ChatPanel = ({navigation, theme}) => {
         keyboardAvoidingViewProps={{
           behavior: Platform.OS === 'ios' ? 'padding' : 'height',
           keyboardVerticalOffset: keyboardVerticalOffset,
-        }}
-        keyboardProviderProps={{
-          navigationBarTranslucent: false,
         }}
         textInputProps={{selectionColor: theme.colors.primary}}
         user={{_id: profile.chat_user_id}}
