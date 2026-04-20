@@ -246,17 +246,17 @@ export const updateChatUserStatus = (payload) => (dispatch, getState) => {
   }
 };
 
-export const sendOfflineMessages = (chatSocket) => (dispatch, getState) => {
+export const sendOfflineMessages = (chatSocket) => async (dispatch, getState) => {
   const {offlineMessages} = getState().rocketchat;
 
   if (offlineMessages.length) {
-    offlineMessages.forEach((message) => {
+    for (const message of offlineMessages) {
       if (message.attachment) {
-        dispatch(postAttachmentMessage(message));
+        await dispatch(postAttachmentMessage(message));
       } else {
-        dispatch(sendTextMessage(chatSocket, message));
+        await dispatch(sendTextMessage(chatSocket, message));
       }
-    });
+    }
 
     dispatch(clearOfflineMessages());
   }

@@ -27,6 +27,7 @@ import ChatContainer from '../_Partials/ChatContainer';
 import ChatToolbar from '../_Partials/ChatToolbar';
 import ChatMediaSlider from '../_Partials/ChatMediaSlider';
 import styles from '../../../assets/styles';
+import store from '../../../store';
 
 const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -42,7 +43,6 @@ const ChatPanel = ({navigation, theme}) => {
     showAcceptedCall,
     selectedRoom,
     chatRooms,
-    offlineMessages,
   } = useSelector((state) => state.rocketchat);
   const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
@@ -131,6 +131,7 @@ const ChatPanel = ({navigation, theme}) => {
     if (isOnlineMode) {
       dispatch(sendTextMessage(chatSocket, newMessage[0]));
     } else {
+      const offlineMessages = store.getState().rocketchat.offlineMessages;
       const allOfflineMessages = offlineMessages.concat([newMessage[0]]);
 
       dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
@@ -151,7 +152,7 @@ const ChatPanel = ({navigation, theme}) => {
       pending: true,
       text: caption,
       user: {
-        _id: chatAuth.userId,
+        _id: profile.chat_user_id,
         username: selectedRoom.u.username,
       },
     };
@@ -179,11 +180,10 @@ const ChatPanel = ({navigation, theme}) => {
     if (isOnlineMode) {
       dispatch(postAttachmentMessage(newMessage));
     } else {
-      dispatch(
-        mutation.setOfflineMessagesSuccess(
-          offlineMessages.concat([newMessage]),
-        ),
-      );
+      const offlineMessages = store.getState().rocketchat.offlineMessages;
+      const allOfflineMessages = offlineMessages.concat([newMessage]);
+
+      dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
       dispatch(prependNewMessage(newMessage));
     }
   };
