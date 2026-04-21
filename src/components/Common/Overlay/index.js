@@ -3,7 +3,10 @@
  */
 import React from 'react';
 import {
+  KeyboardAvoidingView,
   Modal,
+  Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -14,22 +17,26 @@ import {
 const CommonOverlay = ({visible, onClose, children}) => {
   return (
     <Modal accessible={false} visible={visible} transparent={true}>
-      <TouchableOpacity
-        accessible={false}
-        style={componentStyles.container}
-        activeOpacity={1}
-        onPressOut={onClose}>
-        <View style={componentStyles.modalWrapper}>
-          <ScrollView
-            accessible={false}
-            directionalLockEnabled={true}
-            contentContainerStyle={componentStyles.scrollModal}>
-            <TouchableWithoutFeedback accessible={false}>
-              {children}
-            </TouchableWithoutFeedback>
-          </ScrollView>
-        </View>
-      </TouchableOpacity>
+      <SafeAreaView style={componentStyles.safeAreaView}>
+        <TouchableOpacity
+          accessible={false}
+          style={componentStyles.container}
+          activeOpacity={1}
+          onPressOut={onClose}>
+          <View style={componentStyles.modalWrapper}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+              <ScrollView
+                accessible={false}
+                directionalLockEnabled={true}
+                contentContainerStyle={componentStyles.scrollModal}>
+                <TouchableWithoutFeedback accessible={false}>
+                  {children}
+                </TouchableWithoutFeedback>
+              </ScrollView>
+            </KeyboardAvoidingView>
+          </View>
+        </TouchableOpacity>
+      </SafeAreaView>
     </Modal>
   );
 };
@@ -40,6 +47,9 @@ const componentStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  safeAreaView: {
+    flex: 1,
   },
   modalWrapper: {
     width: '95%',
