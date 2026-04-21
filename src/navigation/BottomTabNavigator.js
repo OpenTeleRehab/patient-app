@@ -50,6 +50,7 @@ const tabBarIcon = (tab, focused) => {
 const tabBarLabel = (label, focused) => (
   <Text
     maxFontSizeMultiplier={1}
+    numberOfLines={1}
     style={{color: focused ? variables.primary : variables.grey}}>
     {label}
   </Text>
@@ -162,7 +163,7 @@ const BottomTabNavigator = () => {
             tabBarIcon: ({focused}) => tabBarIcon(tab, focused),
             tabBarLabel: ({focused}) => tabBarLabel(translate(tab.label), focused),
             tabBarStyle: {
-              height: 60,
+              height: 74,
             },
             tabBarBadge: hasBadge(tab.badge),
             tabBarBadgeStyle: {

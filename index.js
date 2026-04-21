@@ -186,6 +186,7 @@ const displayAppointmentNotification = async (title, startDate, endDate) => {
       pressAction: {
         id: 'default',
       },
+      smallIcon: 'ic_notification',
     },
   });
 }
