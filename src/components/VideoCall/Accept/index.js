@@ -46,16 +46,7 @@ import LocalParticipant from './LocalParticipant';
 import styles from '../../../assets/styles';
 import _ from 'lodash';
 
-const AcceptCall = ({
-  translate,
-  theme,
-  isVideoOn,
-  isSpeakerOn,
-  isMute,
-  onVideoOn,
-  onSpeakerOn,
-  onMute,
-}) => {
+const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   const dispatch = useDispatch();
   const twilioRef = useRef(null);
   const timerRef = useRef(null);

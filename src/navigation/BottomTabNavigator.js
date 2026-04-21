@@ -161,6 +161,9 @@ const BottomTabNavigator = () => {
             headerShown: false,
             tabBarIcon: ({focused}) => tabBarIcon(tab, focused),
             tabBarLabel: ({focused}) => tabBarLabel(translate(tab.label), focused),
+            tabBarStyle: {
+              height: 60,
+            },
             tabBarBadge: hasBadge(tab.badge),
             tabBarBadgeStyle: {
               backgroundColor: variables.danger,
