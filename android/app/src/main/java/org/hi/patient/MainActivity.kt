@@ -31,7 +31,7 @@ class MainActivity : ReactActivity() {
 
   //react-native-screens override
   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
+      super.onCreate(null)
   }
 
   /**
