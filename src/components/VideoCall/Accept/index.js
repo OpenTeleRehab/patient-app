@@ -71,6 +71,7 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   const [permissionMessagePopup, setPermissionMessagePopup] = useState('');
   const [forcePermissionMessagePopup, setForcePermissionMessagePopup] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true); // Prevent duplicate connections.
+  const [showAutoEndCallHint, setShowAutoEndCallHint] = useState(false);
   const [isTranscripting, setIsTranscripting] = useState(false);
   const [transcriptedText, setTranscriptedText] = useState('');
   const [callDuration, setCallDuration] = useState(0);
@@ -230,6 +231,45 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     };
   }, [callAccessToken, isConnecting, isVideoOn, isMute, status]);
 
+  useEffect(() => {
+    if (
+      hasAcceptedCall &&
+      videoCall &&
+      participants &&
+      participants.length === 0
+    ) {
+      if (callDuration >= 30) {
+        setShowAutoEndCallHint(true);
+      }
+
+      if (callDuration >= 40) {
+        stopCallTimer();
+
+        const message = {
+          _id: videoCall._id,
+          rid: videoCall.rid,
+          user: {
+            _id: videoCall.u._id,
+            username: videoCall.u.username,
+          },
+          text: isVideoEnabled
+            ? CALL_STATUS.VIDEO_ENDED
+            : CALL_STATUS.AUDIO_ENDED,
+        };
+
+        dispatch(updateTextMessage(chatSocket, message, false));
+      }
+    }
+  }, [
+    callDuration,
+    chatSocket,
+    dispatch,
+    hasAcceptedCall,
+    isVideoEnabled,
+    participants,
+    videoCall,
+  ]);
+
   const startCallTimer = () => {
     callStartRef.current = Date.now();
 
@@ -244,6 +284,10 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+  };
+
+  const cleanupCallInfo = () => {
+    storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
   };
 
   const startForegroundService = () => {
@@ -288,6 +332,9 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
 
       // Cleanup video call status
       dispatch(clearVideoCallStatus());
+
+      // Cleanup call info
+      cleanupCallInfo();
     }, 2000);
 
     if (hasStartedCall) {
@@ -396,7 +443,7 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     dispatch(clearVideoCallStatus());
 
     // Cleanup call info
-    storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
+    cleanupCallInfo();
   };
 
   const _onMuteButtonPress = async () => {
@@ -588,8 +635,9 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
         <>
           <LocalParticipant
             isVideoEnabled={isVideoEnabled}
-            callDuration={callDuration}
             participants={participants}
+            callDuration={callDuration}
+            showAutoEndCallHint={showAutoEndCallHint}
           />
           <FlatList
             data={participants}

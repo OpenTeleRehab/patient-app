@@ -12,7 +12,13 @@ import AcceptCall from './Accept';
 import {getLocalData} from '../../utils/local_storage';
 
 const VideoCall = ({theme}) => {
-  const {callAccessToken, videoCall, showIncomingCall, showAcceptedCall} = useSelector((state) => state.rocketchat);
+  const {
+    callAccessToken,
+    videoCall,
+    hasStartedCall,
+    showIncomingCall,
+    showAcceptedCall,
+  } = useSelector((state) => state.rocketchat);
   const {ForegroundService} = NativeModules;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -23,32 +29,36 @@ const VideoCall = ({theme}) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (showIncomingCall) {
-      setTimeout(() => {
-        getLocalData(STORAGE_KEY.CALL_INFO, true).then((response) => {
-          if (Object.keys(response).length === 0) {
-            setShowModal(true);
-          }
-        });
-      }, 1000);
-    } else {
-      setShowModal(false);
+    const shouldShowImmediately = (hasStartedCall && showIncomingCall) || (accessToken && showAcceptedCall);
 
-      if (Platform.OS === 'android') {
-        ForegroundService.stopService();
-      }
-    }
-
-    if (accessToken && showAcceptedCall) {
+    if (shouldShowImmediately) {
       setShowModal(true);
-    } else {
-      setShowModal(false);
-
-      if (Platform.OS === 'android') {
-        ForegroundService.stopService();
-      }
+      return;
     }
-  }, [ForegroundService, accessToken, showAcceptedCall, showIncomingCall]);
+
+    if (showIncomingCall) {
+      setTimeout(async () => {
+        const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+
+        if (!callInfo || Object.keys(callInfo).length === 0) {
+          setShowModal(true);
+        }
+      }, 1000);
+      return;
+    }
+
+    setShowModal(false);
+
+    if (Platform.OS === 'android') {
+      ForegroundService.stopService();
+    }
+  }, [
+    ForegroundService,
+    accessToken,
+    hasStartedCall,
+    showAcceptedCall,
+    showIncomingCall,
+  ]);
 
   useEffect(() => {
     if (CALL_STARTED_STATUSES.includes(videoCall?.status) && !callAccessToken) {

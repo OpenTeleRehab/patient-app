@@ -37,12 +37,7 @@ const IncomingCall = ({
   const netInfo = useNetInfo();
   const chatSocket = useContext(RocketchatContext);
   const {handleAcceptCall} = useCallContext();
-  const {
-    videoCall,
-    selectedRoom,
-    hasStartedCall,
-    chatRooms,
-  } = useSelector((state) => state.rocketchat);
+  const {videoCall, selectedRoom, hasStartedCall} = useSelector((state) => state.rocketchat);
   const profile = useSelector((state) => state.user.profile);
   const [disabledAcceptCall, setDisabledAcceptCall] = useState(false);
   const [disabledDeclineCall, setDisabledDeclineCall] = useState(false);
@@ -99,31 +94,21 @@ const IncomingCall = ({
   const onDeclineCall = () => {
     setDisabledDeclineCall(true);
 
-    const chatRoom = chatRooms.find((cr) => cr.rid === videoCall.rid);
+    const message = {
+      _id: videoCall._id,
+      rid: videoCall.rid,
+      user: {
+        _id: profile.chat_user_id,
+        username: profile.identity,
+      },
+      text:
+        videoCall.status === CALL_STATUS.AUDIO_STARTED
+          ? CALL_STATUS.AUDIO_MISSED
+          : CALL_STATUS.VIDEO_MISSED,
+    };
 
-    if (chatRoom) {
-      const message = {
-        _id: videoCall._id,
-        rid: videoCall.rid,
-        user: {
-          _id: profile.chat_user_id,
-          username: profile.identity,
-        },
-        text:
-          videoCall.status === CALL_STATUS.AUDIO_STARTED
-            ? CALL_STATUS.AUDIO_MISSED
-            : CALL_STATUS.VIDEO_MISSED,
-      };
-      dispatch(updateTextMessage(chatSocket, message));
-    }
-
-    if (!netInfo.isConnected) {
-      // Clear call access token
-      dispatch(clearCallAccessToken());
-
-      // Cleanup video call
-      dispatch(clearVideoCallStatus());
-    }
+    dispatch(updateTextMessage(chatSocket, message));
+    dispatch(clearVideoCallStatus());
   };
 
   return (

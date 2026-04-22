@@ -5,9 +5,15 @@ import {updateIndicatorList} from '../indicator/actions';
 import {Chat} from '../../services/chat';
 import {Call} from '../../services/call';
 import {isPhcWorker} from '../../utils/helper';
-import {CHAT_USER_STATUS} from '../../variables/constants';
+import {
+  CALL_STATUS,
+  CHAT_USER_STATUS,
+  STORAGE_KEY,
+} from '../../variables/constants';
 import {Notification} from '../../services/notification';
 import {sendNewMessage, updateMessage} from '../../utils/rocketchat';
+import {getLocalData} from '../../utils/local_storage';
+import RNCallKeep from 'react-native-callkeep';
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
   dispatch(mutation.setChatSubscribeIdsSuccess(payload));
@@ -324,6 +330,48 @@ export const postAttachmentMessage = (message) => async (dispatch, getState) => 
   } else {
     dispatch(mutation.sendAttachmentMessagesFailure());
     return false;
+  }
+};
+
+export const acceptRejectHandler = (chatSocket) => async (dispatch, getState) => {
+  const {accessToken, profile} = getState().user;
+
+  const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+  const acceptedCall = await getLocalData(STORAGE_KEY.ACCEPTED_CALL);
+  const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
+
+  if (Object.keys(callInfo).length > 0) {
+    let message = {
+      _id: callInfo._id,
+      rid: callInfo.rid,
+      user: {
+        _id: profile.chat_user_id,
+        username: profile.identity,
+      },
+    };
+
+    if (rejectedCall === 'true') {
+      message = {
+        ...message,
+        text: callInfo.body.includes('audio')
+          ? CALL_STATUS.AUDIO_MISSED
+          : CALL_STATUS.VIDEO_MISSED,
+      };
+
+      dispatch(updateTextMessage(chatSocket, message));
+    }
+
+    if (acceptedCall === 'true' && accessToken) {
+      message = {
+        ...message,
+        text: CALL_STATUS.ACCEPTED,
+      };
+
+      dispatch(mutation.hasAcceptedCall(true));
+      dispatch(updateTextMessage(chatSocket, message));
+
+      RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
+    }
   }
 };
 
