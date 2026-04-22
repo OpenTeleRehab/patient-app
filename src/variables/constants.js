@@ -50,6 +50,7 @@ export const STORAGE_KEY = {
   LANGUAGE: 'Language',
   TRANSLATE: 'Translate',
   CALL_INFO: 'CallInfo',
+  ACCEPTED_CALL: 'AcceptedCall',
   REJECTED_CALL: 'RejectedCall',
 };
 

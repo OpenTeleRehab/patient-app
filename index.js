@@ -36,8 +36,6 @@ TextInput.defaultProps = {
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (!_.isEmpty(remoteMessage.data)) {
-    let allowBackToForeground = true;
-
     if (remoteMessage.data.event_type === 'appointment') {
       await displayAppointmentNotification(
         remoteMessage.data?.title,
@@ -51,8 +49,8 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
       if (callInfo?.callUUID) {
-        allowBackToForeground = false;
-        RNCallKeep.endCall(callInfo.callUUID);
+        RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
+
         await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
       }
     } else {
@@ -66,6 +64,9 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       };
 
       await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
+
+      await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
+      await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
 
       if (Platform.OS === 'ios') {
         displayIncomingCall(callUUID, remoteMessage);
@@ -107,39 +108,24 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             displayIncomingCall(callUUID, remoteMessage);
 
             RNCallKeep.addEventListener('answerCall', async () => {
-              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false', false);
+              await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
 
-              // Avoid back to foreground
-              allowBackToForeground = false;
-
-              // Back to foreground
               RNCallKeep.backToForeground();
-
-              // End native call UI
-              RNCallKeep.endCall(callUUID);
             });
 
             RNCallKeep.addEventListener('endCall', async () => {
-              if (!allowBackToForeground) return;
-
+              await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
               await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
 
-              // Back to foreground
               RNCallKeep.backToForeground();
             });
 
             BackgroundTimer.setTimeout(() => {
               getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
                 if (item?.callUUID === callUUID) {
-                  // Cleanup call info and rejected call from local storage
                   await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-                  await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
 
-                  // Avoid back to foreground
-                  allowBackToForeground = false;
-
-                  // End native call UI
-                  RNCallKeep.endAllCalls();
+                  RNCallKeep.reportEndCallWithUUID(callUUID, 2);
                 }
               });
             }, 60000);

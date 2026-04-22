@@ -2,7 +2,6 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Platform} from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,9 +14,13 @@ import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
-import {initialChatSocket, updateMessage} from './src/utils/rocketchat';
+import {initialChatSocket} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
-import {setChatSubscribeIds, updateTextMessage} from './src/store/rocketchat/actions';
+import {
+  acceptRejectHandler,
+  setChatSubscribeIds,
+  updateTextMessage,
+} from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from 'react-native-callkeep';
 import {Alert} from 'react-native';
@@ -40,7 +43,6 @@ import _ from 'lodash';
 
 let chatSocket = null;
 let patientId = null;
-let isAnswerCall = false;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
@@ -215,11 +217,10 @@ const AppProvider = ({children}) => {
         profile.chat_password,
         (newSocket) => {
           chatSocket = newSocket; // Update the reference
+
+          setSocket(newSocket);
         },
       );
-
-      // Set chat socket
-      setSocket(chatSocket);
     }
   }, [dispatch, profile.chat_password, profile.id, profile.identity]);
 
@@ -238,67 +239,16 @@ const AppProvider = ({children}) => {
   }, [dispatch, profile.id, transfers]);
 
   useEffect(() => {
-    const androidAcceptRejectHandler = async () => {
-      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-      const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
+    if (isOnline && socket) {
+      const intervalID = setInterval(() => {
+        if (socket.readyState === socket.OPEN) {
+          dispatch(acceptRejectHandler(socket));
 
-      if (callInfo && callInfo._id && callInfo.rid) {
-        let message = {
-          _id: callInfo._id,
-          rid: callInfo.rid,
-          user: {
-            _id: profile.chat_user_id,
-            username: profile.identity,
-          },
-          text: CALL_STATUS.ACCEPTED,
-        };
-
-        if (rejectedCall === 'true') {
-          message = {
-            ...message,
-            text: callInfo.body.includes('audio')
-              ? CALL_STATUS.AUDIO_MISSED
-              : CALL_STATUS.VIDEO_MISSED,
-          };
-
-          dispatch(updateTextMessage(chatSocket, message));
-        } else {
-          dispatch(mutation.hasAcceptedCall(true));
-          dispatch(updateTextMessage(chatSocket, message));
+          clearInterval(intervalID);
         }
-      }
-    };
-
-    const iosAcceptHandler = async () => {
-      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-
-      if (callInfo && callInfo._id && callInfo.rid) {
-        setTimeout(() => {
-          const message = {
-            _id: callInfo._id,
-            rid: callInfo.rid,
-            msg: CALL_STATUS.ACCEPTED,
-          };
-
-          updateMessage(socket, message, profile.id);
-        }, 1000);
-      }
+      }, 1000);
     }
-
-    if (isOnline && profile && profile.id) {
-      if (Platform.OS === 'android') {
-        if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-          androidAcceptRejectHandler().then();
-        }
-      }
-
-      if (Platform.OS === 'ios') {
-        if (isAnswerCall && accessToken && socket) {
-          iosAcceptHandler().then();
-        }
-      }
-    }
-  }, [dispatch, profile, isOnline, socket, accessToken]);
+  }, [accessToken, dispatch, isOnline, socket]);
 
   useEffect(() => {
     if (isOnline && isDataUpToDate === false) {
