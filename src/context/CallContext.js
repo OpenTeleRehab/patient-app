@@ -24,6 +24,7 @@ import {
 } from '../store/rocketchat/actions';
 import {getLocalData, storeLocalData} from '../utils/local_storage';
 import {mutation} from '../store/rocketchat/mutations';
+import {acceptedRequest} from '../store/call/actions';
 import _ from 'lodash';
 
 const CallContext = createContext(null);
@@ -71,22 +72,19 @@ export const CallContextProvider = ({children}) => {
     const onStartedCallEvent = async () => {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
-      if (CALL_STARTED_STATUSES.includes(videoCall.status)) {
-        if (
-          videoCall.u._id !== chatAuth.userId &&
-          _.isEmpty(callInfo) &&
-          !hasStartedCall &&
-          !hasAcceptedCall
-        ) {
-          dispatch(mutation.showIncomingCall(true));
-        }
+      if (
+        CALL_STARTED_STATUSES.includes(videoCall.status) &&
+        videoCall.u._id !== chatAuth.userId &&
+        _.isEmpty(callInfo) &&
+        !hasStartedCall &&
+        !hasAcceptedCall
+      ) {
+        dispatch(mutation.showIncomingCall(true));
       }
     };
 
     // Call accepted listener
     const onAcceptCallEvent = async () => {
-      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-
       if (
         !callAccessToken &&
         accessToken &&
@@ -101,7 +99,7 @@ export const CallContextProvider = ({children}) => {
           updateMessage(chatSocket, {_id, rid, msg}, profile.id);
         }
 
-        if (hasAcceptedCall || hasStartedCall || callInfo.callUUID) {
+        if (hasAcceptedCall || hasStartedCall) {
           dispatch(getCallAccessToken(videoCall.u._id));
           dispatch(mutation.showIncomingCall(false));
           dispatch(mutation.showAcceptedCall(true));
@@ -133,19 +131,14 @@ export const CallContextProvider = ({children}) => {
     const onMissedCallEvent = async () => {
       if (CALL_MISSED_STATUSES.includes(videoCall.status)) {
         if (callAccessToken && !hasParticipant) {
-          // Clear call access token
           dispatch(clearCallAccessToken());
-
-          // Cleanup video call
           dispatch(clearVideoCallStatus());
         }
 
         if (callAccessToken === undefined) {
-          // Cleanup video call
-          dispatch(clearVideoCallStatus());
+          await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
 
-          // Cleanup call info
-          storeLocalData(STORAGE_KEY.CALL_INFO, {}, true).then();
+          dispatch(clearVideoCallStatus());
         }
       }
     };
@@ -177,33 +170,36 @@ export const CallContextProvider = ({children}) => {
     hasAcceptedCall,
     hasParticipant,
     hasStartedCall,
-    profile.first_name,
     profile.id,
-    profile.identity,
-    profile.last_name,
-    profile?.type,
     videoCall,
   ]);
 
-  const handleAcceptCall = () => {
-    const message = {
-      _id: videoCall._id,
-      rid: videoCall.rid,
-      user: {
-        _id: profile.chat_user_id,
-        username: profile.identity,
-      },
-      text: CALL_STATUS.ACCEPTED,
-    };
-
-    dispatch(updateTextMessage(chatSocket, message));
+  const handleAcceptCall = async () => {
     dispatch(mutation.showIncomingCall(false));
     dispatch(mutation.hasAcceptedCall(true));
 
     if (accessToken) {
+      const message = {
+        _id: videoCall._id,
+        rid: videoCall.rid,
+        user: {
+          _id: profile.chat_user_id,
+          username: profile.identity,
+        },
+        text: CALL_STATUS.ACCEPTED,
+      };
+
+      dispatch(updateTextMessage(chatSocket, message));
       dispatch(mutation.showAcceptedCall(true));
     } else {
-      dispatch(mutation.showAcceptedCall(false));
+      const callInfo = {
+        _id: videoCall._id,
+        rid: videoCall.rid,
+        body: videoCall.status,
+      };
+
+      dispatch(acceptedRequest(true));
+      await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
     }
   };
 

@@ -77,6 +77,17 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   const [callDuration, setCallDuration] = useState(0);
 
   useEffect(() => {
+    return () => {
+      if (Platform.OS === 'android') {
+        ForegroundService.stopService();
+      }
+
+      // Cleanup call info
+      cleanupCallInfo();
+    }
+  }, [ForegroundService]);
+
+  useEffect(() => {
     if (CALL_ENDED_STATUSES.includes(videoCall?.status) && callAccessToken) {
       if (hasAcceptedCall) {
         // Disconnect from twilio call
@@ -232,32 +243,30 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   }, [callAccessToken, isConnecting, isVideoOn, isMute, status]);
 
   useEffect(() => {
-    if (
-      hasAcceptedCall &&
-      videoCall &&
-      participants &&
-      participants.length === 0
-    ) {
-      if (callDuration >= 30) {
-        setShowAutoEndCallHint(true);
-      }
+    if (videoCall) {
+      if (participants && participants.length > 0) {
+        setShowAutoEndCallHint(false);
+      } else {
+        if (callDuration >= 30) {
+          setShowAutoEndCallHint(true);
+        }
+        if (callDuration >= 40) {
+          stopCallTimer();
 
-      if (callDuration >= 40) {
-        stopCallTimer();
+          const message = {
+            _id: videoCall._id,
+            rid: videoCall.rid,
+            user: {
+              _id: videoCall.u._id,
+              username: videoCall.u.username,
+            },
+            text: isVideoEnabled
+              ? CALL_STATUS.VIDEO_ENDED
+              : CALL_STATUS.AUDIO_ENDED,
+          };
 
-        const message = {
-          _id: videoCall._id,
-          rid: videoCall.rid,
-          user: {
-            _id: videoCall.u._id,
-            username: videoCall.u.username,
-          },
-          text: isVideoEnabled
-            ? CALL_STATUS.VIDEO_ENDED
-            : CALL_STATUS.AUDIO_ENDED,
-        };
-
-        dispatch(updateTextMessage(chatSocket, message, false));
+          dispatch(updateTextMessage(chatSocket, message, false));
+        }
       }
     }
   }, [
@@ -296,12 +305,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     }
   };
 
-  const stopForegroundService = () => {
-    if (Platform.OS === 'android') {
-      ForegroundService.stopService();
-    }
-  };
-
   const showTwilioVideoParticipantView = (track) => {
     if (track) {
       if (track.trackName === 'camera' && !track.enabled) {
@@ -318,9 +321,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     twilioRef.current.disconnect();
 
     setTimeout(() => {
-      // Stop foreground service
-      stopForegroundService();
-
       // Cleanup call access token
       dispatch(clearCallAccessToken());
 
@@ -332,9 +332,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
 
       // Cleanup video call status
       dispatch(clearVideoCallStatus());
-
-      // Cleanup call info
-      cleanupCallInfo();
     }, 2000);
 
     if (hasStartedCall) {
@@ -426,9 +423,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     if (disconnect.error) {
       return;
     }
-
-    // Stop foreground service
-    stopForegroundService();
 
     // Stop call duration
     stopCallTimer();

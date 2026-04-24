@@ -333,47 +333,53 @@ export const postAttachmentMessage = (message) => async (dispatch, getState) => 
   }
 };
 
-export const acceptRejectHandler = (chatSocket) => async (dispatch, getState) => {
-  const {accessToken, profile} = getState().user;
+export const acceptCallHandler = (chatSocket) => async (dispatch, getState) => {
+  const {profile} = getState().user;
 
   const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-  const acceptedCall = await getLocalData(STORAGE_KEY.ACCEPTED_CALL);
-  const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
 
-  if (Object.keys(callInfo).length > 0) {
-    let message = {
+  if (Object.keys(callInfo).length > 0 && getState().call?.accepted) {
+    const message = {
       _id: callInfo._id,
       rid: callInfo.rid,
       user: {
         _id: profile.chat_user_id,
         username: profile.identity,
       },
+      text: CALL_STATUS.ACCEPTED,
     };
 
-    if (rejectedCall === 'true') {
-      message = {
-        ...message,
-        text: callInfo.body.includes('audio')
-          ? CALL_STATUS.AUDIO_MISSED
-          : CALL_STATUS.VIDEO_MISSED,
-      };
+    dispatch(mutation.hasAcceptedCall(true));
+    dispatch(updateTextMessage(chatSocket, message));
 
-      dispatch(updateTextMessage(chatSocket, message));
-    }
-
-    if (acceptedCall === 'true' && accessToken) {
-      message = {
-        ...message,
-        text: CALL_STATUS.ACCEPTED,
-      };
-
-      dispatch(mutation.hasAcceptedCall(true));
-      dispatch(updateTextMessage(chatSocket, message));
-
+    if (callInfo.callUUID) {
       RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
     }
   }
 };
+
+export const rejectCallHandler = (chatSocket) => async (dispatch, getState) => {
+  const {profile} = getState().user;
+
+  const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+  const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
+
+  if (Object.keys(callInfo).length > 0 && rejectedCall === 'true') {
+    const message = {
+      _id: callInfo._id,
+      rid: callInfo.rid,
+      user: {
+        _id: profile.chat_user_id,
+        username: profile.identity,
+      },
+      text: callInfo.body.includes('audio')
+        ? CALL_STATUS.AUDIO_MISSED
+        : CALL_STATUS.VIDEO_MISSED,
+    };
+
+    dispatch(updateTextMessage(chatSocket, message));
+  }
+}
 
 export const getCallAccessToken = (roomId) => async (dispatch) => {
   dispatch(mutation.getCallAccessTokenRequest());

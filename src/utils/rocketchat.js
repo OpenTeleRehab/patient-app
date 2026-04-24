@@ -2,6 +2,7 @@ import {
   authenticateChatUser,
   getChatRooms,
   prependNewMessage,
+  rejectCallHandler,
   sendOfflineMessages,
   updateChatUserStatus,
   updateVideoCallStatus,
@@ -95,6 +96,9 @@ export const initialChatSocket = (
           setTimeout(() => {
             subscribeUserLoggedStatus(socket, notifyLoggedId);
           }, 1000);
+
+          // Reject call handler
+          dispatch(rejectCallHandler(socket));
 
           // Send offline messages
           dispatch(sendOfflineMessages(socket));
