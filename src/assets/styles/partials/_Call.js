@@ -131,7 +131,7 @@ export default {
     paddingHorizontal: 16,
     position: 'absolute',
     top: 0,
-    width: '100%',
+    width: '70%',
     elevation: 99,
     zIndex: 99,
   },

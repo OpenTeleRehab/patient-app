@@ -50,9 +50,9 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
       if (callInfo?.callUUID) {
         RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
-
-        await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
       }
+
+      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     } else {
       const callUUID = uuid.v4();
 
@@ -64,7 +64,6 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       };
 
       await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
-
       await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
       await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
 
@@ -107,20 +106,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
             displayIncomingCall(callUUID, remoteMessage);
 
-            RNCallKeep.addEventListener('answerCall', async () => {
-              await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
-
-              RNCallKeep.backToForeground();
-            });
-
-            RNCallKeep.addEventListener('endCall', async () => {
-              await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
-
-              RNCallKeep.backToForeground();
-            });
-
-            BackgroundTimer.setTimeout(() => {
+            const timeoutId = BackgroundTimer.setTimeout(() => {
               getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
                 if (item?.callUUID === callUUID) {
                   await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
@@ -129,6 +115,22 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
                 }
               });
             }, 60000);
+
+            RNCallKeep.addEventListener('answerCall', async () => {
+              BackgroundTimer.clearTimeout(timeoutId);
+
+              await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
+
+              RNCallKeep.backToForeground();
+            });
+
+            RNCallKeep.addEventListener('endCall', async () => {
+              BackgroundTimer.clearTimeout(timeoutId);
+
+              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
+
+              RNCallKeep.backToForeground();
+            });
           })
           .catch((e) => {
             console.log('Error while initializing call keep: ', e);
@@ -185,16 +187,14 @@ const displayIncomingCall = (callUUID, remoteMessage) => {
   RNCallKeep.displayIncomingCall(callUUID, handle, localizedCallerName, 'generic', hasVideo);
 };
 
-const AppFake = () => {
-  return null;
-};
-
 const HeadlessCheck = ({isHeadless}) => {
   if (isHeadless) {
-    // App has been launched in the background by iOS, ignore
-    return <AppFake />;
+    // App has been launched in the background (killed state)
+    // Return null or a dummy component to prevent rendering the UI
+    return null;
   }
 
+  // App launched normally by the user
   return <App />;
 };
 

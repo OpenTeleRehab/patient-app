@@ -2,14 +2,12 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import BackgroundTimer from 'react-native-background-timer';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
-import {mutation} from './src/store/rocketchat/mutations';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
 import {setInitialRouteName} from './src/store/user/actions';
-import {CALL_STATUS, ROUTES, STORAGE_KEY, TRANSFER_STATUS} from './src/variables/constants';
+import {ROUTES, STORAGE_KEY, TRANSFER_STATUS} from './src/variables/constants';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
@@ -17,9 +15,9 @@ import RocketchatContext from './src/context/RocketchatContext';
 import {initialChatSocket} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
 import {
-  acceptRejectHandler,
+  acceptCallHandler,
+  rejectCallHandler,
   setChatSubscribeIds,
-  updateTextMessage,
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from 'react-native-callkeep';
@@ -38,11 +36,12 @@ import {
   requestNotificationPermission,
 } from './src/utils/permission';
 import {syncPatientOffline} from './src/store/patient/actions';
+import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
+import {mutation} from './src/store/rocketchat/mutations';
 import _ from 'lodash';
 
 let chatSocket = null;
-let patientId = null;
 
 const AppProvider = ({children}) => {
   const dispatch = useDispatch();
@@ -77,70 +76,37 @@ const AppProvider = ({children}) => {
   }, []);
 
   const answerCall = useCallback(async () => {
-    dispatch(mutation.hasAcceptedCall(true));
-    dispatch(mutation.showIncomingCall(false));
+    if (accessToken && socket) {
+      await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
+      await dispatch(acceptedRequest(true));
 
-    const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+      getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
+        if (callInfo?.callUUID) {
+          RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
+        }
+      });
 
-    if (!_.isEmpty(callInfo) && patientId) {
       const intervalID = setInterval(() => {
-        if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-          const message = {
-            _id: callInfo._id,
-            rid: callInfo.rid,
-            user: {
-              _id: profile.chat_user_id,
-              username: profile.identity,
-            },
-            text: CALL_STATUS.ACCEPTED,
-          };
-
-          dispatch(updateTextMessage(chatSocket, message));
+        if (socket.readyState === socket.OPEN) {
+          dispatch(acceptCallHandler(socket));
 
           clearInterval(intervalID);
         }
       }, 1000);
     }
-  }, [dispatch, profile.chat_user_id, profile.identity]);
+  }, [accessToken, dispatch, socket]);
 
-  const endCall = useCallback(async () => {
-    const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-    const rejectedCall = await getLocalData(STORAGE_KEY.REJECTED_CALL);
+  const endCall = useCallback(() => {
+    const intervalID = setInterval(() => {
+      if (socket.readyState === socket.OPEN) {
+        dispatch(rejectCallHandler(socket));
 
-    if (!_.isEmpty(callInfo) && patientId && rejectedCall === 'true') {
-      const message = {
-        _id: callInfo._id,
-        rid: callInfo.rid,
-        user: {
-          _id: profile.chat_user_id,
-          username: profile.identity,
-        },
-        text: callInfo.body.includes('audio')
-          ? CALL_STATUS.AUDIO_MISSED
-          : CALL_STATUS.VIDEO_MISSED,
-      };
-
-      if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-        dispatch(updateTextMessage(chatSocket, message));
-
-        BackgroundTimer.setTimeout(async () => {
-          await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-        }, 1000);
-      } else {
-        const intervalID = setInterval(async () => {
-          if (chatSocket && chatSocket.readyState === chatSocket.OPEN) {
-            dispatch(updateTextMessage(chatSocket, message));
-
-            BackgroundTimer.setTimeout(async () => {
-              await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-            }, 1000);
-
-            clearInterval(intervalID);
-          }
-        }, 1000);
+        clearInterval(intervalID);
       }
-    }
-  }, [dispatch, profile]);
+    }, 1000);
+
+    dispatch(mutation.showIncomingCall(false));
+  }, [dispatch, socket]);
 
   useEffect(() => {
     const answerCallListener = RNCallKeep.addEventListener('answerCall', answerCall);
@@ -161,12 +127,6 @@ const AppProvider = ({children}) => {
       requestCallPermission();
     }
   }, [accessToken]);
-
-  useEffect(() => {
-    if (!_.isEmpty(profile)) {
-      patientId = profile.id;
-    }
-  }, [profile]);
 
   useEffect(() => {
     dispatch(updateIndicatorList({isOnlineMode: isOnline}));
@@ -240,13 +200,29 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (isOnline && socket) {
-      const intervalID = setInterval(() => {
-        if (socket.readyState === socket.OPEN) {
-          dispatch(acceptRejectHandler(socket));
+      getLocalData(STORAGE_KEY.ACCEPTED_CALL).then(async (acceptedCall) => {
+        if (JSON.parse(acceptedCall)) {
+          await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
 
-          clearInterval(intervalID);
+          dispatch(acceptedRequest(true));
         }
-      }, 1000);
+      });
+
+      if (accessToken) {
+        getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
+          if (callInfo?.callUUID) {
+            RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
+          }
+        });
+
+        const intervalID = setInterval(() => {
+          if (socket.readyState === socket.OPEN) {
+            dispatch(acceptCallHandler(socket));
+
+            clearInterval(intervalID);
+          }
+        }, 1000);
+      }
     }
   }, [accessToken, dispatch, isOnline, socket]);
 

@@ -29,7 +29,9 @@ const VideoCall = ({theme}) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const shouldShowImmediately = (hasStartedCall && showIncomingCall) || (accessToken && showAcceptedCall);
+    const shouldShowImmediately =
+      (showIncomingCall && hasStartedCall) ||
+      (showAcceptedCall && accessToken);
 
     if (shouldShowImmediately) {
       setShowModal(true);

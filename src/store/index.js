@@ -11,6 +11,7 @@ import {activity} from './activity/reducers';
 import {achievement} from './achievement/reducers';
 import {goal} from './goal/reducers';
 import {appointment} from './appointment/reducers';
+import {call} from './call/reducers';
 import {country} from './country/reducers';
 import {language} from './language/reducers';
 import {translation} from './translation/reducers';
@@ -52,6 +53,7 @@ const rootReducers = {
   staticPage,
   rocketchat,
   therapist,
+  call,
   clinic,
   profession,
   phone,
@@ -105,6 +107,11 @@ const blacklistTransform = createTransform(
         'password',
         'tempAccessToken',
         'registerAs',
+      ]);
+    } else if (key === 'call') {
+      inboundStateData = _.omit(inboundState, [
+        'accepted',
+        'rejected',
       ]);
     }
 
