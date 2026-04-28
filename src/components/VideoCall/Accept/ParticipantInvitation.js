@@ -18,7 +18,11 @@ import {useCallContext} from '../../../context/CallContext';
 import {sendTextMessage} from '../../../store/rocketchat/actions';
 import {getPatientChatRooms, getPhcChatRooms, getTherapistChatRooms} from '../../../utils/chat';
 import {generateHash} from '../../../utils/helper';
-import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
+import {
+  CALL_MISSED_STATUSES,
+  CALL_STATUS,
+  CHAT_USER_STATUS,
+} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import styles from '../../../assets/styles';
 
@@ -34,7 +38,7 @@ const ParticipantInvitation = ({
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
-  const {chatRooms} = useSelector((state) => state.rocketchat);
+  const {chatRooms, videoCall} = useSelector((state) => state.rocketchat);
   const [isVisible, setIsVisible] = useState(false);
   const [defaultExpanded, setDefaultExpanded] = useState([
     'patients',
@@ -82,13 +86,16 @@ const ParticipantInvitation = ({
                 if (p.countdown === undefined) {
                   return p;
                 } else {
-                  const joined = participants.find((item) =>
+                  const isJoined = participants.find((item) =>
                     item.participant.identity.startsWith(
                       p.u.username + '###' + profile.country_id,
                     ),
                   );
 
-                  if (joined) {
+                  const isBusied = videoCall.status === CALL_STATUS.BUSY && p.rid === videoCall.rid;
+                  const isMissed = CALL_MISSED_STATUSES.includes(videoCall.status) && p.rid === videoCall.rid;
+
+                  if (isJoined || isBusied || isMissed) {
                     return {...p, countdown: undefined};
                   } else {
                     return {...p, countdown: p.countdown - 1};
@@ -117,6 +124,7 @@ const ParticipantInvitation = ({
     invitingParticipants,
     participants,
     profile.country_id,
+    videoCall,
   ]);
 
   const getInvitationCountdown = (rid) => {
@@ -139,15 +147,15 @@ const ParticipantInvitation = ({
     }
   };
 
-  const handleInviteParticipant = (participant) => {
+  const handleInviteParticipant = (room) => {
     const _id = generateHash();
 
     const message = {
       _id: _id,
-      rid: participant.rid,
+      rid: room.rid,
       user: {
-        _id: participant.u._id,
-        username: participant.u.username,
+        _id: room.u._id,
+        username: room.u.username,
       },
       text: isVideoEnabled
         ? CALL_STATUS.VIDEO_STARTED
@@ -156,9 +164,7 @@ const ParticipantInvitation = ({
 
     setInvitingParticipants((prev) =>
       prev.map((item) =>
-        item.u._id === participant.u._id
-          ? {...item, _id: _id, countdown: 60}
-          : item,
+        item.u._id === room.u._id ? {...item, _id: _id, countdown: 60} : item,
       ),
     );
 
