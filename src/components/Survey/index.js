@@ -41,7 +41,7 @@ const Survey = () => {
 
   useEffect(() => {
     if (isOnline && accessToken) {
-      const lang = profile.language_id ? profile.language_id : languages.length ? languages[0].id : '';
+      const lang = profile.language_id ? profile.language_id : languages?.length ? languages[0].id : '';
       const payload = {
         organization: organization,
         lang,
