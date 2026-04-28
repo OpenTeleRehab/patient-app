@@ -1,11 +1,13 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import {AppState} from 'react-native';
+import {getTranslate} from 'react-localize-redux';
 import {updateMessage} from '../utils/rocketchat';
 import RocketchatContext from './RocketchatContext';
 import {useDispatch, useSelector} from 'react-redux';
@@ -25,6 +27,7 @@ import {
 import {getLocalData, storeLocalData} from '../utils/local_storage';
 import {mutation} from '../store/rocketchat/mutations';
 import {acceptedRequest} from '../store/call/actions';
+import {useShowToast} from '../hook/useShowToast';
 import _ from 'lodash';
 
 const CallContext = createContext(null);
@@ -34,7 +37,10 @@ export const useCallContext = () => useContext(CallContext);
 export const CallContextProvider = ({children}) => {
   const appState = useRef(AppState.currentState);
   const dispatch = useDispatch();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const chatSocket = useContext(RocketchatContext);
+  const {showToast} = useShowToast();
   const {
     callAccessToken,
     chatAuth,
@@ -112,6 +118,9 @@ export const CallContextProvider = ({children}) => {
     // Call busy listener
     const onBusyCallEvent = async () => {
       if (videoCall.status === CALL_STATUS.BUSY) {
+        // Show busy toast
+        handleShowToast(videoCall.status);
+
         if (callAccessToken && !hasParticipant) {
           // Clear call access token
           dispatch(clearCallAccessToken());
@@ -139,6 +148,7 @@ export const CallContextProvider = ({children}) => {
           await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
 
           dispatch(clearVideoCallStatus());
+          dispatch(mutation.showIncomingCall(false));
         }
       }
     };
@@ -167,12 +177,20 @@ export const CallContextProvider = ({children}) => {
     chatAuth,
     chatSocket,
     dispatch,
+    handleShowToast,
     hasAcceptedCall,
     hasParticipant,
     hasStartedCall,
     profile.id,
     videoCall,
   ]);
+
+  const handleShowToast = useCallback(
+    (message) => {
+      showToast(translate(message));
+    },
+    [showToast, translate],
+  );
 
   const handleAcceptCall = async () => {
     dispatch(mutation.showIncomingCall(false));

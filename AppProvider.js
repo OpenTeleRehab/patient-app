@@ -39,7 +39,6 @@ import {syncPatientOffline} from './src/store/patient/actions';
 import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
 import {mutation} from './src/store/rocketchat/mutations';
-import _ from 'lodash';
 
 let chatSocket = null;
 
