@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useRef} from 'react';
 import {Alert, Keyboard} from 'react-native';
 import {Icon, ListItem, withTheme} from 'react-native-elements';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {
@@ -24,6 +25,7 @@ const MediaPicker = ({theme, visible, onSend, onClose}) => {
   const bottomSheetModalRef = useRef(null);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const insets = useSafeAreaInsets();
 
   const renderBackdrop = useCallback(
     (backdropProps) => (
@@ -139,7 +141,8 @@ const MediaPicker = ({theme, visible, onSend, onClose}) => {
       ref={bottomSheetModalRef}
       backdropComponent={renderBackdrop}
       onChange={handleSheetChanges}>
-      <BottomSheetView style={styles.bottomSheetView}>
+      <BottomSheetView
+        style={{...styles.bottomSheetView, paddingBottom: insets.bottom}}>
         <ListItem
           containerStyle={styles.bottomSheetListItemContainer}
           onPress={() => handleLaunchCamera('photo')}>
