@@ -55,6 +55,7 @@ target 'PatientApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
     # Remove Bitcode from TwilioVideo.framework
     bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
     def strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
@@ -66,6 +67,18 @@ target 'PatientApp' do
     framework_paths = [
       "Pods/TwilioVideo/TwilioVideo.xcframework/ios-arm64_armv7/TwilioVideo.framework/TwilioVideo",
     ]
+
+    # Keep your existing react_native_post_install here
+    react_native_post_install(installer, config[:reactNativePath])
+
+    # Fix for Xcode 26.4 build error
+    installer.pods_project.targets.each do |target|
+      if target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        end
+      end
+    end
 
     framework_paths.each do |framework_relative_path|
       strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
