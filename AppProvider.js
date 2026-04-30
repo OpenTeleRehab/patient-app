@@ -85,25 +85,12 @@ const AppProvider = ({children}) => {
         }
       });
 
-      const intervalID = setInterval(() => {
-        if (socket.readyState === socket.OPEN) {
-          dispatch(acceptCallHandler(socket));
-
-          clearInterval(intervalID);
-        }
-      }, 1000);
+      dispatch(acceptCallHandler(socket));
     }
   }, [accessToken, dispatch, socket]);
 
   const endCall = useCallback(() => {
-    const intervalID = setInterval(() => {
-      if (socket.readyState === socket.OPEN) {
-        dispatch(rejectCallHandler(socket));
-
-        clearInterval(intervalID);
-      }
-    }, 1000);
-
+    dispatch(rejectCallHandler(socket));
     dispatch(mutation.showIncomingCall(false));
   }, [dispatch, socket]);
 
