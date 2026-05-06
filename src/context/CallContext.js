@@ -64,16 +64,6 @@ export const CallContextProvider = ({children}) => {
   }, []);
 
   useEffect(() => {
-    if (_.isEmpty(videoCall)) {
-      dispatch(mutation.showIncomingCall(false));
-      dispatch(mutation.showAcceptedCall(false));
-
-      dispatch(mutation.hasStartedCall(false));
-      dispatch(mutation.hasAcceptedCall(false));
-    }
-  }, [dispatch, videoCall]);
-
-  useEffect(() => {
     // Call started listener
     const onStartedCallEvent = async () => {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
@@ -91,25 +81,15 @@ export const CallContextProvider = ({children}) => {
 
     // Call accepted listener
     const onAcceptCallEvent = async () => {
-      if (
-        !callAccessToken &&
-        accessToken &&
-        videoCall.status === CALL_STATUS.ACCEPTED
-      ) {
-        if (!hasStartedCall) {
-          const _id = videoCall._id;
-          const rid = videoCall.rid;
-          const msg = CALL_STATUS.ACCEPTED;
-
-          // Send accept call message
-          updateMessage(chatSocket, {_id, rid, msg}, profile.id);
-        }
-
-        if (hasAcceptedCall || hasStartedCall) {
+      if (videoCall.status === CALL_STATUS.ACCEPTED) {
+        if (!callAccessToken && hasStartedCall) {
           dispatch(getCallAccessToken(videoCall.u._id));
+
           dispatch(mutation.showIncomingCall(false));
           dispatch(mutation.showAcceptedCall(true));
-        } else {
+        }
+
+        if (!callAccessToken && !hasStartedCall && !hasAcceptedCall) {
           dispatch(clearVideoCallStatus());
         }
       }
@@ -138,18 +118,13 @@ export const CallContextProvider = ({children}) => {
 
     // Call missed listener
     const onMissedCallEvent = async () => {
-      if (CALL_MISSED_STATUSES.includes(videoCall.status)) {
-        if (callAccessToken && !hasParticipant) {
-          dispatch(clearCallAccessToken());
-          dispatch(clearVideoCallStatus());
-        }
+      if (CALL_MISSED_STATUSES.includes(videoCall.status) && !hasParticipant) {
+        dispatch(clearCallAccessToken());
+        dispatch(clearVideoCallStatus());
 
-        if (callAccessToken === undefined) {
-          await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        dispatch(mutation.showIncomingCall(false));
 
-          dispatch(clearVideoCallStatus());
-          dispatch(mutation.showIncomingCall(false));
-        }
+        await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
       }
     };
 
@@ -208,6 +183,7 @@ export const CallContextProvider = ({children}) => {
       };
 
       dispatch(updateTextMessage(chatSocket, message));
+      dispatch(getCallAccessToken(videoCall.u._id));
       dispatch(mutation.showAcceptedCall(true));
     } else {
       const callInfo = {

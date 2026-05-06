@@ -320,20 +320,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     // Disconnect from twilio call
     twilioRef.current.disconnect();
 
-    setTimeout(() => {
-      // Cleanup call access token
-      dispatch(clearCallAccessToken());
-
-      dispatch(mutation.showIncomingCall(false));
-      dispatch(mutation.showAcceptedCall(false));
-
-      dispatch(mutation.hasStartedCall(false));
-      dispatch(mutation.hasAcceptedCall(false));
-
-      // Cleanup video call status
-      dispatch(clearVideoCallStatus());
-    }, 2000);
-
     if (hasStartedCall) {
       participants.forEach(({participant}) => {
         const chatRoom = chatRooms.find((item) =>
@@ -435,6 +421,14 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
 
     // Cleanup video call status
     dispatch(clearVideoCallStatus());
+
+    // Hide incoming/accepted call
+    dispatch(mutation.showIncomingCall(false));
+    dispatch(mutation.showAcceptedCall(false));
+
+    // Reset started/accepted call
+    dispatch(mutation.hasStartedCall(false));
+    dispatch(mutation.hasAcceptedCall(false));
 
     // Cleanup call info
     cleanupCallInfo();
