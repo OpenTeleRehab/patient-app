@@ -38,7 +38,6 @@ import {
 import {syncPatientOffline} from './src/store/patient/actions';
 import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
-import {mutation} from './src/store/rocketchat/mutations';
 
 let chatSocket = null;
 
@@ -91,7 +90,6 @@ const AppProvider = ({children}) => {
 
   const endCall = useCallback(() => {
     dispatch(rejectCallHandler(socket));
-    dispatch(mutation.showIncomingCall(false));
   }, [dispatch, socket]);
 
   useEffect(() => {

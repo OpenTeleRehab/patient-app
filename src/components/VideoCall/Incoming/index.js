@@ -107,8 +107,8 @@ const IncomingCall = ({
           : CALL_STATUS.VIDEO_MISSED,
     };
 
+    dispatch(mutation.showIncomingCall(false));
     dispatch(updateTextMessage(chatSocket, message));
-    dispatch(clearVideoCallStatus());
   };
 
   return (

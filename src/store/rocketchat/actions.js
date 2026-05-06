@@ -335,10 +335,13 @@ export const postAttachmentMessage = (message) => async (dispatch, getState) => 
 
 export const acceptCallHandler = (chatSocket) => async (dispatch, getState) => {
   const {profile} = getState().user;
+  const {chatRooms} = getState().rocketchat;
 
   const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
   if (Object.keys(callInfo).length > 0 && getState().call?.accepted) {
+    const chatRoom = chatRooms.find((item) => item.rid === callInfo.rid);
+
     const message = {
       _id: callInfo._id,
       rid: callInfo.rid,
@@ -349,8 +352,11 @@ export const acceptCallHandler = (chatSocket) => async (dispatch, getState) => {
       text: CALL_STATUS.ACCEPTED,
     };
 
-    dispatch(mutation.hasAcceptedCall(true));
     dispatch(updateTextMessage(chatSocket, message));
+    dispatch(getCallAccessToken(chatRoom.u._id));
+
+    dispatch(mutation.hasAcceptedCall(true));
+    dispatch(mutation.showAcceptedCall(true));
 
     if (callInfo.callUUID) {
       RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
