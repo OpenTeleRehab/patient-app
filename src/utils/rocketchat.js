@@ -7,10 +7,7 @@ import {
   updateChatUserStatus,
   updateVideoCallStatus,
 } from '../store/rocketchat/actions';
-import {
-  updateIndicatorList,
-  updateUnreadMessageIndicator,
-} from '../store/indicator/actions';
+import {updateIndicatorList} from '../store/indicator/actions';
 import {mutation} from '../store/rocketchat/mutations';
 import {CALL_STATUS, CHAT_USER_STATUS} from '../variables/constants';
 import {getUniqueId, getChatMessage} from './helper';
@@ -131,7 +128,6 @@ export const initialChatSocket = (
       } else if (resMessage === 'changed') {
         if (collection === 'stream-room-messages') {
           // Trigger change in chat room
-          const {chatRooms} = store.getState().rocketchat;
           const {profile} = store.getState().user;
 
           const {_id, msg, rid, u} = fields.args[0];
@@ -147,14 +143,6 @@ export const initialChatSocket = (
           const newMessage = getChatMessage(fields.args[0], userId, authToken);
 
           dispatch(prependNewMessage(newMessage));
-          dispatch(updateUnreadMessageIndicator());
-
-          chatRooms.map((item) => {
-            if (item.rid === newMessage.rid) {
-              item.lastMessage = newMessage;
-            }
-          });
-          dispatch(mutation.getChatRoomsSuccess(chatRooms));
         } else if (collection === 'stream-notify-logged') {
           // Trigger therapist logged status
           const res = fields.args[0];

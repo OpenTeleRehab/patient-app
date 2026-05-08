@@ -21,7 +21,6 @@ const hasAcceptedCall = (data) => ({
   data,
 });
 
-
 const setChatSubscribeIdsSuccess = (data) => ({
   type: 'SET_CHAT_SUBSCRIBE_IDS_SUCCEED',
   data,

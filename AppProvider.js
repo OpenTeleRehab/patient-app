@@ -78,12 +78,6 @@ const AppProvider = ({children}) => {
       await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
       await dispatch(acceptedRequest(true));
 
-      getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-        if (callInfo?.callUUID) {
-          RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
-        }
-      });
-
       dispatch(acceptCallHandler(socket));
     }
   }, [accessToken, dispatch, socket]);
@@ -193,12 +187,6 @@ const AppProvider = ({children}) => {
       });
 
       if (accessToken) {
-        getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-          if (callInfo?.callUUID) {
-            RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
-          }
-        });
-
         const intervalID = setInterval(() => {
           if (socket.readyState === socket.OPEN) {
             dispatch(acceptCallHandler(socket));
