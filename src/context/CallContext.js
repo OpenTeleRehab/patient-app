@@ -90,6 +90,8 @@ export const CallContextProvider = ({children}) => {
         }
 
         if (!callAccessToken && !hasStartedCall && !hasAcceptedCall) {
+          dispatch(mutation.showIncomingCall(false));
+
           dispatch(clearVideoCallStatus());
         }
       }
@@ -119,10 +121,11 @@ export const CallContextProvider = ({children}) => {
     // Call missed listener
     const onMissedCallEvent = async () => {
       if (CALL_MISSED_STATUSES.includes(videoCall.status) && !hasParticipant) {
+        dispatch(mutation.showIncomingCall(false));
+        dispatch(mutation.hasAcceptedCall(false));
+
         dispatch(clearCallAccessToken());
         dispatch(clearVideoCallStatus());
-
-        dispatch(mutation.showIncomingCall(false));
 
         await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
       }

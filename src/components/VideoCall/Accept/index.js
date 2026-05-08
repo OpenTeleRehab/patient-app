@@ -385,11 +385,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     // Set status connected
     setStatus('connected');
 
-    // Get callUUID and end call keep
-    getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-      callInfo?.callUUID && RNCallKeep.endCall(callInfo?.callUUID);
-    });
-
     if (Platform.OS === 'ios') {
       // Filter remote participants
       const remoteParticipants = connected.participants

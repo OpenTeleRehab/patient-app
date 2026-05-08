@@ -18,11 +18,7 @@ import {loadHistoryInRoom} from '../../../utils/rocketchat';
 import {updateIndicatorList} from '../../../store/indicator/actions';
 import {mutation} from '../../../store/rocketchat/mutations';
 import MediaPicker from '../../../components/MediaPicker';
-import {
-  postAttachmentMessage,
-  prependNewMessage,
-  sendTextMessage,
-} from '../../../store/rocketchat/actions';
+import {postAttachmentMessage, sendTextMessage} from '../../../store/rocketchat/actions';
 import ChatContainer from '../_Partials/ChatContainer';
 import ChatToolbar from '../_Partials/ChatToolbar';
 import ChatMediaSlider from '../_Partials/ChatMediaSlider';
@@ -67,7 +63,7 @@ const ChatPanel = ({navigation, theme}) => {
 
   useEffect(() => {
     setAllMessages(messages);
-  }, [chatRooms, messages]);
+  }, [messages]);
 
   useEffect(() => {
     let intervalID;
@@ -135,7 +131,7 @@ const ChatPanel = ({navigation, theme}) => {
       const allOfflineMessages = offlineMessages.concat([newMessage[0]]);
 
       dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
-      dispatch(prependNewMessage(newMessage[0]));
+      dispatch(mutation.prependNewMessageSuccess(newMessage[0]));
     }
 
     setAllMessages((previousMessages) =>
@@ -184,7 +180,7 @@ const ChatPanel = ({navigation, theme}) => {
       const allOfflineMessages = offlineMessages.concat([newMessage]);
 
       dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
-      dispatch(prependNewMessage(newMessage));
+      dispatch(mutation.prependNewMessageSuccess(newMessage));
     }
   };
 

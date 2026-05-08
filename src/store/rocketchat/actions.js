@@ -210,36 +210,30 @@ export const getChatRooms = () => async (dispatch, getState) => {
 
 export const prependNewMessage = (payload) => async (dispatch, getState) => {
   const {isOnChatScreen} = getState().indicator;
-  const {chatRooms, selectedRoom, messages} = getState().rocketchat;
+  const {chatRooms, selectedRoom} = getState().rocketchat;
 
-  const fIndex = chatRooms.findIndex((room) => room.rid === payload.rid);
+  const chatRoom = chatRooms?.find((item) => item.rid === payload.rid);
 
-  if (fIndex > -1) {
+  if (chatRoom) {
     if (selectedRoom?.rid === payload.rid) {
-      const msgIndex = messages.findIndex((msg) => msg._id === payload._id);
-
-      if (msgIndex > -1) {
-        messages[msgIndex] = payload;
-      } else {
-        messages.unshift(payload);
-      }
-
-      dispatch(mutation.prependNewMessageSuccess(messages));
-
       if (isOnChatScreen) {
-        chatRooms[fIndex].unreads = 0;
+        chatRoom.unreads = 0;
+
+        dispatch(mutation.prependNewMessageSuccess(payload));
+      } else {
+        chatRoom.unreads += 1;
       }
     } else {
-      chatRooms[fIndex].unreads += 1;
-      chatRooms[fIndex].lastMessage = payload;
+      chatRoom.unreads += 1;
+      chatRoom.lastMessage = payload;
     }
+
+    // Update last message
+    dispatch(mutation.updateLastMessageSuccess(payload));
 
     // Update unread message indicator
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);
     dispatch(updateIndicatorList({hasUnreadMessage}));
-
-    // Update chatRooms with new prepend message
-    dispatch(mutation.updateLastMessageSuccess(chatRooms));
   }
 };
 

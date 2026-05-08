@@ -68,7 +68,28 @@ export const rocketchat = (state = initialState, action) => {
         ]),
       });
     }
-    case 'PREPEND_NEW_MESSAGE_SUCCEED':
+    case 'PREPEND_NEW_MESSAGE_SUCCEED': {
+      const chatRooms = [...state.chatRooms];
+      const fIndex = chatRooms.findIndex((item) => item.rid === action.data.rid);
+
+      chatRooms[fIndex].messages = [action.data, ...chatRooms[fIndex].messages];
+
+      return Object.assign({}, state, {
+        messages: [action.data, ...state.messages],
+        chatRooms: [...chatRooms],
+      });
+    }
+    case 'UPDATE_LAST_MESSAGE_SUCCESS': {
+      const chatRooms = state.chatRooms.map((item) =>
+        item.rid === action.data.rid
+          ? {...item, lastMessage: action.data}
+          : item
+      );
+
+      return Object.assign({}, state, {
+        chatRooms: [...chatRooms],
+      });
+    }
     case 'UPDATE_UNREAD_SUCCEED': {
       return Object.assign({}, state, {
         chatRooms: state.chatRooms.map((room) =>
