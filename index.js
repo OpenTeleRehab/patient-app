@@ -121,8 +121,9 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
               await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
 
-              RNCallKeep.reportEndCallWithUUID(callUUID, 2);
               RNCallKeep.backToForeground();
+
+              RNCallKeep.reportEndCallWithUUID(callUUID, 2);
             });
 
             RNCallKeep.addEventListener('endCall', async () => {
