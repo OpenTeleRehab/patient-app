@@ -242,12 +242,15 @@ const HeaderBar = (props) => {
   return (
     <>
       {!isOnline && (
-        <Text
-          accessible={true}
-          accessibilityLabel={translate('common.offline')}
-          style={componentStyles.offlineText}>
-          {translate('common.offline')}
-        </Text>
+        <View style={componentStyles.offlineView}>
+          <Icon name="cloud-off" color={theme.colors.danger} />
+          <Text
+            accessible={true}
+            accessibilityLabel={translate('common.offline')}
+            style={componentStyles.offlineText}>
+            {translate('common.offline')}
+          </Text>
+        </View>
       )}
       <View style={componentStyles.header}>
         <View style={componentStyles.headerLeft}>
@@ -302,12 +305,18 @@ const componentStyles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
   },
-  offlineText: {
-    color: variables.warning,
-    backgroundColor: variables.white,
-    textAlign: 'center',
+  offlineView: {
+    backgroundColor: 'rgba(229, 35, 30, 0.25)',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
     paddingVertical: 8,
-    fontSize: 15,
+    height: 40,
+  },
+  offlineText: {
+    color: variables.danger,
+    fontSize: 14,
   },
 });
 

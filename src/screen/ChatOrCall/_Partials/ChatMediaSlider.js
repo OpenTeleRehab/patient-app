@@ -152,7 +152,7 @@ const ChatMediaSlider = ({
           />
         ) : (
           <Gallery
-            data={items?.map((item) => item.image) ?? []}
+            data={items?.map((item) => item?.image) ?? []}
             initialIndex={currentIndex}
             disableVerticalSwipe
             onIndexChange={changeIndex}

@@ -51,10 +51,6 @@ const ChatPanel = ({navigation, theme}) => {
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
 
-  const keyboardVerticalOffset = isOnlineMode
-    ? 64 + insets.top
-    : 100 + insets.top;
-
   useEffect(() => {
     if (!showIncomingCall && !showAcceptedCall) {
       setDisabledCall(false);
@@ -259,16 +255,20 @@ const ChatPanel = ({navigation, theme}) => {
         <HeaderBar onGoBack={() => handleGoBack()} title={selectedRoom?.name} />
       )}
       <GiftedChat
+        key={isOnlineMode ? 'gifted-chat-online' : 'gifted-chat-offline'}
         messages={allMessages}
         placeholder={translate('chat.type.message')}
         messagesContainerStyle={styles.chatMainContainer}
         messageIdGenerator={() => generateHash()}
         keyboardAvoidingViewProps={{
           behavior: Platform.OS === 'ios' ? 'padding' : 'height',
-          keyboardVerticalOffset: keyboardVerticalOffset,
+          keyboardVerticalOffset: isOnlineMode
+            ? insets.top + 64
+            : insets.top + 64 + 40,
         }}
         textInputProps={{selectionColor: theme.colors.primary}}
         user={{_id: profile.chat_user_id}}
+        colorScheme="light"
         renderMessage={renderMessage}
         renderInputToolbar={renderInputToolbar}
         renderFooter={renderFooter}
