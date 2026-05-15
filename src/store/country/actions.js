@@ -8,7 +8,7 @@ export const getCountryRequest = () => async (dispatch) => {
   dispatch(mutation.countryFetchRequest);
   const data = await Country.getCountries();
   if (data.success) {
-    dispatch(mutation.countryFetchSuccess(data.data, data.user_country_code));
+    dispatch(mutation.countryFetchSuccess(data.data));
   } else {
     dispatch(mutation.countryFetchFailure());
   }

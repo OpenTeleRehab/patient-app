@@ -5,43 +5,52 @@ import React from 'react';
 import {Platform} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import {useSelector} from 'react-redux';
-import {getTranslate} from 'react-localize-redux';
+import colors from '../../../assets/styles/variables/colors';
 
-const pickerStyles = {
-  inputIOS: {
-    paddingVertical: 10,
-    color: 'black',
-    fontSize: 17,
-  },
-  inputAndroid: {
-    paddingVertical: 10,
-    color: 'black',
-    fontSize: 17,
-  },
-  iconContainer: {
-    top: Platform.OS === 'android' ? 12 : 10,
-  },
-  chevron: {display: 'none'},
-};
-
-const iconRenderer = () => <FAIcon name="caret-down" size={20} />;
+const PickerSelectIcon = () => <FAIcon name="caret-down" size={20} />;
 
 const SelectPicker = (props) => {
-  const localize = useSelector((state) => state.localize);
-  const translate = getTranslate(localize);
+  const selectedItem = props.items.find((item) => item.value === props.value);
+
+  const fontSize = props.customeFontSize ?? 17;
+
+  const inputStyle = {
+    color: colors.black,
+    fontSize: fontSize,
+    paddingVertical: 10,
+  };
+
+  const pickerSelectStyle = {
+    placeholder: {
+      fontSize: fontSize,
+    },
+    inputIOSContainer: {
+      overflow: 'hidden',
+    },
+    inputIOS: inputStyle,
+    inputAndroid: inputStyle,
+    iconContainer: {
+      top: Platform.OS === 'android' ? 12 : 10,
+    },
+  };
 
   return (
     <RNPickerSelect
       fixAndroidTouchableBug
       useNativeAndroidPickerStyle={false}
-      Icon={() => iconRenderer()}
-      style={props.customeFontSize ? {...pickerStyles, inputAndroid: {...pickerStyles.inputAndroid, fontSize: props.customeFontSize}, placeholder: {fontSize: props.customeFontSize}} : pickerStyles}
-      {...props}
+      Icon={PickerSelectIcon}
       touchableWrapperProps={{
         accessible: true,
-        accessibilityLabel: translate('common.dropdown'),
+        accessibilityLabel: selectedItem?.label,
       }}
+      pickerProps={{
+        accessibilityLabel: selectedItem?.label,
+        itemStyle: {
+          color: colors.black,
+        },
+      }}
+      style={pickerSelectStyle}
+      {...props}
     />
   );
 };

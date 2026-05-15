@@ -8279,6 +8279,11 @@ react-native-crypto-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-native-crypto-js/-/react-native-crypto-js-1.0.0.tgz#e677e022e147f41b35614416c92d655f87e2450a"
   integrity sha512-FNbLuG/HAdapQoybeZSoes1PWdOj0w242gb+e1R0hicf3Gyj/Mf8M9NaED2AnXVOX01b2FXomwUiw1xP1K+8sA==
 
+react-native-device-country@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-device-country/-/react-native-device-country-2.0.1.tgz#f4cde29766fdc616fc6ea574e4a8e35a0f1e5823"
+  integrity sha512-WP+9rNxZhZ28kep2xZUyhciy+FCjfdfxjx3QmfPasCl4iodOM7dGt8F3Hj84leBGod/XccDAjB+cS+YQTJkLGA==
+
 react-native-device-info@^10.3.0:
   version "10.14.0"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.14.0.tgz#3530ea7e09a0841d568fec987b8c6ae16deee763"

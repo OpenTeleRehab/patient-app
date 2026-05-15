@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   Alert,
@@ -20,73 +20,57 @@ import {
 } from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {getHash} from 'react-native-otp-auto-verify';
-import _ from 'lodash';
+import DeviceCountry from 'react-native-device-country';
 import styles from '../../../assets/styles';
+import _ from 'lodash';
 
 import {registerRequest} from '../../../store/register/actions';
-import {
-  getCountryRequest,
-  getDefinedCountries,
-} from '../../../store/country/actions';
+import {getCountryRequest, getDefinedCountries} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
 import {getPhoneRequest} from '../../../store/phone/actions';
 import SelectPicker from '../../../components/Common/SelectPicker';
-import HeaderBar from '../../../components/Common/HeaderBar';
 import {Country} from '../../../services/country';
 import {ROUTES, USER_ROLE} from '../../../variables/constants';
+import HeaderBar from '../../../components/Common/HeaderBar';
 import TextField from '../../../components/Common/TextField';
 import validateEmail from '../../../utils/validateEmail';
 import AppKeyboardView from '../../../components/Common/AppKeyboardView';
-
-const phoneCodeContainerStyle = {
-  width: '35%',
-  marginRight: 5,
-  height: '60%',
-};
-const phoneContainerStyle = {
-  width: '65%',
-  height: '60%',
-};
-
-const inputPhoneContainerStyle = {
-  borderBottomWidth: 0,
-};
 
 const Register = ({theme, navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
-  const {definedCountries, userCountryCode} = useSelector(
-    (state) => state.country,
-  );
-  const [registerAsSelectedIndex, setRegisterAsSelectedIndex] = useState(0);
+  const {definedCountries} = useSelector((state) => state.country);
   const {languages} = useSelector((state) => state.language);
+  const [language, setLanguage] = useState('');
+  const [registerAsSelectedIndex, setRegisterAsSelectedIndex] = useState(0);
   const [hash, setHash] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
   const [countryIsoCode, setCountryIsoCode] = useState('');
-  const [language, setLanguage] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
 
-  const shouldRegister =
-    registerAsSelectedIndex === 0 ? phoneNumber : email && password;
+  const shouldRegister = registerAsSelectedIndex === 0
+    ? phoneNumber
+    : email && password;
 
-  const validateAndSetLanguage = useCallback(
-    (lang) => {
-      let languageId = lang;
-      if (!languageId) {
-        languageId = languages.length > 0 ? languages[0].id : '';
+  useEffect(() => {
+    DeviceCountry.getCountryCode().then((result) => {
+      if (result && result.code) {
+        const code = result.code.toUpperCase();
+        const country = _.find(definedCountries, {iso_code: code});
+
+        setCountryPhoneCode(country?.phone_code);
+        setCountryIsoCode(code);
       }
-      setLanguage(languageId);
-    },
-    [languages],
-  );
+    });
+  }, [definedCountries]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -99,38 +83,33 @@ const Register = ({theme, navigation}) => {
   }, []);
 
   useEffect(() => {
+    dispatch(getCountryRequest());
     dispatch(getDefinedCountries());
     dispatch(getLanguageRequest());
   }, [dispatch]);
 
-  // Set default selected phone code
   useEffect(() => {
-    if (definedCountries.length) {
-      let defaultCountry = definedCountries[0];
-
-      if (userCountryCode) {
-        const userCountry = _.find(definedCountries, {
-          iso_code: userCountryCode,
-        });
-        if (userCountry) {
-          defaultCountry = userCountry;
-        }
-      }
-
-      setCountryPhoneCode(defaultCountry.phone_code);
-      validateAndSetLanguage(defaultCountry.language_id);
+    if (definedCountries && definedCountries.length) {
+      setCountryPhoneCode(definedCountries[0].phone_code);
     }
-  }, [definedCountries, userCountryCode, dispatch, validateAndSetLanguage]);
+  }, [definedCountries]);
+
+  useEffect(() => {
+    if (languages && languages.length) {
+      setLanguage(languages[0].id);
+    }
+  }, [languages]);
 
   const handleCountryCodeChange = (isoCode) => {
     const selectedCountry = _.find(definedCountries, {iso_code: isoCode});
+
     setCountryPhoneCode(selectedCountry?.phone_code);
     setCountryIsoCode(isoCode);
-    validateAndSetLanguage(selectedCountry?.language_id);
   };
 
   const handleLanguageChange = (lang) => {
-    validateAndSetLanguage(lang);
+    setLanguage(lang);
+
     dispatch(getTranslations(lang));
   };
 
@@ -154,8 +133,6 @@ const Register = ({theme, navigation}) => {
 
       dispatch(getPhoneRequest({phone: formattedNumber})).then((phone) => {
         if (phone) {
-          dispatch(getCountryRequest());
-
           Country.getCountryCodeByClinicId({clinic_id: phone.clinic_id, service_type: phone.service_type})
             .then((res) => {
               if (res.success) {
@@ -304,20 +281,15 @@ const Register = ({theme, navigation}) => {
             {registerAsSelectedIndex === 0 && (
               <>
                 <Text
-                  style={[styles.formLabel, styles.fontWeightBold]}
-                  accessibilityLabel={translate('register.phone.label')}>
+                  accessibilityLabel={translate('register.phone.label')}
+                  style={[styles.formLabel, styles.fontWeightBold]}>
                   {translate('register.phone.label')}
                 </Text>
                 <View style={styles.flexRow}>
                   <View
-                    style={[
-                      phoneCodeContainerStyle,
-                      styles.formControl,
-                      styles.bgGreyLight,
-                      {borderColor: theme.colors.grey9},
-                    ]}
                     accessible={true}
-                    accessibilityLabel={translate('register.phone.country_code')}>
+                    accessibilityLabel={translate('register.phone.label')}
+                    style={componentStyles.phoneCountryCodeContainerStyle}>
                     <SelectPicker
                       placeholder={{}}
                       value={countryIsoCode}
@@ -331,27 +303,22 @@ const Register = ({theme, navigation}) => {
                             }))
                           : []
                       }
-                      accessibilityLabel={translate(
-                        'register.phone.country_code',
-                      )}
+                      accessibilityLabel={translate('register.phone.label')}
                     />
                   </View>
                   <View
-                    style={[
-                      phoneContainerStyle,
-                      styles.bgGreyLight,
-                      styles.formControl,
-                      {borderColor: theme.colors.grey9},
-                    ]}
                     accessible={true}
-                    accessibilityLabel={translate('register.phone.placeholder')}>
+                    accessibilityLabel={translate('register.phone.placeholder')}
+                    style={componentStyles.phoneNumberContainerStyle}>
                     <Input
+                      accessibilityLabel={translate(
+                        'register.phone.placeholder',
+                      )}
                       placeholder={translate('register.placeholder.phone')}
                       keyboardType="phone-pad"
                       value={phoneNumber}
                       onChangeText={(number) => setPhoneNumber(number)}
-                      inputContainerStyle={inputPhoneContainerStyle}
-                      accessibilityLabel={translate('register.phone.placeholder')}
+                      inputContainerStyle={componentStyles.inputContainerStyle}
                     />
                   </View>
                 </View>
@@ -433,6 +400,24 @@ const componentStyles = StyleSheet.create({
   buttonGroupContainerStyle: {
     ...styles.bgGreyLight,
     borderRadius: 20,
+  },
+  inputContainerStyle: {
+    borderBottomWidth: 0,
+  },
+  phoneCountryCodeContainerStyle: {
+    ...styles.formControl,
+    backgroundColor: '#E6E8EA',
+    borderColor: '#E6E8EA',
+    marginRight: 5,
+    height: '60%',
+    width: '35%',
+  },
+  phoneNumberContainerStyle: {
+    ...styles.formControl,
+    backgroundColor: '#E6E8EA',
+    borderColor: '#E6E8EA',
+    height: '60%',
+    width: '65%',
   },
 });
 

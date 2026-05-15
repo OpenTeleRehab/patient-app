@@ -8,7 +8,6 @@ export const country = (state = initialState, action) => {
     case 'COUNTRY_FETCH_SUCCEED':
       return Object.assign({}, state, {
         countries: action.data,
-        userCountryCode: action.userCountryCode,
       });
     case 'GET_DEFINED_COUNTRIES_SUCCESS': {
       return Object.assign({}, state, {
