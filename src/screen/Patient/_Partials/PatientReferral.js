@@ -77,7 +77,7 @@ const PatientReferral = ({navigation, route}) => {
     if (!Array.isArray(clinicList) || !provinceId) return [];
 
     return clinicList
-      .filter((c) => c?.province_id === provinceId)
+      .filter((c) => c?.province?.id === provinceId)
       .map((c) => ({
         label: c?.name ?? '',
         value: c?.id,
