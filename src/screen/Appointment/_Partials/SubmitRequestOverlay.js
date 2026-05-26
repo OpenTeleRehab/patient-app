@@ -207,6 +207,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           setIsLoading(false);
           if (result.success) {
             if (appointment) {
+              handleCloseOverlay();
               navigation.goBack();
             } else {
               handleCloseOverlay();
