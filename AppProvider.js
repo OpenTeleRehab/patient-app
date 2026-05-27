@@ -21,7 +21,7 @@ import {
 } from './src/store/rocketchat/actions';
 import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from 'react-native-callkeep';
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import store from './src/store';
 import {forceLogout} from './src/store/auth/actions';
@@ -74,6 +74,10 @@ const AppProvider = ({children}) => {
   }, []);
 
   const answerCall = useCallback(async () => {
+    if (Platform.OS === 'ios') {
+      await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
+    }
+
     if (accessToken && socket) {
       await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
       await dispatch(acceptedRequest(true));

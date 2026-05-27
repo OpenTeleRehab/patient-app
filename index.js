@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {AppRegistry, Platform, PermissionsAndroid, TextInput, Text as ReactNativeText} from 'react-native';
+import {AppRegistry, Platform, TextInput, Text as ReactNativeText} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
@@ -13,7 +13,6 @@ import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import {STORAGE_KEY} from './src/variables/constants';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundTimer from 'react-native-background-timer';
-import _ from 'lodash';
 import {Text} from 'react-native-elements';
 import notifee from '@notifee/react-native';
 import moment from 'moment';
@@ -35,7 +34,7 @@ TextInput.defaultProps = {
 };
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  if (!_.isEmpty(remoteMessage.data)) {
+  if (remoteMessage && Object.keys(remoteMessage.data).length > 0) {
     if (remoteMessage.data.event_type === 'appointment') {
       await displayAppointmentNotification(
         remoteMessage.data?.title,
@@ -70,73 +69,44 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       if (Platform.OS === 'ios') {
         displayIncomingCall(callUUID, remoteMessage);
       } else {
-        const options = {
-          ios: {
-            appName: 'PatientApp',
-            imageName: 'sim_icon',
-            supportsVideo: true,
-            maximumCallGroups: '1',
-            maximumCallsPerCallGroup: '1',
-          },
-          android: {
-            alertTitle: 'Permissions required',
-            alertDescription:
-              'This application needs to access your phone accounts',
-            cancelButton: 'Cancel',
-            okButton: 'ok',
-            additionalPermissions: [
-              PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
-              PermissionsAndroid.PERMISSIONS.READ_PHONE_NUMBERS,
-              PermissionsAndroid.PERMISSIONS.CAMERA,
-            ],
-            foregroundService: {
-              channelId: 'org.hi.patient',
-              channelName: 'Foreground service for my app',
-              notificationTitle: 'My app is running on background',
-              notificationIcon: 'Path to the resource icon of the notification',
-            },
-          },
-        };
+        // Registers android ui events
+        RNCallKeep.registerAndroidEvents();
 
-        RNCallKeep.checkPhoneAccountEnabled()
-          .then(() => {
-            RNCallKeep.registerPhoneAccount(options);
-            RNCallKeep.registerAndroidEvents();
-            RNCallKeep.setAvailable(true);
+        // Display incoming calls system ui
+        displayIncomingCall(callUUID, remoteMessage);
 
-            displayIncomingCall(callUUID, remoteMessage);
+        // Tell ConnectionService that the device is ready to make outgoing calls
+        RNCallKeep.setAvailable(true);
 
-            const timeoutId = BackgroundTimer.setTimeout(() => {
-              getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
-                if (item?.callUUID === callUUID) {
-                  await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        // Answer call listener
+        RNCallKeep.addEventListener('answerCall', async () => {
+          BackgroundTimer.clearTimeout(timeoutId);
 
-                  RNCallKeep.reportEndCallWithUUID(callUUID, 2);
-                }
-              });
-            }, 60000);
+          await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
 
-            RNCallKeep.addEventListener('answerCall', async () => {
-              BackgroundTimer.clearTimeout(timeoutId);
+          RNCallKeep.backToForeground();
 
-              await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
+          RNCallKeep.reportEndCallWithUUID(callUUID, 2);
+        });
 
-              RNCallKeep.backToForeground();
+        // End call listener
+        RNCallKeep.addEventListener('endCall', async () => {
+          BackgroundTimer.clearTimeout(timeoutId);
+
+          await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
+
+          RNCallKeep.backToForeground();
+        });
+
+        const timeoutId = BackgroundTimer.setTimeout(() => {
+          getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
+            if (item?.callUUID === callUUID) {
+              await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
 
               RNCallKeep.reportEndCallWithUUID(callUUID, 2);
-            });
-
-            RNCallKeep.addEventListener('endCall', async () => {
-              BackgroundTimer.clearTimeout(timeoutId);
-
-              await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
-
-              RNCallKeep.backToForeground();
-            });
-          })
-          .catch((e) => {
-            console.log('Error while initializing call keep: ', e);
+            }
           });
+        }, 60000);
       }
     }
   } else {
@@ -182,11 +152,21 @@ const displayAppointmentNotification = async (title, startDate, endDate) => {
 }
 
 const displayIncomingCall = (callUUID, remoteMessage) => {
-  const handle = remoteMessage.data.title;
-  const localizedCallerName = remoteMessage.data.title;
-  const hasVideo = remoteMessage.data.body.includes('video');
+  try {
+    const handle = remoteMessage.data.title;
+    const localizedCallerName = remoteMessage.data.title;
+    const hasVideo = remoteMessage.data.body.includes('video');
 
-  RNCallKeep.displayIncomingCall(callUUID, handle, localizedCallerName, 'generic', hasVideo);
+    RNCallKeep.displayIncomingCall(
+      callUUID,
+      handle,
+      localizedCallerName,
+      'generic',
+      hasVideo,
+    );
+  } catch (error) {
+    console.error('displayIncomingCall failed:', error.message);
+  }
 };
 
 const HeadlessCheck = ({isHeadless}) => {

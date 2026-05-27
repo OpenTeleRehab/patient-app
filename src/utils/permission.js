@@ -3,28 +3,35 @@ import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import RNCallKeep from 'react-native-callkeep';
 import messaging from '@react-native-firebase/messaging';
 
-export const requestCallPermission = () => {
-  const options = {
-    ios: {
-      appName: 'PatientApp',
-      imageName: 'sim_icon',
-      supportsVideo: true,
-      maximumCallGroups: '1',
-      maximumCallsPerCallGroup: '1',
-    },
-    android: {
-      alertTitle: 'Permissions required',
-      alertDescription: 'This application needs to access your phone accounts',
-      cancelButton: 'Cancel',
-      okButton: 'ok',
-      additionalPermissions: [
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      ],
-    },
-  };
+export const requestCallPermission = async () => {
+  try {
+    const options = {
+      ios: {
+        appName: 'PatientApp',
+        imageName: 'sim_icon',
+        maximumCallGroups: '1',
+        maximumCallsPerCallGroup: '1',
+      },
+      android: {
+        alertTitle: 'Permissions required',
+        alertDescription: 'This application needs to access your phone accounts',
+        cancelButton: 'Cancel',
+        okButton: 'ok',
+        additionalPermissions: [
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        ],
+      },
+    };
 
-  RNCallKeep.setup(options).then();
+    // Setup RNCallKeep
+    await RNCallKeep.setup(options);
+
+    // Make outgoing calls via the native phone app
+    RNCallKeep.setAvailable(true);
+  } catch (error) {
+    console.error('initializeCallKeep error:', error.message);
+  }
 };
 
 export const requestNotificationPermission = () => {
