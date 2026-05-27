@@ -36,7 +36,7 @@ export const setupPinNumberRequest = (pin) => async (dispatch, getState) => {
 
   if (registerAs === USER_ROLE.HEALTH_WORKER) {
     const accessToken = getState().register.tempAccessToken;
-    const result = await callTherapistApi('/user/profile', accessToken);
+    const result = await callTherapistApi('/user/profile', accessToken, {language_id: language});
 
     if (result) {
       response = {
