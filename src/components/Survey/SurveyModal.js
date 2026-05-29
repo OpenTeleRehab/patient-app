@@ -7,6 +7,7 @@ import {
   Divider,
   withTheme,
   Text,
+  Image,
 } from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import {submitSurvey, skipSurvey} from '../../store/survey/actions';
@@ -24,6 +25,7 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
   const translate = getTranslate(localize);
   const {accessToken, profile} = useSelector((state) => state.user);
   const {treatmentPlan} = useSelector((state) => state.activity);
+  const {adminApiBaseURL} = useSelector((state) => state.phone);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [currentQuestion, setCurrentQuestion] = useState();
@@ -290,6 +292,13 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
           <Divider style={[styles.marginBottomMd, styles.marginTop]} />
           {currentQuestion && (
             <>
+              {currentQuestion.file && (
+                <Image
+                  source={{uri: `${adminApiBaseURL}/file/${currentQuestion.file.id}`}}
+                  style={[styles.width100, styles.height110, styles.marginBottomMd]}
+                  resizeMode='contain'
+                />
+              )}
               <Text style={styles.fontWeightBold}>
                 {currentQuestion.title}{' '}
                 {!!currentQuestion.mandatory && <Text>*</Text>}
