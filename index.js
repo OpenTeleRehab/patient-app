@@ -17,6 +17,7 @@ import {Text} from 'react-native-elements';
 import notifee from '@notifee/react-native';
 import moment from 'moment';
 import settings from './config/settings';
+import store from './src/store';
 
 ReactNativeText.defaultProps = {
   ...ReactNativeText.defaultProps,
@@ -53,61 +54,11 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     } else {
-      const callUUID = uuid.v4();
-
-      const callInfo = {
-        callUUID,
-        rid: remoteMessage.data.rid,
-        _id: remoteMessage.data._id,
-        body: remoteMessage.data.body,
-      };
-
-      await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
-      await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
-      await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
-
-      if (Platform.OS === 'ios') {
-        displayIncomingCall(callUUID, remoteMessage);
-      } else {
-        // Registers android ui events
-        RNCallKeep.registerAndroidEvents();
-
-        // Display incoming calls system ui
-        displayIncomingCall(callUUID, remoteMessage);
-
-        // Tell ConnectionService that the device is ready to make outgoing calls
-        RNCallKeep.setAvailable(true);
-
-        // Answer call listener
-        RNCallKeep.addEventListener('answerCall', async () => {
-          BackgroundTimer.clearTimeout(timeoutId);
-
-          await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
-
-          RNCallKeep.backToForeground();
-
-          RNCallKeep.reportEndCallWithUUID(callUUID, 2);
-        });
-
-        // End call listener
-        RNCallKeep.addEventListener('endCall', async () => {
-          BackgroundTimer.clearTimeout(timeoutId);
-
-          await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
-
-          RNCallKeep.backToForeground();
-        });
-
-        const timeoutId = BackgroundTimer.setTimeout(() => {
-          getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
-            if (item?.callUUID === callUUID) {
-              await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-
-              RNCallKeep.reportEndCallWithUUID(callUUID, 2);
-            }
-          });
-        }, 60000);
+      if (store.getState().rocketchat?.videoCall?.rid) {
+        return;
       }
+
+      await didReceiveStartCallAction(remoteMessage.data);
     }
   } else {
     // Message without data handled in the background
@@ -151,11 +102,66 @@ const displayAppointmentNotification = async (title, startDate, endDate) => {
   });
 }
 
-const displayIncomingCall = (callUUID, remoteMessage) => {
+const didReceiveStartCallAction = async (data) => {
+  const {rid, _id, body} = data;
+
+  const callUUID = uuid.v4();
+
+  const callInfo = {callUUID, rid, _id, body};
+
+  await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
+  await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
+  await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
+
+  if (Platform.OS === 'ios') {
+    displayIncomingCall(callUUID, data);
+  } else {
+    // Registers android ui events
+    RNCallKeep.registerAndroidEvents();
+
+    // Display incoming calls system ui
+    displayIncomingCall(callUUID, data);
+
+    // Tell ConnectionService that the device is ready to make outgoing calls
+    RNCallKeep.setAvailable(true);
+
+    // Answer call listener
+    RNCallKeep.addEventListener('answerCall', async () => {
+      BackgroundTimer.clearTimeout(timeoutId);
+
+      await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
+
+      RNCallKeep.backToForeground();
+
+      RNCallKeep.reportEndCallWithUUID(callUUID, 2);
+    });
+
+    // End call listener
+    RNCallKeep.addEventListener('endCall', async () => {
+      BackgroundTimer.clearTimeout(timeoutId);
+
+      await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
+
+      RNCallKeep.backToForeground();
+    });
+
+    const timeoutId = BackgroundTimer.setTimeout(() => {
+      getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
+        if (item?.callUUID === callUUID) {
+          await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+
+          RNCallKeep.reportEndCallWithUUID(callUUID, 2);
+        }
+      });
+    }, 60000);
+  }
+};
+
+const displayIncomingCall = (callUUID, data) => {
   try {
-    const handle = remoteMessage.data.title;
-    const localizedCallerName = remoteMessage.data.title;
-    const hasVideo = remoteMessage.data.body.includes('video');
+    const handle = data.title;
+    const localizedCallerName = data.title;
+    const hasVideo = data.body.includes('video');
 
     RNCallKeep.displayIncomingCall(
       callUUID,
