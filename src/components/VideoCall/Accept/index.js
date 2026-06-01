@@ -2,7 +2,6 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState, useRef, useContext} from 'react';
-import RNCallKeep from 'react-native-callkeep';
 import {
   AppState,
   NativeModules,
@@ -164,6 +163,8 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
             twilioRef.current
               .setLocalAudioEnabled(!isMute && hasVoicePermission)
               .then((isEnabled) => setIsAudioEnabled(isEnabled));
+
+            setStatus('connected');
           }
         })
         .finally(() => setIsConnecting(false));
@@ -512,7 +513,12 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   };
 
   const _onRoomParticipantDidConnect = (participant) => {
-    setParticipants([...participants, participant]);
+    setParticipants((prev) => [
+      ...prev.filter(
+        (item) => item.participant.sid !== participant.participant.sid,
+      ),
+      participant,
+    ]);
   };
 
   const _onRoomParticipantDidDisconnect = (participant) => {
@@ -592,13 +598,38 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
 
   const handleCancelPermissionPopup = () => {
     if (forcePermissionMessagePopup) {
-      getLocalData(STORAGE_KEY.CALL_INFO, true).then((callInfo) => {
-        try {
-          callInfo.callUUID && RNCallKeep.endCall(callInfo.callUUID);
-        } catch {}
-      });
-      _onEndButtonPress();
+      const message = {
+        _id: videoCall._id,
+        rid: videoCall.rid,
+        user: {
+          _id: videoCall.u._id,
+          username: videoCall.u.username,
+        },
+        text:
+          videoCall.status === CALL_STATUS.AUDIO_STARTED
+            ? CALL_STATUS.AUDIO_ENDED
+            : CALL_STATUS.VIDEO_ENDED,
+      };
+      dispatch(updateTextMessage(chatSocket, message, false));
+
+      // Cleanup call access token
+      dispatch(clearCallAccessToken());
+
+      // Cleanup video call status
+      dispatch(clearVideoCallStatus());
+
+      // Hide incoming/accepted call
+      dispatch(mutation.showIncomingCall(false));
+      dispatch(mutation.showAcceptedCall(false));
+
+      // Reset started/accepted call
+      dispatch(mutation.hasStartedCall(false));
+      dispatch(mutation.hasAcceptedCall(false));
+
+      // Cleanup call info
+      cleanupCallInfo();
     }
+
     setPermissionSettingPopup(false);
   };
 

@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  Platform,
   TouchableOpacity,
 } from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
@@ -71,7 +70,6 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
   const {loading} = useSelector((state) => state.patient);
   const {definedCountries, countries} = useSelector((state) => state.country);
   const [countryPhoneCode, setCountryPhoneCode] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState('');
   const [pendingTransfers, setPendingTransfers] = useState([]);
   const [errorPhoneExist, setErrorPhoneExist] = useState(false);
@@ -643,19 +641,13 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                           'phc.patient.date_of_birth.placeholder',
                         )}
                         value={dateValue}
-                        mode="date"
-                        onSetDate={(event, selectedDate) => {
-                          setShowDatePicker(Platform.OS === 'ios');
-                          if (selectedDate) {
-                            onChange(formatDate(selectedDate));
-                            setDateValue(moment(selectedDate).toDate());
-                          }
-                        }}
-                        show={showDatePicker}
-                        onClickIcon={() => setShowDatePicker(true)}
+                        maximumDate={new Date()}
                         labelStyle={componentStyles.labelStyle}
                         inputStyle={componentStyles.inputStyle}
-                        maximumDate={new Date()}
+                        onSetDate={(value) => {
+                          onChange(formatDate(value));
+                          setDateValue(moment(value).toDate());
+                        }}
                       />
                     );
                   }}

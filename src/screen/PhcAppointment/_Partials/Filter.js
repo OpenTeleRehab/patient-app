@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, Button, Icon, Divider, withTheme} from 'react-native-elements';
-import {StyleSheet, View, Platform} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
 import DatePicker from '../../../components/Common/DatePicker';
@@ -14,7 +14,6 @@ import variables from '../../../assets/styles/variables';
 const Filter = ({theme, filters, setFilters, setShowFilter}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState();
   const defaultValues = {
     date: '',
@@ -68,19 +67,13 @@ const Filter = ({theme, filters, setFilters, setShowFilter}) => {
                 label={translate('phc.appointment.date')}
                 placeholder={translate('phc.appointment.date.placeholder')}
                 value={dateValue}
-                mode="date"
-                onSetDate={(event, selectedDate) => {
-                  setShowDatePicker(Platform.OS === 'ios');
-                  if (selectedDate) {
-                    onChange(formatDate(selectedDate));
-                    setDateValue(moment(selectedDate).toDate());
-                  }
-                }}
-                show={showDatePicker}
-                onClickIcon={() => setShowDatePicker(true)}
+                maximumDate={new Date()}
                 labelStyle={componentStyles.labelStyle}
                 inputStyle={componentStyles.inputStyle}
-                maximumDate={new Date()}
+                onSetDate={(value) => {
+                  onChange(formatDate(value));
+                  setDateValue(moment(value).toDate());
+                }}
               />
             );
           }}

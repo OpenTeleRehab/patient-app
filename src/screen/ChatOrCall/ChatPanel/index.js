@@ -64,7 +64,7 @@ const ChatPanel = ({navigation, theme}) => {
   useEffect(() => {
     let intervalID;
 
-    if (isOnlineMode) {
+    if (isOnlineMode && selectedRoom?.rid && profile?.id) {
       intervalID = setInterval(() => {
         if (chatSocket && chatSocket.OPEN === chatSocket.readyState) {
           loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
@@ -87,7 +87,7 @@ const ChatPanel = ({navigation, theme}) => {
     return () => {
       clearInterval(intervalID);
     };
-  }, [chatAuth, chatSocket, dispatch, profile.id, selectedRoom, isOnlineMode]);
+  }, [chatAuth, chatSocket, dispatch, profile, selectedRoom, isOnlineMode]);
 
   useEffect(() => {
     const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
