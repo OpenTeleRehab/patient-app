@@ -364,8 +364,8 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
         _id: videoCall._id,
         rid: videoCall.rid,
         user: {
-          _id: videoCall.u._id,
-          username: videoCall.u.username,
+          _id: videoCall.u?._id,
+          username: videoCall.u?.username,
         },
         text:
           videoCall.status === CALL_STATUS.AUDIO_STARTED
@@ -650,7 +650,6 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
           <LocalParticipant
             isVideoEnabled={isVideoEnabled}
             participants={participants}
-            callDuration={callDuration}
             showAutoEndCallHint={showAutoEndCallHint}
           />
           <FlatList
