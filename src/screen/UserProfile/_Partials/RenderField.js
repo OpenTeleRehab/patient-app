@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useState} from 'react';
-import {Platform, View} from 'react-native';
+import {View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text} from 'react-native-elements';
@@ -19,7 +19,6 @@ const RenderField = ({control, field, error}) => {
   const localize = useSelector((state) => state.localize);
   const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState(field.value);
 
   if (field.type === 'datepicker') {
@@ -55,17 +54,11 @@ const RenderField = ({control, field, error}) => {
             <DatePicker
               label={translate('date.of.birth')}
               value={dateValue}
-              mode="date"
-              onSetDate={(event, selectedDate) => {
-                setShowDatePicker(Platform.OS === 'ios');
-                if (selectedDate) {
-                  onChange(formatDate(selectedDate));
-                  setDateValue(moment(selectedDate).toDate());
-                }
-              }}
-              show={showDatePicker}
               disabled={field.disabled}
-              onClickIcon={() => setShowDatePicker(true)}
+              onSetDate={(value) => {
+                onChange(formatDate(value));
+                setDateValue(moment(value).toDate());
+              }}
             />
           );
         }}

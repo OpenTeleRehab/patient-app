@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, Button, Icon, Divider, withTheme} from 'react-native-elements';
-import {StyleSheet, View, Platform} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
@@ -20,8 +20,6 @@ const Filter = ({theme, filters, setShowFilter}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const [showFromDatePicker, setShowFromDatePicker] = useState(false);
-  const [showToDatePicker, setShowToDatePicker] = useState(false);
   const [fromDateValue, setFromDateValue] = useState('');
   const [toDateValue, setToDateValue] = useState('');
   const defaultValues = {
@@ -137,20 +135,14 @@ const Filter = ({theme, filters, setShowFilter}) => {
                     label={translate('phc.patient.from_date')}
                     placeholder={translate('phc.patient.from_date.placeholder')}
                     value={fromDateValue}
-                    mode="date"
-                    onSetDate={(event, selectedDate) => {
-                      setShowFromDatePicker(Platform.OS === 'ios');
-                      if (selectedDate) {
-                        onChange(formatDate(selectedDate));
-                        setFromDateValue(moment(selectedDate).toDate());
-                        setToDateValue('');
-                      }
-                    }}
-                    show={showFromDatePicker}
-                    onClickIcon={() => setShowFromDatePicker(true)}
+                    maximumDate={new Date()}
                     labelStyle={componentStyles.labelStyle}
                     inputStyle={componentStyles.inputStyle}
-                    maximumDate={new Date()}
+                    onSetDate={(value) => {
+                      onChange(formatDate(value));
+                      setFromDateValue(moment(value).toDate());
+                      setToDateValue('');
+                    }}
                   />
                 );
               }}
@@ -166,20 +158,14 @@ const Filter = ({theme, filters, setShowFilter}) => {
                     label={translate('phc.patient.to_date')}
                     placeholder={translate('phc.patient.to_date.placeholder')}
                     value={toDateValue}
-                    mode="date"
-                    onSetDate={(event, selectedDate) => {
-                      setShowToDatePicker(Platform.OS === 'ios');
-                      if (selectedDate) {
-                        onChange(formatDate(selectedDate));
-                        setToDateValue(moment(selectedDate).toDate());
-                      }
-                    }}
-                    show={showToDatePicker}
-                    onClickIcon={() => setShowToDatePicker(true)}
-                    labelStyle={componentStyles.labelStyle}
-                    inputStyle={componentStyles.inputStyle}
                     maximumDate={new Date()}
                     minimumDate={fromDateValue || undefined}
+                    labelStyle={componentStyles.labelStyle}
+                    inputStyle={componentStyles.inputStyle}
+                    onSetDate={(value) => {
+                      onChange(formatDate(value));
+                      setToDateValue(moment(value).toDate());
+                    }}
                   />
                 );
               }}

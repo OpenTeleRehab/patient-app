@@ -1,69 +1,85 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
+import React, {useState} from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {Platform, StyleSheet} from 'react-native';
 import {Input} from 'react-native-elements';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import {formatDate, formatTime} from '../../../utils/helper';
-import styles from '../../../assets/styles';
+import colors from '../../../assets/styles/variables/colors';
 
 const DatePicker = (props) => {
   const {
     label,
     value,
-    mode,
-    onSetDate,
-    show,
     disabled,
-    rightIcon,
-    onClickIcon,
-    labelStyle,
     placeholder,
-    inputStyle,
+    mode = 'date',
     maximumDate,
     minimumDate,
     is24Hour,
+    labelStyle,
+    inputStyle,
+    inputContainerStyle,
+    onSetDate,
   } = props;
 
-  let inputRightIcon = rightIcon || {
-    name: 'calendar-today',
+  const [showPicker, setShowPicker] = useState(false);
+
+  const rightIcon = {
+    name: mode === 'time' ? 'clock-outline' : 'calendar-month',
     type: 'material-community',
-    color: '#575757',
+    color: disabled ? colors.grey : colors.grey1,
+    disabled: disabled,
+    disabledStyle: {
+      backgroundColor: 'transparent',
+    },
+    onPress: () => setShowPicker(!showPicker),
   };
 
-  if (!disabled && onClickIcon) {
-    inputRightIcon = {
-      ...inputRightIcon,
-      onPress: () => onClickIcon(),
-    };
-  }
+  const onChange = (event, selectedDate) => {
+    // Check if the user canceled
+    if (event === 'dismissed') {
+      // Logic for when the user clicks 'Cancel' or dismisses the picker
+      setShowPicker(false);
+      return false;
+    }
+    setShowPicker(Platform.OS === 'ios'); // On iOS, keep the picker open if desired
+    onSetDate(selectedDate);
+  };
 
   return (
     <>
       <Input
-        disabled
+        disabled={true}
+        accessible={true}
+        accessibilityLabel={label}
         label={label}
         placeholder={placeholder}
-        value={value ? mode === 'date' ? formatDate(value) : formatTime(value) : ''}
-        rightIcon={inputRightIcon}
+        value={
+          value ? (mode === 'date' ? formatDate(value) : formatTime(value)) : ''
+        }
         labelStyle={labelStyle ? labelStyle : componentStyles.labelStyle}
+        rightIcon={rightIcon}
+        inputStyle={inputStyle}
         containerStyle={componentStyles.containerStyle}
-        inputContainerStyle={componentStyles.inputContainerStyle}
+        inputContainerStyle={{
+          ...componentStyles.inputContainerStyle,
+          ...inputContainerStyle,
+        }}
         disabledInputStyle={componentStyles.disabledInputStyle}
         renderErrorMessage={false}
-        inputStyle={inputStyle}
       />
-      {show && (
+      {showPicker && (
         <DateTimePicker
           value={value || new Date()}
           mode={mode}
           is24Hour={is24Hour ?? true}
           display="default"
-          onChange={onSetDate}
-          style={Platform.OS === 'ios' ? styles.dateTimePickerContainer : null}
           maximumDate={maximumDate}
           minimumDate={minimumDate}
+          onChange={onChange}
+          style={Platform.OS === 'ios' && componentStyles.dateTimePicker}
         />
       )}
     </>
@@ -73,13 +89,7 @@ const DatePicker = (props) => {
 const componentStyles = StyleSheet.create({
   containerStyle: {
     paddingHorizontal: 0,
-    marginBottom: 12,
-  },
-  inputContainerStyle: {
-    backgroundColor: '#E6E8EA',
-    borderRadius: 6,
-    borderBottomWidth: 0,
-    paddingHorizontal: 8,
+    marginBottom: 8,
   },
   labelStyle: {
     color: '#333333',
@@ -87,11 +97,17 @@ const componentStyles = StyleSheet.create({
     fontWeight: 400,
     marginBottom: 8,
   },
+  inputContainerStyle: {
+    backgroundColor: '#E6E8EA',
+    borderRadius: 6,
+    borderBottomWidth: 0,
+    paddingHorizontal: 8,
+  },
+  dateTimePicker: {
+    height: 50,
+  },
   disabledInputStyle: {
     opacity: 1,
-  },
-  errorStyle: {
-    marginHorizontal: 0,
   },
 });
 

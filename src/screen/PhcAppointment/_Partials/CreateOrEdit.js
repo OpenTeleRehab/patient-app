@@ -3,7 +3,7 @@
  */
 import React, {useEffect, useState} from 'react';
 import {Button, Divider, Text, CheckBox} from 'react-native-elements';
-import {Platform, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import styles from '../../../assets/styles';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import {getTranslate} from 'react-localize-redux';
@@ -41,10 +41,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
   const {professions} = useSelector((state) => state.profession);
   const {loading} = useSelector((state) => state.phcAppointment);
   const {referralTherapists} = useSelector((state) => state.therapist);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState(moment().toDate());
-  const [showFromTimePicker, setShowFromTimePicker] = useState(false);
-  const [showToTimePicker, setShowToTimePicker] = useState(false);
   const [date, setDate] = useState(moment().toDate());
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
@@ -446,20 +443,14 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
                 <DatePicker
                   placeholder={translate('phc.appointment.date.placeholder')}
                   value={dateValue}
-                  mode="date"
-                  onSetDate={(event, selectedDate) => {
-                    setShowDatePicker(Platform.OS === 'ios');
-                    if (selectedDate) {
-                      onChange(formatDate(selectedDate));
-                      setDate(moment(selectedDate).toDate());
-                      setDateValue(moment(selectedDate).toDate());
-                    }
-                  }}
-                  show={showDatePicker}
-                  onClickIcon={() => setShowDatePicker(true)}
+                  minimumDate={new Date()}
                   labelStyle={componentStyles.labelStyle}
                   inputStyle={componentStyles.inputStyle}
-                  minimumDate={new Date()}
+                  onSetDate={(event, selectedDate) => {
+                    onChange(formatDate(selectedDate));
+                    setDate(moment(selectedDate).toDate());
+                    setDateValue(moment(selectedDate).toDate());
+                  }}
                 />
               );
             }}
@@ -501,26 +492,15 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
                   placeholder={translate('phc.appointment.from.placeholder')}
                   value={fromTime}
                   mode="time"
-                  onSetDate={(event, selectedTime) => {
-                    setShowFromTimePicker(Platform.OS === 'ios');
-                    if (selectedTime) {
-                      onChange(selectedTime);
-                      setFromTime(selectedTime);
-                      setToTime(moment(selectedTime).add(toTimeIncreaseNum, 'minutes').toDate());
-                      setValue('toTime', moment(selectedTime).add(toTimeIncreaseNum, 'minutes').toDate());
-                    }
-                  }}
-                  show={showFromTimePicker}
-                  rightIcon={{
-                    name: 'clock-time-twelve-outline',
-                    type: 'material-community',
-                    color: '#575757',
-                    size: 28,
-                  }}
-                  onClickIcon={() => setShowFromTimePicker(true)}
+                  is24Hour={false}
                   labelStyle={componentStyles.labelStyle}
                   inputStyle={componentStyles.inputStyle}
-                  is24Hour={false}
+                  onSetDate={(value) => {
+                    onChange(value);
+                    setFromTime(value);
+                    setToTime(moment(value).add(toTimeIncreaseNum, 'minutes').toDate());
+                    setValue('toTime', moment(value).add(toTimeIncreaseNum, 'minutes').toDate());
+                  }}
                 />
               );
             }}
@@ -565,24 +545,13 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
                   placeholder={translate('phc.appointment.to.placeholder')}
                   value={toTime}
                   mode="time"
-                  onSetDate={(event, selectedTime) => {
-                    setShowToTimePicker(Platform.OS === 'ios');
-                    if (selectedTime) {
-                      onChange(selectedTime);
-                      setToTime(selectedTime);
-                    }
-                  }}
-                  show={showToTimePicker}
-                  rightIcon={{
-                    name: 'clock-time-twelve-outline',
-                    type: 'material-community',
-                    color: '#575757',
-                    size: 28,
-                  }}
-                  onClickIcon={() => setShowToTimePicker(true)}
+                  is24Hour={false}
                   labelStyle={componentStyles.labelStyle}
                   inputStyle={componentStyles.inputStyle}
-                  is24Hour={false}
+                  onSetDate={(value) => {
+                    onChange(value);
+                    setToTime(value);
+                  }}
                 />
               );
             }}

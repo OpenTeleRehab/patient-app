@@ -2,15 +2,15 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Divider, Text, Input} from 'react-native-elements';
-import {Alert, Platform, ToastAndroid, View} from 'react-native';
+import {Button, Divider, Text} from 'react-native-elements';
+import {Alert, Platform, StyleSheet, ToastAndroid, View} from 'react-native';
 import styles from '../../../assets/styles';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import {formatDate, formatTime} from '../../../utils/helper';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from '../../../components/Common/DatePicker';
 import {
   getAppointmentsListRequest,
   requestAppointment,
@@ -29,9 +29,6 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const profile = useSelector((state) => state.user.profile);
   const {therapists, phcWorkers} = useSelector((state) => state.therapist);
   const {professions} = useSelector((state) => state.profession);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showFromTimePicker, setShowFromTimePicker] = useState(false);
-  const [showToTimePicker, setShowToTimePicker] = useState(false);
   const [therapistId, setTherapistId] = useState(profile.therapist_id);
   const [date, setDate] = useState(moment().toDate());
   const [fromTime, setFromTime] = useState('');
@@ -89,19 +86,6 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
     setFromTime('');
     setToTime('');
     visible(false);
-  };
-
-  const handleShowDatePicker = () => {
-    setShowDatePicker(true);
-    !date && setDate(moment().toDate());
-  };
-
-  const handleShowFromTimePicker = () => {
-    setShowFromTimePicker(true);
-  };
-
-  const handleShowToTimePicker = () => {
-    setShowToTimePicker(true);
   };
 
   const handleRequestAppoint = () => {
@@ -246,30 +230,6 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
     }
   };
 
-  const onSetDate = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
-  const onSetFromTime = (event, selectedTime) => {
-    setShowFromTimePicker(Platform.OS === 'ios');
-    if (selectedTime) {
-      setFromTime(selectedTime);
-      setToTime(
-        moment(selectedTime).add(toTimeIncreaseNum, 'minutes').toDate(),
-      );
-    }
-  };
-
-  const onSetToTime = (event, selectedTime) => {
-    setShowToTimePicker(Platform.OS === 'ios');
-    if (selectedTime) {
-      setToTime(selectedTime);
-    }
-  };
-
   const handleTypeChange = (value) => {
     setType(value);
     setErrorType(false);
@@ -403,60 +363,35 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             />
           </View>
         )}
+
         <View style={styles.formGroup}>
-          <Input
-            accessible={true}
-            accessibilityLabel={translate('appointment.label.date')}
+          <DatePicker
+            label={translate('appointment.label.date')}
             placeholder={translate('appointment.placeholder.date')}
-            label={<Text>{translate('appointment.label.date')}</Text>}
-            labelStyle={styles.formLabel}
-            disabled
-            value={date ? formatDate(date) : ''}
-            rightIcon={{
-              name: 'calendar-today',
-              type: 'material-community',
-              color: '#575757',
-              size: 28,
-              onPress: handleShowDatePicker,
-            }}
-            containerStyle={styles.formControlDate}
-            inputContainerStyle={styles.noneBorderBottom}
-            disabledInputStyle={styles.formControlDateInput}
+            value={date}
+            minimumDate={moment().toDate()}
+            is24Hour
+            inputContainerStyle={componentStyles.datePickerInputContainerStyle}
+            onSetDate={setDate}
           />
           <Divider />
         </View>
-        {showDatePicker && (
-          <DateTimePicker
-            accessible={true}
-            value={date}
-            minimumDate={moment().toDate()}
-            mode="date"
-            is24Hour={true}
-            onChange={onSetDate}
-            style={
-              Platform.OS === 'ios'
-                ? styles.appointmentDateTimePickerContainer
-                : null
-            }
-          />
-        )}
+
         <View style={styles.formGroup}>
-          <Input
+          <DatePicker
+            label={translate('appointment.label.from')}
             placeholder={translate('appointment.placeholder.start')}
-            label={<Text>{translate('appointment.label.from')}</Text>}
-            labelStyle={styles.formLabel}
-            disabled
-            value={fromTime ? formatTime(fromTime) : ''}
-            rightIcon={{
-              name: 'clock-time-twelve-outline',
-              type: 'material-community',
-              color: '#575757',
-              size: 28,
-              onPress: () => handleShowFromTimePicker(),
+            value={fromTime}
+            mode="time"
+            minimumDate={moment().toDate()}
+            is24Hour={false}
+            inputContainerStyle={componentStyles.datePickerInputContainerStyle}
+            onSetDate={(value) => {
+              setFromTime(value);
+              setToTime(
+                moment(value).add(toTimeIncreaseNum, 'minutes').toDate(),
+              );
             }}
-            containerStyle={styles.formControlDate}
-            inputContainerStyle={styles.noneBorderBottom}
-            disabledInputStyle={styles.formControlDateInput}
           />
           {errorFromTimeRequired && (
             <Text style={styles.textDanger}>
@@ -469,40 +404,23 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             </Text>
           )}
           <Divider
-            style={[styles.marginTop, errorFromTime || errorFromTimeRequired ? styles.bgDanger : null]}
+            style={[
+              styles.marginTop,
+              errorFromTime || errorFromTimeRequired ? styles.bgDanger : null,
+            ]}
           />
         </View>
-        {showFromTimePicker && (
-          <DateTimePicker
-            value={fromTime || moment().toDate()}
-            maximumDate={toTime}
-            mode="time"
-            is24Hour={false}
-            onChange={onSetFromTime}
-            style={
-              Platform.OS === 'ios'
-                ? styles.appointmentDateTimePickerContainer
-                : null
-            }
-          />
-        )}
+
         <View style={styles.formGroup}>
-          <Input
+          <DatePicker
+            label={translate('appointment.label.to')}
             placeholder={translate('appointment.placeholder.end')}
-            label={<Text>{translate('appointment.label.to')}</Text>}
-            labelStyle={styles.formLabel}
-            disabled
-            value={toTime ? formatTime(toTime) : ''}
-            rightIcon={{
-              name: 'clock-time-three-outline',
-              type: 'material-community',
-              color: fromTime ? '#575757' : '#ADADAD',
-              size: 28,
-              onPress: () => fromTime && handleShowToTimePicker(),
-            }}
-            containerStyle={styles.formControlDate}
-            inputContainerStyle={styles.noneBorderBottom}
-            disabledInputStyle={styles.formControlDateInput}
+            value={toTime}
+            mode="time"
+            minimumDate={moment().toDate()}
+            is24Hour={false}
+            inputContainerStyle={componentStyles.datePickerInputContainerStyle}
+            onSetDate={setToTime}
           />
           {errorToTimeRequired && (
             <Text style={styles.textDanger}>
@@ -515,24 +433,13 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             </Text>
           )}
           <Divider
-            style={[styles.marginTop, errorToTime || errorToTimeRequired ? styles.bgDanger : null]}
+            style={[
+              styles.marginTop,
+              errorToTime || errorToTimeRequired ? styles.bgDanger : null,
+            ]}
           />
         </View>
-        {showToTimePicker && (
-          <DateTimePicker
-            value={
-              toTime || moment().add(toTimeIncreaseNum, 'minutes').toDate()
-            }
-            mode="time"
-            is24Hour={false}
-            onChange={onSetToTime}
-            style={
-              Platform.OS === 'ios'
-                ? styles.appointmentDateTimePickerContainer
-                : null
-            }
-          />
-        )}
+
         <View style={styles.formGroup}>
           <View
             style={[styles.marginTop, styles.appointmentOverlayButtonsWrapper]}>
@@ -554,5 +461,12 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
     </CommonOverlay>
   );
 };
+
+const componentStyles = StyleSheet.create({
+  datePickerInputContainerStyle: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 0,
+  },
+});
 
 export default SubmitRequestOverlay;
