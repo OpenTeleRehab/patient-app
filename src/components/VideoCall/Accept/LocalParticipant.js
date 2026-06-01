@@ -5,14 +5,12 @@ import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Icon, Text, withTheme} from 'react-native-elements';
 import {TwilioVideoLocalView} from 'react-native-twilio-video-webrtc';
-import {formatCallDuration} from '../../../utils/chat';
 import styles from '../../../assets/styles';
 
 const LocalParticipant = ({
   theme,
   isVideoEnabled,
   participants,
-  callDuration,
   showAutoEndCallHint,
 }) => {
   const insets = useSafeAreaInsets();
@@ -50,9 +48,6 @@ const LocalParticipant = ({
           <Icon reverse name="person" color={theme.colors.primary} />
           <Text style={styles.textLight}>
             {profile.last_name} {profile.first_name}
-          </Text>
-          <Text style={styles.textLight}>
-            {formatCallDuration(callDuration)}
           </Text>
         </>
       )}
