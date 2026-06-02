@@ -17,7 +17,6 @@ import {Text} from 'react-native-elements';
 import notifee from '@notifee/react-native';
 import moment from 'moment';
 import settings from './config/settings';
-import store from './src/store';
 
 ReactNativeText.defaultProps = {
   ...ReactNativeText.defaultProps,
@@ -54,10 +53,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     } else {
-      if (store.getState().rocketchat?.videoCall?.rid) {
-        return;
-      }
-
+      // TODO: No need to display incoming call if call is active
       await didReceiveStartCallAction(remoteMessage.data);
     }
   } else {
