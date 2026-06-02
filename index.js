@@ -17,6 +17,7 @@ import {Text} from 'react-native-elements';
 import notifee from '@notifee/react-native';
 import moment from 'moment';
 import settings from './config/settings';
+import store from './src/store';
 
 ReactNativeText.defaultProps = {
   ...ReactNativeText.defaultProps,
@@ -53,7 +54,6 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
 
       await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
     } else {
-      // TODO: No need to display incoming call if call is active
       await didReceiveStartCallAction(remoteMessage.data);
     }
   } else {
@@ -99,10 +99,24 @@ const displayAppointmentNotification = async (title, startDate, endDate) => {
 }
 
 const didReceiveStartCallAction = async (data) => {
+  const videoCall = store.getState().rocketchat?.videoCall;
+
+  if (
+    videoCall?.status &&
+    videoCall?.startAt &&
+    videoCall.status.endsWith('started') &&
+    Date.now() - videoCall.startAt < 60 * 1000
+  ) {
+    return;
+  }
+
+  if (videoCall?.status?.endsWith('accepted')) {
+    return;
+  }
+
   const {rid, _id, body} = data;
 
   const callUUID = uuid.v4();
-
   const callInfo = {callUUID, rid, _id, body};
 
   await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
