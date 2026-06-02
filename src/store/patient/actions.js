@@ -157,6 +157,7 @@ export const syncPatientOffline = (payload) => async (dispatch, getState) => {
       item.status === OFFLINE_STATUS.PENDING_CREATE ||
       item.status === OFFLINE_STATUS.PENDING_UPDATE,
   );
+
   if (offlinePatients?.length > 0) {
     await dispatch(syncOfflineCreatePatient(offlinePatients));
   }
@@ -205,6 +206,7 @@ export const syncOfflineCreatePatient =
   (offlinePatients) => async (dispatch, getState) => {
     const {offlineInterviews} = getState().screeningQuestionnaire;
     const {accessToken} = getState().user;
+    let updatedOfflineInterviews = [...offlineInterviews];
 
     for (const item of offlinePatients) {
       const {patientsForPhcWorker} = getState().patient;
@@ -230,11 +232,11 @@ export const syncOfflineCreatePatient =
               mutation.patientsForPhcWorkerFetchSuccess(updatePatientList),
             );
             if (
-              offlineInterviews?.length > 0 &&
-              item.status.include('create')
+              updatedOfflineInterviews.length > 0 &&
+              item.status.includes('create')
             ) {
-              const updateOfflineInterviews = updateListItem(
-                offlineInterviews,
+              updatedOfflineInterviews = updateListItem(
+                updatedOfflineInterviews,
                 (interview) => interview.userId === item.id,
                 {
                   status: 'user-duplicate',
@@ -242,7 +244,7 @@ export const syncOfflineCreatePatient =
               );
               await dispatch(
                 questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
-                  updateOfflineInterviews,
+                  updatedOfflineInterviews,
                 ),
               );
             }
@@ -266,15 +268,15 @@ export const syncOfflineCreatePatient =
                 accessToken,
               );
               if (res.success) {
-                if (offlineInterviews?.length > 0) {
-                  const updateOfflineInterviews = updateListItem(
-                    offlineInterviews,
+                if (updatedOfflineInterviews.length > 0) {
+                  updatedOfflineInterviews = updateListItem(
+                    updatedOfflineInterviews,
                     (interview) => interview.userId === item.id,
-                    {userId: res.data.id},
+                    {userId: res.data.id, status: OFFLINE_STATUS.PENDING_CREATE},
                   );
                   await dispatch(
                     questionnaireMutation.submitScreeningQuestionnaireOfflineSuccess(
-                      updateOfflineInterviews,
+                      updatedOfflineInterviews,
                     ),
                   );
                 }
