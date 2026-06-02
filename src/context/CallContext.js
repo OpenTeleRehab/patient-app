@@ -143,11 +143,12 @@ export const CallContextProvider = ({children}) => {
 
     if (appStateVisible === 'active') {
       onStartedCallEvent().then();
-      onAcceptCallEvent().then();
-      onBusyCallEvent().then();
-      onMissedCallEvent().then();
-      onEndedCallEvent().then();
     }
+
+    onAcceptCallEvent().then();
+    onMissedCallEvent().then();
+    onBusyCallEvent().then();
+    onEndedCallEvent().then();
   }, [
     accessToken,
     appStateVisible,

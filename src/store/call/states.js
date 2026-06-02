@@ -4,4 +4,5 @@
 export const initialState = {
   accepted: false,
   rejected: false,
+  isVideo: false,
 };

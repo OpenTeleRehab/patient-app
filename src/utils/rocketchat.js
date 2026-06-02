@@ -136,7 +136,15 @@ export const initialChatSocket = (
             if (checkCallBusy(u._id, msg)) {
               updateMessage(socket, {_id, rid, msg: CALL_STATUS.BUSY}, profile.id);
             } else {
-              dispatch(updateVideoCallStatus({_id, rid, status: msg, u}));
+              dispatch(
+                updateVideoCallStatus({
+                  _id,
+                  rid,
+                  status: msg,
+                  u,
+                  startAt: Date.now(),
+                }),
+              );
             }
           }
 
