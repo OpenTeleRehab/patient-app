@@ -48,7 +48,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to your microphone for making calls</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Camera Permission</string>
+	<string>We need access to your photo library for send attachments in chat messages</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
