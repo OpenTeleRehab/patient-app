@@ -122,7 +122,7 @@ const createFirebaseToken = async (accessToken, payload) => {
   return await callApi(
     '/auth/create-firebase-token',
     accessToken,
-    {firebase_token: payload},
+    payload,
     'post',
   );
 };

@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
+import DeviceInfo from 'react-native-device-info';
+import RNLocalize from 'react-native-localize';
+import messaging from '@react-native-firebase/messaging';
 import {User} from '../../services/user';
 import {mutation} from './mutations';
 import settings from '../../../config/settings';
@@ -9,8 +12,6 @@ import _ from 'lodash';
 import {storeLocalData} from '../../utils/local_storage';
 import {STORAGE_KEY, USER_ROLE} from '../../variables/constants';
 import {callApi, callTherapistApi} from '../../utils/request';
-import RNLocalize from 'react-native-localize';
-import messaging from '@react-native-firebase/messaging';
 
 export const verifyPhoneNumberRequest = (to, code, email, countryCode) => async (dispatch) => {
     dispatch(mutation.userVerifyPhoneNumberRequest());
@@ -349,8 +350,12 @@ export const generateFirebaseToken = (accessToken) => async (dispatch) => {
   dispatch(mutation.userCreateFirebaseTokenRequest());
 
   const fcmToken = await messaging().getToken();
+  const deviceId = await DeviceInfo.getUniqueId();
 
-  let data = await User.createFirebaseToken(accessToken, fcmToken);
+  let data = await User.createFirebaseToken(accessToken, {
+    firebase_token: fcmToken,
+    device_id: deviceId,
+  });
 
   if (data.success) {
     dispatch(mutation.userCreateFirebaseTokenSuccess(data.data));
