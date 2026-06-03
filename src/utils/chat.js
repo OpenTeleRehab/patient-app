@@ -40,11 +40,11 @@ export const getPhcChatRooms = () => {
 };
 
 export const checkCallBusy = (userId, msg) => {
-  const {chatAuth, videoCall} = store.getState().rocketchat;
+  const {chatAuth, showIncomingCall, showAcceptedCall} = store.getState().rocketchat;
 
   return (
     chatAuth.userId !== userId &&
-    videoCall?.status &&
+    (showIncomingCall || showAcceptedCall) &&
     [...CALL_STARTED_STATUSES, CALL_STATUS.BUSY].includes(msg)
   );
 };
