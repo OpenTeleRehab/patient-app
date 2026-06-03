@@ -34,10 +34,11 @@ const HeaderBar = (props) => {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsOnline(state.isConnected);
+      setIsOnline(state.isConnected && state.isInternetReachable);
     });
-    unsubscribe();
-  });
+
+    return () => unsubscribe();
+  }, []);
 
   const renderLeftComponent = () => {
     if (onGoBack) {
