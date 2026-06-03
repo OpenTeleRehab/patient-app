@@ -265,9 +265,7 @@ const AppointmentCard = ({theme, appointment}) => {
             </Text>
             {appointment.note && (
               <View style={componentStyle.noteContainer}>
-                <Text
-                  numberOfLines={1}
-                >
+                <Text>
                   {appointment.note}
                 </Text>
               </View>
