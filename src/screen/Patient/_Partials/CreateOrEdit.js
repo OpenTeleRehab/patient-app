@@ -367,6 +367,9 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     setPendingTransfers(
       pendingTransfers.filter((item) => item.therapist_id !== therapistId),
     );
+    setSelectedSupplementary(
+      selectedSupplementary.filter((item) => item !== therapistId),
+    );
     if (id) {
       dispatch(deletePendingSupplementary(id)).then((response) => {
         if (response.success) {
@@ -848,7 +851,9 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                       const updatedAssigned = value.filter((id) =>
                         selected.includes(id),
                       );
-                      setSelectedSupplementary([...value, ...selected]);
+                      setSelectedSupplementary((prev) => [
+                        ...new Set([...prev, ...newlySelected]),
+                      ]);
                       onChange(updatedAssigned);
                     }}
                     renderSelectedItem={renderSelectedItem}
