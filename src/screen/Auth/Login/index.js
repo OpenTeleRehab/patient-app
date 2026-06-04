@@ -77,10 +77,7 @@ const Login = ({navigation}) => {
     if (passCode === pin) {
       dispatch(loginRequest()).then((loginResult) => {
         if (loginResult.success) {
-          if (
-            !loginResult.acceptedTermOfService ||
-            !loginResult.acceptedPrivacyPolicy
-          ) {
+          if (!loginResult.acceptedTerm || !loginResult.acceptedPolicy) {
             navigation.navigate(ROUTES.TERM_OF_SERVICE);
           }
         } else {
