@@ -52,8 +52,8 @@ export const setupPinNumberRequest = (pin) => async (dispatch, getState) => {
       pin,
       phone,
       getState().user.otpCode,
-      getState().user.termOfService.id,
-      getState().user.privacyPolicy.id,
+      getState().user.termOfService?.id,
+      getState().user.privacyPolicy?.id,
       language,
       countryCode,
     );
@@ -145,11 +145,12 @@ export const loginRequest = () => async (dispatch, getState) => {
       const latestPolicy = getState().user.privacyPolicy;
 
       const acceptedTerm =
-        _.isEmpty(latestTerm) || latestTerm.id === currentAcceptedTermId;
+        _.isEmpty(latestTerm) || latestTerm?.id === currentAcceptedTermId;
       const acceptedPolicy =
         _.isEmpty(latestPolicy) || latestPolicy?.id === currentAcceptedPolicyId;
 
       if (!acceptedTerm || !acceptedPolicy) {
+        response.data.profile.token = response.data.token;
         response.data.token = '';
       }
 
@@ -305,6 +306,7 @@ export const acceptTermOfServiceRequest =
       id,
       getState().user.profile.token,
     );
+
     if (data.success) {
       dispatch(mutation.acceptTermOfServiceSuccess(data.data));
       return true;

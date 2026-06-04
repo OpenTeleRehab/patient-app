@@ -27,7 +27,7 @@ const TermOfServiceDetail = ({navigation}) => {
         <View>
           {(
             <HTML
-              source={{html: termContent.content}}
+              source={{html: termContent?.content}}
               contentWidth={contentWidth}
               tagsStyles={tagsStyles}
             />
