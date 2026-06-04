@@ -217,11 +217,7 @@ export const prependNewMessage = (payload) => async (dispatch, getState) => {
   if (chatRoom) {
     if (selectedRoom?.rid === payload.rid) {
       if (isOnChatScreen) {
-        const existingMessage = chatRoom.messages.find((item) => item._id === payload._id);
-
-        if (!existingMessage) {
-          dispatch(mutation.prependNewMessageSuccess(payload));
-        }
+        dispatch(mutation.prependNewMessageSuccess(payload));
 
         chatRoom.unreads = 0;
       } else {

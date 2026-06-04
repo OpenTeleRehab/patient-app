@@ -70,12 +70,18 @@ export const rocketchat = (state = initialState, action) => {
     }
     case 'PREPEND_NEW_MESSAGE_SUCCEED': {
       const chatRooms = [...state.chatRooms];
-      const fIndex = chatRooms.findIndex((item) => item.rid === action.data.rid);
+      const crIndex = chatRooms.findIndex((item) => item.rid === action.data.rid);
+      const msgIndex = chatRooms[crIndex].messages.findIndex((item) => item._id === action.data._id);
+      const existingMsg = chatRooms[crIndex].messages.find((item) => item._id === action.data._id);
 
-      chatRooms[fIndex].messages = [action.data, ...chatRooms[fIndex].messages];
+      if (existingMsg) {
+        chatRooms[crIndex].messages[msgIndex].text = action.data.text;
+      } else {
+        chatRooms[crIndex].messages = [action.data, ...chatRooms[crIndex].messages];
+      }
 
       return Object.assign({}, state, {
-        messages: [action.data, ...state.messages],
+        messages: chatRooms[crIndex].messages,
         chatRooms: [...chatRooms],
       });
     }
