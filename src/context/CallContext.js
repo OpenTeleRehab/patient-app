@@ -123,6 +123,7 @@ export const CallContextProvider = ({children}) => {
       if (CALL_MISSED_STATUSES.includes(videoCall.status) && !hasParticipant) {
         dispatch(mutation.showIncomingCall(false));
         dispatch(mutation.hasAcceptedCall(false));
+        dispatch(mutation.hasStartedCall(false));
 
         dispatch(clearCallAccessToken());
         dispatch(clearVideoCallStatus());
