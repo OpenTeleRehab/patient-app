@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   Alert,
@@ -50,26 +50,48 @@ const Register = ({theme, navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [countryPhoneCode, setCountryPhoneCode] = useState('');
-  const [countryIsoCode, setCountryIsoCode] = useState('');
   const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
+  const [defaultCountryCode, setDefaultCountryCode] = useState('');
+  const countryCodeRef = useRef('');
 
   const shouldRegister = registerAsSelectedIndex === 0
     ? phoneNumber
     : email && password;
 
-  useEffect(() => {
-    DeviceCountry.getCountryCode().then((result) => {
-      if (result && result.code) {
-        const code = result.code.toUpperCase();
-        const country = _.find(definedCountries, {iso_code: code});
+  const countryItems = useMemo(
+    () =>
+      definedCountries?.map((country) => ({
+        label: `${country.name} (+${country.phone_code})`,
+        value: country.iso_code,
+        key: country.iso_code,
+        inputLabel: `+${country.phone_code}`,
+      })) ?? [],
+    [definedCountries],
+  );
 
-        setCountryPhoneCode(country?.phone_code);
-        setCountryIsoCode(code);
-      }
-    });
+  useEffect(() => {
+    if (!definedCountries?.length) {
+      return;
+    }
+
+    const fallbackCountryCode = definedCountries[0].iso_code;
+
+    const applyPhoneCode = (countryCode) => {
+      setDefaultCountryCode(countryCode);
+      countryCodeRef.current = countryCode;
+    };
+
+    DeviceCountry.getCountryCode()
+      .then((result) => {
+        const countryCode = _.find(definedCountries, {iso_code: result?.code?.toUpperCase()})?.iso_code ?? fallbackCountryCode;
+
+        applyPhoneCode(countryCode);
+      })
+      .catch(() => {
+        applyPhoneCode(fallbackCountryCode);
+      });
   }, [definedCountries]);
 
   useEffect(() => {
@@ -89,22 +111,13 @@ const Register = ({theme, navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (definedCountries && definedCountries.length) {
-      setCountryPhoneCode(definedCountries[0].phone_code);
-    }
-  }, [definedCountries]);
-
-  useEffect(() => {
     if (languages && languages.length) {
       setLanguage(languages[0].id);
     }
   }, [languages]);
 
-  const handleCountryCodeChange = (isoCode) => {
-    const selectedCountry = _.find(definedCountries, {iso_code: isoCode});
-
-    setCountryPhoneCode(selectedCountry?.phone_code);
-    setCountryIsoCode(isoCode);
+  const handleCountryCodeChange = (countryCode) => {
+    countryCodeRef.current = countryCode;
   };
 
   const handleLanguageChange = (lang) => {
@@ -121,15 +134,8 @@ const Register = ({theme, navigation}) => {
     if (registerAsSelectedIndex === 0) {
       setErrorPhoneNumber(false);
 
-      let mobileNumber = '';
-
-      if (phoneNumber.startsWith(countryPhoneCode)) {
-        mobileNumber = phoneNumber.replace(countryPhoneCode, '');
-      } else {
-        mobileNumber = phoneNumber;
-      }
-
-      const formattedNumber = countryPhoneCode + parseInt(mobileNumber, 10);
+      const countryPhoneCode = _.find(definedCountries, {iso_code: countryCodeRef.current})?.phone_code;
+      const formattedNumber = `${countryPhoneCode}${parseInt(phoneNumber, 10)}`;
 
       dispatch(getPhoneRequest({phone: formattedNumber})).then((phone) => {
         if (phone) {
@@ -291,18 +297,11 @@ const Register = ({theme, navigation}) => {
                     accessibilityLabel={translate('register.phone.label')}
                     style={componentStyles.phoneCountryCodeContainerStyle}>
                     <SelectPicker
+                      key={`phone_code_${defaultCountryCode}`}
                       placeholder={{}}
-                      value={countryIsoCode}
+                      itemKey={defaultCountryCode}
                       onValueChange={handleCountryCodeChange}
-                      items={
-                        countryPhoneCode
-                          ? definedCountries.map((country) => ({
-                              label: `${country.name} (+${country.phone_code})`,
-                              value: country.iso_code,
-                              inputLabel: `+${country.phone_code}`,
-                            }))
-                          : []
-                      }
+                      items={countryItems}
                       accessibilityLabel={translate('register.phone.label')}
                     />
                   </View>
