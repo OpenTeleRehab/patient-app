@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useMemo} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -17,16 +17,14 @@ import AppointmentSection from './AppointmentSection';
 const NewRequestedAppointmentList = ({appointments}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const [groupAppointments,setGroupAppointments]=useState([]);
 
-  useEffect(() => {
-    const groupedData = _.chain(appointments)
+  const groupAppointments = useMemo(() => {
+    return _.chain(appointments)
       .groupBy((item) =>
         moment.utc(item.start_date).local().format('MMMM YYYY'),
       )
       .map((value, key) => ({month: key, appointments: value}))
       .value();
-    setGroupAppointments(groupedData);
   }, [appointments]);
 
   return (

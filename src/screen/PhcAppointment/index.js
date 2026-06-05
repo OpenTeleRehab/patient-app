@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {BottomSheet, Icon, Divider, withTheme} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,7 +16,6 @@ import {
 } from '../../store/phcAppointment/actions';
 import {getTranslate} from 'react-localize-redux';
 import Filter from './_Partials/Filter';
-import moment from 'moment/moment';
 import styles from '../../assets/styles';
 import CreateOrEditAppointment from './_Partials/CreateOrEdit';
 import {getAllPatientsRequest} from '../../store/patient/actions';
@@ -32,35 +31,35 @@ const PhcAppointment = ({navigation, theme}) => {
   const {phcAppointmentsWithPatient, phcAppointments, filters} = useSelector((state) => state.phcAppointment);
   const {profile} = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState(0);
-  const [currentFilters, setCurrentFilters] = useState(filters);
   const [showFilter, setShowFilter] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const tabs = ['appointments', 'new_requested_appointments'];
 
   const sortByStartDate = (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
 
-  const appointments = [
-    ...(phcAppointmentsWithPatient?.approves ?? []),
-    ...(phcAppointments?.approves ?? []),
-  ].sort(sortByStartDate);
+  const appointments = useMemo(() => {
+    return [
+      ...(phcAppointmentsWithPatient?.approves ?? []),
+      ...(phcAppointments?.approves ?? []),
+    ].sort(sortByStartDate);
+  }, [phcAppointmentsWithPatient, phcAppointments]);
 
-  const newAppointments = [
-    ...(phcAppointmentsWithPatient?.newAppointments ?? []),
-    ...(phcAppointments?.newAppointments ?? []),
-  ].sort(sortByStartDate);
+  const newAppointments = useMemo(() => {
+    return [
+      ...(phcAppointmentsWithPatient?.newAppointments ?? []),
+      ...(phcAppointments?.newAppointments ?? []),
+    ].sort(sortByStartDate);
+  }, [phcAppointmentsWithPatient, phcAppointments]);
 
   useEffect(() => {
-    if (!_.isEmpty(currentFilters)) {
-      dispatch(getAppointmentsWithPatientRequest(currentFilters));
-      dispatch(getAppointmentsRequest(currentFilters));
+    if (filters && !_.isEmpty(filters)) {
+      dispatch(getAppointmentsWithPatientRequest(filters));
+      dispatch(getAppointmentsRequest(filters));
     } else {
-      const now = new Date();
-      const formattedNow = moment(now).utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
-      const formattedDate = moment(now).utc().locale('en').format('DD/MM/YYYY');
-      dispatch(getAppointmentsWithPatientRequest({date: formattedDate, now: formattedNow}));
-      dispatch(getAppointmentsRequest({date: formattedDate, now: formattedNow}));
+      dispatch(getAppointmentsWithPatientRequest());
+      dispatch(getAppointmentsRequest());
     }
-  }, [currentFilters, dispatch]);
+  }, [filters, dispatch]);
 
   useEffect(() => {
     dispatch(getAllPatientsRequest({page_size: 1000, enabled: true}));
@@ -134,7 +133,7 @@ const PhcAppointment = ({navigation, theme}) => {
         )}
       </View>
       <BottomSheet isVisible={showFilter}>
-        <Filter filters={currentFilters} setFilters={setCurrentFilters} setShowFilter={setShowFilter} />
+        <Filter filters={filters} setShowFilter={setShowFilter} />
       </BottomSheet>
       {showForm && (
         <CreateOrEditAppointment visible={showForm} setVisible={setShowForm} navigation={navigation} />
