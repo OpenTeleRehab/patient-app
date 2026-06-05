@@ -128,7 +128,9 @@ export const CallContextProvider = ({children}) => {
         dispatch(clearCallAccessToken());
         dispatch(clearVideoCallStatus());
 
-        await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        if (appStateVisible === 'active') {
+          await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        }
       }
     };
 
@@ -136,7 +138,7 @@ export const CallContextProvider = ({children}) => {
     const onEndedCallEvent = async () => {
       if (CALL_ENDED_STATUSES.includes(videoCall.status)) {
         if (callAccessToken === undefined) {
-          // Cleanup video call
+          dispatch(mutation.showIncomingCall(false));
           dispatch(clearVideoCallStatus());
         }
       }
@@ -188,8 +190,15 @@ export const CallContextProvider = ({children}) => {
       };
 
       dispatch(updateTextMessage(chatSocket, message));
-      dispatch(getCallAccessToken(videoCall.u._id));
-      dispatch(mutation.showAcceptedCall(true));
+
+      dispatch(getCallAccessToken(videoCall.u._id)).then(res => {
+        if (res) {
+          dispatch(mutation.showAcceptedCall(true));
+        } else {
+          dispatch(mutation.showIncomingCall(false));
+          dispatch(mutation.hasAcceptedCall(false));
+        }
+      });
     } else {
       const callInfo = {
         _id: videoCall._id,

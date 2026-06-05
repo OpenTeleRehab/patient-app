@@ -141,7 +141,7 @@ const AppProvider = ({children}) => {
   }, [dispatch, loading, language]);
 
   useEffect(() => {
-    if (profile.identity && profile.chat_password) {
+    if (profile && profile.id && profile.identity && profile.chat_password) {
       const subscribeIds = {
         loginId: getUniqueId(profile.id),
         roomMessageId: getUniqueId(profile.id),
@@ -152,19 +152,20 @@ const AppProvider = ({children}) => {
       dispatch(setChatSubscribeIds(subscribeIds));
 
       // Initial chat socket
-      chatSocket = initialChatSocket(
-        dispatch,
-        subscribeIds,
-        profile.identity,
-        profile.chat_password,
-        (newSocket) => {
-          chatSocket = newSocket; // Update the reference
-
-          setSocket(newSocket);
-        },
-      );
+      setTimeout(() => {
+        chatSocket = initialChatSocket(
+          dispatch,
+          subscribeIds,
+          profile.identity,
+          profile.chat_password,
+          (newSocket) => {
+            chatSocket = newSocket; // Update the reference
+            setSocket(newSocket);
+          },
+        );
+      }, 1000);
     }
-  }, [dispatch, profile.chat_password, profile.id, profile.identity]);
+  }, [dispatch, profile]);
 
   useEffect(() => {
     const hasUnreadMessage = chatRooms.some((room) => room.unreads);
