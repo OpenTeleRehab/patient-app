@@ -17,7 +17,6 @@ export const initialState = {
     rid: '',
     status: '',
     u: {},
-    startAt: 0,
   },
   offlineMessages: [],
 };

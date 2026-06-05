@@ -142,7 +142,6 @@ export const initialChatSocket = (
                   rid,
                   status: msg,
                   u,
-                  startAt: Date.now(),
                 }),
               );
             }

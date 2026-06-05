@@ -248,10 +248,10 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
       if (participants && participants.length > 0) {
         setShowAutoEndCallHint(false);
       } else {
-        if (callDuration >= 30) {
+        if (callDuration >= 15) {
           setShowAutoEndCallHint(true);
         }
-        if (callDuration >= 40) {
+        if (callDuration >= 20) {
           stopCallTimer();
 
           const message = {
@@ -425,6 +425,9 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
     // Reset started/accepted call
     dispatch(mutation.hasStartedCall(false));
     dispatch(mutation.hasAcceptedCall(false));
+
+    // Reset has participant
+    setHasParticipant(false);
 
     // Cleanup call info
     cleanupCallInfo();

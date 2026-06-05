@@ -34,6 +34,8 @@ TextInput.defaultProps = {
   maxFontSizeMultiplier: 1.4,
 };
 
+const activeCalls = new Set();
+
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (remoteMessage && Object.keys(remoteMessage.data).length > 0) {
     if (remoteMessage.data.event_type === 'appointment') {
@@ -48,12 +50,24 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     ) {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
-      if (callInfo?.callUUID) {
-        RNCallKeep.reportEndCallWithUUID(callInfo.callUUID, 2);
+      if (callInfo._id === remoteMessage.data._id) {
+        removeCall(callInfo?.callUUID);
+        await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+      }
+    } else {
+      const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
+      const videoCall = store.getState().rocketchat?.videoCall;
+      const showIncomingCall = store.getState().rocketchat?.showIncomingCall;
+      const showAcceptedCall = store.getState().rocketchat?.showAcceptedCall;
+
+      if (activeCalls.has(callInfo?.callUUID)) {
+        return;
       }
 
-      await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-    } else {
+      if (videoCall && (showIncomingCall || showAcceptedCall)) {
+        return;
+      }
+
       await didReceiveStartCallAction(remoteMessage.data);
     }
   } else {
@@ -99,25 +113,12 @@ const displayAppointmentNotification = async (title, startDate, endDate) => {
 }
 
 const didReceiveStartCallAction = async (data) => {
-  const videoCall = store.getState().rocketchat?.videoCall;
-
-  if (
-    videoCall?.status &&
-    videoCall?.startAt &&
-    videoCall.status.endsWith('started') &&
-    Date.now() - videoCall.startAt < 60 * 1000
-  ) {
-    return;
-  }
-
-  if (videoCall?.status?.endsWith('accepted')) {
-    return;
-  }
-
   const {rid, _id, body} = data;
 
   const callUUID = uuid.v4();
   const callInfo = {callUUID, rid, _id, body};
+
+  activeCalls.add(callUUID);
 
   await storeLocalData(STORAGE_KEY.CALL_INFO, callInfo, true);
   await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
@@ -143,7 +144,7 @@ const didReceiveStartCallAction = async (data) => {
 
       RNCallKeep.backToForeground();
 
-      RNCallKeep.reportEndCallWithUUID(callUUID, 2);
+      removeCall(callUUID);
     });
 
     // End call listener
@@ -153,6 +154,8 @@ const didReceiveStartCallAction = async (data) => {
       await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
 
       RNCallKeep.backToForeground();
+
+      activeCalls.delete(callUUID);
     });
 
     const timeoutId = BackgroundTimer.setTimeout(() => {
@@ -160,7 +163,7 @@ const didReceiveStartCallAction = async (data) => {
         if (item?.callUUID === callUUID) {
           await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
 
-          RNCallKeep.reportEndCallWithUUID(callUUID, 2);
+          removeCall(callUUID);
         }
       });
     }, 60000);
@@ -173,6 +176,8 @@ const displayIncomingCall = (callUUID, data) => {
     const localizedCallerName = data.title;
     const hasVideo = data.body.includes('video');
 
+    activeCalls.add(callUUID);
+
     RNCallKeep.displayIncomingCall(
       callUUID,
       handle,
@@ -183,6 +188,12 @@ const displayIncomingCall = (callUUID, data) => {
   } catch (error) {
     console.error('displayIncomingCall failed:', error.message);
   }
+};
+
+const removeCall = (callUUID) => {
+  activeCalls.delete(callUUID);
+
+  RNCallKeep.reportEndCallWithUUID(callUUID, 2);
 };
 
 const HeadlessCheck = ({isHeadless}) => {
