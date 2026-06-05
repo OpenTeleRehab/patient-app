@@ -87,6 +87,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
         type: appointment?.type ?? null,
       });
       setDate(moment.utc(appointment.start_date).local().toDate());
+      setDateValue(moment.utc(appointment.start_date).local().toDate());
       setFromTime(moment.utc(appointment.start_date).local().toDate());
       setToTime(moment.utc(appointment.end_date).local().toDate());
     }
@@ -446,7 +447,7 @@ const CreateOrEditAppointment = ({visible, setVisible, appointment}) => {
                   minimumDate={new Date()}
                   labelStyle={componentStyles.labelStyle}
                   inputStyle={componentStyles.inputStyle}
-                  onSetDate={(event, selectedDate) => {
+                  onSetDate={(selectedDate) => {
                     onChange(formatDate(selectedDate));
                     setDate(moment(selectedDate).toDate());
                     setDateValue(moment(selectedDate).toDate());

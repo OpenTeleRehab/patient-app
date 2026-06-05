@@ -21,14 +21,16 @@ export const phcAppointment = (state = initialState, action) => {
     case 'APPOINTMENTS_WITH_PATIENT_FETCH_SUCCEED':
       return Object.assign({}, state, {
         phcAppointmentsWithPatient: action.data,
-        filters: action.filters,
         loading: false,
       });
     case 'APPOINTMENTS_FETCH_SUCCEED':
       return Object.assign({}, state, {
         phcAppointments: action.data,
-        filters: action.filters,
         loading: false,
+      });
+    case 'UPDATE_FILTERS_SUCCEED':
+      return Object.assign({}, state, {
+        filters: action.data,
       });
     case 'APPOINTMENTS_WITH_PATIENT_FETCH_FAILED':
     case 'UPDATE_APPOINTMENT_WITH_PATIENT_STATUS_SUCCEED':

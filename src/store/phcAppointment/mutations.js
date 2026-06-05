@@ -7,11 +7,10 @@ const appointmentsWithPatientFetchRequest = () => {
   };
 };
 
-const appointmentsWithPatientFetchSuccess = (data, filters) => {
+const appointmentsWithPatientFetchSuccess = (data) => {
   return {
     type: 'APPOINTMENTS_WITH_PATIENT_FETCH_SUCCEED',
     data,
-    filters,
   };
 };
 
@@ -27,11 +26,10 @@ const appointmentsFetchRequest = () => {
   };
 };
 
-const appointmentsFetchSuccess = (data, filters) => {
+const appointmentsFetchSuccess = (data) => {
   return {
     type: 'APPOINTMENTS_FETCH_SUCCEED',
     data,
-    filters,
   };
 };
 
@@ -239,6 +237,13 @@ const updateAppointmentWithPatientUnreadStatusFailure = () => {
   };
 };
 
+const updateFiltersSuccess = (data) => {
+  return {
+    type: 'UPDATE_FILTERS_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   appointmentsWithPatientFetchRequest,
   appointmentsWithPatientFetchSuccess,
@@ -279,4 +284,5 @@ export const mutation = {
   updateAppointmentWithPatientUnreadStatusRequest,
   updateAppointmentWithPatientUnreadStatusSuccess,
   updateAppointmentWithPatientUnreadStatusFailure,
+  updateFiltersSuccess,
 };

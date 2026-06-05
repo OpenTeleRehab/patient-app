@@ -10,9 +10,12 @@ import {formatDate} from '../../../utils/helper';
 import moment from 'moment/moment';
 import {_} from 'lodash';
 import variables from '../../../assets/styles/variables';
+import {updateFilters} from '../../../store/phcAppointment/actions';
+import {useDispatch} from 'react-redux';
 
-const Filter = ({theme, filters, setFilters, setShowFilter}) => {
+const Filter = ({theme, filters, setShowFilter}) => {
   const localize = useSelector((state) => state.localize);
+  const dispatch = useDispatch();
   const translate = getTranslate(localize);
   const [dateValue, setDateValue] = useState();
   const defaultValues = {
@@ -38,15 +41,14 @@ const Filter = ({theme, filters, setFilters, setShowFilter}) => {
       const date = moment().utc().locale('en').format('DD/MM/YYYY');
       const selected_from_date = data.date ? moment.utc(moment(data.date, 'DD/MM/YYYY').startOf('day')).locale('en').format('YYYY-MM-DD HH:mm:ss') : null;
       const selected_to_date = data.date ? moment.utc(moment(data.date, 'DD/MM/YYYY').endOf('day')).locale('en').format('YYYY-MM-DD HH:mm:ss') : null;
-      setFilters({date, now, selected_from_date, selected_to_date});
+      dispatch(updateFilters({date, now, selected_from_date, selected_to_date}));
     }
     setShowFilter(false);
   };
 
   const handleReset = () => {
-    setDateValue('');
-    reset({date: ''});
-    setFilters({});
+    reset();
+    dispatch(updateFilters({}));
     setShowFilter(false);
   };
 

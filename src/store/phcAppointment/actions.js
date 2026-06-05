@@ -3,6 +3,8 @@
  */
 import {PhcAppointment} from '../../services/phcAppointment';
 import {mutation} from './mutations';
+import moment from 'moment/moment';
+import _ from 'lodash';
 
 export const getAppointmentsWithPatientRequest = (payload) => async (
   dispatch,
@@ -10,9 +12,12 @@ export const getAppointmentsWithPatientRequest = (payload) => async (
 ) => {
   dispatch(mutation.appointmentsWithPatientFetchRequest());
   const {accessToken} = getState().user;
-  const res = await PhcAppointment.getAppointmentsWithPatient({...payload}, accessToken);
+  const now = new Date();
+  const formattedNow = moment(now).utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
+  const formattedDate = moment(now).utc().locale('en').format('DD/MM/YYYY');
+  const res = await PhcAppointment.getAppointmentsWithPatient(!_.isEmpty(payload) ? {...payload} : {date: formattedDate, now: formattedNow}, accessToken);
   if (res.success) {
-    dispatch(mutation.appointmentsWithPatientFetchSuccess(res.data, payload));
+    dispatch(mutation.appointmentsWithPatientFetchSuccess(res.data));
   } else {
     dispatch(mutation.appointmentsWithPatientFetchFailure());
   }
@@ -24,9 +29,12 @@ export const getAppointmentsRequest = (payload) => async (
 ) => {
   dispatch(mutation.appointmentsFetchRequest());
   const {accessToken} = getState().user;
-  const res = await PhcAppointment.getAppointments({...payload}, accessToken);
+  const now = new Date();
+  const formattedNow = moment(now).utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
+  const formattedDate = moment(now).utc().locale('en').format('DD/MM/YYYY');
+  const res = await PhcAppointment.getAppointments(!_.isEmpty(payload) ? {...payload} : {date: formattedDate, now: formattedNow}, accessToken);
   if (res.success) {
-    dispatch(mutation.appointmentsFetchSuccess(res.data, payload));
+    dispatch(mutation.appointmentsFetchSuccess(res.data));
   } else {
     dispatch(mutation.appointmentsFetchFailure());
   }
@@ -183,4 +191,8 @@ export const updateAppointmentUnreadStatus = (payload) => async (dispatch, getSt
     dispatch(mutation.updateAppointmentUnreadStatusFailure());
     return {success: false, message: data.message};
   }
+};
+
+export const updateFilters = (payload) => (dispatch) => {
+  dispatch(mutation.updateFiltersSuccess(payload));
 };
