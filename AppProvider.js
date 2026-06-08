@@ -38,6 +38,7 @@ import {
 import {syncPatientOffline} from './src/store/patient/actions';
 import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
+import {useGetChatRooms} from './src/hook/useGetChatRooms';
 
 let chatSocket = null;
 
@@ -47,7 +48,7 @@ const AppProvider = ({children}) => {
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
-  const {chatRooms} = useSelector((state) => state.rocketchat);
+  const {chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
   const {transfers} = useSelector((state) => state.transfer);
   const localize = useSelector((state) => state.localize);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
@@ -61,6 +62,9 @@ const AppProvider = ({children}) => {
 
   // Trigger appointment notifications
   useAppointmentNotifications(dispatch, profile);
+
+  // Get chat rooms
+  useGetChatRooms(dispatch, accessToken, chatAuth);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);

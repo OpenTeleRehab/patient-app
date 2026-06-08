@@ -41,9 +41,20 @@ export const rocketchat = (state = initialState, action) => {
         chatAuth: action.data,
       });
     }
+    case 'GET_CHAT_ROOMS_REQUEST': {
+      return Object.assign({}, state, {
+        isLoading: true,
+      });
+    }
     case 'GET_CHAT_ROOMS_SUCCEED': {
       return Object.assign({}, state, {
         chatRooms: action.data,
+        isLoading: false,
+      });
+    }
+    case 'GET_CHAT_ROOMS_FAILED': {
+      return Object.assign({}, state, {
+        isLoading: false,
       });
     }
     case 'GET_CALL_ACCESS_TOKEN_SUCCEED': {

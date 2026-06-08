@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {ListItem, Badge, Icon, Text} from 'react-native-elements';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {ScrollView, StyleSheet, View} from 'react-native';
@@ -25,7 +26,7 @@ const ChatRoomList = ({navigation}) => {
   const isOnline = useNetInfo().isConnected;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {chatAuth} = useSelector((state) => state.rocketchat);
+  const {chatAuth, isLoading} = useSelector((state) => state.rocketchat);
   const {professions} = useSelector((state) => state.profession);
   const [defaultExpanded, setDefaultExpanded] = useState([
     'patients',
@@ -143,6 +144,12 @@ const ChatRoomList = ({navigation}) => {
               )}
             </View>
           ))}
+          <Spinner
+            visible={isLoading}
+            textContent={translate('common.loading')}
+            overlayColor="rgba(0, 0, 0, 0.75)"
+            textStyle={styles.textLight}
+          />
         </ScrollView>
       )}
     </>
