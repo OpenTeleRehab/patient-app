@@ -14,7 +14,6 @@ import {
 } from 'react-native-elements';
 import moment from 'moment/min/moment-with-locales';
 import {useNetInfo} from '@react-native-community/netinfo';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import {View, Alert, StyleSheet} from 'react-native';
 import styles from '../../../assets/styles';
@@ -35,7 +34,6 @@ const AppointmentCard = ({theme, appointment}) => {
   const translate = getTranslate(localize);
   const showToast = useShowToast();
   const {profile} = useSelector((state) => state.user);
-  const {loading} = useSelector((state) => state.phcAppointment);
   const {therapist_status, patient_status, requester_status, recipient_status} = appointment;
   const netInfo = useNetInfo();
   const dispatch = useDispatch();
@@ -363,11 +361,6 @@ const AppointmentCard = ({theme, appointment}) => {
               />
             </View>
           )}
-          <Spinner
-            visible={loading}
-            overlayColor="rgba(0, 0, 0, 0.18)"
-            textStyle={styles.textLight}
-          />
         </ListItem.Content>
       </ListItem>
       {showEditForm && (
