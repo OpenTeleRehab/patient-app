@@ -4,7 +4,7 @@
 import {callApi} from '../utils/request';
 
 const getPatientChatRooms = async (accessToken) => {
- return await callApi('/patient/list-for-chatroom', accessToken);
+  return await callApi('/patient/list-for-chatroom', accessToken);
 };
 
 const getPhcWorkerChatRooms = async (accessToken) => {

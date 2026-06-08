@@ -97,6 +97,7 @@ const blacklistTransform = createTransform(
         'showAcceptedCall',
         'hasStartedCall',
         'hasAcceptedCall',
+        'isLoading',
       ]);
     } else if (key === 'register') {
       inboundStateData = _.omit(inboundState, [

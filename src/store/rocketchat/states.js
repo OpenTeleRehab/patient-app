@@ -19,4 +19,5 @@ export const initialState = {
     u: {},
   },
   offlineMessages: [],
+  isLoading: false,
 };
