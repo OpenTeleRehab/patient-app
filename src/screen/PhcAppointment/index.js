@@ -2,7 +2,7 @@
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
 import React, {useEffect, useMemo, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Text, ActivityIndicator} from 'react-native';
 import {BottomSheet, Icon, Divider, withTheme} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
@@ -28,7 +28,7 @@ const PhcAppointment = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {phcAppointmentsWithPatient, phcAppointments, filters} = useSelector((state) => state.phcAppointment);
+  const {phcAppointmentsWithPatient, phcAppointments, filters, loading} = useSelector((state) => state.phcAppointment);
   const {profile} = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState(0);
   const [showFilter, setShowFilter] = useState(false);
@@ -52,13 +52,8 @@ const PhcAppointment = ({navigation, theme}) => {
   }, [phcAppointmentsWithPatient, phcAppointments]);
 
   useEffect(() => {
-    if (filters && !_.isEmpty(filters)) {
-      dispatch(getAppointmentsWithPatientRequest(filters));
-      dispatch(getAppointmentsRequest(filters));
-    } else {
-      dispatch(getAppointmentsWithPatientRequest());
-      dispatch(getAppointmentsRequest());
-    }
+    dispatch(getAppointmentsWithPatientRequest(filters));
+    dispatch(getAppointmentsRequest(filters));
   }, [filters, dispatch]);
 
   useEffect(() => {
@@ -138,6 +133,11 @@ const PhcAppointment = ({navigation, theme}) => {
       {showForm && (
         <CreateOrEditAppointment visible={showForm} setVisible={setShowForm} navigation={navigation} />
       )}
+      {loading && (
+        <View style={componentStyles.loadingContainer}>
+          <ActivityIndicator size="large" color={variables.grey3} />
+        </View>
+      )}
     </>
   );
 };
@@ -199,6 +199,18 @@ const componentStyles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: variables.danger,
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    zIndex: 999,
+    elevation: 10,
   },
 });
 
