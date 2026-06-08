@@ -244,16 +244,16 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   }, [callAccessToken, isConnecting, isVideoOn, isMute, status]);
 
   useEffect(() => {
-    if (videoCall) {
-      if (participants && participants.length > 0) {
-        setShowAutoEndCallHint(false);
-      } else {
-        if (callDuration >= 15) {
-          setShowAutoEndCallHint(true);
-        }
-        if (callDuration >= 20) {
-          stopCallTimer();
+    if (participants && participants.length > 0) {
+      setShowAutoEndCallHint(false);
+    } else {
+      if (callDuration >= 15) {
+        setShowAutoEndCallHint(true);
+      }
+      if (callDuration >= 20) {
+        stopCallTimer();
 
+        if (Object.keys(videoCall).length > 0) {
           const message = {
             _id: videoCall._id,
             rid: videoCall.rid,
@@ -267,6 +267,8 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
           };
 
           dispatch(updateTextMessage(chatSocket, message, false));
+        } else {
+          twilioRef?.current?.disconnect();
         }
       }
     }
@@ -318,8 +320,7 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
   };
 
   const _onEndButtonPress = () => {
-    // Disconnect from twilio call
-    twilioRef.current.disconnect();
+    twilioRef?.current?.disconnect();
 
     if (hasStartedCall) {
       participants.forEach(({participant}) => {
@@ -360,19 +361,21 @@ const AcceptCall = ({translate, theme, isVideoOn, isMute}) => {
         dispatch(updateTextMessage(chatSocket, message));
       });
     } else {
-      const message = {
-        _id: videoCall._id,
-        rid: videoCall.rid,
-        user: {
-          _id: videoCall.u?._id,
-          username: videoCall.u?.username,
-        },
-        text:
-          videoCall.status === CALL_STATUS.AUDIO_STARTED
-            ? CALL_STATUS.AUDIO_ENDED
-            : CALL_STATUS.VIDEO_ENDED,
-      };
-      dispatch(updateTextMessage(chatSocket, message, false));
+      if (Object.keys(videoCall).length > 0) {
+        const message = {
+          _id: videoCall._id,
+          rid: videoCall.rid,
+          user: {
+            _id: videoCall.u?._id,
+            username: videoCall.u?.username,
+          },
+          text:
+            videoCall.status === CALL_STATUS.AUDIO_STARTED
+              ? CALL_STATUS.AUDIO_ENDED
+              : CALL_STATUS.VIDEO_ENDED,
+        };
+        dispatch(updateTextMessage(chatSocket, message, false));
+      }
     }
   };
 
