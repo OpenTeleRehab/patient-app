@@ -22,6 +22,25 @@ const phcServicesFetchFailure = () => {
   };
 };
 
+const phcServiceFetchRequest = () => {
+  return {
+    type: 'PHC_SERVICE_FETCH_REQUESTED',
+  };
+};
+
+const phcServiceFetchSuccess = (data, info) => {
+  return {
+    type: 'PHC_SERVICE_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const phcServiceFetchFailure = () => {
+  return {
+    type: 'PHC_SERVICE_FETCH_FAILED',
+  };
+};
+
 const phcWorkersFetchRequest = () => {
   return {
     type: 'PHC_WORKERS_FETCH_REQUESTED',
@@ -49,4 +68,7 @@ export const mutation = {
   phcWorkersFetchRequest,
   phcWorkersFetchSuccess,
   phcWorkersFetchFailure,
+  phcServiceFetchRequest,
+  phcServiceFetchSuccess,
+  phcServiceFetchFailure,
 };

@@ -18,6 +18,19 @@ export const getPhcServicesRequest = () => async (
   }
 };
 
+export const getPhcServiceRequest = (id) => async (
+  dispatch,
+  getState,
+) => {
+  dispatch(mutation.phcServiceFetchRequest());
+  const res = await PhcService.getPhcService(id);
+  if (res.data) {
+    dispatch(mutation.phcServiceFetchSuccess(res.data));
+  } else {
+    dispatch(mutation.phcServiceFetchFailure());
+  }
+};
+
 export const getPhcWorkersRequest = (payload) => async (
   dispatch,
   getState,

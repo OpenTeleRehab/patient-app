@@ -3,5 +3,6 @@
  */
 export const initialState = {
   phcServices: [],
+  phcService: {},
   phcWorkers: [],
 };

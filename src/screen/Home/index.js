@@ -32,6 +32,8 @@ import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 import quackerWave from '../../assets/images/quacker-waving.gif';
 import {updateIndicatorList} from '../../store/indicator/actions';
 import {getAssistiveTechnologiesRequest} from '../../store/assistiveTechnology/actions';
+import {getClinicRequest} from '../../store/clinic/actions';
+import {getPhcServiceRequest} from '../../store/phcService/actions';
 
 const kidThemeImageStyle = {
   width: 300,
@@ -145,6 +147,8 @@ const Home = ({navigation}) => {
       );
       dispatch(getLanguageRequest());
       dispatch(getPhcWorkerRequest());
+      dispatch(getClinicRequest(profile.clinic_id));
+      dispatch(getPhcServiceRequest(profile.phc_service_id));
     }
   }, [dispatch, profile]);
 

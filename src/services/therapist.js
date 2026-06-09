@@ -23,8 +23,13 @@ const getReferralTherapists = async (accessToken) => {
   );
 };
 
+const getPatientPhcWorkers = async (payload) => {
+  return await callApi('/phc-worker/by-ids', '', payload);
+};
+
 export const Therapist = {
   getTherapists,
   getPhcWorkers,
   getReferralTherapists,
+  getPatientPhcWorkers,
 };
