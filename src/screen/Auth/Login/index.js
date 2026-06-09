@@ -24,8 +24,9 @@ import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import {ROUTES, USER_ROLE} from '../../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import formatPhoneNumber from '../../../utils/phoneNumber';
-import {getTherapistRequest} from '../../../store/therapist/actions';
+import {getTherapistRequest, getPatientPhcWorkersRequest} from '../../../store/therapist/actions';
 import {getClinicRequest} from '../../../store/clinic/actions';
+import {getPhcServiceRequest} from '../../../store/phcService/actions';
 
 const containerStyle = {
   height: '100%',
@@ -38,10 +39,12 @@ const Login = ({navigation}) => {
     (state) => state.user,
   );
   const {clinic} = useSelector((state) => state.clinic);
-  const {therapists} = useSelector((state) => state.therapist);
+  const {phcService} = useSelector((state) => state.phcService);
+  const {therapists, patientPhcWorkers} = useSelector((state) => state.therapist);
   const translate = getTranslate(localize);
   const [code, setCode] = useState('');
   const [therapistsWithPhones, setTherapistWithPhones] = useState([]);
+  const [phcWorkersWithPhones, setPhcWorkerWithPhones] = useState([]);
   const [errorCode, setErrorCode] = useState(false);
 
   const codeInputRef = useRef(null);
@@ -56,6 +59,8 @@ const Login = ({navigation}) => {
       const clinicId = profile.clinic_id;
       const primaryTherapistIds = [profile.therapist_id];
       const secondaryTherapistIds = profile.secondary_therapists;
+      const primaryPhcWorkerIds = [profile.phc_worker_id];
+      const secondaryPhcWorkerIds = profile.supplementary_phc_workers;
       dispatch(
         getTherapistRequest({
           ids: JSON.stringify(
@@ -63,7 +68,15 @@ const Login = ({navigation}) => {
           ),
         }),
       );
+      dispatch(
+        getPatientPhcWorkersRequest({
+          ids: JSON.stringify(
+            primaryPhcWorkerIds.concat(secondaryPhcWorkerIds),
+          ),
+        }),
+      );
       dispatch(getClinicRequest(clinicId));
+      dispatch(getPhcServiceRequest(profile.phc_service_id));
     }
   }, [dispatch, profile]);
 
@@ -72,6 +85,12 @@ const Login = ({navigation}) => {
       setTherapistWithPhones(therapists.filter((therapist) => therapist.phone));
     }
   }, [therapists]);
+
+  useEffect(() => {
+    if (patientPhcWorkers && patientPhcWorkers.length) {
+      setPhcWorkerWithPhones(patientPhcWorkers.filter((phcWorker) => phcWorker.phone));
+    }
+  }, [patientPhcWorkers]);
 
   const handleLogin = (passCode) => {
     if (passCode === pin) {
@@ -186,6 +205,28 @@ const Login = ({navigation}) => {
                     {translate('phone.login.other.email')}
                   </Text>
                 </TouchableOpacity>
+                {phcService && phcService.phone_number && (
+                  <Fragment>
+                    <Text
+                      style={[
+                        styles.textSmall,
+                        styles.marginTopMd,
+                        styles.textCenter,
+                        styles.textDefaultBold,
+                      ]}
+                      accessibilityLabel={translate('common.phc_service.phone.number')}>
+                      {translate('common.phc_service.phone.number')}
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.marginY}
+                      accessible={true}
+                      accessibilityLabel={translate('common.call.to.phc_service')}>
+                      <Text style={[styles.hyperlink, styles.textCenter]}>
+                        {formatPhoneNumber(phcService.dial_code, phcService.phone_number)}
+                      </Text>
+                    </TouchableOpacity>
+                  </Fragment>
+                )}
               </>
             ) : (
               <>
@@ -230,31 +271,76 @@ const Login = ({navigation}) => {
                     </TouchableOpacity>
                   </Fragment>
                 )}
-              </>
-            )}
-            {!!therapistsWithPhones.length && (
-              <Fragment>
-                <Text
-                  style={[
-                    styles.textSmall,
-                    styles.marginTopMd,
-                    styles.textCenter,
-                    styles.textDefaultBold,
-                  ]}
-                  accessibilityLabel={translate('therapist.phone.numbers')}>
-                  {translate('therapist.phone.numbers')}
-                </Text>
-                {therapistsWithPhones.map((therapist) => (
-                  <TouchableOpacity
-                    style={styles.marginY}
-                    accessible={true}
-                    accessibilityLabel={translate('call.to.therapist')}>
-                    <Text style={[styles.hyperlink, styles.textCenter]}>
-                      {formatPhoneNumber(therapist.dial_code, therapist.phone)}
+                {phcService && phcService.phone_number && (
+                  <Fragment>
+                    <Text
+                      style={[
+                        styles.textSmall,
+                        styles.textCenter,
+                        styles.textDefaultBold,
+                      ]}
+                      accessibilityLabel={translate('common.phc_service.phone.number')}>
+                      {translate('common.phc_service.phone.number')}
                     </Text>
-                  </TouchableOpacity>
-                ))}
-              </Fragment>
+                    <TouchableOpacity
+                      style={styles.marginY}
+                      accessible={true}
+                      accessibilityLabel={translate('common.call.to.phc_service')}>
+                      <Text style={[styles.hyperlink, styles.textCenter]}>
+                        {formatPhoneNumber(phcService.dial_code, phcService.phone_number)}
+                      </Text>
+                    </TouchableOpacity>
+                  </Fragment>
+                )}
+                {!!therapistsWithPhones.length && (
+                  <Fragment>
+                    <Text
+                      style={[
+                        styles.textSmall,
+                        styles.textCenter,
+                        styles.textDefaultBold,
+                      ]}
+                      accessibilityLabel={translate('therapist.phone.numbers')}>
+                      {translate('therapist.phone.numbers')}
+                    </Text>
+                    {therapistsWithPhones.map((therapist) => (
+                      <TouchableOpacity
+                        key={therapist.id}
+                        style={styles.marginY}
+                        accessible={true}
+                        accessibilityLabel={translate('common.call.to.therapist')}>
+                        <Text style={[styles.hyperlink, styles.textCenter]}>
+                          {formatPhoneNumber(therapist.dial_code, therapist.phone)}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </Fragment>
+                )}
+                {!!phcWorkersWithPhones.length && (
+                  <Fragment>
+                    <Text
+                      style={[
+                        styles.textSmall,
+                        styles.textCenter,
+                        styles.textDefaultBold,
+                      ]}
+                      accessibilityLabel={translate('common.phc_worker.phone.number')}>
+                      {translate('common.phc_worker.phone.number')}
+                    </Text>
+                    {phcWorkersWithPhones.map((phcWorker) => (
+                      <TouchableOpacity
+                        key={phcWorker.id}
+                        style={styles.marginY}
+                        accessible={true}
+                        accessibilityLabel={translate('common.call.to.phc_worker')}>
+                        <Text style={[styles.hyperlink, styles.textCenter]}>
+                          {formatPhoneNumber(phcWorker.dial_code, phcWorker.phone)}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </Fragment>
+                )}
+              </>
             )}
           </View>
         </View>

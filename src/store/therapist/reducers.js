@@ -17,6 +17,10 @@ export const therapist = (state = initialState, action) => {
       return Object.assign({}, state, {
         referralTherapists: action.data,
       });
+    case 'PATIENT_PHC_WORKERS_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        patientPhcWorkers: action.data,
+      });
     default:
       return state;
   }

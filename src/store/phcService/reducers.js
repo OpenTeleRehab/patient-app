@@ -9,9 +9,17 @@ export const phcService = (state = initialState, action) => {
       return Object.assign({}, state, {
         phcServices: action.data,
       });
+    case 'PHC_SERVICE_FETCH_SUCCEED':
+      return Object.assign({}, state, {
+        phcService: action.data,
+      });
     case 'PHC_WORKERS_FETCH_SUCCEED':
       return Object.assign({}, state, {
         phcWorkers: action.data,
+      });
+    case 'PHC_SERVICE_FETCH_FAILED':
+      return Object.assign({}, state, {
+        phcService: {},
       });
     default:
       return state;

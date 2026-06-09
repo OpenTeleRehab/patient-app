@@ -55,6 +55,24 @@ const referralTherapistsFetchFailure = () => {
   };
 };
 
+const patientPhcWorkersFetchRequest = () => {
+  return {
+    type: 'PATIENT_PHC_WORKERS_FETCH_REQUESTED',
+  };
+};
+const patientPhcWorkersFetchSuccess = (data) => {
+  return {
+    type: 'PATIENT_PHC_WORKERS_FETCH_SUCCEED',
+    data,
+  };
+};
+
+const patientPhcWorkersFetchFailure = () => {
+  return {
+    type: 'PATIENT_PHC_WORKERS_FETCH_FAILED',
+  };
+};
+
 export const mutation = {
   therapistFetchRequest,
   therapistFetchSuccess,
@@ -65,4 +83,7 @@ export const mutation = {
   referralTherapistsFetchRequest,
   referralTherapistsFetchSuccess,
   referralTherapistsFetchFailure,
+  patientPhcWorkersFetchRequest,
+  patientPhcWorkersFetchSuccess,
+  patientPhcWorkersFetchFailure,
 };

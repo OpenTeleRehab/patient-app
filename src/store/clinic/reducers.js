@@ -13,6 +13,10 @@ export const clinic = (state = initialState, action) => {
       return Object.assign({}, state, {
         clinicList: action.data,
       });
+    case 'CLINIC_FETCH_FAILED':
+      return Object.assign({}, state, {
+        clinic: {},
+      });
     default:
       return state;
   }
