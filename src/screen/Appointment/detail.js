@@ -83,6 +83,7 @@ const AppointmentDetail = ({route, navigation}) => {
   };
 
   const handleAcceptConfirm = (id) => {
+    setIsLoading(true);
     dispatch(
       updateStatus(id, {
         status: APPOINTMENT_STATUS.ACCEPTED,
@@ -97,6 +98,7 @@ const AppointmentDetail = ({route, navigation}) => {
   };
 
   const handleRejectConfirm = (id) => {
+    setIsLoading(true);
     dispatch(
       updateStatus(id, {
         status: APPOINTMENT_STATUS.REJECTED,
@@ -235,7 +237,6 @@ const AppointmentDetail = ({route, navigation}) => {
 
         <Spinner
           visible={isLoading}
-          textContent={translate('common.loading')}
           overlayColor="rgba(0, 0, 0, 0.75)"
           textStyle={styles.textLight}
         />

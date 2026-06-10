@@ -21,8 +21,7 @@ const CommonOverlay = ({visible, onClose, children}) => {
         <TouchableOpacity
           accessible={false}
           style={componentStyles.container}
-          activeOpacity={1}
-          onPressOut={onClose}>
+          activeOpacity={1}>
           <View style={componentStyles.modalWrapper}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
               <ScrollView

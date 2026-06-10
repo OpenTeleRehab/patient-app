@@ -292,6 +292,7 @@ const componentStyles = StyleSheet.create({
     alignItems: 'flex-start',
     position: 'relative',
     zIndex: 1,
+    width: 250,
   },
   headerCenter: {
     alignItems: 'center',
