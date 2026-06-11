@@ -48,7 +48,7 @@ const AppProvider = ({children}) => {
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
-  const {chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
+  const {callAccessToken, chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
   const {transfers} = useSelector((state) => state.transfer);
   const localize = useSelector((state) => state.localize);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
@@ -186,7 +186,9 @@ const AppProvider = ({children}) => {
   }, [dispatch, profile.id, transfers]);
 
   useEffect(() => {
-    if (isOnline && socket) {
+    if (callAccessToken) {return}
+
+    if (isOnline && chatSocket && chatAuth?.userId && chatAuth?.token) {
       getLocalData(STORAGE_KEY.ACCEPTED_CALL).then(async (acceptedCall) => {
         if (JSON.parse(acceptedCall)) {
           await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
@@ -196,16 +198,10 @@ const AppProvider = ({children}) => {
       });
 
       if (accessToken) {
-        const intervalID = setInterval(() => {
-          if (socket.readyState === socket.OPEN) {
-            dispatch(acceptCallHandler(socket));
-
-            clearInterval(intervalID);
-          }
-        }, 1000);
+        dispatch(acceptCallHandler(chatSocket));
       }
     }
-  }, [accessToken, dispatch, isOnline, socket]);
+  }, [accessToken, callAccessToken, chatAuth, dispatch, isOnline]);
 
   useEffect(() => {
     if (isOnline && isDataUpToDate === false) {
