@@ -129,6 +129,7 @@ export const CallContextProvider = ({children}) => {
 
         if (appStateVisible === 'active') {
           await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+          await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
         }
       }
     };
