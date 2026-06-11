@@ -21,6 +21,7 @@ import {
   CARE_PROVIDER_OPTIONS,
   CARE_PROVIDER_TYPES,
 } from '../../../variables/appointment';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const dispatch = useDispatch();
@@ -457,6 +458,11 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             />
           </View>
         </View>
+        <Spinner
+          visible={isLoading}
+          overlayColor="rgba(0, 0, 0, 0.75)"
+          textStyle={styles.textLight}
+        />
       </View>
     </CommonOverlay>
   );

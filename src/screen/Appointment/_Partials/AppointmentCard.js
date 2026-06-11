@@ -76,6 +76,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
   };
 
   const handleAcceptConfirm = (id) => {
+    setIsLoading(true);
     dispatch(
       updateStatus(id, {
         status: APPOINTMENT_STATUS.ACCEPTED,
@@ -89,6 +90,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
   };
 
   const handleRejectConfirm = (id) => {
+    setIsLoading(true);
     dispatch(
       updateStatus(id, {
         status: APPOINTMENT_STATUS.REJECTED,
@@ -214,7 +216,6 @@ const AppointmentCard = ({appointment, style, theme}) => {
         )}
         <Spinner
           visible={isLoading}
-          textContent={translate('common.loading')}
           overlayColor="rgba(0, 0, 0, 0.75)"
           textStyle={styles.textLight}
         />
