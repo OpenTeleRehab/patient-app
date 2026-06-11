@@ -111,10 +111,12 @@ const Register = ({theme, navigation}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (languages && languages.length) {
+    if (profile && profile.language_id) {
+      setLanguage(profile.language_id);
+    } else if (languages && languages.length) {
       setLanguage(languages[0].id);
     }
-  }, [languages]);
+  }, [languages, profile]);
 
   const handleCountryCodeChange = (countryCode) => {
     countryCodeRef.current = countryCode;
@@ -272,7 +274,7 @@ const Register = ({theme, navigation}) => {
                   value={language}
                   onValueChange={handleLanguageChange}
                   items={
-                    language
+                    languages
                       ? languages.map((lang) => ({
                           label: lang.name,
                           value: lang.id,
