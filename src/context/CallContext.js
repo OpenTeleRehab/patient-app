@@ -28,7 +28,6 @@ import {getLocalData, storeLocalData} from '../utils/local_storage';
 import {mutation} from '../store/rocketchat/mutations';
 import {acceptedRequest} from '../store/call/actions';
 import {useShowToast} from '../hook/useShowToast';
-import _ from 'lodash';
 
 const CallContext = createContext(null);
 
@@ -71,7 +70,7 @@ export const CallContextProvider = ({children}) => {
       if (
         CALL_STARTED_STATUSES.includes(videoCall.status) &&
         videoCall.u._id !== chatAuth.userId &&
-        _.isEmpty(callInfo) &&
+        videoCall._id !== callInfo._id &&
         !hasStartedCall &&
         !hasAcceptedCall
       ) {

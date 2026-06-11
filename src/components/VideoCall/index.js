@@ -6,10 +6,9 @@ import {Modal, NativeModules, Platform} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {useSelector} from 'react-redux';
-import {CALL_STARTED_STATUSES, CALL_STATUS, STORAGE_KEY} from '../../variables/constants';
+import {CALL_STARTED_STATUSES, CALL_STATUS} from '../../variables/constants';
 import IncomingCall from './Incoming';
 import AcceptCall from './Accept';
-import {getLocalData} from '../../utils/local_storage';
 
 const VideoCall = ({theme}) => {
   const {
@@ -29,9 +28,7 @@ const VideoCall = ({theme}) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const shouldShowImmediately =
-      (showIncomingCall && hasStartedCall) ||
-      (showAcceptedCall && accessToken);
+    const shouldShowImmediately = (showIncomingCall && hasStartedCall) || (showAcceptedCall && accessToken);
 
     if (shouldShowImmediately) {
       setShowModal(true);
@@ -39,13 +36,7 @@ const VideoCall = ({theme}) => {
     }
 
     if (showIncomingCall) {
-      setTimeout(async () => {
-        const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
-
-        if (!callInfo || Object.keys(callInfo).length === 0) {
-          setShowModal(true);
-        }
-      }, 1000);
+      setShowModal(true);
       return;
     }
 
