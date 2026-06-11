@@ -188,12 +188,11 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     }, [patientDetail, reset, setValue, definedCountries, countries, profile, transfers]),
   );
 
-
   const onSubmit = (data) => {
     const payload = {
       ...data,
       phone: `${data.dial_code}${data.phone}`,
-      supplementary_phc_workers: selectedSupplementary,
+      supplementary_phc_workers: !_.isEmpty(selectedSupplementary) ? selectedSupplementary : (patientDetail?.supplementary_phc_workers ?? []),
     };
 
     if (!netInfo.isConnected) {
@@ -852,7 +851,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                         selected.includes(id),
                       );
                       setSelectedSupplementary((prev) => [
-                        ...new Set([...prev, ...newlySelected]),
+                        ...new Set([...prev, ...selected]),
                       ]);
                       onChange(updatedAssigned);
                     }}
