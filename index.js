@@ -51,8 +51,8 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
       if (callInfo._id === remoteMessage.data._id) {
-        removeCall(callInfo?.callUUID);
         await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        removeCall(callInfo?.callUUID);
       }
     } else {
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
@@ -162,7 +162,6 @@ const didReceiveStartCallAction = async (data) => {
       getLocalData(STORAGE_KEY.CALL_INFO, true).then(async (item) => {
         if (item?.callUUID === callUUID) {
           await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
-
           removeCall(callUUID);
         }
       });
