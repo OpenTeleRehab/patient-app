@@ -97,7 +97,15 @@ const UserProfile = ({navigation}) => {
 
     const location = await getDownloadDirectoryPath();
     if (location === false) {
+      setDownloading(false);
       return;
+    }
+
+    if (Platform.OS === 'ios') {
+      const isDirExist = await RNFS.exists(location);
+      if (!isDirExist) {
+        await RNFS.mkdir(location);
+      }
     }
 
     // Download patient data
