@@ -200,6 +200,13 @@ const filtersUpdateSuccess = (data) => {
   };
 };
 
+const removePendingSupplementaryOfflineSuccess = (data) => {
+  return {
+    type: 'REMOVE_PENDING_SUPPLEMENTARY_OFFLINE_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   patientsForPhcWorkerFetchRequest,
   patientsForPhcWorkerFetchSuccess,
@@ -232,4 +239,5 @@ export const mutation = {
   deletePendingSupplementarySuccess,
   deletePendingSupplementaryFailure,
   filtersUpdateSuccess,
+  removePendingSupplementaryOfflineSuccess,
 };

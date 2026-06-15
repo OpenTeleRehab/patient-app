@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  TouchableOpacity,
 } from 'react-native';
 import HeaderBar from '../../../components/Common/HeaderBar';
 import styles from '../../../assets/styles';
@@ -38,6 +37,7 @@ import {
   getPatientsListForPhcWorkerRequest,
   updatePatientOfflineRequest,
   updateListItem,
+  removePendingSupplementaryOfflineRequest
 } from '../../../store/patient/actions';
 import {ageCalculation} from '../../../utils/age';
 import {_} from 'lodash';
@@ -74,7 +74,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
   const [pendingTransfers, setPendingTransfers] = useState([]);
   const [errorPhoneExist, setErrorPhoneExist] = useState(false);
   const [selectedSupplementary, setSelectedSupplementary] = useState([]);
-  const {patientsForPhcWorker} = useSelector((state) => state.patient);
+  const {patientsForPhcWorker, offlineRemovePendingSupplementary} = useSelector((state) => state.patient);
   const {offlineInterviews} = useSelector(
     (state) => state.screeningQuestionnaire,
   );
@@ -98,8 +98,11 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     reset,
     setValue,
     handleSubmit,
+    watch,
     formState: {isDirty, errors},
   } = useForm({defaultValues});
+
+  const supplementaryPhcWorkers = watch('supplementary_phc_workers');
 
   useEffect(() => {
     dispatch(getCountryRequest());
@@ -119,6 +122,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     );
     setPatientDetail(detailInfo);
   }, [patientId, patientsForPhcWorker]);
+
   useFocusEffect(
     React.useCallback(() => {
       if (patientDetail) {
@@ -144,24 +148,6 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
         } else {
           setHighlightPhone(false);
         }
-        if (transfers && transfers.length) {
-          const pending = transfers.filter(
-            (transfer) =>
-              transfer.patient_id === patientDetail.id &&
-              transfer.therapist_type === 'supplementary',
-          );
-          setPendingTransfers(
-            pending.map((transfer) => ({
-              id: transfer.id,
-              therapist_id: transfer.to_therapist.id,
-              first_name: transfer.to_therapist.first_name,
-              last_name: transfer.to_therapist.last_name,
-              status: transfer.status,
-            })),
-          );
-        } else {
-          setPendingTransfers([]);
-        }
       } else {
         reset(defaultValues);
         setDateValue('');
@@ -185,14 +171,37 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
         setPendingTransfers([]);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [patientDetail, reset, setValue, definedCountries, countries, profile, transfers]),
+    }, [patientDetail, reset, setValue, definedCountries, countries, profile]),
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (patientId && transfers && transfers.length) {
+        const pending = transfers.filter(
+          (transfer) =>
+            transfer.patient_id === patientId &&
+            transfer.therapist_type === 'supplementary' && !(offlineRemovePendingSupplementary.includes(transfer.id)),
+        );
+        setPendingTransfers(
+          pending.map((transfer) => ({
+            id: transfer.id,
+            therapist_id: transfer.to_therapist.id,
+            first_name: transfer.to_therapist.first_name,
+            last_name: transfer.to_therapist.last_name,
+            status: transfer.status,
+          })),
+        );
+      } else {
+        setPendingTransfers([]);
+      }
+    }, [transfers, patientId, offlineRemovePendingSupplementary])
   );
 
   const onSubmit = (data) => {
     const payload = {
       ...data,
       phone: `${data.dial_code}${data.phone}`,
-      supplementary_phc_workers: !_.isEmpty(selectedSupplementary) ? selectedSupplementary : (patientDetail?.supplementary_phc_workers ?? []),
+      supplementary_phc_workers: !_.isEmpty(selectedSupplementary) ? selectedSupplementary : (supplementaryPhcWorkers ?? []),
     };
 
     if (!netInfo.isConnected) {
@@ -362,29 +371,50 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     });
   };
 
-  const handleRemovePendingSupplementary = (id, therapistId) => {
+  const handleRemovePendingSupplementary = (therapistId, id) => {
     setPendingTransfers(
       pendingTransfers.filter((item) => item.therapist_id !== therapistId),
     );
     setSelectedSupplementary(
       selectedSupplementary.filter((item) => item !== therapistId),
     );
+
+    setValue('supplementary_phc_workers', supplementaryPhcWorkers.filter((item) => item !== therapistId));
+
+    // Update patient supplementary phc worker in patient list
+    const updatedPatients = patientsForPhcWorker.map((item) =>
+      item.id === patientDetail.id ? {...item, supplementary_phc_workers:supplementaryPhcWorkers.filter((supplementaryId) => supplementaryId !== therapistId)} : item,
+    );
+    dispatch(
+      mutation.patientsForPhcWorkerFetchSuccess(updatedPatients),
+    );
+
     if (id) {
-      dispatch(deletePendingSupplementary(id)).then((response) => {
-        if (response.success) {
-          showToast(
-            translate(
-              'phc.patient.message.pending_supplementary_phc_worker_removed',
-            ),
-            translate('phc.patient.pending_supplementary'),
-          );
-        } else {
-          showToast(
-            translate(translate(response.message)),
-            translate('phc.patient.pending_supplementary'),
-          );
-        }
-      });
+      if (netInfo.isConnected) {
+        dispatch(deletePendingSupplementary(id)).then((response) => {
+          if (response.success) {
+            showToast(
+              translate(
+                'phc.patient.message.pending_supplementary_phc_worker_removed',
+              ),
+              translate('phc.patient.pending_supplementary'),
+            );
+          } else {
+            showToast(
+              translate(translate(response.message)),
+              translate('phc.patient.pending_supplementary'),
+            );
+          }
+        });
+      } else {
+        dispatch(removePendingSupplementaryOfflineRequest(id));
+        showToast(
+          translate(
+            'phc.patient.message.pending_supplementary_phc_worker_removed',
+          ),
+          translate('phc.patient.pending_supplementary'),
+        );
+      }
     }
   };
 
@@ -400,26 +430,6 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
           patientId: patientDetail.id,
         })
       : navigation.goBack();
-  };
-
-  const renderSelectedItem = (item, unSelect) => {
-    return (
-      <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-        <View style={componentStyles.selectedStyle}>
-          <Text style={componentStyles.selectedTextStyle}>{item.label}</Text>
-          <Icon
-            name="highlight-off"
-            type="material"
-            size={20}
-            color={theme.colors.white}
-            onPress={() =>
-              handleRemovePendingSupplementary(item.id, item.therapist_id)
-            }
-            containerStyle={styles.marginLeftSm}
-          />
-        </View>
-      </TouchableOpacity>
-    );
   };
 
   return (
@@ -805,7 +815,9 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                         (worker) =>
                           !pendingTransfers.some(
                             (pt) => pt.therapist_id === worker.id,
-                          ) && worker.id !== profile.id,
+                          ) && worker.id !== profile.id
+                          &&
+                            !(patientDetail?.supplementary_phc_workers ?? []).includes(worker.id),
                       )
                       .map((worker) => ({
                         label: `${worker.last_name} ${worker.first_name}`,
@@ -813,7 +825,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                       }))
                       .concat(
                         pendingTransfers.length ===
-                          phcWorkers.filter((worker) => worker.id !== profile.id)
+                          phcWorkers.filter((worker) => worker.id !== profile.id && !(patientDetail?.supplementary_phc_workers ?? []).includes(worker.id))
                             .length
                           ? [
                               {
@@ -855,10 +867,54 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                       ]);
                       onChange(updatedAssigned);
                     }}
-                    renderSelectedItem={renderSelectedItem}
                   />
                 )}
               />
+              {supplementaryPhcWorkers?.length > 0 && (
+                <View style={componentStyles.badgeContainer}>
+                  {supplementaryPhcWorkers
+                    .filter(
+                      (id) =>
+                        !pendingTransfers.some(
+                          (transfer) => transfer.therapist_id === id,
+                        ),
+                    )
+                    .map((id) => {
+                      const worker = phcWorkers.find(
+                        (phcWorker) => phcWorker.id === id,
+                      );
+
+                      if (!worker) return null;
+
+                      return (
+                        <View
+                          key={id}
+                          style={componentStyles.selectedStyle}
+                        >
+                          <Text style={componentStyles.selectedTextStyle}>
+                            {translate('common.user.full_name', {
+                              firstName: worker.first_name,
+                              lastName: worker.last_name,
+                            })}
+                          </Text>
+
+                          <Icon
+                            name="highlight-off"
+                            type="material"
+                            size={20}
+                            color={theme.colors.white}
+                            onPress={() =>
+                              handleRemovePendingSupplementary(
+                                worker.id,
+                              )
+                            }
+                            containerStyle={styles.marginLeftSm}
+                          />
+                        </View>
+                      );
+                    })}
+                </View>
+              )}
               {pendingTransfers.length > 0 && (
                 <>
                   <Text style={[componentStyles.labelStyle, styles.marginTop]}>
@@ -882,7 +938,10 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                               ]
                         }>
                         <Text style={componentStyles.selectedTextStyle}>
-                          {item.last_name} {item.first_name}
+                          {translate('common.user.full_name', {
+                            firstName: item.first_name,
+                            lastName: item.last_name,
+                          })}
                         </Text>
                         <Icon
                           name="highlight-off"
@@ -891,8 +950,8 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                           color={theme.colors.white}
                           onPress={() =>
                             handleRemovePendingSupplementary(
-                              item.id,
                               item.therapist_id,
+                              item.id,
                             )
                           }
                           containerStyle={styles.marginLeftSm}

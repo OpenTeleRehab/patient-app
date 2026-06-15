@@ -8,5 +8,6 @@ export const initialState = {
   allPatients: [],
   patient: {},
   listInfo: {},
+  offlineRemovePendingSupplementary: [],
   loading: false,
 };

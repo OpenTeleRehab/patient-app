@@ -35,7 +35,7 @@ import {
   requestCallPermission,
   requestNotificationPermission,
 } from './src/utils/permission';
-import {syncPatientOffline} from './src/store/patient/actions';
+import {syncPatientOffline, syncOfflineRemovePendingSupplementary} from './src/store/patient/actions';
 import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
 import {useGetChatRooms} from './src/hook/useGetChatRooms';
@@ -214,6 +214,7 @@ const AppProvider = ({children}) => {
   useEffect(() => {
     if (isOnline && accessToken) {
       dispatch(syncPatientOffline());
+      dispatch(syncOfflineRemovePendingSupplementary());
     }
   }, [isOnline, dispatch, accessToken]);
 

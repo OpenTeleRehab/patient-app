@@ -377,3 +377,24 @@ export const getPatientsByIds = (payload) => async (dispatch, getState) => {
     return null;
   }
 };
+
+export const removePendingSupplementaryOfflineRequest = (id) => async (dispatch) => {
+  dispatch(mutation.removePendingSupplementaryOfflineSuccess(id));
+};
+
+export const syncOfflineRemovePendingSupplementary = () => async (dispatch, getState) => {
+  const {accessToken} = getState().user;
+  const {offlineRemovePendingSupplementary} = getState().patient;
+  if (offlineRemovePendingSupplementary.length === 0) return;
+  for (const item of offlineRemovePendingSupplementary) {
+    try {
+      await Patient.deletePendingSupplementary(item, accessToken);
+      const updatedOfflineRemovePendingSupplementary = offlineRemovePendingSupplementary.filter(
+        (id) => id !== item,
+      );
+      dispatch(mutation.removePendingSupplementaryOfflineSuccess(updatedOfflineRemovePendingSupplementary));
+    } catch (e) {
+      console.log('Failed to sync offline remove pending supplementary', e);
+    }
+  }
+};
