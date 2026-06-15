@@ -56,6 +56,13 @@ export const patient = (state = initialState, action) => {
       return Object.assign({}, state, {
         allPatients: action.data,
       });
+    case 'REMOVE_PENDING_SUPPLEMENTARY_OFFLINE_SUCCEED':
+      return Object.assign({}, state, {
+        offlineRemovePendingSupplementary: [
+          ...state.offlineRemovePendingSupplementary,
+          action.data,
+        ],
+      });
     default:
       return state;
   }

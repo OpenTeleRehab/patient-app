@@ -64,7 +64,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
   }
 
   return (
-      <View style={styles.mainContainerLight}>
+    <View style={styles.mainContainerLight}>
       <View style={componentStyles.titleContainer}>
         <Icon name="filter-outline" type="material-community" size={30} color={theme.colors.primary} />
         <Text style={componentStyles.titleTextStyle}>{translate('phc.patient.filter')}</Text>
