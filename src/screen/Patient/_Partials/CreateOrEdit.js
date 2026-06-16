@@ -182,15 +182,17 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
             transfer.patient_id === patientId &&
             transfer.therapist_type === 'supplementary' && !((offlineRemovePendingSupplementary ?? []).includes(transfer.id)),
         );
-        setPendingTransfers(
-          pending.map((transfer) => ({
-            id: transfer.id,
-            therapist_id: transfer.to_therapist.id,
-            first_name: transfer.to_therapist.first_name,
-            last_name: transfer.to_therapist.last_name,
-            status: transfer.status,
-          }))
-        );
+        const newPending = pending.map((transfer) => ({
+          id: transfer.id,
+          therapist_id: transfer.to_therapist.id,
+          first_name: transfer.to_therapist.first_name,
+          last_name: transfer.to_therapist.last_name,
+          status: transfer.status,
+        }));
+        setPendingTransfers((prev) => {
+          const therapistIds = new Set(prev.map((i) => i.therapist_id));
+          return [...prev, ...newPending.filter((i) => !therapistIds.has(i.therapist_id))];
+        });
       } else {
         setPendingTransfers([]);
       }
