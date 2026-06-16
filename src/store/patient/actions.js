@@ -309,7 +309,6 @@ export const updatePatientRequest =
     const data = await Patient.updatePatient(id, payload, accessToken);
     if (data.success) {
       dispatch(mutation.patientUpdateSuccess());
-      dispatch(getTransfersRequest());
       dispatch(getPatientRequest(id));
       return {success: true};
     } else {
@@ -356,7 +355,6 @@ export const deletePendingSupplementary =
     const data = await Patient.deletePendingSupplementary(id, accessToken);
     if (data.success) {
       dispatch(mutation.deletePendingSupplementarySuccess());
-      dispatch(getTransfersRequest());
       return {success: true};
     } else {
       dispatch(mutation.deletePendingSupplementaryFailure());
@@ -385,16 +383,28 @@ export const removePendingSupplementaryOfflineRequest = (id) => async (dispatch)
 export const syncOfflineRemovePendingSupplementary = () => async (dispatch, getState) => {
   const {accessToken} = getState().user;
   const {offlineRemovePendingSupplementary} = getState().patient;
-  if (offlineRemovePendingSupplementary.length === 0) return;
+  const remaining = [...offlineRemovePendingSupplementary];
+  if (!offlineRemovePendingSupplementary?.length) return;
   for (const item of offlineRemovePendingSupplementary) {
     try {
       await Patient.deletePendingSupplementary(item, accessToken);
-      const updatedOfflineRemovePendingSupplementary = offlineRemovePendingSupplementary.filter(
-        (id) => id !== item,
-      );
-      dispatch(mutation.removePendingSupplementaryOfflineSuccess(updatedOfflineRemovePendingSupplementary));
+      const index = remaining.indexOf(item);
+      if (index > -1) {
+        remaining.splice(index, 1);
+      }
     } catch (e) {
-      console.log('Failed to sync offline remove pending supplementary', e);
+      console.log(
+        'Failed to sync offline remove pending supplementary:',
+        item,
+        e,
+      );
     }
   }
+  try {
+    await dispatch(getTransfersRequest());
+  } catch (e) {
+    console.log('Failed to fetch transfers', e);
+  }
+
+  dispatch(mutation.syncOfflineRemovePendingSupplementarySuccess(remaining));
 };

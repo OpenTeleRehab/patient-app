@@ -207,6 +207,13 @@ const removePendingSupplementaryOfflineSuccess = (data) => {
   };
 };
 
+const syncOfflineRemovePendingSupplementarySuccess = (data) => {
+  return {
+    type: 'SYNC_OFFLINE_REMOVE_PENDING_SUPPLEMENTARY_SUCCEED',
+    data,
+  };
+};
+
 export const mutation = {
   patientsForPhcWorkerFetchRequest,
   patientsForPhcWorkerFetchSuccess,
@@ -240,4 +247,5 @@ export const mutation = {
   deletePendingSupplementaryFailure,
   filtersUpdateSuccess,
   removePendingSupplementaryOfflineSuccess,
+  syncOfflineRemovePendingSupplementarySuccess
 };

@@ -180,7 +180,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
         const pending = transfers.filter(
           (transfer) =>
             transfer.patient_id === patientId &&
-            transfer.therapist_type === 'supplementary' && !(offlineRemovePendingSupplementary.includes(transfer.id)),
+            transfer.therapist_type === 'supplementary' && !((offlineRemovePendingSupplementary ?? []).includes(transfer.id)),
         );
         setPendingTransfers(
           pending.map((transfer) => ({
@@ -189,7 +189,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
             first_name: transfer.to_therapist.first_name,
             last_name: transfer.to_therapist.last_name,
             status: transfer.status,
-          })),
+          }))
         );
       } else {
         setPendingTransfers([]);

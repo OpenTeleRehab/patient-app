@@ -24,6 +24,8 @@ import {mutation} from '../../../store/patient/mutations';
 import variables from '../../../assets/styles/variables';
 import {referralStatusText, showDateOfBirth} from './PatientCard';
 import Notification from '../../../components/Notification';
+import {useFocusEffect} from '@react-navigation/native';
+import {getTransfersRequest} from '../../../store/transfer/actions';
 
 const PatientDetail = ({navigation, route, theme}) => {
   const dispatch = useDispatch();
@@ -57,6 +59,12 @@ const PatientDetail = ({navigation, route, theme}) => {
     setTreatmentPlan(treatmentPlanInfo);
     setReferralTherapists(detailInfo?.referral_therapists);
   }, [patientId, patientsForPhcWorker]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getTransfersRequest());
+    }, [dispatch])
+  );
 
   const localNumber = patientDetail?.phone.startsWith(patientDetail?.dial_code)
     ? patientDetail?.phone.slice(patientDetail?.dial_code.length)
