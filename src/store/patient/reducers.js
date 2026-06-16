@@ -63,6 +63,10 @@ export const patient = (state = initialState, action) => {
           action.data,
         ],
       });
+    case 'SYNC_OFFLINE_REMOVE_PENDING_SUPPLEMENTARY_SUCCEED':
+      return Object.assign({}, state, {
+        offlineRemovePendingSupplementary: action.data,
+      });
     default:
       return state;
   }
