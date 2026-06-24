@@ -2,21 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Text, Button, Icon, Divider, withTheme} from 'react-native-elements';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Platform} from 'react-native';
 import {useDispatch} from 'react-redux';
 import styles from '../../../assets/styles';
 import {useForm, Controller} from 'react-hook-form';
 import SelectPicker from '../../../components/Common/SelectPicker';
 import DatePicker from '../../../components/Common/DatePicker';
-import TextField from '../../../components/Common/TextField';
 import {formatDate} from '../../../utils/helper';
 import moment from 'moment/moment';
 import {REFERRAL_STATUS, TREATMENT_STATUS} from '../../../variables/constants';
 import {updateFilters} from '../../../store/patient/actions';
 import _ from 'lodash';
 import variables from '../../../assets/styles/variables';
+import {BottomSheetTextInput} from '@gorhom/bottom-sheet';
 
-const Filter = ({theme, filters, setShowFilter}) => {
+const Filter = ({theme, filters,  handleClose}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -54,17 +54,19 @@ const Filter = ({theme, filters, setShowFilter}) => {
       Object.entries(data).filter(([key, value]) => value !== null && value !== undefined && value !== '')
     );
     dispatch(updateFilters(filterData));
-    setShowFilter(false);
+    handleClose();
   };
 
   const handleReset = () => {
     reset();
+    setFromDateValue('');
+    setToDateValue('');
     dispatch(updateFilters({}));
-    setShowFilter(false);
+    handleClose();
   }
 
   return (
-    <View style={styles.mainContainerLight}>
+    <View>
       <View style={componentStyles.titleContainer}>
         <Icon name="filter-outline" type="material-community" size={30} color={theme.colors.primary} />
         <Text style={componentStyles.titleTextStyle}>{translate('phc.patient.filter')}</Text>
@@ -82,16 +84,12 @@ const Filter = ({theme, filters, setShowFilter}) => {
             <Controller
               control={control}
               name="last_name"
-              render={({field: {value, onChange}}) => (
-                <TextField
+              render={({field: {onChange, value}}) => (
+                <BottomSheetTextInput
+                  style={componentStyles.bottomSheetInput}
                   placeholder={translate('phc.patient.last_name.placeholder')}
-                  variant="filled"
-                  value={value}
                   onChangeText={onChange}
-                  errorMessage={errors ? errors.last_name?.message : undefined}
-                  renderErrorMessage={!!errors.last_name}
-                  labelStyle={componentStyles.labelStyle}
-                  inputStyle={componentStyles.inputStyle}
+                  value={value}
                 />
               )}
             />
@@ -106,16 +104,12 @@ const Filter = ({theme, filters, setShowFilter}) => {
             <Controller
               control={control}
               name="first_name"
-              render={({field: {value, onChange}}) => (
-                <TextField
+              render={({field: {onChange, value}}) => (
+                <BottomSheetTextInput
+                  style={componentStyles.bottomSheetInput}
                   placeholder={translate('phc.patient.first_name.placeholder')}
-                  variant="filled"
-                  value={value}
                   onChangeText={onChange}
-                  errorMessage={errors ? errors.first_name?.message : undefined}
-                  renderErrorMessage={!!errors.first_name}
-                  labelStyle={componentStyles.labelStyle}
-                  inputStyle={componentStyles.inputStyle}
+                  value={value}
                 />
               )}
             />
@@ -183,7 +177,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
           >
             {translate('phc.patient.treatment_status')}
           </Text>
-          <View style={styles.formSelectPickerContainer}>
+          <View style={[styles.formSelectPickerContainer, Platform.OS === 'ios' && componentStyles.selectContainer]}>
             <Controller
               control={control}
               name="treatment_status"
@@ -214,7 +208,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
           >
             {translate('phc.patient.referral_status')}
           </Text>
-          <View style={styles.formSelectPickerContainer}>
+          <View style={[styles.formSelectPickerContainer, Platform.OS === 'ios' && componentStyles.selectContainer]}>
             <Controller
               control={control}
               name="referral_status"
@@ -240,7 +234,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
         </View>
         </View>
       </View>
-      <View style={componentStyles.buttonContainer}>
+      <View style={styles.paddingXMd}>
         <Button
           containerStyle={styles.marginBottom}
           title={translate('phc.patient.button.apply')}
@@ -252,7 +246,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
           title={translate('phc.patient.button.reset')}
           onPress={handleReset}
         />
-        <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.patient.button.cancel')} onPress={() => setShowFilter(false)} />
+        <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.appointment.button.cancel')} onPress={handleClose} />
       </View>
     </View>
   );
@@ -299,6 +293,18 @@ const componentStyles = StyleSheet.create({
     fontWeight: '500',
     marginTop: -7,
   },
+  bottomSheetInput: {
+    borderRadius: 5,
+    backgroundColor: variables.grey9,
+    paddingHorizontal: 10,
+    fontSize: 12,
+    color: variables.black,
+    height: 45,
+    paddingVertical: 0,
+  },
+  selectContainer: {
+    paddingVertical: 3,
+  }
 });
 
 export default withTheme(Filter);

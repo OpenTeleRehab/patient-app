@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import HeaderBar from '../../components/Common/HeaderBar';
 import styles from '../../assets/styles';
-import {BottomSheet, Icon, withTheme} from 'react-native-elements';
+import {Icon, withTheme} from 'react-native-elements';
 import {OFFLINE_STATUS, ROUTES} from '../../variables/constants';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
@@ -27,6 +27,7 @@ import {
 import {updateIndicatorList} from '../../store/indicator/actions';
 import variables from '../../assets/styles/variables';
 import {getAppointmentsRequest, getAppointmentsWithPatientRequest} from '../../store/phcAppointment/actions';
+import BottomSheet, {BottomSheetScrollView, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 
 const Patient = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -35,9 +36,9 @@ const Patient = ({navigation, theme}) => {
   const {patientsForPhcWorker, filters} = useSelector((state) => state.patient);
   const {phcAppointmentsWithPatient, phcAppointments} = useSelector((state) => state.phcAppointment);
   const [currentFilters, setCurrentFilters] = useState({});
-  const [showFilter, setShowFilter] = useState(false);
   const [patientList, setPatientList] = useState([]);
   const {profile} = useSelector((state) => state.user);
+  const bottomSheetRef = useRef(null);
 
   useEffect(() => {
     dispatch(getCountryRequest());
@@ -154,6 +155,27 @@ const Patient = ({navigation, theme}) => {
     }
   }, [currentFilters, dispatch, patientsForPhcWorker]);
 
+  const handleOpenFilter = () => {
+    bottomSheetRef.current?.expand();
+  };
+
+  const handleCloseFilter = () => {
+    bottomSheetRef.current?.close();
+  };
+
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={0.3}
+        pressBehavior="none"
+      />
+    ),
+    []
+  );
+
   return (
     <>
       <HeaderBar
@@ -179,7 +201,7 @@ const Patient = ({navigation, theme}) => {
             </TouchableOpacity>
           </View>
           <View style={componentStyles.titleContainerStyle}>
-            <TouchableOpacity onPress={() => setShowFilter(true)}>
+            <TouchableOpacity onPress={handleOpenFilter}>
               <Icon name="tune" size={25} color={theme.colors.primary} />
               {!_.isEmpty(currentFilters) && (
                 <View style={componentStyles.indicatorStyle} />
@@ -228,9 +250,19 @@ const Patient = ({navigation, theme}) => {
           </View>
         )}
       </View>
-      <BottomSheet isVisible={showFilter} modalProps={{}}>
-        <Filter filters={currentFilters} setShowFilter={setShowFilter} />
-      </BottomSheet>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        enableDynamicSizing={true}
+        enablePanDownToClose
+        keyboardBehavior="extend"
+        android_keyboardInputMode="adjustResize"
+        backdropComponent={renderBackdrop}
+      >
+      <BottomSheetScrollView>
+        <Filter currentFilters={currentFilters} handleClose={handleCloseFilter} />
+      </BottomSheetScrollView>
+    </BottomSheet>
     </>
   );
 };
