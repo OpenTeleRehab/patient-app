@@ -5,6 +5,7 @@ import {getUserCountryIsoCode} from './country';
 import settings from '../../config/settings';
 import store from '../store';
 import {USER_ROLE} from '../variables/constants';
+import axios from 'axios';
 
 export const callApi = async (
   uri,
@@ -85,36 +86,33 @@ export const callChatApi = async (
 };
 
 const fetchApi = async (endpoint, headers, body = null, method = 'get') => {
-  let url = endpoint;
-  const configs = {
-    method,
-    headers,
-  };
-  if (method === 'get') {
-    if (body) {
-      const queryString = Object.keys(body)
-        .reduce((result, key) => {
-          return [
-            ...result,
-            `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`,
-          ];
-        }, [])
-        .join('&');
-      url += (url.includes('?') ? '&' : '?') + queryString;
+  try {
+    let url = endpoint;
+    const config = {
+      url,
+      method: method.toLowerCase(),
+      headers,
+      validateStatus: () => true,
+    };
+
+    if (method.toLowerCase() === 'get') {
+      config.params = body;
+    } else {
+      config.data = body;
     }
-  } else {
-    configs.body = body;
+
+    const response = await axios(config);
+
+    return (response.status === 200 || response.status === 201)
+      ? response.data
+      : {};
+  } catch (error) {
+    return {
+      success: false,
+      errorCode: error.code,
+      message: error.message,
+    };
   }
-
-  const response = await fetch(url, configs).catch((error) => {
-    return false;
-  });
-
-  return !response ||
-    (response &&
-      ((response.status !== 200 && response.status !== 201) || !response.ok))
-    ? {}
-    : response.json();
 };
 
 const getHeaders = (accessToken = '', isFormData = false) => {

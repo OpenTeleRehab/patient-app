@@ -109,7 +109,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     dispatch(getRegionsRequest());
     dispatch(getProvincesRequest());
     dispatch(getPhcServicesRequest());
-    dispatch(getPhcWorkersRequest(profile?.phc_service_id));
+    dispatch(getPhcWorkersRequest({phc_service_id: profile?.phc_service_id}));
   }, [dispatch, profile?.phc_service_id]);
 
   useEffect(() => {
