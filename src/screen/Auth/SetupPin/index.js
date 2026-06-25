@@ -60,6 +60,18 @@ const SetupPin = ({navigation, route}) => {
             ],
             {cancelable: false},
           );
+        } else if (result.errorCode === 'ERR_NETWORK' || result.errorCode === 'ECONNABORTED') {
+            Alert.alert(
+              translate('pin.setup.number').toString(),
+              translate('error.message.network.error').toString(),
+              [
+                {
+                  text: translate('common.retry').toString(),
+                  onPress: () => handlerSave(passCode),
+                },
+              ],
+              {cancelable: false},
+            );
         } else {
           Alert.alert(
             translate('pin.setup.number').toString(),

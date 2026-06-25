@@ -58,7 +58,7 @@ const PhcAppointment = ({navigation, theme}) => {
 
   useEffect(() => {
     dispatch(getAllPatientsRequest({page_size: 1000, enabled: true}));
-    dispatch(getPhcWorkersRequest(profile?.phc_service_id));
+    dispatch(getPhcWorkersRequest({phc_service_id: profile?.phc_service_id}));
     dispatch(getReferralTherapistsRequest());
   }, [dispatch, profile?.phc_service_id]);
 

@@ -32,7 +32,7 @@ const PatientTransfer = ({navigation, route}) => {
   }, [patientsForPhcWorker, patientId]);
 
   useEffect(() => {
-    dispatch(getPhcWorkersRequest(profile?.phc_service_id));
+    dispatch(getPhcWorkersRequest({phc_service_id: profile?.phc_service_id}));
   }, [dispatch, profile?.phc_service_id]);
 
   const phcWorkerOptions = useMemo(

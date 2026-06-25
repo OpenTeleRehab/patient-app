@@ -93,7 +93,7 @@ export const setupPinNumberRequest = (pin) => async (dispatch, getState) => {
     return response;
   } else {
     dispatch(mutation.userSetupPinNumberFailure());
-    return {success: false};
+    return {success: false, errorCode: response.errorCode};
   }
 };
 
