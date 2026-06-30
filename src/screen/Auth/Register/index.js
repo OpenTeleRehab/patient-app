@@ -365,7 +365,7 @@ const Register = ({theme, navigation}) => {
                 />
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate(ROUTES.FORGOTPASSWORD, {email})
+                    navigation.navigate(ROUTES.FORGOT_PASSWORD_SCREEN, {email})
                   }>
                   <Text
                     style={styles.textPrimaryBold}

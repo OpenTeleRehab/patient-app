@@ -209,7 +209,7 @@ const UserProfile = ({navigation}) => {
               title={translate('password.change')}
               disabled={!netInfo.isConnected}
               containerStyle={styles.marginBottom}
-              onPress={() => navigation.navigate(ROUTES.CHANGE_PASSWORD)}
+              onPress={() => navigation.navigate(ROUTES.CHANGE_PASSWORD_SCREEN)}
             />
           </>
         ) : (

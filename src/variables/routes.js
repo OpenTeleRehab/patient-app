@@ -94,7 +94,7 @@ export const auths = [
     screen: RegisterScreen,
   },
   {
-    name: ROUTES.FORGOTPASSWORD,
+    name: ROUTES.FORGOT_PASSWORD_SCREEN,
     screen: ForgotPasswordScreen,
   },
   {
@@ -220,7 +220,7 @@ export const miscellaneous = [
     screen: SetupPinScreen,
   },
   {
-    name: ROUTES.CHANGE_PASSWORD,
+    name: ROUTES.CHANGE_PASSWORD_SCREEN,
     screen: ChangePasswordScreen,
   },
 ];
