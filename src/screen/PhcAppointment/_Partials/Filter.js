@@ -13,7 +13,7 @@ import variables from '../../../assets/styles/variables';
 import {updateFilters} from '../../../store/phcAppointment/actions';
 import {useDispatch} from 'react-redux';
 
-const Filter = ({theme, filters, setShowFilter}) => {
+const Filter = ({theme, filters, handleClose}) => {
   const localize = useSelector((state) => state.localize);
   const dispatch = useDispatch();
   const translate = getTranslate(localize);
@@ -32,7 +32,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
     if (!_.isEmpty(filters)) {
       reset({date: filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).format('DD/MM/YYYY') : ''});
       setDateValue(filters.selected_to_date ? moment.utc(moment(filters.selected_to_date, 'YYYY-MM-DD HH:mm:ss')).toDate() : '');
-     }
+    }
   }, [filters, reset]);
 
   const onSubmit = (data) => {
@@ -43,13 +43,14 @@ const Filter = ({theme, filters, setShowFilter}) => {
       const selected_to_date = data.date ? moment.utc(moment(data.date, 'DD/MM/YYYY').endOf('day')).locale('en').format('YYYY-MM-DD HH:mm:ss') : null;
       dispatch(updateFilters({date, now, selected_from_date, selected_to_date}));
     }
-    setShowFilter(false);
+    handleClose();
   };
 
   const handleReset = () => {
     reset();
+    setDateValue();
     dispatch(updateFilters({}));
-    setShowFilter(false);
+    handleClose();
   };
 
   return (
@@ -81,7 +82,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
           }}
         />
       </View>
-      <View style={[styles.paddingXMd]}>
+      <View style={styles.paddingXMd}>
         <Button
           containerStyle={styles.marginBottom}
           title={translate('phc.appointment.button.apply')}
@@ -93,7 +94,7 @@ const Filter = ({theme, filters, setShowFilter}) => {
           title={translate('phc.appointment.button.reset')}
           onPress={handleReset}
         />
-        <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.appointment.button.cancel')} onPress={() => setShowFilter(false)} />
+        <Button type="outline" containerStyle={styles.marginBottom} title={translate('phc.appointment.button.cancel')} onPress={handleClose} />
       </View>
     </View>
   );

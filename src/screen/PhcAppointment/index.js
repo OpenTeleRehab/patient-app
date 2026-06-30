@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState, useRef, useCallback} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text, ActivityIndicator} from 'react-native';
-import {BottomSheet, Icon, Divider, withTheme} from 'react-native-elements';
+import {Icon, Divider, withTheme} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import HeaderBar from '../../components/Common/HeaderBar';
 import AppointmentList from './_Partials/AppointmentList';
@@ -23,6 +23,7 @@ import {getPhcWorkersRequest} from '../../store/phcService/actions';
 import {getReferralTherapistsRequest} from '../../store/therapist/actions';
 import _ from 'lodash';
 import variables from '../../assets/styles/variables';
+import BottomSheet, {BottomSheetScrollView, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 
 const PhcAppointment = ({navigation, theme}) => {
   const dispatch = useDispatch();
@@ -31,8 +32,8 @@ const PhcAppointment = ({navigation, theme}) => {
   const {phcAppointmentsWithPatient, phcAppointments, filters, loading} = useSelector((state) => state.phcAppointment);
   const {profile} = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState(0);
-  const [showFilter, setShowFilter] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const bottomSheetRef = useRef(null);
   const tabs = ['appointments', 'new_requested_appointments'];
 
   const sortByStartDate = (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
@@ -70,6 +71,27 @@ const PhcAppointment = ({navigation, theme}) => {
       dispatch(updateAppointmentUnreadStatus(_.map(phcAppointments.unreadAppointments, 'id')));
     }
   }, [dispatch, phcAppointmentsWithPatient, phcAppointments]);
+
+  const handleOpenFilter = () => {
+    bottomSheetRef.current?.expand();
+  };
+
+  const handleCloseFilter = () => {
+    bottomSheetRef.current?.close();
+  };
+
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={0.3}
+        pressBehavior="none"
+      />
+    ),
+    []
+  );
 
   return (
     <>
@@ -113,7 +135,7 @@ const PhcAppointment = ({navigation, theme}) => {
           <TouchableOpacity onPress={() => setShowForm(true)}>
            <Icon name="add-circle" size={35} color={theme.colors.primary} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowFilter(true)}>
+          <TouchableOpacity onPress={handleOpenFilter}>
             <Icon name="tune" size={25} color={theme.colors.primary} />
             {filters.selected_from_date && (
               <View style={componentStyles.indicatorStyle} />
@@ -127,8 +149,18 @@ const PhcAppointment = ({navigation, theme}) => {
           <NewRequestedAppointmentList navigation={navigation} appointments={newAppointments}/>
         )}
       </View>
-      <BottomSheet isVisible={showFilter}>
-        <Filter filters={filters} setShowFilter={setShowFilter} />
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        enableDynamicSizing={true}
+        enablePanDownToClose
+        keyboardBehavior="extend"
+        android_keyboardInputMode="adjustResize"
+        backdropComponent={renderBackdrop}
+      >
+        <BottomSheetScrollView>
+          <Filter filters={filters} handleClose={handleCloseFilter} />
+        </BottomSheetScrollView>
       </BottomSheet>
       {showForm && (
         <CreateOrEditAppointment visible={showForm} setVisible={setShowForm} navigation={navigation} />

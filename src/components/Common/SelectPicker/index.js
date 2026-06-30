@@ -17,7 +17,7 @@ const SelectPicker = (props) => {
   const inputStyle = {
     color: colors.black,
     fontSize: fontSize,
-    paddingVertical: 10,
+    paddingVertical: Platform.OS === 'android' ? 10 : 12,
   };
 
   const pickerSelectStyle = {
