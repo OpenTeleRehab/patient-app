@@ -492,6 +492,12 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                     required: translate(
                       'error.message.phc.patient.phone.required',
                     ),
+                    pattern: {
+                      value: /^\d+$/,
+                      message: translate(
+                        'error.message.phc.patient.phone.invalid',
+                      ),
+                    },
                   }}
                   render={({field: {value, onChange}}) => (
                     <TextField
@@ -515,7 +521,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
                         componentStyles.inputStyle,
                         highlightPhone && styles.textDanger,
                       ]}
-                      keyboardType="phone-pad"
+                      keyboardType="number-pad"
                       maxLength={12}
                     />
                   )}
