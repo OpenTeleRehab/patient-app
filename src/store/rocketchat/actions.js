@@ -28,6 +28,7 @@ export const updateVideoCallStatus = (payload) => (dispatch) => {
 };
 
 export const getChatRooms = () => async (dispatch, getState) => {
+  dispatch(mutation.getChatRoomsRequest());
   const {accessToken, profile} = getState().user;
   const {chatAuth, selectedRoom} = getState().rocketchat;
 
@@ -39,7 +40,6 @@ export const getChatRooms = () => async (dispatch, getState) => {
   );
 
   if (subscriptions.length) {
-    dispatch(mutation.getChatRoomsRequest());
 
     if (isPhcWorker(profile?.type)) {
       const patientChatRooms = await Chat.getPatientChatRooms(accessToken);

@@ -26,6 +26,7 @@ const ChatRoomList = ({navigation}) => {
   const isOnline = useNetInfo().isConnected;
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const {profile} = useSelector((state) => state.user);
   const {chatAuth, isLoading} = useSelector((state) => state.rocketchat);
   const {professions} = useSelector((state) => state.profession);
   const [defaultExpanded, setDefaultExpanded] = useState([
@@ -33,6 +34,8 @@ const ChatRoomList = ({navigation}) => {
     'therapists',
     'phc_workers',
   ]);
+  const shouldShowLoading = isLoading || profile?.chat_user_id !== chatAuth?.userId;
+  const [showLoading, setShowLoading] = useState(shouldShowLoading);
 
   const unauthorizedRocketChat = isOnline && chatAuth === undefined;
 
@@ -41,6 +44,20 @@ const ChatRoomList = ({navigation}) => {
     therapists: getTherapistChatRooms(),
     phc_workers: getPhcChatRooms(),
   };
+
+  useEffect(() => {
+    let timeout;
+
+    if (shouldShowLoading) {
+      setShowLoading(true);
+    } else {
+      timeout = setTimeout(() => {
+        setShowLoading(false);
+      }, 150);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [shouldShowLoading]);
 
   useEffect(() => {
     dispatch(getProfessionRequest());
@@ -79,7 +96,7 @@ const ChatRoomList = ({navigation}) => {
         </View>
       ) : (
         <ScrollView>
-          {Object.keys(rooms).map((key) => (
+          {!showLoading && Object.keys(rooms).map((key) => (
             <View key={key}>
               {rooms[key].length > 0 && (
                 <View style={componentStyles.listItemWrapper}>
@@ -145,7 +162,7 @@ const ChatRoomList = ({navigation}) => {
             </View>
           ))}
           <Spinner
-            visible={isLoading}
+            visible={showLoading}
             textContent={translate('common.loading')}
             overlayColor="rgba(0, 0, 0, 0.75)"
             textStyle={styles.textLight}
