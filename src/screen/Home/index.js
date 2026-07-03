@@ -86,7 +86,7 @@ const Home = ({navigation}) => {
   }, [dispatch, isOnline]);
 
   useEffect(() => {
-    if (!_.isEmpty(treatmentPlan)) {
+    if (!isLoading && !_.isEmpty(treatmentPlan)) {
       const activities = treatmentPlan.activities.filter(
         (a) =>
           moment(a.date).format(settings.format.date) ===
@@ -132,6 +132,7 @@ const Home = ({navigation}) => {
     offlineQuestionnaireAnswers,
     offlineActivities,
     offlineGoals,
+    isLoading,
   ]);
 
   useEffect(() => {
