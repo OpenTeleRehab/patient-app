@@ -144,6 +144,7 @@ const AppointmentDetail = ({route, navigation}) => {
         <Text>{translate('appointment.appointment_with')}</Text>
         <Text style={styles.fontWeightBold}>
           {getTherapistName(appointment.therapist_id, therapistData)}
+          {appointment.type && (` (${translate(`appointment.type.${appointment.type}`)})`)}
         </Text>
         {appointment.note && appointment.note.trim() !== '' && (
           <>

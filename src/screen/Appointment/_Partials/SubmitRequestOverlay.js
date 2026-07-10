@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {Button, Divider, Text} from 'react-native-elements';
+import {Button, Divider, Text, CheckBox} from 'react-native-elements';
 import {Alert, Platform, StyleSheet, ToastAndroid, View} from 'react-native';
 import styles from '../../../assets/styles';
 import SelectPicker from '../../../components/Common/SelectPicker';
@@ -20,6 +20,7 @@ import CommonOverlay from '../../../components/Common/Overlay';
 import {
   CARE_PROVIDER_OPTIONS,
   CARE_PROVIDER_TYPES,
+  APPOINTMENT_TYPE
 } from '../../../variables/appointment';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -40,15 +41,16 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   const [errorFromTimeRequired, setErrorFromTimeRequired] = useState(false);
   const [errorToTimeRequired, setErrorToTimeRequired] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [type, setType] = useState('');
-  const [errorType, setErrorType] = useState(false);
+  const [type, setType] = useState(APPOINTMENT_TYPE.ONLINE);
+  const [careProviderType, setCareProviderType] = useState('');
+  const [errorCareProviderType, setErrorCareProviderType] = useState(false);
   const toTimeIncreaseNum = 15;
 
   useEffect(() => {
     if (profile.phc_worker_id) {
       if (!appointment) {
         setTherapistId(
-          type === CARE_PROVIDER_TYPES.PHC_WORKER
+          careProviderType === CARE_PROVIDER_TYPES.PHC_WORKER
             ? profile.phc_worker_id
             : profile.therapist_id,
         );
@@ -56,16 +58,16 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
         const isPhcWorker = phcWorkers.some(
           (item) => item.id === appointment.therapist_id,
         );
-        setType(
+        setCareProviderType(
           isPhcWorker
             ? CARE_PROVIDER_TYPES.PHC_WORKER
             : CARE_PROVIDER_TYPES.THERAPIST,
         );
       }
     } else {
-      setType(CARE_PROVIDER_TYPES.THERAPIST);
+      setCareProviderType(CARE_PROVIDER_TYPES.THERAPIST);
     }
-  }, [profile, type, appointment, phcWorkers]);
+  }, [profile, careProviderType, appointment, phcWorkers]);
 
   useEffect(() => {
     if (appointment) {
@@ -73,6 +75,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       setDate(moment.utc(appointment.start_date).local().toDate());
       setFromTime(moment.utc(appointment.start_date).local().toDate());
       setToTime(moment.utc(appointment.end_date).local().toDate());
+      setType(appointment.type);
     }
   }, [appointment]);
 
@@ -86,6 +89,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
     setTherapistId(profile.phc_worker_id ? null : profile.therapist_id);
     setFromTime('');
     setToTime('');
+    setType(APPOINTMENT_TYPE.ONLINE);
     visible(false);
   };
 
@@ -141,10 +145,10 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       }
     }
 
-    if (type === '') {
-      setErrorType(true);
+    if (careProviderType === '') {
+      setErrorCareProviderType(true);
     } else {
-      setErrorType(false);
+      setErrorCareProviderType(false);
     }
 
     if (
@@ -154,7 +158,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
       fromTimeDuration > 0 &&
       toTime !== '' &&
       toTimeDuration > 0 &&
-      type !== ''
+      careProviderType !== ''
     ) {
       setIsLoading(true);
 
@@ -176,13 +180,15 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           .utc()
           .locale('en')
           .format('YYYY-MM-DD HH:mm:ss'),
+        type,
       };
 
       if (
         moment.utc(appointment.start_date).local().format(dateTimeFormat) ===
           fromTimeThen &&
         moment.utc(appointment.end_date).local().format(dateTimeFormat) ===
-          toTimeThen
+          toTimeThen &&
+        appointment.type === type
       ) {
         handleCloseOverlay();
         navigation.goBack();
@@ -232,8 +238,8 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
   };
 
   const handleTypeChange = (value) => {
-    setType(value);
-    setErrorType(false);
+    setCareProviderType(value);
+    setErrorCareProviderType(false);
     setErrorTherapistId(false);
   };
 
@@ -260,6 +266,29 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
           )}
         </Text>
         <Divider style={styles.marginBottomMd} />
+        <View style={[styles.formGroup, styles.marginBottomMd]}>
+          <Text style={styles.formLabel}>
+            {translate('appointment.type')}
+          </Text>
+          <View style={styles.flexRow}>
+            <CheckBox
+              title={translate('appointment.type.online')}
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={type === APPOINTMENT_TYPE.ONLINE}
+              onPress={() => setType(APPOINTMENT_TYPE.ONLINE)}
+              textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
+            />
+            <CheckBox
+              title={translate('appointment.type.in_person')}
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={type === APPOINTMENT_TYPE.IN_PERSON}
+              onPress={() => setType(APPOINTMENT_TYPE.IN_PERSON)}
+              textStyle={[styles.fontSizeSm, styles.fontWeightLight]}
+            />
+          </View>
+        </View>
         {profile.phc_worker_id && (
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>
@@ -268,18 +297,18 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             <SelectPicker
               placeholder={{
                 label: translate('appointment.choose_therapist_phc_worker'),
-                value: null,
+                value: '',
               }}
               items={CARE_PROVIDER_OPTIONS.map((option) => ({
                 label: translate(option.label),
                 value: option.value,
               }))}
-              value={type}
-              itemKey={type}
+              value={careProviderType}
+              itemKey={careProviderType}
               disabled={!!appointment}
               onValueChange={(value) => handleTypeChange(value)}
             />
-            {errorType && (
+            {errorCareProviderType && (
               <Text style={styles.textDanger}>
                 {translate('error.message.choose.therapist_phc_worker')}
               </Text>
@@ -292,7 +321,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             />
           </View>
         )}
-        {type === CARE_PROVIDER_TYPES.THERAPIST && (
+        {careProviderType === CARE_PROVIDER_TYPES.THERAPIST && (
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>
               {translate('appointment.therapist')}
@@ -328,7 +357,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             />
           </View>
         )}
-        {type === CARE_PROVIDER_TYPES.PHC_WORKER && (
+        {careProviderType === CARE_PROVIDER_TYPES.PHC_WORKER && (
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>
               {translate('appointment.phc_worker')}
