@@ -28,14 +28,14 @@ import {updateIndicatorList} from '../../store/indicator/actions';
 import variables from '../../assets/styles/variables';
 import {getAppointmentsRequest, getAppointmentsWithPatientRequest} from '../../store/phcAppointment/actions';
 import BottomSheet, {BottomSheetScrollView, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const Patient = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {patientsForPhcWorker, filters} = useSelector((state) => state.patient);
+  const {patientsForPhcWorker, filters, loading} = useSelector((state) => state.patient);
   const {phcAppointmentsWithPatient, phcAppointments} = useSelector((state) => state.phcAppointment);
-  const [currentFilters, setCurrentFilters] = useState({});
   const [patientList, setPatientList] = useState([]);
   const {profile} = useSelector((state) => state.user);
   const bottomSheetRef = useRef(null);
@@ -71,35 +71,29 @@ const Patient = ({navigation, theme}) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (patientsForPhcWorker) {
-      setPatientList(patientsForPhcWorker);
+    if (loading) {
+      setPatientList([]);
+      return;
     }
-  }, [patientsForPhcWorker]);
-
-  useEffect(() => {
-    setCurrentFilters(filters);
-  }, [filters]);
-
-  useEffect(() => {
-    if (currentFilters && !_.isEmpty(currentFilters)) {
+    if (filters && !_.isEmpty(filters)) {
       const patientData = patientsForPhcWorker.filter((patient) => {
-        if (currentFilters.first_name) {
-          const filterValue = currentFilters.first_name.toLowerCase();
+        if (filters.first_name) {
+          const filterValue = filters.first_name.toLowerCase();
           if (!patient.first_name.toLowerCase().includes(filterValue)) {
             return false;
           }
         }
 
-        if (currentFilters.last_name) {
-          const filterValue = currentFilters.last_name.toLowerCase();
+        if (filters.last_name) {
+          const filterValue = filters.last_name.toLowerCase();
           if (!patient.last_name.toLowerCase().includes(filterValue)) {
             return false;
           }
         }
 
         if (
-          currentFilters.date_of_birth_from ||
-          currentFilters.date_of_birth_to
+          filters.date_of_birth_from ||
+          filters.date_of_birth_to
         ) {
           if (!patient.date_of_birth) {
             return false;
@@ -110,24 +104,24 @@ const Patient = ({navigation, theme}) => {
             'YYYY-MM-DD HH:mm:ss',
           );
 
-          if (currentFilters.date_of_birth_from) {
+          if (filters.date_of_birth_from) {
             const dobFrom = moment(
-              currentFilters.date_of_birth_from,
+              filters.date_of_birth_from,
               'DD/MM/YYYY',
             ).startOf('day');
             if (patientDob.isBefore(dobFrom)) return false;
           }
 
-          if (currentFilters.date_of_birth_to) {
+          if (filters.date_of_birth_to) {
             const dobTo = moment(
-              currentFilters.date_of_birth_to,
+              filters.date_of_birth_to,
               'DD/MM/YYYY',
             ).endOf('day');
             if (patientDob.isAfter(dobTo)) return false;
           }
         }
 
-        if (currentFilters.treatment_status) {
+        if (filters.treatment_status) {
           const treatmentStatus = getTreatmentStatus(
             patient?.ongoingTreatmentPlan?.length
               ? patient.ongoingTreatmentPlan[0]
@@ -135,14 +129,14 @@ const Patient = ({navigation, theme}) => {
               ? patient.upcomingTreatmentPlan
               : patient.lastTreatmentPlan,
           );
-          if (treatmentStatus !== currentFilters.treatment_status) {
+          if (treatmentStatus !== filters.treatment_status) {
             return false;
           }
         }
 
         if (
-          currentFilters.referral_status &&
-          patient.referral_status !== currentFilters.referral_status
+          filters.referral_status &&
+          patient.referral_status !== filters.referral_status
         ) {
           return false;
         }
@@ -153,7 +147,7 @@ const Patient = ({navigation, theme}) => {
     } else {
       setPatientList(patientsForPhcWorker);
     }
-  }, [currentFilters, dispatch, patientsForPhcWorker]);
+  }, [filters, patientsForPhcWorker, loading]);
 
   const handleOpenFilter = () => {
     bottomSheetRef.current?.expand();
@@ -203,13 +197,13 @@ const Patient = ({navigation, theme}) => {
           <View style={componentStyles.titleContainerStyle}>
             <TouchableOpacity onPress={handleOpenFilter}>
               <Icon name="tune" size={25} color={theme.colors.primary} />
-              {!_.isEmpty(currentFilters) && (
+              {!_.isEmpty(filters) && (
                 <View style={componentStyles.indicatorStyle} />
               )}
             </TouchableOpacity>
           </View>
         </View>
-        {patientList?.length > 0 ? (
+        {!loading && patientList?.length > 0 ? (
           <FlatList
             data={patientList}
             keyExtractor={(item) => item?.id?.toString()}
@@ -243,7 +237,7 @@ const Patient = ({navigation, theme}) => {
               styles.justifyContentCenter,
             ]}>
             <Text style={styles.fontSizeBase}>
-              {!currentFilters || Object.keys(currentFilters).length === 0
+              {!filters || Object.keys(filters).length === 0
                 ? translate('phc.patient.list_no_data')
                 : translate('phc.patient.not_match_filter')}
             </Text>
@@ -259,10 +253,15 @@ const Patient = ({navigation, theme}) => {
         android_keyboardInputMode="adjustResize"
         backdropComponent={renderBackdrop}
       >
-      <BottomSheetScrollView>
-        <Filter currentFilters={currentFilters} handleClose={handleCloseFilter} />
-      </BottomSheetScrollView>
-    </BottomSheet>
+        <BottomSheetScrollView>
+          <Filter filters={filters} handleClose={handleCloseFilter} />
+        </BottomSheetScrollView>
+      </BottomSheet>
+      <Spinner
+        visible={loading}
+        overlayColor="rgba(0, 0, 0, 0.5)"
+        textStyle={styles.textLight}
+      />
     </>
   );
 };

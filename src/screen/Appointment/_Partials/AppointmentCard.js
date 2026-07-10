@@ -137,6 +137,7 @@ const AppointmentCard = ({appointment, style, theme}) => {
           </Text>
           <Text style={[styles.fontWeightBold, additionTextStyle]}>
             {getTherapistName(appointment.therapist_id, therapistData)}
+            {appointment.type && (` (${translate(`appointment.type.${appointment.type}`)})`)}
           </Text>
           {appointment.assistive_technology ? (
             <Text style={styles.marginTop} numberOfLines={1}>

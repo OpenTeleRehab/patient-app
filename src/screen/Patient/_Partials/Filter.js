@@ -58,7 +58,7 @@ const Filter = ({theme, filters,  handleClose}) => {
   };
 
   const handleReset = () => {
-    reset();
+    reset(defaultValues);
     setFromDateValue('');
     setToDateValue('');
     dispatch(updateFilters({}));
