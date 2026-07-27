@@ -91,7 +91,6 @@ const renderPaginateDots = (
 
 const Activity = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
-  const {languages} = useSelector((state) => state.language);
   const {
     treatmentPlan,
     offlineQuestionnaireAnswers,
@@ -109,7 +108,6 @@ const Activity = ({theme, navigation}) => {
   const [downloading, setDownloading] = useState(false);
   const netInfo = useNetInfo();
   const {adminApiBaseURL, apiBaseURL} = useSelector((state) => state.phone);
-  // const [locale, setLocale] = useState();
 
   const customDatesStylesFunc = (date) => {
     if (
@@ -223,27 +221,6 @@ const Activity = ({theme, navigation}) => {
       carouselRef.snapToPrev();
     }
   };
-
-  useEffect(() => {
-    if (languages.length && profile) {
-      const languageIndex = _.findIndex(languages, {
-        id: profile.language_id,
-      });
-
-      if (languageIndex > -1) {
-        moment.locale(languages[languageIndex].code);
-
-        // setLocale({
-        //   name: languages[languageIndex].code,
-        //   config: {
-        //     months: moment.months(),
-        //     weekdays: moment.weekdays(),
-        //     weekdaysShort: moment.weekdaysShort(),
-        //   },
-        // });
-      }
-    }
-  }, [profile, languages]);
 
   useEffect(() => {
     if (!_.isEmpty(treatmentPlan)) {

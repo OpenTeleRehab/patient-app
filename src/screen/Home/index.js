@@ -34,6 +34,7 @@ import {updateIndicatorList} from '../../store/indicator/actions';
 import {getAssistiveTechnologiesRequest} from '../../store/assistiveTechnology/actions';
 import {getClinicRequest} from '../../store/clinic/actions';
 import {getPhcServiceRequest} from '../../store/phcService/actions';
+import useMomentLocale from '../../hook/useMomentLocale';
 
 const kidThemeImageStyle = {
   width: 300,
@@ -64,18 +65,13 @@ const Home = ({navigation}) => {
   const [kidTheme, setKidTheme] = useState(false);
   const [todayAppointments, setTodayAppointments] = useState([]);
 
+  useMomentLocale(languages, profile.language_id);
+
   useEffect(() => {
     if (profile) {
       setKidTheme(!!profile.kid_theme);
     }
   }, [profile]);
-
-  useEffect(() => {
-    if (languages.length) {
-      const foundLanguage = languages.find((l) => l.id === profile.language_id);
-      moment.locale(foundLanguage ? foundLanguage.code : '');
-    }
-  }, [languages, profile]);
 
   useEffect(() => {
     if (isOnline) {
