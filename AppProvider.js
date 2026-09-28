@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 import SplashScreen from './src/components/SplashScreen';
 import {getTranslations} from './src/store/translation/actions';
-import {setInitialRouteName} from './src/store/user/actions';
+import {loginRequest, setInitialRouteName} from './src/store/user/actions';
 import {ROUTES, STORAGE_KEY, TRANSFER_STATUS} from './src/variables/constants';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
@@ -23,7 +23,6 @@ import {addTranslationForLanguage, getTranslate} from 'react-localize-redux';
 import RNCallKeep from 'react-native-callkeep';
 import {Alert, Platform} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
-import store from './src/store';
 import {forceLogout} from './src/store/auth/actions';
 import {
   completeActive,
@@ -59,6 +58,7 @@ const AppProvider = ({children}) => {
   const [language, setLanguage] = useState(undefined);
   const [socket, setSocket] = useState(null);
   const isOnline = useNetInfo().isConnected;
+  const isRelogging = useRef(false);
 
   // Trigger appointment notifications
   useAppointmentNotifications(dispatch, profile);
@@ -205,11 +205,22 @@ const AppProvider = ({children}) => {
   }, [accessToken, dispatch, isOnline]);
 
   useEffect(() => {
-    if (isOnline && isDataUpToDate === false) {
-      store.dispatch(forceLogout());
-      Alert.alert(translate('user.session'), translate('user.session_expired'));
+    if (isOnline && isDataUpToDate === false && !isRelogging.current) {
+      // Refresh the session restored offline; log out only if the server rejects it
+      isRelogging.current = true;
+      dispatch(loginRequest())
+        .then(({isRejected}) => {
+          if (isRejected) {
+            dispatch(forceLogout());
+            Alert.alert(translate('user.session'), translate('user.session_expired'));
+          }
+        })
+        .catch((error) => console.error(error))
+        .finally(() => {
+          isRelogging.current = false;
+        });
     }
-  }, [isOnline, isDataUpToDate, translate]);
+  }, [dispatch, isOnline, isDataUpToDate, translate]);
 
   useEffect(() => {
     if (isOnline && accessToken) {
