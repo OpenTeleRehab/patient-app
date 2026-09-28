@@ -64,7 +64,7 @@ const ChatPanel = ({navigation, theme}) => {
   useEffect(() => {
     let intervalID;
 
-    if (isOnlineMode && selectedRoom?.rid && profile?.id) {
+    if (isOnlineMode && selectedRoom?.rid && profile?.id && chatAuth?.userId) {
       intervalID = setInterval(() => {
         if (chatSocket && chatSocket.OPEN === chatSocket.readyState) {
           loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
