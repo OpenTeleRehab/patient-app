@@ -269,9 +269,9 @@ const acceptPrivacyPolicyFailure = () => {
   };
 };
 
-const generateFakeAccessTokenSuccess = () => {
+const userOfflineLoginSuccess = () => {
   return {
-    type: 'GENERATE_FAKE_ACCESS_TOKEN_SUCCESS',
+    type: 'USER_OFFLINE_LOGIN_SUCCEED',
   };
 };
 
@@ -351,7 +351,7 @@ export const mutation = {
   acceptTermOfServiceRequest,
   acceptTermOfServiceSuccess,
   acceptTermOfServiceFailure,
-  generateFakeAccessTokenSuccess,
+  userOfflineLoginSuccess,
   fetchPrivacyPolicySuccess,
   fetchPrivacyPolicyFailure,
   acceptPrivacyPolicySuccess,

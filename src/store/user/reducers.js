@@ -116,9 +116,9 @@ export const user = (state = initialState, action) => {
         isLoading: false,
       });
     }
-    case 'GENERATE_FAKE_ACCESS_TOKEN_SUCCESS': {
+    case 'USER_OFFLINE_LOGIN_SUCCEED': {
       return Object.assign({}, state, {
-        accessToken: 'FAKE_ACCESS_TOKEN',
+        accessToken: 'OFFLINE_ACCESS_TOKEN',
         isDataUpToDate: false,
       });
     }

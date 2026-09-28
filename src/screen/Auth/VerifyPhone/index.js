@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles';
-import {ROUTES} from '../../../variables/constants';
+import {ROUTES, USER_ROLE} from '../../../variables/constants';
 import {verifyPhoneNumberRequest} from '../../../store/user/actions';
 import {registerRequest} from '../../../store/register/actions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -28,7 +28,7 @@ const VerifyPhone = ({navigation}) => {
   const {otp, startListening, stopListening} = useOtpVerification();
   const formattedNumber = useSelector((state) => state.register.phone);
   const countryCode = useSelector((state) => state.register.countryCode);
-  const dialCode = useSelector((state) => state.user.dial_code);
+  const dialCode = useSelector((state) => state.register.dial_code);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const isLoading = useSelector((state) => state.user.isLoading);
@@ -132,7 +132,7 @@ const VerifyPhone = ({navigation}) => {
     setErrorEmail(false);
     setCount(30);
     setResentCount(resentCount + 1);
-    dispatch(registerRequest(dialCode, formattedNumber, hash, null, email));
+    dispatch(registerRequest(dialCode, formattedNumber, hash, countryCode, email, '', USER_ROLE.PATIENT));
   };
 
   return (

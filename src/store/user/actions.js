@@ -127,6 +127,7 @@ export const loginRequest = () => async (dispatch, getState) => {
       dispatch(
         mutation.userRegisterSuccess({
           accessToken: response.data.access_token,
+          isDataUpToDate: true,
         }),
       );
 
@@ -160,7 +161,11 @@ export const loginRequest = () => async (dispatch, getState) => {
     }
   } else {
     dispatch(mutation.userLoginFailure());
-    return {success: false};
+    // Server rejects with {success: false}; network/gateway failures carry no verdict
+    return {
+      success: false,
+      isRejected: response.success === false && !response.errorCode,
+    };
   }
 };
 
@@ -332,8 +337,8 @@ export const acceptPrivacyPolicyRequest =
     }
   };
 
-export const generateFakeAccessToken = () => async (dispatch) => {
-  dispatch(mutation.generateFakeAccessTokenSuccess());
+export const offlineLogin = () => async (dispatch) => {
+  dispatch(mutation.userOfflineLoginSuccess());
 };
 
 export const enableKidTheme = (accessToken, payload) => async (dispatch) => {

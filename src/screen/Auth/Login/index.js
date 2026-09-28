@@ -14,7 +14,7 @@ import {Text} from 'react-native-elements';
 import {
   loginRequest,
   fetchTermOfServiceRequest,
-  generateFakeAccessToken,
+  offlineLogin,
   fetchPrivacyPolicyRequest,
 } from '../../../store/user/actions';
 import styles from '../../../assets/styles';
@@ -92,6 +92,23 @@ const Login = ({navigation}) => {
     }
   }, [patientPhcWorkers]);
 
+  const handleLoginFailure = () => {
+    Alert.alert(
+      translate('common.login.fail'),
+      translate('wrong.pin'),
+      [
+        {
+          text: translate('common.ok'),
+          onPress: () => reset(),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+    setErrorCode(true);
+  };
+
   const handleLogin = (passCode) => {
     if (passCode === pin) {
       dispatch(loginRequest()).then((loginResult) => {
@@ -99,25 +116,14 @@ const Login = ({navigation}) => {
           if (!loginResult.acceptedTerm || !loginResult.acceptedPolicy) {
             navigation.navigate(ROUTES.TERM_OF_SERVICE);
           }
+        } else if (loginResult.isRejected) {
+          handleLoginFailure();
         } else {
-          dispatch(generateFakeAccessToken());
+          dispatch(offlineLogin());
         }
       });
     } else {
-      Alert.alert(
-        translate('common.login.fail'),
-        translate('wrong.pin'),
-        [
-          {
-            text: translate('common.ok'),
-            onPress: () => reset(),
-          },
-        ],
-        {
-          cancelable: false,
-        },
-      );
-      setErrorCode(true);
+      handleLoginFailure();
     }
   };
 
