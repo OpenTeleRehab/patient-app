@@ -34,7 +34,8 @@ const ChatRoomList = ({navigation}) => {
     'therapists',
     'phc_workers',
   ]);
-  const shouldShowLoading = isLoading || profile?.chat_user_id !== chatAuth?.userId;
+  // chatAuth is not persisted, so offline there is nothing to compare against.
+  const shouldShowLoading = isLoading || (isOnline && profile?.chat_user_id !== chatAuth?.userId);
   const [showLoading, setShowLoading] = useState(shouldShowLoading);
 
   const unauthorizedRocketChat = isOnline && chatAuth === undefined;
