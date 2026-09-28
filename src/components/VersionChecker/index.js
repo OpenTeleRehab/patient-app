@@ -25,7 +25,7 @@ const VersionChecker = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (appVersion && appVersion.length > 0) {
+    if (appVersion && appVersion.length > 0 && !settings.isDebugMode) {
       const force = appVersion.includes('f');
       const version = parseInt(DeviceInfo.getBuildNumber(), 10);
       const requiredVersion = parseInt(appVersion, 10);
