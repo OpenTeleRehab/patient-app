@@ -47,29 +47,44 @@ export const submitScreeningQuestionnaireAnswerRequest =
   };
 
 export const syncOfflineScreeningQuestionnaires =
-  (offlineInterviews) => async (dispatch) => {
-    const failedItems = [];
+  (offlineInterviews) => async (dispatch, getState) => {
+    const syncedItems = [];
 
     for (const item of offlineInterviews) {
       if (item.status === OFFLINE_STATUS.USER_DUPLICATE) {
-        failedItems.push(item);
         continue;
       }
       try {
-        await dispatch(
+        const res = await dispatch(
           submitScreeningQuestionnaireAnswerRequest(
             item.questionnaire_id,
             item.userId,
             item.answers,
           ),
         );
+        // callApi resolves with {} or {success: false} on failure instead of throwing
+        if (res?.success) {
+          syncedItems.push(item);
+        }
       } catch (e) {
         console.log('Failed to sync offline interview', e);
-        failedItems.push(item); // keep failed items in offline queue
       }
     }
 
-    dispatch(mutation.submitScreeningQuestionnaireOfflineSuccess(failedItems));
+    // Remove only synced items so failed ones and ones added meanwhile stay queued
+    const {offlineInterviews: current} = getState().screeningQuestionnaire;
+    dispatch(
+      mutation.submitScreeningQuestionnaireOfflineSuccess(
+        current.filter(
+          (interview) =>
+            !syncedItems.some(
+              (synced) =>
+                synced.questionnaire_id === interview.questionnaire_id &&
+                synced.answers === interview.answers,
+            ),
+        ),
+      ),
+    );
   };
 
 // Offline Submit Screening Questionnaries
