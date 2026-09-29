@@ -250,7 +250,15 @@ export const syncOfflineCreatePatient =
             }
           } else {
             if (item.status === OFFLINE_STATUS.PENDING_UPDATE) {
-              await Patient.updatePatient(item.id, item, accessToken);
+              const res = await Patient.updatePatient(
+                item.id,
+                item,
+                accessToken,
+              );
+              // callApi does not throw on failure; keep the update pending
+              if (!res?.success) {
+                continue;
+              }
               const updatedPatient = updateListItem(
                 patientsForPhcWorker,
                 (patient) => patient.id === item.id,
@@ -383,14 +391,14 @@ export const removePendingSupplementaryOfflineRequest = (id) => async (dispatch)
 export const syncOfflineRemovePendingSupplementary = () => async (dispatch, getState) => {
   const {accessToken} = getState().user;
   const {offlineRemovePendingSupplementary} = getState().patient;
-  const remaining = [...offlineRemovePendingSupplementary];
+  const synced = [];
   if (!offlineRemovePendingSupplementary?.length) return;
   for (const item of offlineRemovePendingSupplementary) {
     try {
-      await Patient.deletePendingSupplementary(item, accessToken);
-      const index = remaining.indexOf(item);
-      if (index > -1) {
-        remaining.splice(index, 1);
+      const res = await Patient.deletePendingSupplementary(item, accessToken);
+      // callApi does not throw on failure; keep the item queued
+      if (res?.success) {
+        synced.push(item);
       }
     } catch (e) {
       console.log(
@@ -406,5 +414,9 @@ export const syncOfflineRemovePendingSupplementary = () => async (dispatch, getS
     console.log('Failed to fetch transfers', e);
   }
 
+  // Filter the current queue so items added during the sync are kept
+  const remaining = getState().patient.offlineRemovePendingSupplementary.filter(
+    (item) => !synced.includes(item),
+  );
   dispatch(mutation.syncOfflineRemovePendingSupplementarySuccess(remaining));
 };

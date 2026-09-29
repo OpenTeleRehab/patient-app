@@ -39,13 +39,21 @@ export const getTodayActivitySummaryRequest = () => async (
   }
 };
 
+// Payload is the offline queue itself or a single online item; drop only what was sent
+const withoutSent = (list, payload) =>
+  list.filter((item) => ![].concat(payload).includes(item));
+
 export const completeActive = (payload) => async (dispatch, getState) => {
   dispatch(mutation.completeActivityRequest());
   const {accessToken} = getState().user;
   const res = await Activity.completeActivity(payload, accessToken);
   if (res.success) {
-    const offlineActivities = [];
-    dispatch(mutation.completeActivityOfflineSuccess(offlineActivities));
+    const {offlineActivities} = getState().activity;
+    dispatch(
+      mutation.completeActivityOfflineSuccess(
+        withoutSent(offlineActivities, payload),
+      ),
+    );
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeActivitySuccess());
     return true;
@@ -63,9 +71,11 @@ export const completeQuestionnaire = (payload) => async (
   const {accessToken} = getState().user;
   const res = await Activity.completeQuestionnaire(payload, accessToken);
   if (res.success) {
-    const offlineQuestionnaireAnswers = [];
+    const {offlineQuestionnaireAnswers} = getState().activity;
     dispatch(
-      mutation.completeQuestionnaireOfflineSuccess(offlineQuestionnaireAnswers),
+      mutation.completeQuestionnaireOfflineSuccess(
+        withoutSent(offlineQuestionnaireAnswers, payload),
+      ),
     );
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeQuestionnaireSuccess());
@@ -85,8 +95,10 @@ export const completeGoal = (payload) => async (dispatch, getState) => {
   const {accessToken} = getState().user;
   const res = await Activity.completeGoal(payload, accessToken);
   if (res.success) {
-    const offlineGoals = [];
-    dispatch(mutation.completeGoalOfflineSuccess(offlineGoals));
+    const {offlineGoals} = getState().activity;
+    dispatch(
+      mutation.completeGoalOfflineSuccess(withoutSent(offlineGoals, payload)),
+    );
     dispatch(getTreatmentPlanRequest());
     dispatch(mutation.completeGoalSuccess());
     return true;
