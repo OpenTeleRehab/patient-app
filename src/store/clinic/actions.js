@@ -4,12 +4,13 @@
 import {Clinic} from '../../services/clinic';
 import {mutation} from './mutations';
 
-export const getClinicRequest = (payload) => async (dispatch) => {
+export const getClinicRequest = (payload) => async (dispatch, getState) => {
   dispatch(mutation.clinicFetchRequest);
   const data = await Clinic.getClinic(payload);
   if (data.data) {
     dispatch(mutation.clinicFetchSuccess(data.data));
-  } else {
+  } else if (getState().clinic.clinic?.id !== payload) {
+    // Keep the persisted clinic for the same id so it still shows offline
     dispatch(mutation.clinicFetchFailure());
   }
 };

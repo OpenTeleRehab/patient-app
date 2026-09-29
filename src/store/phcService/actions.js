@@ -26,7 +26,8 @@ export const getPhcServiceRequest = (id) => async (
   const res = await PhcService.getPhcService(id);
   if (res.data) {
     dispatch(mutation.phcServiceFetchSuccess(res.data));
-  } else {
+  } else if (getState().phcService.phcService?.id !== id) {
+    // Keep the persisted service for the same id so it still shows offline
     dispatch(mutation.phcServiceFetchFailure());
   }
 };
