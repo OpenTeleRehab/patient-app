@@ -25,19 +25,13 @@ export const getPatientsListForPhcWorkerRequest =
               item.status !== OFFLINE_STATUS.SUCCESS &&
               item.phc_worker_id === profile.id,
           ) || [];
+        // Local unsynced copy (pending or duplicate) replaces the server copy
         dispatch(
           mutation.patientsForPhcWorkerFetchSuccess([
             ...needActionPatients,
-            ...res.data.filter((item) => {
-              if (!needActionPatients.length) return true;
-              const found = needActionPatients.find(
-                (p) =>
-                  p.id === item.id &&
-                  p.status === OFFLINE_STATUS.DUPLICATE_UPDATE,
-              );
-              if (found) return false;
-              return true;
-            }),
+            ...res.data.filter(
+              (item) => !needActionPatients.some((p) => p.id === item.id),
+            ),
           ]),
         );
       } catch (error) {
@@ -288,8 +282,11 @@ export const syncOfflineCreatePatient =
                     ),
                   );
                 }
+                // A list fetch during the sync may already hold the server copy
                 const updatedPatient = updateListItem(
-                  patientsForPhcWorker,
+                  getState().patient.patientsForPhcWorker.filter(
+                    (patient) => patient.id !== res.data.id,
+                  ),
                   (patient) => patient.id === item.id,
                   {
                     status: 'success',
