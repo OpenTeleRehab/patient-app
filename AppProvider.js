@@ -12,7 +12,7 @@ import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
-import {initialChatSocket} from './src/utils/rocketchat';
+import {initialChatSocket, reconnectChatSocket} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
 import {
   acceptCallHandler,
@@ -116,6 +116,10 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     dispatch(updateIndicatorList({isOnlineMode: isOnline}));
+
+    if (isOnline) {
+      reconnectChatSocket();
+    }
   }, [dispatch, isOnline]);
 
   useEffect(() => {

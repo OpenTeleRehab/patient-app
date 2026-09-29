@@ -2,6 +2,7 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import {Actions, Composer, InputToolbar, Send} from 'react-native-gifted-chat';
 import styles from '../../../assets/styles';
 import {Icon} from 'react-native-elements';
@@ -16,7 +17,7 @@ const iconRenderer = (translate, theme, onShowPicker) => (
   />
 );
 
-const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
+const ChatToolbar = ({chatData, theme, translate, onShowPicker, loading}) => {
   return (
     <InputToolbar
       {...chatData}
@@ -31,7 +32,7 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
         <Actions
           {...chatData}
           icon={() => iconRenderer(translate, theme, onShowPicker)}
-          onPressActionButton={() => onShowPicker(true)}
+          onPressActionButton={() => !loading && onShowPicker(true)}
           containerStyle={styles.chatAttachment}
         />
       )}
@@ -39,14 +40,18 @@ const ChatToolbar = ({chatData, theme, translate, onShowPicker}) => {
         <Send
           {...chatData}
           containerStyle={styles.chatSendButton}
-          children={
+          isSendButtonAlwaysVisible={loading}
+          sendButtonProps={{disabled: loading}}
+          children={loading ? (
+            <ActivityIndicator color={theme.colors.primary} />
+          ) : (
             <Icon
               name="send"
               type="material"
               color={theme.colors.primary}
               size={26}
             />
-          }
+          )}
         />
       )}
     />
