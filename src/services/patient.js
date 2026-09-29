@@ -79,10 +79,13 @@ const createPatient = async (payload, accessToken) => {
 };
 
 const updatePatient = async (id, payload, accessToken) => {
+  // The edit form holds the patient's lead therapist_id; the gateway's data
+  // access check rejects it (403) as it is not the PHC worker's own id
+  const {therapist_id, ...data} = payload;
   return await callApi(
     `/patient/${id}`,
     accessToken,
-    {...payload},
+    data,
     'put',
     false,
     {country: getUserCountryIsoCode()},
