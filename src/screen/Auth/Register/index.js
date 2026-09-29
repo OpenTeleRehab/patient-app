@@ -19,6 +19,7 @@ import {
   withTheme,
 } from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
+import {useNetInfo} from '@react-native-community/netinfo';
 import {getHash} from 'react-native-otp-auto-verify';
 import DeviceCountry from 'react-native-device-country';
 import styles from '../../../assets/styles';
@@ -56,9 +57,11 @@ const Register = ({theme, navigation}) => {
   const [defaultCountryCode, setDefaultCountryCode] = useState('');
   const countryCodeRef = useRef('');
 
+  const isOffline = useNetInfo().isConnected === false;
+  // Health worker login needs the server, so block it while offline.
   const shouldRegister = registerAsSelectedIndex === 0
     ? phoneNumber
-    : email && password;
+    : email && password && !isOffline;
 
   const countryItems = useMemo(
     () =>
