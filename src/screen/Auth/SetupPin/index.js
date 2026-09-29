@@ -135,6 +135,28 @@ const SetupPin = ({navigation, route}) => {
     ref.current?.focus();
   };
 
+  // Redirect focus to the first PIN field until it is completed
+  const handleConfirmCodeFocus = () => {
+    if (code.length < 4) {
+      codeInputRef.current?.focus();
+    }
+  };
+
+  // Confirmation only applies to a completed first PIN
+  const handleCodeChange = (value) => {
+    setCode(value);
+
+    if (value.length < 4) {
+      setConfirmCode('');
+    }
+  };
+
+  const handleConfirmCodeChange = (value) => {
+    if (code.length === 4) {
+      setConfirmCode(value);
+    }
+  };
+
   return (
     <>
       <HeaderBar
@@ -176,7 +198,8 @@ const SetupPin = ({navigation, route}) => {
                 ref={codeInputRef}
                 password
                 value={code}
-                onTextChange={(value) => setCode(value)}
+                onTextChange={handleCodeChange}
+                onFulfill={() => confirmCodeInputRef.current?.focus()}
                 animated={false}
                 textStyle={styles.formPinText}
                 cellSpacing={10}
@@ -208,7 +231,8 @@ const SetupPin = ({navigation, route}) => {
                 ref={confirmCodeInputRef}
                 password
                 value={confirmCode}
-                onTextChange={(value) => setConfirmCode(value)}
+                onTextChange={handleConfirmCodeChange}
+                onFocus={handleConfirmCodeFocus}
                 textStyle={styles.formPinText}
                 animated={false}
                 cellSpacing={10}
@@ -220,7 +244,6 @@ const SetupPin = ({navigation, route}) => {
                 cellStyleFocused={!errorCode && styles.formPinCellFocused}
                 cellStyleFilled={styles.formPinCellFilled}
                 mask={<View style={styles.formPinCustomMask} />}
-                editable={code.length === 4}
                 onFulfill={(passCode) => handlerSave(passCode)}
               />
             </TouchableOpacity>
