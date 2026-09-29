@@ -19,7 +19,7 @@ const Transfer = ({navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {transfers} = useSelector((state) => state.transfer);
-  const {profile} = useSelector((state) => state.user);
+  const {profile, accessToken} = useSelector((state) => state.user);
   const [patients, setPatients] = useState([]);
   const isOnline = useNetInfo().isConnected;
 
@@ -32,13 +32,15 @@ const Transfer = ({navigation}) => {
       );
       const patientIds = _.map(receiveTransfers, 'patient_id');
 
+      // Fails (null) right after reconnecting while the offline session is still being refreshed;
+      // accessToken in deps refetches once the real token arrives.
       dispatch(getPatientsByIds({patient_ids: patientIds})).then((data) => {
-        setPatients(data);
+        setPatients(data || []);
       });
     } else {
       setPatients([]);
     }
-  }, [dispatch, transfers, profile.id, isOnline]);
+  }, [dispatch, transfers, profile.id, isOnline, accessToken]);
 
   const filteredTransfers = transfers
     .filter(
