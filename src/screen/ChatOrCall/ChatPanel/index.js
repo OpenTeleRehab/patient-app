@@ -50,6 +50,8 @@ const ChatPanel = ({navigation, theme}) => {
   const [videoAttachments, setVideoAttachments] = useState(undefined);
   const [imageAttachments, setImageAttachments] = useState(undefined);
   const [currentAttachment, setCurrentAttachment] = useState(undefined);
+  // Reachable via tab bar / notification, or on reconnect, before the Rocket.Chat login reply sets chatAuth.
+  const waitingForChatLogin = isOnlineMode && !chatAuth;
 
   useEffect(() => {
     if (!showIncomingCall && !showAcceptedCall) {
@@ -194,7 +196,8 @@ const ChatPanel = ({navigation, theme}) => {
   };
 
   const renderFooter = () => {
-    if (selectedRoom?.u?.status === CHAT_USER_STATUS.OFFLINE) {
+    // Presence is stale while we're offline, so treat the other side as offline too.
+    if (!isOnlineMode || selectedRoom?.u?.status === CHAT_USER_STATUS.OFFLINE) {
       return (
         <View style={[styles.flexCenter, styles.paddingXLg, styles.paddingYMd]}>
           <Text style={styles.chatTherapistNotOnlineText}>
@@ -213,6 +216,7 @@ const ChatPanel = ({navigation, theme}) => {
         theme={theme}
         translate={translate}
         onShowPicker={setShowPicker}
+        loading={waitingForChatLogin}
       />
     );
   };
@@ -246,7 +250,7 @@ const ChatPanel = ({navigation, theme}) => {
           title={selectedRoom?.name}
           onGoBack={() => handleGoBack()}
           call={{
-            disabledCall: disabledCall,
+            disabledCall: disabledCall || waitingForChatLogin,
             onAudioCall: () => handleCall(false),
             onVideoCall: () => handleCall(true),
           }}
@@ -255,7 +259,6 @@ const ChatPanel = ({navigation, theme}) => {
         <HeaderBar onGoBack={() => handleGoBack()} title={selectedRoom?.name} />
       )}
       <GiftedChat
-        key={isOnlineMode ? 'gifted-chat-online' : 'gifted-chat-offline'}
         messages={allMessages}
         placeholder={translate('chat.type.message')}
         messagesContainerStyle={styles.chatMainContainer}

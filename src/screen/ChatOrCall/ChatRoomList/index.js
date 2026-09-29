@@ -2,10 +2,9 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {ListItem, Badge, Icon, Text} from 'react-native-elements';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, ScrollView, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {renderLastMessageText} from '../../../utils/helper';
@@ -135,7 +134,7 @@ const ChatRoomList = ({navigation}) => {
                               {getProfession(item.professionId)}{' '}
                               <Badge
                                 badgeStyle={
-                                  item.u.status === CHAT_USER_STATUS.ONLINE
+                                  isOnline && item.u.status === CHAT_USER_STATUS.ONLINE
                                     ? styles.bgSuccess
                                     : styles.bgGrey
                                 }
@@ -162,12 +161,8 @@ const ChatRoomList = ({navigation}) => {
               )}
             </View>
           ))}
-          <Spinner
-            visible={showLoading}
-            textContent={translate('common.loading')}
-            overlayColor="rgba(0, 0, 0, 0.75)"
-            textStyle={styles.textLight}
-          />
+          {/* Inline, not a modal overlay: the tab stays mounted under ChatPanel and a modal would cover it. */}
+          {showLoading && <ActivityIndicator style={styles.paddingMd} color={variables.primary} />}
         </ScrollView>
       )}
     </>

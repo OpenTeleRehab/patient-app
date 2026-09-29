@@ -197,6 +197,11 @@ export const getChatRooms = () => async (dispatch, getState) => {
     }
 
     if (chatRooms.length > 0) {
+      // Keep already-loaded (persisted) history until loadHistory replaces it, so it stays visible offline.
+      const prevRooms = getState().rocketchat.chatRooms || [];
+      chatRooms.forEach((room) => {
+        room.messages = prevRooms.find((pr) => pr.rid === room.rid)?.messages || [];
+      });
       dispatch(mutation.getChatRoomsSuccess(chatRooms));
       if (selectedRoom === undefined) {
         dispatch(mutation.selectRoomSuccess(chatRooms[0]));

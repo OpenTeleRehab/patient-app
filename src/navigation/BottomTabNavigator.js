@@ -3,11 +3,12 @@
  */
 import React from 'react';
 import {Image} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Text} from 'react-native-elements';
 import {getTranslate} from 'react-localize-redux';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {ROUTES} from '../variables/constants';
+import {mutation} from '../store/rocketchat/mutations';
 
 import HomeScreen from '../screen/Home';
 import ActivityScreen from '../screen/Activity';
@@ -57,6 +58,7 @@ const tabBarLabel = (label, focused) => (
 );
 
 const BottomTabNavigator = () => {
+  const dispatch = useDispatch();
   const indicator = useSelector((state) => state.indicator);
   const {profile} = useSelector((state) => state.user);
   const {chatRooms} = useSelector((state) => state.rocketchat);
@@ -182,7 +184,9 @@ const BottomTabNavigator = () => {
                 // Prevent the default action
                 e.preventDefault();
 
-                // Change navigate to chat panel
+                // Change navigate to chat panel, loading the persisted history like ChatRoomList does
+                dispatch(mutation.selectRoomSuccess(chatRooms[0]));
+                dispatch(mutation.getMessagesInRoomSuccess(chatRooms[0].messages));
                 navigation.navigate(ROUTES.CHAT_PANEL);
               }
             },

@@ -15,6 +15,10 @@ import {Rocketchat} from '../services/rocketchat';
 import {checkCallBusy} from './chat';
 import store from '../store';
 
+// Set by the latest initialChatSocket(); lets AppProvider skip the reconnect backoff when the network returns.
+let reconnectNow = () => {};
+export const reconnectChatSocket = () => reconnectNow();
+
 export const initialChatSocket = (
   dispatch,
   subscribeIds,
@@ -29,9 +33,11 @@ export const initialChatSocket = (
   let reconnectAttempts = 0;
   let reconnectTimeout;
   let allowDisconnect = false;
+  let currentSocket;
 
   const connectSocket = () => {
     const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
+    currentSocket = socket;
 
     updateSocketRef(socket);
 
@@ -189,6 +195,15 @@ export const initialChatSocket = (
       reconnectAttempts += 1;
       connectSocket();
     }, reconnectDelay);
+  };
+
+  reconnectNow = () => {
+    reconnectAttempts = 0;
+    if (allowDisconnect || [WebSocket.OPEN, WebSocket.CONNECTING].includes(currentSocket?.readyState)) {return;}
+
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = null;
+    connectSocket();
   };
 
   // Initiate connection
