@@ -59,6 +59,8 @@ const AppProvider = ({children}) => {
   const [socket, setSocket] = useState(null);
   const isOnline = useNetInfo().isConnected;
   const isRelogging = useRef(false);
+  // Offline login holds a placeholder token; wait for the re-login before syncing
+  const canSync = isOnline && accessToken && isDataUpToDate !== false;
 
   // Trigger appointment notifications
   useAppointmentNotifications(dispatch, profile);
@@ -227,29 +229,29 @@ const AppProvider = ({children}) => {
   }, [dispatch, isOnline, isDataUpToDate, translate]);
 
   useEffect(() => {
-    if (isOnline && accessToken) {
+    if (canSync) {
       dispatch(syncPatientOffline());
       dispatch(syncOfflineRemovePendingSupplementary());
     }
-  }, [isOnline, dispatch, accessToken]);
+  }, [canSync, dispatch]);
 
   useEffect(() => {
-    if (isOnline && accessToken && offlineQuestionnaireAnswers.length) {
+    if (canSync && offlineQuestionnaireAnswers.length) {
       dispatch(completeQuestionnaire(offlineQuestionnaireAnswers));
     }
-  }, [dispatch, accessToken, isOnline, offlineQuestionnaireAnswers]);
+  }, [dispatch, canSync, offlineQuestionnaireAnswers]);
 
   useEffect(() => {
-    if (isOnline && accessToken && offlineActivities.length) {
+    if (canSync && offlineActivities.length) {
       dispatch(completeActive(offlineActivities));
     }
-  }, [dispatch, accessToken, isOnline, offlineActivities]);
+  }, [dispatch, canSync, offlineActivities]);
 
   useEffect(() => {
-    if (isOnline && accessToken && offlineGoals.length) {
+    if (canSync && offlineGoals.length) {
       dispatch(completeGoal(offlineGoals));
     }
-  }, [dispatch, accessToken, isOnline, offlineGoals]);
+  }, [dispatch, canSync, offlineGoals]);
 
   return loading ? (
     <SplashScreen />
