@@ -5,6 +5,7 @@ import {User} from '../../services/user';
 import {mutation} from './mutations';
 import {USER_ROLE} from '../../variables/constants';
 import {callTherapistApi} from '../../utils/request';
+import {disconnectChatSocket, resumeChatSocket} from '../../utils/rocketchat';
 
 export const registerRequest = (
   dialCode,
@@ -29,6 +30,9 @@ export const registerRequest = (
   }
 
   if (response.success) {
+    // Logging in as another account, stop receiving chat and calls for the current user
+    disconnectChatSocket();
+
     dispatch(mutation.registerSuccess({
       dial_code: dialCode,
       phone: phone,
@@ -47,4 +51,12 @@ export const registerRequest = (
 
 export const clearRegister = () => async (dispatch) => {
   dispatch(mutation.clearRegister());
+};
+
+// Left the register flow without switching account, restore chat and calls for the current user
+export const cancelRegister = () => async (dispatch, getState) => {
+  if (getState().register?.registerAs) {
+    dispatch(mutation.clearRegister());
+    resumeChatSocket();
+  }
 };

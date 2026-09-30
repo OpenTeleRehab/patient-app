@@ -113,7 +113,11 @@ const SetupPin = ({navigation, route}) => {
   };
 
   const onSetProfileInfo = (data) => {
-    if (chatSocket && chatAuth?.userId && subscribeIds?.loginId) {
+    if (
+      chatSocket?.readyState === WebSocket.OPEN &&
+      chatAuth?.userId &&
+      subscribeIds?.loginId
+    ) {
       // Unsubscribe from websocket
       unSubscribeEvent(chatSocket, subscribeIds.loginId);
 

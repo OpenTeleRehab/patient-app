@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useRef, Fragment} from 'react';
+import React, {useState, useEffect, useRef, useCallback, Fragment} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -27,6 +28,7 @@ import formatPhoneNumber from '../../../utils/phoneNumber';
 import {getTherapistRequest, getPatientPhcWorkersRequest} from '../../../store/therapist/actions';
 import {getClinicRequest} from '../../../store/clinic/actions';
 import {getPhcServiceRequest} from '../../../store/phcService/actions';
+import {cancelRegister} from '../../../store/register/actions';
 
 const containerStyle = {
   height: '100%',
@@ -48,6 +50,13 @@ const Login = ({navigation}) => {
   const [errorCode, setErrorCode] = useState(false);
 
   const codeInputRef = useRef(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Back from the register flow (e.g. Back on Term of Service)
+      dispatch(cancelRegister());
+    }, [dispatch]),
+  );
 
   useEffect(() => {
     dispatch(fetchTermOfServiceRequest());

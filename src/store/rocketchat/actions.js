@@ -14,6 +14,7 @@ import {Notification} from '../../services/notification';
 import {sendNewMessage, updateMessage} from '../../utils/rocketchat';
 import {getLocalData} from '../../utils/local_storage';
 import RNCallKeep from 'react-native-callkeep';
+import {acceptedRequest} from '../call/actions';
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
   dispatch(mutation.setChatSubscribeIdsSuccess(payload));
@@ -339,6 +340,9 @@ export const acceptCallHandler = (chatSocket) => async (dispatch, getState) => {
   const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
 
   if (Object.keys(callInfo).length > 0 && getState().call?.accepted) {
+    // Handled, don't send the accept again from another waiter
+    dispatch(acceptedRequest(false));
+
     const chatRoom = chatRooms.find((item) => item.rid === callInfo.rid);
 
     const message = {

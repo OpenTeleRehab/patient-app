@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useRef, useMemo} from 'react';
+import React, {useState, useEffect, useRef, useMemo, useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   Alert,
@@ -25,7 +26,7 @@ import DeviceCountry from 'react-native-device-country';
 import styles from '../../../assets/styles';
 import _ from 'lodash';
 
-import {registerRequest} from '../../../store/register/actions';
+import {cancelRegister, registerRequest} from '../../../store/register/actions';
 import {getCountryRequest, getDefinedCountries} from '../../../store/country/actions';
 import {getLanguageRequest} from '../../../store/language/actions';
 import {getTranslations} from '../../../store/translation/actions';
@@ -43,6 +44,8 @@ const Register = ({theme, navigation}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {profile} = useSelector((state) => state.user);
+  const callAccepted = useSelector((state) => state.call.accepted);
+  const prevCallAccepted = useRef(callAccepted);
   const {definedCountries} = useSelector((state) => state.country);
   const {languages} = useSelector((state) => state.language);
   const [language, setLanguage] = useState('');
@@ -96,6 +99,23 @@ const Register = ({theme, navigation}) => {
         applyPhoneCode(fallbackCountryCode);
       });
   }, [definedCountries]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Back from the next register step
+      dispatch(cancelRegister());
+    }, [dispatch]),
+  );
+
+  useEffect(() => {
+    // Accepted an incoming call, enter PIN to log in and join the call
+    const justAccepted = callAccepted && !prevCallAccepted.current;
+    prevCallAccepted.current = callAccepted;
+
+    if (justAccepted && !_.isEmpty(profile) && navigation.isFocused()) {
+      navigation.navigate(ROUTES.LOGIN);
+    }
+  }, [callAccepted, navigation, profile]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
