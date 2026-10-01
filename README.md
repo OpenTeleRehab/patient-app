@@ -97,8 +97,12 @@ __Note:__ If you previously installed a global `react-native-cli`, please remove
      * `patchApkVersion` = 0
      * `classifierApkVersion` = "local"
 
-     Add firebase SDK into `dependencies`
-     * `classpath 'com.google.gms:google-services:4.3.13`
+     Keep the firebase Gradle plugins in `dependencies`, `android/app/build.gradle` applies them
+     * `classpath("com.google.gms:google-services:4.4.2")`
+     * `classpath 'com.google.firebase:perf-plugin:1.4.2'`
+     * `classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'`
+
+     > Note: `android/build.gradle` is not tracked. When the template changes, update your copy, otherwise the build fails with `Plugin with id 'com.google.firebase.crashlytics' not found`
 
 2. Start your local emulator or plug with real mobile device
 
