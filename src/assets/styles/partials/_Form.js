@@ -39,6 +39,13 @@ export default {
     color: variables.primary,
     fontSize: 24,
   },
+  formPinCursor: {
+    position: 'absolute',
+    bottom: 10,
+    width: 20,
+    height: 2,
+    backgroundColor: variables.primary,
+  },
   formPinCustomMask: {
     width: 14,
     height: 14,

@@ -99,6 +99,7 @@ const ConfirmPin = ({navigation}) => {
                 cellStyleFocused={styles.formPinCellFocused}
                 cellStyleFilled={styles.formPinCellFilled}
                 mask={<View style={styles.formPinCustomMask} />}
+                cursor={<View style={styles.formPinCursor} />}
               />
             </TouchableOpacity>
           </>

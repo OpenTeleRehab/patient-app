@@ -108,7 +108,11 @@ const Login = ({navigation}) => {
       [
         {
           text: translate('common.ok'),
-          onPress: () => reset(),
+          onPress: () => {
+            // Start over with the normal style
+            reset();
+            codeInputRef.current?.focus();
+          },
         },
       ],
       {
@@ -138,6 +142,7 @@ const Login = ({navigation}) => {
 
   const reset = () => {
     setCode('');
+    setErrorCode(false);
   };
 
   const handleCodeInputPress = () => {
@@ -171,7 +176,8 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               accessible={true}
               accessibilityLabel={translate('pin.enter.number')}
-              onPress={handleCodeInputPress}>
+              onPress={handleCodeInputPress}
+              style={styles.alignItemsCenter}>
               <SmoothPinCodeInput
                 ref={codeInputRef}
                 password
@@ -180,7 +186,8 @@ const Login = ({navigation}) => {
                 textStyle={styles.formPinText}
                 cellStyleFocused={!errorCode && styles.formPinCellFocused}
                 containerStyle={styles.formPinContainer}
-                cellStyleFilled={styles.formPinCellFilled}
+                // The filled style is applied last, so repeat the error style to keep the wrong PIN red
+                cellStyleFilled={[styles.formPinCellFilled, errorCode && styles.formPinCellError]}
                 cellStyle={[
                   styles.formPinCell,
                   errorCode && styles.formPinCellError,
@@ -188,6 +195,7 @@ const Login = ({navigation}) => {
                 cellSpacing={10}
                 animated={false}
                 mask={<View style={styles.formPinCustomMask} />}
+                cursor={<View style={styles.formPinCursor} />}
                 onFulfill={(passCode) => handleLogin(passCode)}
               />
             </TouchableOpacity>
