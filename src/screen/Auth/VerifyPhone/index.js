@@ -178,6 +178,7 @@ const VerifyPhone = ({navigation}) => {
                 cellStyleFilled={
                   errorCode ? styles.formPinCellError : styles.formPinCellFilled
                 }
+                cursor={<View style={styles.formPinCursor} />}
                 onFulfill={(verifyCode) => onConfirm(verifyCode)}
               />
             </TouchableOpacity>

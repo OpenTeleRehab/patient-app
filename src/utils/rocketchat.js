@@ -17,7 +17,32 @@ import store from '../store';
 
 // Set by the latest initialChatSocket(); lets AppProvider skip the reconnect backoff when the network returns.
 let reconnectNow = () => {};
+
 export const reconnectChatSocket = () => reconnectNow();
+
+// Set by the latest initialChatSocket(); lets the auth flow drop the current user's connection while logging in as another account.
+let disconnectNow = () => {};
+let resumeNow = () => {};
+
+export const disconnectChatSocket = () => disconnectNow();
+export const resumeChatSocket = () => resumeNow();
+
+// Set by the latest initialChatSocket(); lets AppProvider keep a live session for the same user instead of opening a new one.
+let isSessionActive = () => false;
+let latestSession = 0;
+let authenticatedSocket = null;
+let loginWaiters = [];
+
+export const isChatSessionActive = (username, password) => isSessionActive(username, password);
+
+// Resolves with the socket once the chat login is done, methods sent before it fail with "Invalid user"
+export const waitForChatLogin = () => {
+  if (authenticatedSocket?.readyState === WebSocket.OPEN) {
+    return Promise.resolve(authenticatedSocket);
+  }
+
+  return new Promise((resolve) => loginWaiters.push(resolve));
+};
 
 export const initialChatSocket = (
   dispatch,
@@ -33,7 +58,11 @@ export const initialChatSocket = (
   let reconnectAttempts = 0;
   let reconnectTimeout;
   let allowDisconnect = false;
+  let isPaused = false;
   let currentSocket;
+  const session = ++latestSession;
+  // Waiters from the previous user must not resolve with this user's socket
+  loginWaiters = [];
 
   const connectSocket = () => {
     const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
@@ -67,7 +96,8 @@ export const initialChatSocket = (
           digest: password,
           algorithm: 'sha-256',
         }).then((res) => {
-          if (res.data) {
+          // Socket may have been closed by disconnectChatSocket() while logging in
+          if (res.data && socket.readyState === WebSocket.OPEN) {
             const options = {
               msg: 'method',
               method: 'login',
@@ -91,6 +121,12 @@ export const initialChatSocket = (
           userId = result.id;
           authToken = token;
           dispatch(authenticateChatUser({userId, token, expiredAt}));
+
+          if (session === latestSession) {
+            authenticatedSocket = socket;
+            loginWaiters.forEach((resolve) => resolve(socket));
+            loginWaiters = [];
+          }
 
           // Subscribe chat room message
           subscribeChatRoomMessage(socket, roomMessageId);
@@ -178,6 +214,10 @@ export const initialChatSocket = (
     });
 
     socket.addEventListener('close', () => {
+      if (authenticatedSocket === socket) {
+        authenticatedSocket = null;
+      }
+
       dispatch(updateIndicatorList({isChatConnected: false}));
       attemptReconnect();
     });
@@ -203,6 +243,28 @@ export const initialChatSocket = (
 
     clearTimeout(reconnectTimeout);
     reconnectTimeout = null;
+    connectSocket();
+  };
+
+  isSessionActive = (user, pass) =>
+    session === latestSession && !allowDisconnect && user === username && pass === password;
+
+  disconnectNow = () => {
+    if (allowDisconnect) {return;}
+
+    isPaused = true;
+    allowDisconnect = true;
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = null;
+    currentSocket?.close();
+  };
+
+  resumeNow = () => {
+    if (!isPaused) {return;}
+
+    isPaused = false;
+    allowDisconnect = false;
+    reconnectAttempts = 0;
     connectSocket();
   };
 

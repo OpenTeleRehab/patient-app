@@ -12,7 +12,12 @@ import {getLocalData, storeLocalData} from './src/utils/local_storage';
 import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
-import {initialChatSocket, reconnectChatSocket} from './src/utils/rocketchat';
+import {
+  initialChatSocket,
+  isChatSessionActive,
+  reconnectChatSocket,
+  waitForChatLogin,
+} from './src/utils/rocketchat';
 import {getUniqueId} from './src/utils/helper';
 import {
   acceptCallHandler,
@@ -88,7 +93,9 @@ const AppProvider = ({children}) => {
       await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
       await dispatch(acceptedRequest(true));
 
-      dispatch(acceptCallHandler(socket));
+      waitForChatLogin().then((loggedInSocket) => {
+        dispatch(acceptCallHandler(loggedInSocket));
+      });
     }
   }, [accessToken, dispatch, socket]);
 
@@ -152,6 +159,11 @@ const AppProvider = ({children}) => {
 
   useEffect(() => {
     if (profile && profile.id && profile.identity && profile.chat_password) {
+      // Same user after PIN login, keep the logged in session so an accepted call is sent right away
+      if (isChatSessionActive(profile.identity, profile.chat_password)) {
+        return;
+      }
+
       const subscribeIds = {
         loginId: getUniqueId(profile.id),
         roomMessageId: getUniqueId(profile.id),
@@ -196,17 +208,15 @@ const AppProvider = ({children}) => {
       getLocalData(STORAGE_KEY.ACCEPTED_CALL).then(async (acceptedCall) => {
         if (JSON.parse(acceptedCall)) {
           await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'false');
-          dispatch(acceptedRequest(true));
+          await dispatch(acceptedRequest(true));
+        }
+
+        // Session may already be logged in, so mark the call accepted before sending
+        if (accessToken) {
+          const loggedInSocket = await waitForChatLogin();
+          dispatch(acceptCallHandler(loggedInSocket));
         }
       });
-      if (accessToken) {
-        const intervalID = setInterval(() => {
-          if (chatSocket.readyState === chatSocket.OPEN) {
-            dispatch(acceptCallHandler(chatSocket));
-            clearInterval(intervalID);
-          }
-        }, 1000);
-      }
     }
   }, [accessToken, dispatch, isOnline]);
 

@@ -92,7 +92,11 @@ const SetupPin = ({navigation, route}) => {
           [
             {
               text: translate('common.ok').toString(),
-              onPress: () => handlerReset(),
+              onPress: () => {
+                // Start over from the first PIN field, typing in the confirm field is ignored until then
+                handlerReset();
+                codeInputRef.current?.focus();
+              },
             },
           ],
           {cancelable: false},
@@ -105,6 +109,7 @@ const SetupPin = ({navigation, route}) => {
   const handlerReset = () => {
     setCode('');
     setConfirmCode('');
+    setErrorCode(false);
   };
 
   const onCancelOrOnSucceed = () => {
@@ -113,7 +118,11 @@ const SetupPin = ({navigation, route}) => {
   };
 
   const onSetProfileInfo = (data) => {
-    if (chatSocket && chatAuth?.userId && subscribeIds?.loginId) {
+    if (
+      chatSocket?.readyState === WebSocket.OPEN &&
+      chatAuth?.userId &&
+      subscribeIds?.loginId
+    ) {
       // Unsubscribe from websocket
       unSubscribeEvent(chatSocket, subscribeIds.loginId);
 
@@ -135,6 +144,31 @@ const SetupPin = ({navigation, route}) => {
     ref.current?.focus();
   };
 
+  // Redirect focus to the first PIN field until it is completed
+  const handleConfirmCodeFocus = () => {
+    if (code.length < 4) {
+      codeInputRef.current?.focus();
+    }
+  };
+
+  // The filled style is applied last, so repeat the error style to keep mismatched cells red
+  const filledCellStyle = [styles.formPinCellFilled, errorCode && styles.formPinCellError];
+
+  // Confirmation only applies to a completed first PIN
+  const handleCodeChange = (value) => {
+    setCode(value);
+
+    if (value.length < 4) {
+      setConfirmCode('');
+    }
+  };
+
+  const handleConfirmCodeChange = (value) => {
+    if (code.length === 4) {
+      setConfirmCode(value);
+    }
+  };
+
   return (
     <>
       <HeaderBar
@@ -153,30 +187,29 @@ const SetupPin = ({navigation, route}) => {
         keyboardShouldPersistTaps="handled"
         style={styles.mainContainerLight}>
         <View style={[styles.flexCenter, styles.paddingMd]}>
-          <View
-            style={[styles.paddingY, styles.marginTopMd, styles.marginBottom]}>
-            <Text
-              accessibilityLabel={translate('pin.setup.title')}
-              style={styles.formLabel}>
-              {translate('pin.setup.title')}
-            </Text>
-          </View>
-          <View>
+          <Text
+            accessibilityLabel={translate('pin.setup.title')}
+            style={[styles.formLabel, styles.textCenter, styles.marginTopMd, customStyles.titleSpacing]}>
+            {translate('pin.setup.title')}
+          </Text>
+          <View style={styles.marginBottomMd}>
             <Text
               accessibilityLabel={translate('pin.new.number')}
-              style={styles.formLabel}>
+              style={[styles.formLabel, styles.textCenter, styles.textDefaultBold]}>
               {translate('pin.new.number')}
             </Text>
             <TouchableOpacity
               accessible={true}
               accessibilityLabel={translate('enter.pin.new.number')}
+              style={styles.alignItemsCenter}
               onPress={() => handleCodeInputPress(codeInputRef)}
             >
               <SmoothPinCodeInput
                 ref={codeInputRef}
                 password
                 value={code}
-                onTextChange={(value) => setCode(value)}
+                onTextChange={handleCodeChange}
+                onFulfill={() => confirmCodeInputRef.current?.focus()}
                 animated={false}
                 textStyle={styles.formPinText}
                 cellSpacing={10}
@@ -186,29 +219,30 @@ const SetupPin = ({navigation, route}) => {
                   errorCode && styles.formPinCellError,
                 ]}
                 cellStyleFocused={!errorCode && styles.formPinCellFocused}
-                cellStyleFilled={styles.formPinCellFilled}
+                cellStyleFilled={filledCellStyle}
                 mask={<View style={styles.formPinCustomMask} />}
+                cursor={<View style={styles.formPinCursor} />}
               />
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={[styles.flexCenter, styles.paddingMd]}>
           <View>
             <Text
               accessibilityLabel={translate('pin.confirm.number')}
-              style={styles.formLabel}>
+              style={[styles.formLabel, styles.textCenter, styles.textDefaultBold]}>
               {translate('pin.confirm.number')}
             </Text>
             <TouchableOpacity
               accessible={true}
               accessibilityLabel={translate('enter.pin.confirm.number')}
+              style={styles.alignItemsCenter}
               onPress={() => handleCodeInputPress(confirmCodeInputRef)}
             >
               <SmoothPinCodeInput
                 ref={confirmCodeInputRef}
                 password
                 value={confirmCode}
-                onTextChange={(value) => setConfirmCode(value)}
+                onTextChange={handleConfirmCodeChange}
+                onFocus={handleConfirmCodeFocus}
                 textStyle={styles.formPinText}
                 animated={false}
                 cellSpacing={10}
@@ -218,9 +252,9 @@ const SetupPin = ({navigation, route}) => {
                   errorCode && styles.formPinCellError,
                 ]}
                 cellStyleFocused={!errorCode && styles.formPinCellFocused}
-                cellStyleFilled={styles.formPinCellFilled}
+                cellStyleFilled={filledCellStyle}
                 mask={<View style={styles.formPinCustomMask} />}
-                editable={code.length === 4}
+                cursor={<View style={styles.formPinCursor} />}
                 onFulfill={(passCode) => handlerSave(passCode)}
               />
             </TouchableOpacity>
@@ -229,6 +263,12 @@ const SetupPin = ({navigation, route}) => {
       </ScrollView>
     </>
   );
+};
+
+const customStyles = {
+  titleSpacing: {
+    marginBottom: 40,
+  },
 };
 
 export default SetupPin;

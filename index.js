@@ -55,6 +55,11 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         removeCall(callInfo?.callUUID);
       }
     } else {
+      // Skip calls for the current session while logging in as another account
+      if (store.getState().register?.registerAs) {
+        return;
+      }
+
       const callInfo = await getLocalData(STORAGE_KEY.CALL_INFO, true);
       const videoCall = store.getState().rocketchat?.videoCall;
       const showIncomingCall = store.getState().rocketchat?.showIncomingCall;

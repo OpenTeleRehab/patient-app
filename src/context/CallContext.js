@@ -48,6 +48,8 @@ export const CallContextProvider = ({children}) => {
     hasAcceptedCall,
   } = useSelector((state) => state.rocketchat);
   const {accessToken, profile} = useSelector((state) => state.user);
+  // Logging in as another account, stop delivering calls to the current session
+  const isSwitchingAccount = useSelector((state) => !!state.register?.registerAs);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [hasParticipant, setHasParticipant] = useState(false);
 
@@ -72,7 +74,8 @@ export const CallContextProvider = ({children}) => {
         videoCall.u._id !== chatAuth.userId &&
         videoCall._id !== callInfo._id &&
         !hasStartedCall &&
-        !hasAcceptedCall
+        !hasAcceptedCall &&
+        !isSwitchingAccount
       ) {
         dispatch(mutation.showIncomingCall(true));
       }
@@ -163,6 +166,7 @@ export const CallContextProvider = ({children}) => {
     hasAcceptedCall,
     hasParticipant,
     hasStartedCall,
+    isSwitchingAccount,
     profile.id,
     videoCall,
   ]);

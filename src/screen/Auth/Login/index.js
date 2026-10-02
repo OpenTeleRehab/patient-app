@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect, useRef, Fragment} from 'react';
+import React, {useState, useEffect, useRef, useCallback, Fragment} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   View,
@@ -27,6 +28,7 @@ import formatPhoneNumber from '../../../utils/phoneNumber';
 import {getTherapistRequest, getPatientPhcWorkersRequest} from '../../../store/therapist/actions';
 import {getClinicRequest} from '../../../store/clinic/actions';
 import {getPhcServiceRequest} from '../../../store/phcService/actions';
+import {cancelRegister} from '../../../store/register/actions';
 
 const containerStyle = {
   height: '100%',
@@ -48,6 +50,13 @@ const Login = ({navigation}) => {
   const [errorCode, setErrorCode] = useState(false);
 
   const codeInputRef = useRef(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Back from the register flow (e.g. Back on Term of Service)
+      dispatch(cancelRegister());
+    }, [dispatch]),
+  );
 
   useEffect(() => {
     dispatch(fetchTermOfServiceRequest());
@@ -99,7 +108,11 @@ const Login = ({navigation}) => {
       [
         {
           text: translate('common.ok'),
-          onPress: () => reset(),
+          onPress: () => {
+            // Start over with the normal style
+            reset();
+            codeInputRef.current?.focus();
+          },
         },
       ],
       {
@@ -129,6 +142,7 @@ const Login = ({navigation}) => {
 
   const reset = () => {
     setCode('');
+    setErrorCode(false);
   };
 
   const handleCodeInputPress = () => {
@@ -162,7 +176,8 @@ const Login = ({navigation}) => {
             <TouchableOpacity
               accessible={true}
               accessibilityLabel={translate('pin.enter.number')}
-              onPress={handleCodeInputPress}>
+              onPress={handleCodeInputPress}
+              style={styles.alignItemsCenter}>
               <SmoothPinCodeInput
                 ref={codeInputRef}
                 password
@@ -171,7 +186,8 @@ const Login = ({navigation}) => {
                 textStyle={styles.formPinText}
                 cellStyleFocused={!errorCode && styles.formPinCellFocused}
                 containerStyle={styles.formPinContainer}
-                cellStyleFilled={styles.formPinCellFilled}
+                // The filled style is applied last, so repeat the error style to keep the wrong PIN red
+                cellStyleFilled={[styles.formPinCellFilled, errorCode && styles.formPinCellError]}
                 cellStyle={[
                   styles.formPinCell,
                   errorCode && styles.formPinCellError,
@@ -179,6 +195,7 @@ const Login = ({navigation}) => {
                 cellSpacing={10}
                 animated={false}
                 mask={<View style={styles.formPinCustomMask} />}
+                cursor={<View style={styles.formPinCursor} />}
                 onFulfill={(passCode) => handleLogin(passCode)}
               />
             </TouchableOpacity>

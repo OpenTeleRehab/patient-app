@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-smooth-pincode-input/src/index.js b/node_modules/react-native-smooth-pincode-input/src/index.js
-index 0a00f22..f055d97 100644
+index 0a00f22..6c09d7e 100644
 --- a/node_modules/react-native-smooth-pincode-input/src/index.js
 +++ b/node_modules/react-native-smooth-pincode-input/src/index.js
 @@ -6,8 +6,8 @@ import {
@@ -12,7 +12,49 @@ index 0a00f22..f055d97 100644
  import * as Animatable from 'react-native-animatable';
  
  const styles = StyleSheet.create({
-@@ -292,8 +292,8 @@ SmoothPinCodeInput.propTypes = {
+@@ -122,6 +122,7 @@ class SmoothPinCodeInput extends Component {
+       placeholder,
+       password,
+       mask,
++      cursor,
+       autoFocus,
+       containerStyle,
+       cellStyle,
+@@ -149,13 +150,16 @@ class SmoothPinCodeInput extends Component {
+           containerStyle,
+         ]}>
+         <View style={{
+-          position: 'absolute', margin: 0, height: '100%',
++          // Cells carry cellSpacing / 2 margin on both sides, offset it so the row stays centered
++          position: 'absolute', margin: 0, height: '100%', left: -cellSpacing / 2,
+           flexDirection: I18nManager.isRTL ? 'row-reverse': 'row',
+           alignItems: 'center',
+         }}>
+           {
+             Array.apply(null, Array(codeLength)).map((_, idx) => {
+               const cellFocused = focused && idx === value.length;
++              // Last cell holds the cursor once the code is full
++              const showCursor = focused && idx === Math.min(value.length, codeLength - 1);
+               const filled = idx < value.length;
+               const last = (idx === value.length - 1);
+               const showMask = filled && (password && (!maskDelay || !last));
+@@ -205,6 +209,7 @@ class SmoothPinCodeInput extends Component {
+ 
+                   {(!isCellText && !maskComponent) && placeholderComponent}
+                   {isCellText && maskComponent}
++                  {showCursor && cursor}
+                 </Animatable.View>
+               );
+             })
+@@ -275,6 +280,7 @@ SmoothPinCodeInput.propTypes = {
+     PropTypes.string,
+     PropTypes.element,
+   ]),
++  cursor: PropTypes.element,
+   mask: PropTypes.oneOfType([
+     PropTypes.string,
+     PropTypes.element,
+@@ -292,8 +298,8 @@ SmoothPinCodeInput.propTypes = {
    cellStyleFocused: ViewPropTypes.style,
    cellStyleFilled: ViewPropTypes.style,
  
@@ -23,7 +65,7 @@ index 0a00f22..f055d97 100644
  
    animated: PropTypes.bool,
    animationFocused: PropTypes.oneOfType([
-@@ -310,7 +310,7 @@ SmoothPinCodeInput.propTypes = {
+@@ -310,7 +316,7 @@ SmoothPinCodeInput.propTypes = {
    onBlur: PropTypes.func,
    keyboardType: PropTypes.string,
    editable: PropTypes.bool,
