@@ -177,7 +177,7 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
     }
 
     if (currentQuestion.type === 'open-number') {
-      const threshold = currentQuestion.answers[0].threshold;
+      const threshold = currentQuestion.answers?.[0]?.threshold;
       const minValue = 0;
       if (
         !_.isEmpty(answers[currentQuestion.id]) &&
@@ -214,7 +214,7 @@ const SurveyModal = ({theme, publishSurvey, surveyPhase, setSurveys}) => {
         newErrors[question.id] = translate('survey.answer.required');
       }
       if (question.type === 'open-number') {
-        const threshold = currentQuestion.answers[0].threshold;
+        const threshold = question.answers?.[0]?.threshold;
         const minValue = 0;
         if (
           answers[question.id] &&

@@ -66,6 +66,8 @@
   loop:
     - assembleRelease
     - bundleRelease
+    # Native symbols are not uploaded by the build, the Crashlytics task must run explicitly
+    - app:uploadCrashlyticsSymbolFileRelease
   environment:
     JAVA_HOME: /usr/lib/jvm/jdk-17
     PATH: "{{ node_home }}/bin:{{ ansible_facts['env']['PATH'] }}"
