@@ -1,12 +1,10 @@
 ---
 
-- name: Change node version
-  shell: n 20
-
 - name: remove node_modules folder
   shell: rm -rf node_modules
   args:
     chdir: '{{ workspace }}'
+  ignore_errors: true
 
 - name: Run yarn to clean cache and install node packages
   shell: 'yarn {{ item }}'
@@ -15,11 +13,15 @@
   loop:
     - 'cache clean'
     - 'install'
+  environment:
+    PATH: "{{ node_home }}/bin:{{ ansible_facts['env']['PATH'] }}"
 
 - name: Run yarn patch node packages
   shell: yarn patch-package
   args:
     chdir: '{{ workspace }}'
+  environment:
+    PATH: "{{ node_home }}/bin:{{ ansible_facts['env']['PATH'] }}"
 
 - name: Configure properties
   template:
@@ -58,12 +60,15 @@
     dest: '{{ workspace }}/{{ android_build_path }}/app/release-key.keystore'
 
 - name: Build Android apk release app
-  shell: 'JAVA_HOME=/usr/lib/jvm/openjdk-17 ./gradlew {{ item }}'
+  shell: './gradlew {{ item }}'
   args:
     chdir: '{{ workspace }}/{{ android_build_path }}'
   loop:
     - assembleRelease
     - bundleRelease
+  environment:
+    JAVA_HOME: /usr/lib/jvm/jdk-17
+    PATH: "{{ node_home }}/bin:{{ ansible_facts['env']['PATH'] }}"
 
 - name: Copy release apk file to packages server
   shell: 'scp {{ item }}'

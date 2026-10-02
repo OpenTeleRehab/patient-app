@@ -6,6 +6,9 @@ git_repos:                  'git@git.web-essentials.asia:hiv-tra-20/patient-app.
 
 stage:                      'latest'
 
+node_version:               '20.20.2'
+node_home:                  '/usr/local/n/versions/node/{{ node_version }}'
+
 patient_api_base_url:       'https://{{ stage }}-admin-rehabilitation.wehost.asia/api/patient'
 admin_api_base_url:         'https://{{ stage }}-admin-rehabilitation.wehost.asia/api/admin'
 therapist_api_base_url:     'https://{{ stage }}-admin-rehabilitation.wehost.asia/api/therapist'
