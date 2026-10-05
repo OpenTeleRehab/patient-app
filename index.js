@@ -10,6 +10,7 @@ import messaging from '@react-native-firebase/messaging';
 import RNCallKeep from 'react-native-callkeep';
 import uuid from 'react-native-uuid';
 import {getLocalData, storeLocalData} from './src/utils/local_storage';
+import {sendMissedCallUpdate} from './src/utils/missedCall';
 import {STORAGE_KEY} from './src/variables/constants';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import BackgroundTimer from 'react-native-background-timer';
@@ -141,8 +142,11 @@ const didReceiveStartCallAction = async (data) => {
     // Tell ConnectionService that the device is ready to make outgoing calls
     RNCallKeep.setAvailable(true);
 
+    let isAnswered = false;
+
     // Answer call listener
     RNCallKeep.addEventListener('answerCall', async () => {
+      isAnswered = true;
       BackgroundTimer.clearTimeout(timeoutId);
 
       await storeLocalData(STORAGE_KEY.ACCEPTED_CALL, 'true');
@@ -152,15 +156,26 @@ const didReceiveStartCallAction = async (data) => {
       removeCall(callUUID);
     });
 
-    // End call listener
-    RNCallKeep.addEventListener('endCall', async () => {
+    // End call listener: the call was declined from the system call UI
+    RNCallKeep.addEventListener('endCall', async (event) => {
+      // Listeners of earlier calls are still registered; and hanging up an answered call isn't a miss.
+      if ((event?.callUUID && event.callUUID !== callUUID) || isAnswered) {
+        return;
+      }
+
       BackgroundTimer.clearTimeout(timeoutId);
-
-      await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
-
-      RNCallKeep.backToForeground();
-
       activeCalls.delete(callUUID);
+
+      // Mark it missed right away over REST, without bringing the app up to send it over the chat socket.
+      const isSent = await sendMissedCallUpdate(callInfo).catch(() => false);
+
+      if (isSent) {
+        await storeLocalData(STORAGE_KEY.CALL_INFO, {}, true);
+        await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'false');
+      } else {
+        // Offline or chat down: rejectCallHandler sends it on the next chat login.
+        await storeLocalData(STORAGE_KEY.REJECTED_CALL, 'true');
+      }
     });
 
     const timeoutId = BackgroundTimer.setTimeout(() => {

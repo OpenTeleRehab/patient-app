@@ -14,13 +14,16 @@ import {
   miscellaneous,
   patients,
 } from '../variables/routes';
+import {ROUTES} from '../variables/constants';
 import BottomTabNavigator from './BottomTabNavigator';
 import DrawerContent from './DrawerContent';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-const DrawerNavigator = () => {
+// TabNavigation plus every other screen, in a real stack: back returns to the screen you came from (not always to
+// the tabs, as when these were drawer screens), and screens unmount when you leave them.
+const MainStackNavigator = () => {
   const {profile} = useSelector((state) => state.user);
 
   let stacks = [
@@ -42,19 +45,25 @@ const DrawerNavigator = () => {
   }
 
   return (
-    <Drawer.Navigator
-      drawerContent={DrawerContent}
-      screenOptions={{
-        drawerPosition: 'right',
-        headerShown: false,
-        swipeEnabled: false,
-      }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="TabNavigation" component={BottomTabNavigator} />
       {stacks.map(({name, screen}) => (
         <Stack.Screen key={name} name={name} component={screen} />
       ))}
-    </Drawer.Navigator>
+    </Stack.Navigator>
   );
 };
+
+const DrawerNavigator = () => (
+  <Drawer.Navigator
+    drawerContent={DrawerContent}
+    screenOptions={{
+      drawerPosition: 'right',
+      headerShown: false,
+      swipeEnabled: false,
+    }}>
+    <Drawer.Screen name={ROUTES.MAIN_STACK} component={MainStackNavigator} />
+  </Drawer.Navigator>
+);
 
 export default DrawerNavigator;

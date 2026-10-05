@@ -1,12 +1,9 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React from 'react';
-import {Text} from 'react-native-elements';
 import moment from 'moment';
 import _ from 'lodash';
 import settings from '../../config/settings';
-import styles from '../assets/styles';
 import store from '../store';
 
 export const formatDate = (date) => {
@@ -47,8 +44,17 @@ export const getUniqueId = (userId = 0) => {
   return _.uniqueId(`patient-${userId}_`);
 };
 
+// Rocket.Chat dates are {$date: ms} over the socket and ISO strings over REST; local messages use createdAt.
+export const getMessageTime = (message) => {
+  const value = message?.ts ?? message?.createdAt;
+  const time = new Date(value?.$date ?? value ?? 0).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
+
 export const getChatMessage = (message, userId = '', authToken = '') => {
-  const {_id, rid, msg, _updatedAt, u, attachments, file} = message;
+  const {_id, rid, msg, ts, _updatedAt, u, attachments, file, editedAt} = message;
+  // ts is when it was sent; _updatedAt moves on every edit (e.g. each call status change).
+  const sentAt = ts ?? _updatedAt;
   let text = msg;
   let image = '';
   let video = '';
@@ -74,11 +80,12 @@ export const getChatMessage = (message, userId = '', authToken = '') => {
     text,
     image,
     video,
-    createdAt: _updatedAt.$date ? new Date(_updatedAt.$date) : _updatedAt,
+    createdAt: sentAt?.$date ? new Date(sentAt.$date) : sentAt,
     user: {_id: u._id},
     received: true,
     pending: false,
     isVideoCall: msg.startsWith('jitsi_call'),
+    isEdited: !!editedAt,
   };
 };
 
@@ -97,33 +104,4 @@ export const isValidFileSize = (fileSize, maxFileSize = 0) => {
     defaultMaxSize = maxFileSize;
   }
   return fileSize <= defaultMaxSize;
-};
-
-export const renderLastMessageText = (lastMessage, translate) => {
-  if (!lastMessage) return null;
-
-  const msg = lastMessage.msg || lastMessage.text;
-  const isAttachment = lastMessage.file || lastMessage.image;
-
-  if (msg) {
-    if (msg.startsWith('jitsi_call')) {
-      const isDanger = msg.endsWith('_missed') || msg.endsWith('_busy');
-
-      return (
-        <Text style={isDanger ? styles.textDanger : undefined}>
-          {translate(msg)}
-        </Text>
-      );
-    }
-
-    return <Text>{msg}</Text>;
-  }
-
-  if (isAttachment) {
-    return (
-      <Text style={styles.textPrimary}>
-        {translate('chat_attachment.title')}
-      </Text>
-    );
-  }
 };

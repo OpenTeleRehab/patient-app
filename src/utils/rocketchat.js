@@ -1,6 +1,5 @@
 import {
   authenticateChatUser,
-  getChatRooms,
   prependNewMessage,
   rejectCallHandler,
   sendOfflineMessages,
@@ -18,22 +17,31 @@ import store from '../store';
 // Set by the latest initialChatSocket(); lets AppProvider skip the reconnect backoff when the network returns.
 let reconnectNow = () => {};
 
-export const reconnectChatSocket = () => reconnectNow();
+export const reconnectChatSocket = (options) => reconnectNow(options);
 
-// Set by the latest initialChatSocket(); lets the auth flow drop the current user's connection while logging in as another account.
+// loadHistory request id -> {roomId, liveIds}. The reply has no room of its own (and an empty room has no message
+// to read one from), and a reply for a room the user already left must not replace the open room's messages.
+// liveIds: messages streamed into that room while the request was in flight. The reply is a snapshot that may
+// predate them, so they are kept rather than wiped by it (ids, not timestamps: server and device clocks differ).
+// isOlderPage: a "load earlier" page, appended below what's loaded instead of replacing the newest messages.
+const pendingHistoryRooms = new Map();
+
+// Messages per loadHistory request; the first page on open, then this many more per "load earlier".
+export const HISTORY_PAGE_SIZE = 50;
+
+// Set by the latest initialChatSocket(); lets the auth flow drop the current user's connection while logging in as
+// another account, and AppProvider shut it down on an account switch. The closed socket is ignored from then on,
+// so it can't log back in as the previous user and replace chatAuth.
 let disconnectNow = () => {};
 let resumeNow = () => {};
 
-export const disconnectChatSocket = () => disconnectNow();
+// resumable: false for an account switch, so resumeChatSocket() can't bring the previous user's socket back.
+export const disconnectChatSocket = (options) => disconnectNow(options);
 export const resumeChatSocket = () => resumeNow();
 
-// Set by the latest initialChatSocket(); lets AppProvider keep a live session for the same user instead of opening a new one.
-let isSessionActive = () => false;
 let latestSession = 0;
 let authenticatedSocket = null;
 let loginWaiters = [];
-
-export const isChatSessionActive = (username, password) => isSessionActive(username, password);
 
 // Resolves with the socket once the chat login is done, methods sent before it fail with "Invalid user"
 export const waitForChatLogin = () => {
@@ -68,6 +76,12 @@ export const initialChatSocket = (
     const socket = new WebSocket(store.getState().phone.chatWebsocketURL);
     currentSocket = socket;
 
+    // A new socket is logged out until its login reply below. Keeping the previous connection's chatAuth made
+    // "open + chatAuth" look ready right after a reconnect, so history loads and sends went out before the
+    // login and the server rejected them ("invalid user"); a message sent then was lost.
+    dispatch(authenticateChatUser(undefined));
+    let hasConnected = false;
+
     updateSocketRef(socket);
 
     socket.addEventListener('open', (e) => {
@@ -81,6 +95,12 @@ export const initialChatSocket = (
     });
 
     socket.addEventListener('message', (e) => {
+      // A socket replaced by a forced reconnect, or shut down by disconnectNow, may still deliver messages until
+      // its close completes (e.g. a login reply that would set the previous user's chatAuth).
+      if (socket !== currentSocket || allowDisconnect) {
+        return;
+      }
+
       const response = JSON.parse(e.data);
       const {id, result, error, collection, fields} = response;
       const resMessage = response.msg;
@@ -90,14 +110,17 @@ export const initialChatSocket = (
         socket.send(JSON.stringify({msg: 'pong'}));
       } else if (resMessage === 'connected') {
         // Connection success => login
+        hasConnected = true;
         dispatch(updateIndicatorList({isChatConnected: true}));
 
         Rocketchat.login(username, {
           digest: password,
           algorithm: 'sha-256',
         }).then((res) => {
-          // Socket may have been closed by disconnectChatSocket() while logging in
-          if (res.data && socket.readyState === WebSocket.OPEN) {
+          if (!res.data) {
+            dispatch(updateIndicatorList({isChatServerDown: true}));
+          } else if (socket.readyState === WebSocket.OPEN) {
+            // Socket may have been closed by disconnectChatSocket() while logging in
             const options = {
               msg: 'method',
               method: 'login',
@@ -114,12 +137,22 @@ export const initialChatSocket = (
       } else if (resMessage === 'result') {
         if (error !== undefined) {
           console.error(`WebSocket: ${error.reason}`);
+
+          if (id === loginId) {
+            dispatch(updateIndicatorList({isChatServerDown: true}));
+          }
+
+          if (pendingHistoryRooms.get(id)?.isOlderPage) {
+            dispatch(mutation.setLoadingEarlierRoomSuccess(undefined));
+          }
+          pendingHistoryRooms.delete(id);
         } else if (id === loginId && result) {
           // Login success, and set auth token
           const {token, tokenExpires} = result;
           const expiredAt = new Date(tokenExpires.$date);
           userId = result.id;
           authToken = token;
+          dispatch(updateIndicatorList({isChatServerDown: false}));
           dispatch(authenticateChatUser({userId, token, expiredAt}));
 
           if (session === latestSession) {
@@ -142,30 +175,24 @@ export const initialChatSocket = (
           // Send offline messages
           dispatch(sendOfflineMessages(socket));
 
-          // Get chat rooms
-          dispatch(getChatRooms());
-        } else if (result && result.messages) {
+          // Chat rooms are fetched by useGetChatRooms once chatAuth changes; fetching here as well loaded them twice.
+        } else if (pendingHistoryRooms.has(id)) {
           // Load messages in a room
-          const {chatRooms} = store.getState().rocketchat;
+          const {roomId, liveIds, isOlderPage} = pendingHistoryRooms.get(id);
+          pendingHistoryRooms.delete(id);
 
-          const allMessages = [];
+          const allMessages = (result?.messages || []).map((message) =>
+            getChatMessage(message, userId, authToken),
+          );
+          // A short page means the server has nothing older.
+          const hasMore = allMessages.length >= HISTORY_PAGE_SIZE;
 
-          if (result.messages.length > 0) {
-            result.messages.forEach((message) => {
-              allMessages.push(getChatMessage(message, userId, authToken));
-            });
-
-            const roomId = result.messages[0].rid;
-            const fIndex = chatRooms.findIndex((cr) => cr.rid === roomId);
-
-            if (fIndex !== -1) {
-              chatRooms[fIndex].messages = allMessages;
-            }
-
-            dispatch(mutation.getChatRoomsSuccess(chatRooms));
+          // ChatPanel reads the open room's messages from chatRooms, so this also updates the open chat.
+          if (isOlderPage) {
+            dispatch(mutation.appendOlderRoomMessagesSuccess(roomId, allMessages, hasMore));
+          } else {
+            dispatch(mutation.setRoomMessagesSuccess(roomId, allMessages, [...liveIds], hasMore));
           }
-
-          dispatch(mutation.getMessagesInRoomSuccess(allMessages));
         }
       } else if (resMessage === 'changed') {
         if (collection === 'stream-room-messages') {
@@ -190,6 +217,12 @@ export const initialChatSocket = (
           }
 
           const newMessage = getChatMessage(fields.args[0], userId, authToken);
+
+          pendingHistoryRooms.forEach((request) => {
+            if (request.roomId === rid) {
+              request.liveIds.add(_id);
+            }
+          });
 
           dispatch(prependNewMessage(newMessage));
         } else if (collection === 'stream-notify-logged') {
@@ -218,7 +251,23 @@ export const initialChatSocket = (
         authenticatedSocket = null;
       }
 
-      dispatch(updateIndicatorList({isChatConnected: false}));
+      // Closed by a forced reconnect: the new socket owns the connection state and the retry. Shut down
+      // (disconnectNow, or the server logging us out, which updates the state itself): nothing to do.
+      if (socket !== currentSocket || allowDisconnect) {
+        return;
+      }
+
+      // Closed before the server ever answered: it can't be reached. Only meaningful while online,
+      // which ChatRoomList checks, so a close caused by the device going offline does no harm.
+      // reconnectAttempts > 0: at least the second failure in a row. The first attempt after the network returns
+      // often fails while the connection settles; flagging that flashed "server down" on every reconnect.
+      const isServerDown = !hasConnected && reconnectAttempts > 0;
+      const update = isServerDown ? {isChatConnected: false, isChatServerDown: true} : {isChatConnected: false};
+      dispatch(updateIndicatorList(update));
+
+      // Requests sent on this socket will never be answered; drop them so "load earlier" doesn't spin forever.
+      pendingHistoryRooms.clear();
+      dispatch(mutation.setLoadingEarlierRoomSuccess(undefined));
       attemptReconnect();
     });
 
@@ -237,25 +286,41 @@ export const initialChatSocket = (
     }, reconnectDelay);
   };
 
-  reconnectNow = () => {
+  reconnectNow = ({force = false} = {}) => {
     reconnectAttempts = 0;
-    if (allowDisconnect || [WebSocket.OPEN, WebSocket.CONNECTING].includes(currentSocket?.readyState)) {return;}
+    if (allowDisconnect) {return;}
+    // Open: nothing to do, and a server-down flag set by its failed login is still accurate.
+    if (!force && currentSocket?.readyState === WebSocket.OPEN) {return;}
+
+    // Failures recorded while the device was offline say nothing about the server; let the next attempt decide.
+    // Cleared before the CONNECTING check too: a backoff attempt already in flight when the network returns
+    // otherwise left the stale flag up, flashing "server down" until that attempt's login succeeded.
+    dispatch(updateIndicatorList({isChatServerDown: false}));
+    if (!force && currentSocket?.readyState === WebSocket.CONNECTING) {return;}
 
     clearTimeout(reconnectTimeout);
     reconnectTimeout = null;
+
+    const previousSocket = currentSocket;
     connectSocket();
+    // Close only after connectSocket() has replaced currentSocket, so the old socket's close handler is ignored.
+    previousSocket?.close();
   };
 
-  isSessionActive = (user, pass) =>
-    session === latestSession && !allowDisconnect && user === username && pass === password;
+  disconnectNow = ({resumable = true} = {}) => {
+    if (allowDisconnect) {
+      isPaused = isPaused && resumable;
+      return;
+    }
 
-  disconnectNow = () => {
-    if (allowDisconnect) {return;}
-
-    isPaused = true;
+    isPaused = resumable;
     allowDisconnect = true;
     clearTimeout(reconnectTimeout);
     reconnectTimeout = null;
+    // Their replies will never be handled now; the close handler skips this cleanup once allowDisconnect is set.
+    pendingHistoryRooms.clear();
+    dispatch(mutation.setLoadingEarlierRoomSuccess(undefined));
+    dispatch(updateIndicatorList({isChatConnected: false}));
     currentSocket?.close();
   };
 
@@ -272,12 +337,17 @@ export const initialChatSocket = (
   return connectSocket();
 };
 
-export const loadHistoryInRoom = (socket, roomId, patientId) => {
+// before (ms): load the page of messages older than this, for "load earlier"; omit for the newest page.
+export const loadHistoryInRoom = (socket, roomId, patientId, before) => {
+  const id = getUniqueId(patientId);
+  const isOlderPage = before !== undefined;
+  pendingHistoryRooms.set(id, {roomId, liveIds: new Set(), isOlderPage});
+
   const options = {
     msg: 'method',
     method: 'loadHistory',
-    id: getUniqueId(patientId),
-    params: [roomId, null, 500, {$date: new Date().getTime()}],
+    id,
+    params: [roomId, isOlderPage ? {$date: before} : null, HISTORY_PAGE_SIZE, {$date: new Date().getTime()}],
   };
   socket.send(JSON.stringify(options));
 };

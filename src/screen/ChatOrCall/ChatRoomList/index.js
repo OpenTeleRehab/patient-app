@@ -2,42 +2,46 @@
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
 import React, {useEffect, useState} from 'react';
-import {ListItem, Badge, Icon, Text} from 'react-native-elements';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {ListItem, Badge, Icon} from 'react-native-elements';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {ActivityIndicator, ScrollView, StyleSheet, View} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
-import {renderLastMessageText} from '../../../utils/helper';
 import {CHAT_USER_STATUS, ROUTES} from '../../../variables/constants';
 import {mutation} from '../../../store/rocketchat/mutations';
 import {getProfessionRequest} from '../../../store/profession/actions';
+import {reconnectChatSocket} from '../../../utils/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
+import LastMessagePreview from '../_Partials/LastMessagePreview';
+import ChatServerDown from '../_Partials/ChatServerDown';
+import {getPatientChatRooms, getPhcChatRooms, getTherapistChatRooms} from '../../../utils/chat';
 import styles from '../../../assets/styles';
-import {
-  getPatientChatRooms,
-  getPhcChatRooms,
-  getTherapistChatRooms,
-} from '../../../utils/chat';
-import variables from '../../../assets/styles/variables';
 
 const ChatRoomList = ({navigation}) => {
   const dispatch = useDispatch();
   const isOnline = useNetInfo().isConnected;
+  const isFocused = useIsFocused();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile} = useSelector((state) => state.user);
+  const {profile, isDataUpToDate} = useSelector((state) => state.user);
   const {chatAuth, isLoading} = useSelector((state) => state.rocketchat);
   const {professions} = useSelector((state) => state.profession);
+  const {isChatServerDown, isChatConnected} = useSelector((state) => state.indicator);
   const [defaultExpanded, setDefaultExpanded] = useState([
     'patients',
     'therapists',
     'phc_workers',
   ]);
-  // chatAuth is not persisted, so offline there is nothing to compare against.
-  const shouldShowLoading = isLoading || (isOnline && profile?.chat_user_id !== chatAuth?.userId);
-  const [showLoading, setShowLoading] = useState(shouldShowLoading);
+  const isWaitingForChatLogin = isOnline && (!isChatConnected || profile?.chat_user_id !== chatAuth?.userId);
+  const isWaitingForReLogin = isOnline && isDataUpToDate === false;
+  const shouldShowLoading = isLoading || isWaitingForChatLogin || isWaitingForReLogin;
+  const [isLoadingLingering, setIsLoadingLingering] = useState(shouldShowLoading);
+  const showLoading = shouldShowLoading || isLoadingLingering;
 
-  const unauthorizedRocketChat = isOnline && chatAuth === undefined;
+  // Set from the socket/login outcome, not from a missing chatAuth: chatAuth is also missing during every normal connect.
+  const showServerDown = isOnline && isChatServerDown;
 
   const rooms = {
     patients: getPatientChatRooms(),
@@ -46,16 +50,12 @@ const ChatRoomList = ({navigation}) => {
   };
 
   useEffect(() => {
-    let timeout;
-
     if (shouldShowLoading) {
-      setShowLoading(true);
-    } else {
-      timeout = setTimeout(() => {
-        setShowLoading(false);
-      }, 150);
+      setIsLoadingLingering(true);
+      return undefined;
     }
 
+    const timeout = setTimeout(() => setIsLoadingLingering(false), 150);
     return () => clearTimeout(timeout);
   }, [shouldShowLoading]);
 
@@ -73,8 +73,6 @@ const ChatRoomList = ({navigation}) => {
 
   const handleSelectRoom = (item) => {
     dispatch(mutation.selectRoomSuccess(item));
-    dispatch(mutation.getMessagesInRoomSuccess(item.messages));
-
     navigation.navigate(ROUTES.CHAT_PANEL);
   };
 
@@ -88,15 +86,11 @@ const ChatRoomList = ({navigation}) => {
     <>
       <HeaderBar leftContent={{label: translate('tab.messages')}} />
 
-      {unauthorizedRocketChat ? (
-        <View style={styles.paddingMd}>
-          <Text style={componentStyles.serverDownText}>
-            {translate('chat_message.server_down')}
-          </Text>
-        </View>
+      {showServerDown ? (
+        <ChatServerDown translate={translate} onRetry={() => reconnectChatSocket({force: true})} />
       ) : (
         <ScrollView>
-          {!showLoading && Object.keys(rooms).map((key) => (
+          {Object.keys(rooms).map((key) => (
             <View key={key}>
               {rooms[key].length > 0 && (
                 <View style={componentStyles.listItemWrapper}>
@@ -140,12 +134,7 @@ const ChatRoomList = ({navigation}) => {
                                 }
                               />
                             </ListItem.Title>
-                            <ListItem.Subtitle>
-                              {renderLastMessageText(
-                                item.lastMessage,
-                                translate,
-                              )}
-                            </ListItem.Subtitle>
+                            <LastMessagePreview lastMessage={item.lastMessage} translate={translate} />
                           </ListItem.Content>
                           {item.unreads > 0 && (
                             <Badge
@@ -161,10 +150,13 @@ const ChatRoomList = ({navigation}) => {
               )}
             </View>
           ))}
-          {/* Inline, not a modal overlay: the tab stays mounted under ChatPanel and a modal would cover it. */}
-          {showLoading && <ActivityIndicator style={styles.paddingMd} color={variables.primary} />}
         </ScrollView>
       )}
+      <Spinner
+        visible={showLoading && !showServerDown && isFocused}
+        overlayColor="rgba(0, 0, 0, 0.5)"
+        textStyle={styles.textLight}
+      />
     </>
   );
 };
@@ -175,11 +167,6 @@ const componentStyles = StyleSheet.create({
   },
   listItemContainerStyle: {
     paddingHorizontal: 12,
-  },
-  serverDownText: {
-    color: variables.danger,
-    fontSize: 18,
-    textAlign: 'center',
   },
 });
 

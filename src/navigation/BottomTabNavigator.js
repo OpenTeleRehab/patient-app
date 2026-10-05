@@ -65,9 +65,12 @@ const BottomTabNavigator = () => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
+  // Unread counts live on each chat room, not in the indicator store.
+  const hasUnreadMessage = chatRooms?.some((room) => room.unreads > 0);
+
   const hasBadge = (checkBadge) => {
-    if (checkBadge === 'noBadge') {
-      return null;
+    if (checkBadge === 'hasUnreadMessage') {
+      return hasUnreadMessage ? 1 : null;
     }
     return indicator[checkBadge] ? 1 : null;
   };
@@ -80,7 +83,6 @@ const BottomTabNavigator = () => {
       label: 'tab.home',
       icon: homeIcon,
       activeIcon: homeActiveIcon,
-      badge: 'noBadge',
     },
     {
       name: ROUTES.ACTIVITY,
@@ -117,7 +119,6 @@ const BottomTabNavigator = () => {
         label: 'tab.patient',
         icon: patientIcon,
         activeIcon: patientActiveIcon,
-        badge: 'noBadge',
       },
       {
         name: ROUTES.TRANSFER,
@@ -155,9 +156,9 @@ const BottomTabNavigator = () => {
       tabBarOptions={{
         keyboardHidesTabBar: true,
       }}>
-      {tabs.map((tab, index) => (
+      {tabs.map((tab) => (
         <Tab.Screen
-          key={index}
+          key={tab.name}
           name={tab.name}
           component={tab.screen}
           options={{
@@ -177,16 +178,21 @@ const BottomTabNavigator = () => {
           }}
           listeners={({navigation, route}) => ({
             tabPress: (e) => {
+              // Online with the chat server down, ChatPanel can't load or send, and skipping the room list
+              // also skips its server-down view and Retry. Offline the shortcut stays: cached history is
+              // readable and messages queue for later.
+              const isChatDown = indicator.isOnlineMode && indicator.isChatServerDown;
+
               if (
                 route.name === ROUTES.CHAT_ROOM_LIST &&
-                chatRooms.length === 1
+                chatRooms.length === 1 &&
+                !isChatDown
               ) {
                 // Prevent the default action
                 e.preventDefault();
 
-                // Change navigate to chat panel, loading the persisted history like ChatRoomList does
+                // Change navigate to chat panel; it shows the room's persisted history from chatRooms
                 dispatch(mutation.selectRoomSuccess(chatRooms[0]));
-                dispatch(mutation.getMessagesInRoomSuccess(chatRooms[0].messages));
                 navigation.navigate(ROUTES.CHAT_PANEL);
               }
             },

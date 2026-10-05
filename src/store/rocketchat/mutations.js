@@ -72,8 +72,43 @@ const updateUnreadSuccess = (rid) => ({
   rid,
 });
 
-const getMessagesInRoomSuccess = (data) => ({
-  type: 'GET_MESSAGES_IN_ROOM_SUCCEED',
+const incrementUnreadSuccess = (rid) => ({
+  type: 'INCREMENT_UNREAD_SUCCEED',
+  rid,
+});
+
+const setRoomMessagesSuccess = (rid, messages, liveIds = [], hasMore = false) => ({
+  type: 'SET_ROOM_MESSAGES_SUCCEED',
+  rid,
+  messages,
+  liveIds,
+  hasMore,
+});
+
+const appendOlderRoomMessagesSuccess = (rid, messages, hasMore) => ({
+  type: 'APPEND_OLDER_ROOM_MESSAGES_SUCCEED',
+  rid,
+  messages,
+  hasMore,
+});
+
+const setChatOwnerSuccess = (chatUserId) => ({
+  type: 'SET_CHAT_OWNER_SUCCEED',
+  chatUserId,
+});
+
+const resetChatDataSuccess = (chatUserId) => ({
+  type: 'RESET_CHAT_DATA_SUCCEED',
+  chatUserId,
+});
+
+const setLoadingEarlierRoomSuccess = (rid) => ({
+  type: 'SET_LOADING_EARLIER_ROOM_SUCCEED',
+  rid,
+});
+
+const removeMessageSuccess = (data) => ({
+  type: 'REMOVE_MESSAGE_SUCCEED',
   data,
 });
 
@@ -129,7 +164,13 @@ export const mutation = {
   getCallAccessTokenFailure,
   selectRoomSuccess,
   updateUnreadSuccess,
-  getMessagesInRoomSuccess,
+  incrementUnreadSuccess,
+  removeMessageSuccess,
+  setRoomMessagesSuccess,
+  appendOlderRoomMessagesSuccess,
+  setLoadingEarlierRoomSuccess,
+  setChatOwnerSuccess,
+  resetChatDataSuccess,
   prependNewMessageSuccess,
   updateLastMessageSuccess,
   updateChatUserStatusSuccess,

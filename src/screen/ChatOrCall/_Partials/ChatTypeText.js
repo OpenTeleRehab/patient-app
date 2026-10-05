@@ -18,9 +18,16 @@ const ChatTypeText = ({chatData, translate}) => {
       msgText = translate(text);
     }
   }
-  chatData.currentMessage.text = msgText;
-
-  return <MessageText {...chatData} textStyle={{left: textStyle}} />;
+  // Render a copy: writing msgText back into currentMessage replaced the stored call code (jitsi_call_...) with
+  // its translation, so the next render no longer recognised it (missed calls lost their red) and the
+  // translated text was saved with the room.
+  return (
+    <MessageText
+      {...chatData}
+      currentMessage={{...chatData.currentMessage, text: msgText}}
+      textStyle={{left: textStyle}}
+    />
+  );
 };
 
 export default ChatTypeText;

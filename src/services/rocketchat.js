@@ -9,21 +9,23 @@ const login = async (user, password) => {
   return await callChatApi('/login', '', '', body, 'post');
 };
 
+// null when the request failed, so callers can tell it apart from a user with no rooms ([]).
 const getSubscriptions = async (userId, authToken) => {
   const response = await callChatApi('/subscriptions.get', userId, authToken);
   if (response.success) {
-    return response.update;
+    return response.update ?? [];
   }
-  return [];
+  return null;
 };
 
+// chatAuth is cleared when the socket reconnects, possibly while getChatRooms is still calling these.
 const getUserPresence = async (username) => {
   const {chatAuth} = store.getState().rocketchat;
 
   return await callChatApi(
     `/users.getPresence?username=${username}`,
-    chatAuth.userId,
-    chatAuth.token,
+    chatAuth?.userId,
+    chatAuth?.token,
   );
 };
 
@@ -32,8 +34,8 @@ const getLastMessage = async (roomId) => {
 
   return await callChatApi(
     `/im.history?roomId=${roomId}&count=1`,
-    chatAuth.userId,
-    chatAuth.token,
+    chatAuth?.userId,
+    chatAuth?.token,
   );
 };
 
@@ -63,6 +65,12 @@ const sendAttachmentMessage = async (userId, authToken, roomId, attachment) => {
   );
 };
 
+// REST counterpart of the socket's updateMessage method, for when no logged-in socket exists (app in background).
+const updateMessage = async (userId, authToken, roomId, msgId, text) => {
+  const body = JSON.stringify({roomId, msgId, text});
+  return await callChatApi('/chat.update', userId, authToken, body, 'post');
+};
+
 export const Rocketchat = {
   login,
   getSubscriptions,
@@ -70,4 +78,5 @@ export const Rocketchat = {
   getLastMessage,
   markMessagesAsRead,
   sendAttachmentMessage,
+  updateMessage,
 };

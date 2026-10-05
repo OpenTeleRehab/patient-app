@@ -3,7 +3,6 @@
  */
 export const initialState = {
   chatRooms: [],
-  messages: [],
   callAccessToken: undefined,
   chatAuth: undefined,
   subscribeIds: undefined,
@@ -19,5 +18,9 @@ export const initialState = {
     u: {},
   },
   offlineMessages: [],
+  // Chat user the persisted chat data (rooms, queued messages) belongs to; a different user signing in clears it.
+  chatOwnerId: undefined,
   isLoading: false,
+  // Room whose "load earlier" page is in flight; not persisted, so it can't stay stuck across a restart.
+  loadingEarlierRoomId: undefined,
 };

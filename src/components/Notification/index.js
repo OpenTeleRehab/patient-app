@@ -12,6 +12,7 @@ export default function Notification({patientDetail}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {chatRooms} = useSelector((state) => state.rocketchat);
+  const {isOnlineMode, isChatServerDown} = useSelector((state) => state.indicator);
   const room = chatRooms?.find(r => r?.rid?.includes(patientDetail?.chat_user_id));
   const percent = patientDetail?.completed_percent;
   const painThreshold = patientDetail?.total_pain_threshold;
@@ -40,9 +41,8 @@ export default function Notification({patientDetail}) {
           <TouchableOpacity
             style={styles.iconItem}
             onPress={() => {
-              if (room) {
+              if (room && !(isOnlineMode && isChatServerDown)) {
                 dispatch(mutation.selectRoomSuccess(room));
-                dispatch(mutation.getMessagesInRoomSuccess(room.messages));
                 navigation.navigate(ROUTES.CHAT_PANEL);
               } else {
                 navigation.navigate('TabNavigation', {

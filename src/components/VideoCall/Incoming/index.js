@@ -37,7 +37,8 @@ const IncomingCall = ({
   const netInfo = useNetInfo();
   const chatSocket = useContext(RocketchatContext);
   const {handleAcceptCall} = useCallContext();
-  const {videoCall, selectedRoom, hasStartedCall} = useSelector((state) => state.rocketchat);
+  const {videoCall, selectedRoom, chatRooms, hasStartedCall} = useSelector((state) => state.rocketchat);
+  const selectedRoomName = chatRooms.find((room) => room.rid === selectedRoom?.rid)?.name ?? selectedRoom?.name;
   const profile = useSelector((state) => state.user.profile);
   const [disabledAcceptCall, setDisabledAcceptCall] = useState(false);
   const [disabledDeclineCall, setDisabledDeclineCall] = useState(false);
@@ -116,7 +117,7 @@ const IncomingCall = ({
       <View style={styles.incomingCallContainer}>
         <View style={[styles.flexCenter, styles.justifyContentCenter]}>
           <Text style={styles.callerName}>
-            {hasStartedCall ? selectedRoom?.name : videoCall?.u?.name}
+            {hasStartedCall ? selectedRoomName : videoCall?.u?.name}
           </Text>
           <Text style={styles.callingText}>
             {translate('video_call_starting')}

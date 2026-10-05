@@ -45,7 +45,7 @@ const Home = ({navigation}) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile} = useSelector((state) => state.user);
+  const {profile, accessToken, isDataUpToDate} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
   const {
@@ -62,6 +62,9 @@ const Home = ({navigation}) => {
     completed: 0,
   });
   const isOnline = useNetInfo().isConnected;
+  // After an offline login the token is a placeholder until AppProvider's re-login succeeds;
+  // fetching before that fails and then has to run again, so the spinner shows twice.
+  const canFetch = isOnline && !!accessToken && isDataUpToDate !== false;
   const [kidTheme, setKidTheme] = useState(false);
   const [todayAppointments, setTodayAppointments] = useState([]);
 
@@ -74,12 +77,12 @@ const Home = ({navigation}) => {
   }, [profile]);
 
   useEffect(() => {
-    if (isOnline) {
+    if (canFetch) {
       dispatch(getAppointmentsListRequest({page_size: 10}));
       dispatch(getTreatmentPlanRequest());
       dispatch(getAssistiveTechnologiesRequest());
     }
-  }, [dispatch, isOnline]);
+  }, [dispatch, canFetch]);
 
   useEffect(() => {
     if (!isLoading && !_.isEmpty(treatmentPlan)) {
