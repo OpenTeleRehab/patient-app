@@ -90,11 +90,16 @@ let latestChatRoomsRequest = 0;
 
 export const getChatRooms = () => async (dispatch, getState) => {
   const requestId = ++latestChatRoomsRequest;
-  const isStale = () => requestId !== latestChatRoomsRequest;
 
   dispatch(mutation.getChatRoomsRequest());
   const {accessToken, profile} = getState().user;
   const {chatAuth} = getState().rocketchat;
+  // A different account signed in meanwhile (RESET_CHAT_DATA): this load is the previous user's rooms.
+  const isOtherOwner = () => {
+    const {chatOwnerId} = getState().rocketchat;
+    return chatOwnerId !== undefined && chatOwnerId !== chatAuth.userId;
+  };
+  const isStale = () => requestId !== latestChatRoomsRequest || isOtherOwner();
 
   let chatRooms = [];
 
@@ -277,12 +282,13 @@ export const sendOfflineMessages = (chatSocket) => async (dispatch, getState) =>
           sentIds.push(message._id);
         }
       } else {
+        // Stays queued until the server copy arrives (stream echo or history load, see the reducers); if the
+        // socket drops first it's resent on the next login, and a resend of a stored one can't duplicate (same _id).
         dispatch(sendTextMessage(chatSocket, message));
-        sentIds.push(message._id);
       }
     }
 
-    // Keep failed uploads and anything queued while uploads were in flight for the next reconnect.
+    // Keep failed uploads, unconfirmed texts and anything queued while uploads were in flight for the next reconnect.
     const remaining = getState().rocketchat.offlineMessages.filter((item) => !sentIds.includes(item._id));
     dispatch(mutation.setOfflineMessagesSuccess(remaining));
   }
@@ -349,6 +355,15 @@ export const postAttachmentMessage = (message) => async (dispatch, getState) => 
     return true;
   } else {
     dispatch(mutation.sendAttachmentMessagesFailure());
+
+    // A failed upload sent while online lives only in ChatPanel's local list, which the next store update replaces;
+    // queue it like one picked offline so it shows as sending and is retried on the next chat login.
+    const {offlineMessages} = getState().rocketchat;
+    if (!offlineMessages.some((item) => item._id === message._id)) {
+      dispatch(mutation.setOfflineMessagesSuccess(offlineMessages.concat([message])));
+      dispatch(mutation.prependNewMessageSuccess(message));
+      dispatch(mutation.updateLastMessageSuccess(message));
+    }
     return false;
   }
 };

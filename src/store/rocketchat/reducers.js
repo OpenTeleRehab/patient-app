@@ -100,6 +100,10 @@ export const rocketchat = (state = initialState, action) => {
         chatRooms: state.chatRooms.map((item) =>
           item.rid === room.rid ? {...item, messages} : item,
         ),
+        // The server copy (pending: false) confirms a queued message; until then it stays queued for resending.
+        offlineMessages: action.data.pending === false
+          ? state.offlineMessages.filter((item) => item._id !== action.data._id)
+          : state.offlineMessages,
       });
     }
     case 'UPDATE_LAST_MESSAGE_SUCCESS': {
@@ -187,6 +191,8 @@ export const rocketchat = (state = initialState, action) => {
         chatRooms: state.chatRooms.map((item) =>
           item.rid === action.rid ? {...item, messages, hasMoreHistory: action.hasMore} : item,
         ),
+        // Queued messages already in the server's history were sent, even if their echo was missed.
+        offlineMessages: state.offlineMessages.filter((item) => !serverIds.has(item._id)),
       });
     }
     case 'APPEND_OLDER_ROOM_MESSAGES_SUCCEED': {
