@@ -149,9 +149,6 @@ const Activity = ({theme, navigation}) => {
   const handleDownload = async (treatment) => {
     setDownloading(true);
     const location = await getDownloadDirectoryPath();
-    if (location === false) {
-      return;
-    }
 
     // Download education material file attached
     const datetime = moment().format('DDMMYYhhmmss');

@@ -126,8 +126,9 @@ const ChatPanel = ({navigation, theme}) => {
   }, [chatAuth, dispatch, isFocused, selectedRoomId]);
 
   useEffect(() => {
-    setVideoAttachments(messages.filter((item) => item.video !== '').reverse());
-    setImageAttachments(messages.filter((item) => item.image !== '').reverse());
+    // Queued attachments (and ones persisted by older versions) may lack the other media field.
+    setVideoAttachments(messages.filter((item) => !!item.video).reverse());
+    setImageAttachments(messages.filter((item) => !!item.image).reverse());
   }, [messages, currentAttachment, isVideoAttachment]);
 
   useEffect(() => {
@@ -185,6 +186,8 @@ const ChatPanel = ({navigation, theme}) => {
       received: false,
       pending: true,
       text: caption,
+      image: '',
+      video: '',
       user: {
         _id: profile.chat_user_id,
         username: selectedRoom.u.username,
