@@ -12,6 +12,13 @@ const PickerSelectIcon = () => <FAIcon name="caret-down" size={20} />;
 const SelectPicker = (props) => {
   const selectedItem = props.items.find((item) => item.value === props.value);
 
+  // RNPickerSelect keys items by label, which repeats when two options share a name (e.g. two therapists);
+  // key them by value instead, which is unique. The raw value keeps `itemKey={value}` selection matching.
+  const items = props.items.map((item) => ({
+    ...item,
+    key: item.key ?? item.value ?? item.label,
+  }));
+
   const fontSize = props.customeFontSize ?? 17;
 
   const inputStyle = {
@@ -51,6 +58,7 @@ const SelectPicker = (props) => {
       }}
       style={pickerSelectStyle}
       {...props}
+      items={items}
     />
   );
 };

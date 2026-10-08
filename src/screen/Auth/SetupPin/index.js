@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState, useRef, useContext} from 'react';
-import {ScrollView, View, Alert, TouchableOpacity} from 'react-native';
+import React, {useState, useRef, useContext, useCallback} from 'react';
+import {ScrollView, View, Alert, TouchableOpacity, BackHandler} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {Text} from 'react-native-elements';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import styles from '../../../assets/styles/index';
@@ -114,8 +115,27 @@ const SetupPin = ({navigation, route}) => {
 
   const onCancelOrOnSucceed = () => {
     handlerReset();
-    navigation.navigate(ROUTES.USER_PROFILE);
+    navigation.popTo(ROUTES.USER_PROFILE);
   };
+
+  // When changing the PIN the header has no back button, only Cancel; the device back button does the same.
+  useFocusEffect(
+    useCallback(() => {
+      if (!isPINChanged) {
+        return;
+      }
+
+      const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+        setCode('');
+        setConfirmCode('');
+        setErrorCode(false);
+        navigation.popTo(ROUTES.USER_PROFILE);
+        return true;
+      });
+
+      return () => subscription.remove();
+    }, [isPINChanged, navigation]),
+  );
 
   const onSetProfileInfo = (data) => {
     if (

@@ -428,7 +428,7 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
     patientDetail &&
     patientDetail.status !== OFFLINE_STATUS.DUPLICATE_CREATE &&
     patientDetail.status !== OFFLINE_STATUS.DUPLICATE_UPDATE
-      ? navigation.navigate(ROUTES.PATIENT_DETAIL, {
+      ? navigation.popTo(ROUTES.PATIENT_DETAIL, {
           patientId: patientDetail.id,
         })
       : navigation.goBack();

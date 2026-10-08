@@ -43,7 +43,7 @@ const ChangePassword = ({navigation}) => {
             {
               text: translate('common.ok').toString(),
               onPress: () => {
-                navigation.navigate(ROUTES.USER_PROFILE);
+                navigation.popTo(ROUTES.USER_PROFILE);
               },
             },
           ],
@@ -73,7 +73,7 @@ const ChangePassword = ({navigation}) => {
     <>
       <HeaderBar
         title={translate('password.change')}
-        onGoBack={() => navigation.navigate(ROUTES.USER_PROFILE)}
+        onGoBack={() => navigation.popTo(ROUTES.USER_PROFILE)}
       />
       <AppKeyboardView>
         <ScrollView
@@ -129,7 +129,7 @@ const ChangePassword = ({navigation}) => {
           <Button
             title={translate('common.cancel')}
             type="outline"
-            onPress={() => navigation.navigate(ROUTES.USER_PROFILE)}
+            onPress={() => navigation.popTo(ROUTES.USER_PROFILE)}
             containerStyle={styles.marginBottomMd}
           />
         </ScrollView>
