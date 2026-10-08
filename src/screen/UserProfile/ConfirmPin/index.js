@@ -56,7 +56,7 @@ const ConfirmPin = ({navigation}) => {
 
   const onCancel = () => {
     resetConfirmPin();
-    navigation.navigate(ROUTES.USER_PROFILE);
+    navigation.popTo(ROUTES.USER_PROFILE);
   };
 
   const handlePinInputPress = (ref) => {

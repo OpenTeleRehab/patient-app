@@ -112,7 +112,7 @@ const PatientReferral = ({navigation, route}) => {
   };
 
   const onBack = useCallback(() => {
-    navigation.navigate(ROUTES.PATIENT_DETAIL, {
+    navigation.popTo(ROUTES.PATIENT_DETAIL, {
       patientId: patient.id,
     });
   }, [navigation, patient]);

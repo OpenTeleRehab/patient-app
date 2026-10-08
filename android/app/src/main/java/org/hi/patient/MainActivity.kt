@@ -15,10 +15,6 @@ class MainActivity : ReactActivity() {
    */
   override fun getMainComponentName(): String = "PatientApp"
 
-  override fun onBackPressed() {
-      // Do nothing
-  }
-
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 

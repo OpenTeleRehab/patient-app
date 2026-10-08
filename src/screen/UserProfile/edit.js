@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useRef} from 'react';
 import {Alert, Keyboard, ScrollView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {ROUTES, STORAGE_KEY, USER_ROLE} from '../../variables/constants';
+import {STORAGE_KEY, USER_ROLE} from '../../variables/constants';
 import HeaderBar from '../../components/Common/HeaderBar';
 import {getTranslate} from 'react-localize-redux';
 import HealthWorkerProfile from './_Partials/HealthWorkerProfile';
@@ -15,6 +15,7 @@ import {updateProfileRequest} from '../../store/user/actions';
 import {getTranslations} from '../../store/translation/actions';
 import {storeLocalData} from '../../utils/local_storage';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {usePreventRemove} from '@react-navigation/native';
 import {formatDate, isValidDateFormat} from '../../utils/helper';
 import styles from '../../assets/styles';
 
@@ -97,34 +98,42 @@ const UserProfileEdit = ({navigation}) => {
     return () => subscription.unsubscribe();
   }, [languages, setValue, watch]);
 
+  // Set once the profile is saved, so leaving afterwards skips the discard prompt.
+  const isSavedRef = useRef(false);
+
+  // Covers every way out of the screen: the header back button, and the device back button and gesture.
+  usePreventRemove(isDirty, ({data}) => {
+    if (isSavedRef.current) {
+      navigation.dispatch(data.action);
+      return;
+    }
+
+    Keyboard.dismiss();
+    Alert.alert(
+      translate('edit.profile.title').toString(),
+      translate('edit.profile.discard.message').toString(),
+      [
+        {
+          text: translate('common.cancel').toString(),
+          style: 'cancel',
+        },
+        {
+          text: translate('common.ok').toString(),
+          onPress: () => navigation.dispatch(data.action),
+        },
+      ],
+    );
+  });
+
   const handleGoBack = () => {
     Keyboard.dismiss();
-
-    if (isDirty) {
-      Alert.alert(
-        translate('edit.profile.title').toString(),
-        translate('edit.profile.discard.message').toString(),
-        [
-          {
-            text: translate('common.cancel').toString(),
-            style: 'cancel',
-          },
-          {
-            text: translate('common.ok').toString(),
-            onPress: () => {
-              navigation.navigate(ROUTES.USER_PROFILE);
-            },
-          },
-        ],
-      );
-    } else {
-      navigation.navigate(ROUTES.USER_PROFILE);
-    }
+    navigation.goBack();
   };
 
   const onSubmit = (data) => {
     dispatch(updateProfileRequest(data)).then((result) => {
       if (result) {
+        isSavedRef.current = true;
         Alert.alert(
           translate('edit.profile.title').toString(),
           translate('success.message.edit.profile').toString(),
@@ -134,7 +143,7 @@ const UserProfileEdit = ({navigation}) => {
               onPress: async () => {
                 dispatch(getTranslations(data.language_id));
                 await storeLocalData(STORAGE_KEY.LANGUAGE, data.language_id);
-                navigation.navigate(ROUTES.USER_PROFILE);
+                navigation.goBack();
               },
             },
           ],
