@@ -208,12 +208,17 @@ const HeaderBar = (props) => {
       );
     }
     if (call && (call.onAudioCall || call.onVideoCall)) {
+      const isCallDisabled = !isOnline || call.disabledCall;
+      const callButtonStyle = isCallDisabled ? componentStyles.callButtonDisabled : undefined;
+
       return (
         <View style={[styles.flexRow, styles.flexCenter, styles.columnGap16]}>
           <TouchableOpacity
             accessible={true}
             accessibilityLabel="Audio call"
-            disabled={!isOnline || call.disabledCall}
+            accessibilityState={{disabled: isCallDisabled}}
+            disabled={isCallDisabled}
+            style={callButtonStyle}
             onPress={call.onAudioCall}>
             <Icon
               type="material"
@@ -225,7 +230,9 @@ const HeaderBar = (props) => {
           <TouchableOpacity
             accessible={true}
             accessibilityLabel="Video call"
-            disabled={!isOnline || call.disabledCall}
+            accessibilityState={{disabled: isCallDisabled}}
+            disabled={isCallDisabled}
+            style={callButtonStyle}
             onPress={call.onVideoCall}>
             <Icon
               type="material"
@@ -319,6 +326,9 @@ const componentStyles = StyleSheet.create({
   offlineText: {
     color: variables.danger,
     fontSize: 14,
+  },
+  callButtonDisabled: {
+    opacity: 0.4,
   },
 });
 

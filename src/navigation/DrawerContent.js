@@ -12,6 +12,7 @@ import {enableKidTheme, logoutRequest} from '../store/user/actions';
 import {isPhcWorker} from '../utils/helper';
 import settings from '../../config/settings';
 import {drawerItems} from '../variables/routes';
+import {ROUTES} from '../variables/constants';
 import variables from '../assets/styles/variables';
 import styles from '../assets/styles';
 
@@ -33,7 +34,8 @@ const DrawerContent = ({navigation}) => {
 
   const handleNavigate = (route) => {
     navigation.closeDrawer();
-    navigation.navigate(route.name);
+    // This navigation is the drawer's; its screens live one level down, in the main stack.
+    navigation.navigate(ROUTES.MAIN_STACK, {screen: route.name});
   };
 
   const handleOpenWebPortal = async () => {

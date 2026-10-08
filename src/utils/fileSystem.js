@@ -1,22 +1,21 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import {PermissionsAndroid, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
+// No storage permission is needed: from Android 11 apps may write their own files to the shared
+// Download folder, and WRITE_EXTERNAL_STORAGE is no longer granted to apps targeting it.
 export const getDownloadDirectoryPath = async () => {
-  let location = '';
-  if (Platform.OS === 'ios') {
-    location = RNFS.DocumentDirectoryPath + '/Downloads';
-  } else {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-    );
-    if (!granted) {
-      return false;
-    }
-    location = RNFS.ExternalStorageDirectoryPath + '/Download';
+  const location =
+    Platform.OS === 'ios'
+      ? RNFS.DocumentDirectoryPath + '/Downloads'
+      : RNFS.ExternalStorageDirectoryPath + '/Download';
+
+  if (!(await RNFS.exists(location))) {
+    await RNFS.mkdir(location);
   }
+
   return location;
 };
 

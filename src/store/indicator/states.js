@@ -4,6 +4,7 @@
 export const initialState = {
   isOnlineMode: true,
   isChatConnected: false,
+  isChatServerDown: false,
   isOnChatScreen: false,
   hasActivity: false,
   hasGoal: false,

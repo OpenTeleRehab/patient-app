@@ -91,9 +91,6 @@ const MaterialDetail = ({theme, route, navigation}) => {
 
   const handleDownload = async () => {
     const location = await getDownloadDirectoryPath();
-    if (location === false) {
-      return;
-    }
 
     RNFS.downloadFile({
       fromUrl: adminApiBaseURL + '/file/' + material.file.id,

@@ -90,7 +90,7 @@ const blacklistTransform = createTransform(
       inboundStateData = _.omit(inboundState, [
         'callAccessToken',
         'chatAuth',
-        'messages',
+        'loadingEarlierRoomId',
         'videoCall',
         'selectedRoom',
         'showIncomingCall',

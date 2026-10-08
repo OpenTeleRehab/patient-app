@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Text, withTheme} from 'react-native-elements';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -10,9 +10,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTranslate} from 'react-localize-redux';
 import {Rocketchat} from '../../../services/rocketchat';
 import HeaderBar from '../../../components/Common/HeaderBar';
-import {generateHash, isPhcWorker} from '../../../utils/helper';
-import {Platform, View} from 'react-native';
-import {CALL_STATUS, CHAT_USER_STATUS} from '../../../variables/constants';
+import {generateHash, getMessageTime, isPhcWorker} from '../../../utils/helper';
+import {AppState, Platform, View} from 'react-native';
+import {CALL_STATUS, CHAT_USER_STATUS, ROUTES} from '../../../variables/constants';
 import RocketchatContext from '../../../context/RocketchatContext';
 import {loadHistoryInRoom} from '../../../utils/rocketchat';
 import {updateIndicatorList} from '../../../store/indicator/actions';
@@ -25,6 +25,9 @@ import ChatMediaSlider from '../_Partials/ChatMediaSlider';
 import styles from '../../../assets/styles';
 import store from '../../../store';
 
+// Stable fallback so a room without history doesn't hand the messages effect a new array on every render.
+const NO_MESSAGES = [];
+
 const ChatPanel = ({navigation, theme}) => {
   const dispatch = useDispatch();
   const chatSocket = useContext(RocketchatContext);
@@ -34,15 +37,28 @@ const ChatPanel = ({navigation, theme}) => {
   const {isOnlineMode, isOnChatScreen} = useSelector((state) => state.indicator);
   const {
     chatAuth,
-    messages,
     showIncomingCall,
     showAcceptedCall,
-    selectedRoom,
+    selectedRoom: selectedRoomSnapshot,
     chatRooms,
+    loadingEarlierRoomId,
   } = useSelector((state) => state.rocketchat);
   const {profile} = useSelector((state) => state.user);
   const translate = getTranslate(localize);
-  const [allMessages, setAllMessages] = useState([]);
+  // Effects key on ids, not objects: the live room below is replaced on every message and presence change, and
+  // profile on every re-login; each re-run of the history effect reloads the whole history and marks it read.
+  const selectedRoomId = selectedRoomSnapshot?.rid;
+  const profileId = profile?.id;
+  // The store's selectedRoom only says which room is open (a copy taken when it was selected). Show the live
+  // room from chatRooms, the single copy the reducers keep current (history, presence, name); fall back to the
+  // copy if a reload dropped the room, so this screen keeps working until the user leaves it.
+  const selectedRoom = useMemo(
+    () => chatRooms.find((room) => room.rid === selectedRoomId) ?? selectedRoomSnapshot,
+    [chatRooms, selectedRoomId, selectedRoomSnapshot],
+  );
+  const messages = selectedRoom?.messages ?? NO_MESSAGES;
+  // Start from the saved history: this screen mounts on every open, and [] would flash an empty chat first.
+  const [allMessages, setAllMessages] = useState(messages);
   const [showPicker, setShowPicker] = useState(false);
   const [disabledCall, setDisabledCall] = useState(false);
   const [showMediaSlider, setShowMediaSlider] = useState(false);
@@ -66,18 +82,18 @@ const ChatPanel = ({navigation, theme}) => {
   useEffect(() => {
     let intervalID;
 
-    if (isOnlineMode && selectedRoom?.rid && profile?.id && chatAuth?.userId) {
+    if (isOnlineMode && selectedRoomId && profileId && chatAuth?.userId) {
       intervalID = setInterval(() => {
         if (chatSocket && chatSocket.OPEN === chatSocket.readyState) {
-          loadHistoryInRoom(chatSocket, selectedRoom.rid, profile.id);
+          loadHistoryInRoom(chatSocket, selectedRoomId, profileId);
 
           Rocketchat.markMessagesAsRead(
-            selectedRoom.rid,
+            selectedRoomId,
             chatAuth.userId,
             chatAuth.token,
           ).then((res) => {
             if (res.success) {
-              dispatch(mutation.updateUnreadSuccess(selectedRoom.rid));
+              dispatch(mutation.updateUnreadSuccess(selectedRoomId));
             }
           });
 
@@ -89,29 +105,58 @@ const ChatPanel = ({navigation, theme}) => {
     return () => {
       clearInterval(intervalID);
     };
-  }, [chatAuth, chatSocket, dispatch, profile, selectedRoom, isOnlineMode]);
+  }, [chatAuth, chatSocket, dispatch, profileId, selectedRoomId, isOnlineMode]);
+
+  // Messages that arrived while the app was in the background stay unread (see prependNewMessage);
+  // coming back to this chat is when they are actually seen.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState !== 'active' || !isFocused || !selectedRoomId || !chatAuth?.userId) {
+        return;
+      }
+
+      Rocketchat.markMessagesAsRead(selectedRoomId, chatAuth.userId, chatAuth.token).then((res) => {
+        if (res.success) {
+          dispatch(mutation.updateUnreadSuccess(selectedRoomId));
+        }
+      });
+    });
+
+    return () => subscription.remove();
+  }, [chatAuth, dispatch, isFocused, selectedRoomId]);
 
   useEffect(() => {
-    const fIndex = chatRooms.findIndex((cr) => cr.rid === selectedRoom.rid);
-    if (fIndex !== -1) {
-      setVideoAttachments(
-        chatRooms[fIndex].messages
-          .filter((item) => item.video !== '')
-          .reverse(),
-      );
-      setImageAttachments(
-        chatRooms[fIndex].messages
-          .filter((item) => item.image !== '')
-          .reverse(),
-      );
-    }
-  }, [messages, currentAttachment, isVideoAttachment, chatRooms, selectedRoom]);
+    // Queued attachments (and ones persisted by older versions) may lack the other media field.
+    setVideoAttachments(messages.filter((item) => !!item.video).reverse());
+    setImageAttachments(messages.filter((item) => !!item.image).reverse());
+  }, [messages, currentAttachment, isVideoAttachment]);
 
   useEffect(() => {
     if (isOnChatScreen !== isFocused) {
       dispatch(updateIndicatorList({isOnChatScreen: isFocused}));
     }
   }, [dispatch, isFocused, isOnChatScreen]);
+
+  // In the stack, going back unmounts this screen, possibly before a blur re-render reaches the effect above;
+  // a stale isOnChatScreen would mark messages read (and hide their badge) while nobody is looking.
+  useEffect(() => () => dispatch(updateIndicatorList({isOnChatScreen: false})), [dispatch]);
+
+  // isOnlineMode lags behind the socket: right after the network drops (or before the reconnect login
+  // finishes) the socket is closed while we still look online, and a message sent then is silently lost.
+  const canSendNow = () => {
+    return (
+      isOnlineMode && !!chatAuth && chatSocket?.readyState === WebSocket.OPEN
+    );
+  };
+
+  // Kept in the store with pending: true until the server echoes it back after sendOfflineMessages.
+  const queueOfflineMessage = (message) => {
+    const {offlineMessages} = store.getState().rocketchat;
+
+    dispatch(mutation.setOfflineMessagesSuccess(offlineMessages.concat([message])));
+    dispatch(mutation.prependNewMessageSuccess(message));
+    dispatch(mutation.updateLastMessageSuccess(message));
+  };
 
   const onSend = (newMessage = []) => {
     newMessage[0].rid = selectedRoom.rid;
@@ -122,14 +167,10 @@ const ChatPanel = ({navigation, theme}) => {
       username: selectedRoom.u.username,
     };
 
-    if (isOnlineMode) {
+    if (canSendNow()) {
       dispatch(sendTextMessage(chatSocket, newMessage[0]));
     } else {
-      const offlineMessages = store.getState().rocketchat.offlineMessages;
-      const allOfflineMessages = offlineMessages.concat([newMessage[0]]);
-
-      dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
-      dispatch(mutation.prependNewMessageSuccess(newMessage[0]));
+      queueOfflineMessage(newMessage[0]);
     }
 
     setAllMessages((previousMessages) =>
@@ -145,6 +186,8 @@ const ChatPanel = ({navigation, theme}) => {
       received: false,
       pending: true,
       text: caption,
+      image: '',
+      video: '',
       user: {
         _id: profile.chat_user_id,
         username: selectedRoom.u.username,
@@ -171,14 +214,10 @@ const ChatPanel = ({navigation, theme}) => {
       },
     };
 
-    if (isOnlineMode) {
+    if (canSendNow()) {
       dispatch(postAttachmentMessage(newMessage));
     } else {
-      const offlineMessages = store.getState().rocketchat.offlineMessages;
-      const allOfflineMessages = offlineMessages.concat([newMessage]);
-
-      dispatch(mutation.setOfflineMessagesSuccess(allOfflineMessages));
-      dispatch(mutation.prependNewMessageSuccess(newMessage));
+      queueOfflineMessage(newMessage);
     }
   };
 
@@ -221,8 +260,37 @@ const ChatPanel = ({navigation, theme}) => {
     );
   };
 
+  // Older pages come from the server, so only while the chat socket is usable; hasMoreHistory is set by the
+  // first page's reply and stays false for a room whose whole history is already loaded.
+  const canLoadEarlier = canSendNow() && !!selectedRoom?.hasMoreHistory;
+  const isLoadingEarlier = loadingEarlierRoomId === selectedRoomId;
+
+  const handleLoadEarlier = () => {
+    const oldestMessage = messages[messages.length - 1];
+
+    // Infinite scroll calls this on every reach of the top; one page in flight at a time. canSendNow() again,
+    // not canLoadEarlier: the socket's readyState can change without a re-render.
+    if (!canSendNow() || !selectedRoom?.hasMoreHistory || isLoadingEarlier || !oldestMessage) {
+      return;
+    }
+
+    dispatch(mutation.setLoadingEarlierRoomSuccess(selectedRoomId));
+    loadHistoryInRoom(chatSocket, selectedRoomId, profileId, getMessageTime(oldestMessage));
+  };
+
   const handleGoBack = () => {
-    navigation.goBack();
+    // ChatPanel is a drawer screen: it stays mounted with no exit transition, so a quick second tap on back
+    // still reaches this handler after we've left, and GO_BACK from the first route is handled by no navigator.
+    if (!navigation.isFocused()) {
+      return;
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      // Nothing to return to (e.g. ChatPanel restored as the only drawer route): go to the room list instead.
+      navigation.navigate('TabNavigation', {screen: ROUTES.CHAT_ROOM_LIST});
+    }
   };
 
   const handleCall = async (isVideo) => {
@@ -260,6 +328,15 @@ const ChatPanel = ({navigation, theme}) => {
       )}
       <GiftedChat
         messages={allMessages}
+        loadEarlierMessagesProps={{
+          isAvailable: canLoadEarlier,
+          isLoading: isLoadingEarlier,
+          isInfiniteScrollEnabled: true,
+          onPress: handleLoadEarlier,
+          label: translate('chat_message.load_earlier'),
+          activityIndicatorColor: theme.colors.primary,
+        }}
+        isDayAnimationEnabled={false}
         placeholder={translate('chat.type.message')}
         messagesContainerStyle={styles.chatMainContainer}
         messageIdGenerator={() => generateHash()}

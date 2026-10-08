@@ -53,12 +53,16 @@ const ChatMediaSlider = ({
   isVideoAttachment,
 }) => {
   const localize = useSelector((state) => state.localize);
+  const {isOnlineMode} = useSelector((state) => state.indicator);
   const translate = getTranslate(localize);
   const [sliderWidth] = useState(SCREEN_WIDTH);
-  const [currentIndex, setCurrentIndex] = useState(
-    isVideoAttachment
-      ? items.findIndex((item) => item.video === currentAttachment)
-      : items.findIndex((item) => item.image === currentAttachment),
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    Math.max(
+      0,
+      isVideoAttachment
+        ? items.findIndex((item) => item.video === currentAttachment)
+        : items.findIndex((item) => item.image === currentAttachment),
+    ),
   );
 
   const insets = useSafeAreaInsets();
@@ -67,33 +71,57 @@ const ChatMediaSlider = ({
     setCurrentIndex(index);
   };
 
+  const notify = (message) => {
+    if (Platform.OS === 'ios') {
+      Alert.alert(translate('common.download'), message);
+    } else {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    }
+  };
+
   const handleDownloadMedia = async () => {
-    const location = await getDownloadDirectoryPath();
-    if (location === false) {
+    const item = items[currentIndex];
+    const attachment_url = item?.video || item?.image;
+    if (!attachment_url) {
       return;
     }
 
-    const attachment_url =
-      items[currentIndex].video !== ''
-        ? items[currentIndex].video
-        : items[currentIndex].image;
+    // A queued (not yet uploaded) attachment still points at the local file picked by the user;
+    // anything else lives on the chat server and needs the network.
+    const isLocalFile = !/^https?:\/\//i.test(attachment_url);
+    if (!isLocalFile && !isOnlineMode) {
+      notify(translate('error.message.network.error'));
+      return;
+    }
 
-    RNFS.downloadFile({
-      fromUrl: attachment_url,
-      toFile: `${location}/${getRocketChatAttachmentFilename(attachment_url)}`,
-    }).promise.then(() => {
-      if (Platform.OS === 'ios') {
-        Alert.alert(
-          translate('common.download'),
-          translate('activity.file_has_been_downloaded_successfully'),
-        );
+    try {
+      const location = await getDownloadDirectoryPath();
+      const toFile = `${location}/${getRocketChatAttachmentFilename(attachment_url)}`;
+
+      if (isLocalFile) {
+        // copyFile fails on iOS when the target exists, unlike downloadFile which overwrites it.
+        if (await RNFS.exists(toFile)) {
+          await RNFS.unlink(toFile);
+        }
+        await RNFS.copyFile(attachment_url.replace('file://', ''), toFile);
       } else {
-        ToastAndroid.show(
-          translate('activity.file_has_been_downloaded_successfully'),
-          ToastAndroid.SHORT,
-        );
+        const {statusCode} = await RNFS.downloadFile({
+          fromUrl: attachment_url,
+          toFile,
+        }).promise;
+
+        // downloadFile resolves on HTTP errors too, leaving the error body saved as the file.
+        if (statusCode < 200 || statusCode >= 300) {
+          await RNFS.unlink(toFile).catch(() => {});
+          throw new Error(`Download failed with status ${statusCode}`);
+        }
       }
-    });
+
+      notify(translate('activity.file_has_been_downloaded_successfully'));
+    } catch (error) {
+      console.log('Download media failed', error);
+      notify(translate('error.message.network.error'));
+    }
   };
 
   return (

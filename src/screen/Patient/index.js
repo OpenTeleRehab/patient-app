@@ -29,9 +29,11 @@ import variables from '../../assets/styles/variables';
 import {getAppointmentsRequest, getAppointmentsWithPatientRequest} from '../../store/phcAppointment/actions';
 import BottomSheet, {BottomSheetScrollView, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {useIsFocused} from '@react-navigation/native';
 
 const Patient = ({navigation, theme}) => {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const {patientsForPhcWorker, filters, loading} = useSelector((state) => state.patient);
@@ -258,7 +260,7 @@ const Patient = ({navigation, theme}) => {
         </BottomSheetScrollView>
       </BottomSheet>
       <Spinner
-        visible={loading}
+        visible={loading && isFocused}
         overlayColor="rgba(0, 0, 0, 0.5)"
         textStyle={styles.textLight}
       />

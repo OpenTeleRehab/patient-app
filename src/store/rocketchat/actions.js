@@ -1,20 +1,23 @@
 import {Rocketchat} from '../../services/rocketchat';
 import {Therapist} from '../../services/therapist';
 import {mutation} from './mutations';
-import {updateIndicatorList} from '../indicator/actions';
 import {Chat} from '../../services/chat';
 import {Call} from '../../services/call';
-import {isPhcWorker} from '../../utils/helper';
-import {
-  CALL_STATUS,
-  CHAT_USER_STATUS,
-  STORAGE_KEY,
-} from '../../variables/constants';
+import {getMessageTime, isPhcWorker} from '../../utils/helper';
+import {CALL_STATUS, CHAT_USER_STATUS, STORAGE_KEY} from '../../variables/constants';
 import {Notification} from '../../services/notification';
 import {sendNewMessage, updateMessage} from '../../utils/rocketchat';
 import {getLocalData} from '../../utils/local_storage';
 import RNCallKeep from 'react-native-callkeep';
 import {acceptedRequest} from '../call/actions';
+import {AppState} from 'react-native';
+
+// isOnChatScreen comes from navigation focus, which stays true while the app is in the background with a chat
+// open; messages arriving then were never seen, so they must stay unread (locally and on the server).
+const isViewingChatRoom = (getState, rid) =>
+  AppState.currentState === 'active' &&
+  getState().indicator.isOnChatScreen &&
+  getState().rocketchat.selectedRoom?.rid === rid;
 
 export const setChatSubscribeIds = (payload) => (dispatch) => {
   dispatch(mutation.setChatSubscribeIdsSuccess(payload));
@@ -28,243 +31,266 @@ export const updateVideoCallStatus = (payload) => (dispatch) => {
   dispatch(mutation.updateVideoCallStatusSuccess(payload));
 };
 
-export const getChatRooms = () => async (dispatch, getState) => {
-  dispatch(mutation.getChatRoomsRequest());
-  const {accessToken, profile} = getState().user;
-  const {chatAuth, selectedRoom} = getState().rocketchat;
+// Presence + last message are 2 requests per room; a PHC worker can have many rooms, so cap how many run
+// at once rather than firing them all (Rocket.Chat rate-limits its REST API).
+const CHAT_ROOM_REQUEST_CONCURRENCY = 5;
 
-  const chatRooms = [];
+// Like Promise.all(items.map(task)), keeping order, but with at most `limit` tasks in flight.
+const mapWithConcurrency = async (items, limit, task) => {
+  const results = new Array(items.length);
+  let next = 0;
 
-  const subscriptions = await Rocketchat.getSubscriptions(
-    chatAuth.userId,
-    chatAuth.token,
+  const worker = async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await task(items[index]);
+    }
+  };
+
+  await Promise.all(Array.from({length: Math.min(limit, items.length)}, worker));
+  return results;
+};
+
+// `contact` is a patient, therapist or PHC worker from our API; null when they have no Rocket.Chat room with us.
+const buildChatRoom = async (contact, subscriptions) => {
+  // Direct-message rids are the two user ids joined; only match those, never a channel/group rid.
+  const subscription = subscriptions.find(
+    (room) => room.t === 'd' && room.rid.includes(contact.chat_user_id),
   );
 
-  if (subscriptions.length) {
+  if (!subscription) {
+    return null;
+  }
 
+  const [status, lastMessage] = await Promise.all([
+    Rocketchat.getUserPresence(contact.identity),
+    Rocketchat.getLastMessage(subscription.rid),
+  ]);
+
+  return {
+    rid: subscription.rid,
+    name: `${contact.last_name} ${contact.first_name}`,
+    professionId: contact.profession_id,
+    enabled: true,
+    unreads: subscription.unread,
+    u: {
+      _id: contact.chat_user_id,
+      username: contact.identity,
+      status: status?.presence ?? CHAT_USER_STATUS[0],
+    },
+    messages: [],
+    // undefined = the request failed; getChatRooms then keeps the room's previous preview instead of blanking it.
+    lastMessage: lastMessage?.success ? lastMessage.messages?.[0] ?? {} : undefined,
+    totalMessages: 0,
+  };
+};
+
+// Calls can overlap (e.g. a quick chat re-login); only the latest may write rooms or end the loading state.
+let latestChatRoomsRequest = 0;
+
+export const getChatRooms = () => async (dispatch, getState) => {
+  const requestId = ++latestChatRoomsRequest;
+
+  dispatch(mutation.getChatRoomsRequest());
+  const {accessToken, profile} = getState().user;
+  const {chatAuth} = getState().rocketchat;
+  // A different account signed in meanwhile (RESET_CHAT_DATA): this load is the previous user's rooms.
+  const isOtherOwner = () => {
+    const {chatOwnerId} = getState().rocketchat;
+    return chatOwnerId !== undefined && chatOwnerId !== chatAuth.userId;
+  };
+  const isStale = () => requestId !== latestChatRoomsRequest || isOtherOwner();
+
+  let chatRooms = [];
+
+  // Contacts from our API, as a list of responses: for a PHC worker patients, therapists, PHC workers
+  // (also the order the rooms are listed in); for a patient their therapists and PHC workers.
+  const getContactResponses = async () => {
     if (isPhcWorker(profile?.type)) {
-      const patientChatRooms = await Chat.getPatientChatRooms(accessToken);
-      const therapistChatRooms = await Chat.getTherapistChatRooms(accessToken);
-      const phcWorkerChatRooms = await Chat.getPhcWorkerChatRooms(accessToken);
+      return Promise.all([
+        Chat.getPatientChatRooms(accessToken),
+        Chat.getTherapistChatRooms(accessToken),
+        Chat.getPhcWorkerChatRooms(accessToken),
+      ]);
+    }
 
-      if (patientChatRooms.success) {
-        for (const chatRoom of patientChatRooms.data) {
-          const subscription = subscriptions.find((room) =>
-            room.rid.includes(chatRoom.chat_user_id),
-          );
+    const primaryTherapistIds = [profile.therapist_id];
+    const primaryPhcWorkerIds = [profile.phc_worker_id];
+    const secondaryTherapistIds = profile.secondary_therapists ?? [];
+    const secondaryPhcWorkerIds = profile.supplementary_phc_workers ?? [];
 
-          if (subscription) {
-            const username = chatRoom.identity;
-            const rid = subscription.rid;
-
-            const status = await Rocketchat.getUserPresence(username);
-            const lastMessage = await Rocketchat.getLastMessage(rid);
-
-            chatRooms.push({
-              rid: rid,
-              name: `${chatRoom.last_name} ${chatRoom.first_name}`,
-              professionId: chatRoom.profession_id,
-              enabled: true,
-              unreads: subscription.unread,
-              u: {
-                _id: chatRoom.chat_user_id,
-                username: username,
-                status: status?.presence ?? CHAT_USER_STATUS[0],
-              },
-              messages: [],
-              lastMessage: lastMessage?.success
-                ? lastMessage.messages?.[0] ?? {}
-                : {},
-              totalMessages: 0,
-            });
-          }
-        }
-      }
-
-      if (therapistChatRooms.success) {
-        for (const chatRoom of therapistChatRooms.data) {
-          const subscription = subscriptions.find((room) =>
-            room.rid.includes(chatRoom.chat_user_id),
-          );
-
-          if (subscription) {
-            const username = chatRoom.identity;
-            const rid = subscription.rid;
-
-            const status = await Rocketchat.getUserPresence(username);
-            const lastMessage = await Rocketchat.getLastMessage(rid);
-
-            chatRooms.push({
-              rid: rid,
-              name: `${chatRoom.last_name} ${chatRoom.first_name}`,
-              professionId: chatRoom.profession_id,
-              enabled: true,
-              unreads: subscription.unread,
-              u: {
-                _id: chatRoom.chat_user_id,
-                username: username,
-                status: status?.presence ?? CHAT_USER_STATUS[0],
-              },
-              messages: [],
-              lastMessage: lastMessage?.success
-                ? lastMessage.messages?.[0] ?? {}
-                : {},
-              totalMessages: 0,
-            });
-          }
-        }
-      }
-
-      if (phcWorkerChatRooms.success) {
-        for (const chatRoom of phcWorkerChatRooms.data) {
-          const subscription = subscriptions.find((room) =>
-            room.rid.includes(chatRoom.chat_user_id),
-          );
-
-          if (subscription) {
-            const username = chatRoom.identity;
-            const rid = subscription.rid;
-
-            const status = await Rocketchat.getUserPresence(username);
-            const lastMessage = await Rocketchat.getLastMessage(rid);
-
-            chatRooms.push({
-              rid: rid,
-              name: `${chatRoom.last_name} ${chatRoom.first_name}`,
-              professionId: chatRoom.profession_id,
-              enabled: true,
-              unreads: subscription.unread,
-              u: {
-                _id: chatRoom.chat_user_id,
-                username: username,
-                status: status?.presence ?? CHAT_USER_STATUS[0],
-              },
-              messages: [],
-              lastMessage: lastMessage?.success
-                ? lastMessage.messages?.[0] ?? {}
-                : {},
-              totalMessages: 0,
-            });
-          }
-        }
-      }
-    } else {
-      const primaryTherapistIds = [profile.therapist_id];
-      const primaryPhcWorkerIds = [profile.phc_worker_id];
-      const secondaryTherapistIds = profile.secondary_therapists ?? [];
-      const secondaryPhcWorkerIds = profile.supplementary_phc_workers ?? [];
-      const therapists = await Therapist.getTherapists({
+    return [
+      await Therapist.getTherapists({
         ids: JSON.stringify([
           ...primaryTherapistIds,
           ...primaryPhcWorkerIds,
           ...secondaryTherapistIds,
           ...secondaryPhcWorkerIds,
         ]),
-      });
+      }),
+    ];
+  };
 
-      if (therapists.success) {
-        for (const therapist of therapists.data) {
-          const subscription = subscriptions.find((room) =>
-            room.rid.includes(therapist.chat_user_id),
-          );
+  // Independent of each other, so fetched together.
+  const [subscriptions, contactResponses] = await Promise.all([
+    Rocketchat.getSubscriptions(chatAuth.userId, chatAuth.token),
+    getContactResponses(),
+  ]);
 
-          if (subscription) {
-            const username = therapist.identity;
-            const rid = subscription.rid;
+  // A failed request would silently drop rooms (all of them, or a whole group such as every therapist room)
+  // from the new list, so treat it as a failed load and keep the current rooms instead.
+  if (subscriptions === null || contactResponses.some((response) => !response.success)) {
+    if (!isStale()) {
+      dispatch(mutation.getChatRoomsFailure());
+    }
+    return false;
+  }
 
-            const status = await Rocketchat.getUserPresence(username);
-            const lastMessage = await Rocketchat.getLastMessage(rid);
+  if (subscriptions.length) {
+    const contacts = contactResponses.flatMap((response) => response.data ?? []);
 
-            chatRooms.push({
-              rid: rid,
-              name: `${therapist.last_name} ${therapist.first_name}`,
-              professionId: therapist.profession_id,
-              enabled: true,
-              unreads: subscription.unread,
-              u: {
-                _id: therapist.chat_user_id,
-                username: username,
-                status: status?.presence ?? CHAT_USER_STATUS[0],
-              },
-              messages: [],
-              lastMessage: lastMessage?.success
-                ? lastMessage.messages?.[0] ?? {}
-                : {},
-              totalMessages: 0,
-            });
-          }
-        }
-      }
+    const rooms = await mapWithConcurrency(contacts, CHAT_ROOM_REQUEST_CONCURRENCY, (contact) =>
+      buildChatRoom(contact, subscriptions),
+    );
+    chatRooms = rooms.filter(Boolean);
+
+    if (isStale()) {
+      return false;
     }
 
     if (chatRooms.length > 0) {
       // Keep already-loaded (persisted) history until loadHistory replaces it, so it stays visible offline.
-      const prevRooms = getState().rocketchat.chatRooms || [];
+      const {chatRooms: prevRooms = [], selectedRoom} = getState().rocketchat;
+
       chatRooms.forEach((room) => {
-        room.messages = prevRooms.find((pr) => pr.rid === room.rid)?.messages || [];
+        const prevRoom = prevRooms.find((pr) => pr.rid === room.rid);
+        room.messages = prevRoom?.messages || [];
+        room.hasMoreHistory = prevRoom?.hasMoreHistory;
+
+        // lastMessage/unreads are a snapshot from the start of this load; a message streamed in since
+        // (or one still sending) is newer, so keep it rather than letting the preview go backwards.
+        const prevLastMessage = prevRoom?.lastMessage;
+        const isPrevNewer =
+          !!prevLastMessage &&
+          prevLastMessage._id !== room.lastMessage?._id &&
+          (room.lastMessage === undefined || // request failed
+            prevLastMessage.pending ||
+            getMessageTime(prevLastMessage) > getMessageTime(room.lastMessage));
+
+        if (isPrevNewer) {
+          room.lastMessage = prevLastMessage;
+          room.unreads = Math.max(room.unreads || 0, prevRoom.unreads || 0);
+        } else if (room.lastMessage === undefined) {
+          room.lastMessage = {};
+        }
+
+        // Same rule as prependNewMessage: the room being read has nothing unread.
+        if (isViewingChatRoom(getState, room.rid)) {
+          room.unreads = 0;
+        }
       });
       dispatch(mutation.getChatRoomsSuccess(chatRooms));
+      // Read after the awaits: the user may have opened a room while this was loading.
       if (selectedRoom === undefined) {
         dispatch(mutation.selectRoomSuccess(chatRooms[0]));
       }
       return true;
     }
   }
-  dispatch(mutation.getChatRoomsFailure());
-  return false;
+
+  if (isStale()) {
+    return false;
+  }
+
+  // Loaded fine but no rooms (e.g. the last therapist was unassigned): show that rather than the old list.
+  // selectedRoom is left alone: ChatPanel may be mounted and falls back to it; it isn't persisted anyway.
+  dispatch(mutation.getChatRoomsSuccess([]));
+  return true;
 };
 
-export const prependNewMessage = (payload) => async (dispatch, getState) => {
-  const {isOnChatScreen} = getState().indicator;
-  const {chatRooms, selectedRoom} = getState().rocketchat;
+// A burst of incoming messages should mark the room read once, not once per message.
+const MARK_READ_DEBOUNCE = 1000;
+const markReadTimers = new Map();
+
+// The server keeps its own unread count; clearing ours alone brings the badge back on the next room reload.
+const markRoomAsReadSoon = (rid) => (dispatch, getState) => {
+  clearTimeout(markReadTimers.get(rid));
+
+  markReadTimers.set(
+    rid,
+    setTimeout(() => {
+      markReadTimers.delete(rid);
+
+      const {chatAuth} = getState().rocketchat;
+      if (!chatAuth?.userId) {
+        return;
+      }
+
+      // Offline this fails quietly; ChatPanel marks the room read again when it reconnects.
+      Rocketchat.markMessagesAsRead(rid, chatAuth.userId, chatAuth.token);
+    }, MARK_READ_DEBOUNCE),
+  );
+};
+
+export const prependNewMessage = (payload) => (dispatch, getState) => {
+  const {chatRooms, chatAuth} = getState().rocketchat;
 
   const chatRoom = chatRooms?.find((item) => item.rid === payload.rid);
 
-  if (chatRoom) {
-    if (selectedRoom?.rid === payload.rid) {
-      if (isOnChatScreen) {
-        dispatch(mutation.prependNewMessageSuccess(payload));
+  if (!chatRoom) {
+    return;
+  }
 
-        chatRoom.unreads = 0;
-      } else {
-        chatRoom.unreads += 1;
-      }
-    } else {
-      chatRoom.unreads += 1;
-      chatRoom.lastMessage = payload;
+  const isNewMessage = !payload.isEdited && !chatRoom.messages?.some((item) => item._id === payload._id);
+  const isOwnMessage = payload.user?._id === chatAuth?.userId;
+  const isViewingRoom = isViewingChatRoom(getState, payload.rid);
+
+  dispatch(mutation.prependNewMessageSuccess(payload));
+
+  if (isViewingRoom) {
+    dispatch(mutation.updateUnreadSuccess(payload.rid));
+
+    // Our own messages never count as unread on the server.
+    if (isNewMessage && !isOwnMessage) {
+      dispatch(markRoomAsReadSoon(payload.rid));
     }
+  } else if (isNewMessage && !isOwnMessage) {
+    dispatch(mutation.incrementUnreadSuccess(payload.rid));
+  }
 
-    // Update last message
+  // An edit to an older message (e.g. a past call's status) must not replace the room preview.
+  if (isNewMessage || chatRoom.lastMessage?._id === payload._id) {
     dispatch(mutation.updateLastMessageSuccess(payload));
-
-    // Update unread message indicator
-    const hasUnreadMessage = chatRooms.some((room) => room.unreads);
-    dispatch(updateIndicatorList({hasUnreadMessage}));
   }
 };
 
-export const updateChatUserStatus = (payload) => (dispatch, getState) => {
-  const {chatRooms} = getState().rocketchat;
-  const fIndex = chatRooms.findIndex((cr) => cr.u._id === payload._id);
-  if (fIndex > -1) {
-    chatRooms[fIndex].u.status = payload.status;
-    dispatch(mutation.getChatRoomsSuccess(chatRooms));
-  }
+export const updateChatUserStatus = (payload) => (dispatch) => {
+  dispatch(mutation.updateChatUserStatusSuccess(payload));
 };
 
 export const sendOfflineMessages = (chatSocket) => async (dispatch, getState) => {
   const {offlineMessages} = getState().rocketchat;
 
   if (offlineMessages.length) {
+    const sentIds = [];
+
     for (const message of offlineMessages) {
       if (message.attachment) {
-        await dispatch(postAttachmentMessage(message));
+        if (await dispatch(postAttachmentMessage(message))) {
+          // rooms.upload assigns its own _id, so the server copy arrives as a new message; drop the placeholder.
+          dispatch(mutation.removeMessageSuccess(message));
+          sentIds.push(message._id);
+        }
       } else {
-        await dispatch(sendTextMessage(chatSocket, message));
+        // Stays queued until the server copy arrives (stream echo or history load, see the reducers); if the
+        // socket drops first it's resent on the next login, and a resend of a stored one can't duplicate (same _id).
+        dispatch(sendTextMessage(chatSocket, message));
       }
     }
 
-    dispatch(clearOfflineMessages());
+    // Keep failed uploads, unconfirmed texts and anything queued while uploads were in flight for the next reconnect.
+    const remaining = getState().rocketchat.offlineMessages.filter((item) => !sentIds.includes(item._id));
+    dispatch(mutation.setOfflineMessagesSuccess(remaining));
   }
 };
 
@@ -329,6 +355,15 @@ export const postAttachmentMessage = (message) => async (dispatch, getState) => 
     return true;
   } else {
     dispatch(mutation.sendAttachmentMessagesFailure());
+
+    // A failed upload sent while online lives only in ChatPanel's local list, which the next store update replaces;
+    // queue it like one picked offline so it shows as sending and is retried on the next chat login.
+    const {offlineMessages} = getState().rocketchat;
+    if (!offlineMessages.some((item) => item._id === message._id)) {
+      dispatch(mutation.setOfflineMessagesSuccess(offlineMessages.concat([message])));
+      dispatch(mutation.prependNewMessageSuccess(message));
+      dispatch(mutation.updateLastMessageSuccess(message));
+    }
     return false;
   }
 };

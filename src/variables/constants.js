@@ -29,6 +29,7 @@ export const ROUTES = {
   CHANGE_PASSWORD_SCREEN: 'ChangePassword',
   GOAl_DETAIL: 'GoalDetail',
   CHAT_ROOM_LIST: 'ChatRoomList',
+  MAIN_STACK: 'MainStack', // The drawer's only screen: the stack holding TabNavigation and every other screen.
   CHAT_PANEL: 'ChatPanel',
   FAQ: 'Faq',
   TC: 'TermCondition',

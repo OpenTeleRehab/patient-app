@@ -13,8 +13,8 @@ import moment from 'moment';
 import settings from './config/settings';
 import RocketchatContext from './src/context/RocketchatContext';
 import {
+  disconnectChatSocket,
   initialChatSocket,
-  isChatSessionActive,
   reconnectChatSocket,
   waitForChatLogin,
 } from './src/utils/rocketchat';
@@ -43,6 +43,7 @@ import {syncPatientOffline, syncOfflineRemovePendingSupplementary} from './src/s
 import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
 import {useGetChatRooms} from './src/hook/useGetChatRooms';
+import {mutation as rocketchatMutation} from './src/store/rocketchat/mutations';
 
 let chatSocket = null;
 
@@ -52,7 +53,7 @@ const AppProvider = ({children}) => {
     (state) => state.user,
   );
   const {messages} = useSelector((state) => state.translation);
-  const {chatAuth, chatRooms} = useSelector((state) => state.rocketchat);
+  const {chatAuth, chatOwnerId} = useSelector((state) => state.rocketchat);
   const {transfers} = useSelector((state) => state.transfer);
   const localize = useSelector((state) => state.localize);
   const {offlineQuestionnaireAnswers, offlineActivities, offlineGoals} =
@@ -64,6 +65,11 @@ const AppProvider = ({children}) => {
   const [socket, setSocket] = useState(null);
   const isOnline = useNetInfo().isConnected;
   const isRelogging = useRef(false);
+
+  // Chat data is persisted without logout clearing it (keeping it lets the same user read chats offline), so
+  // when a different account signs in (re-register, login with another email/number) drop the previous one's.
+  const chatUserId = profile?.chat_user_id;
+
   // Offline login holds a placeholder token; wait for the re-login before syncing
   const canSync = isOnline && accessToken && isDataUpToDate !== false;
 
@@ -71,7 +77,27 @@ const AppProvider = ({children}) => {
   useAppointmentNotifications(dispatch, profile);
 
   // Get chat rooms
-  useGetChatRooms(dispatch, accessToken, chatAuth);
+  useGetChatRooms(
+    dispatch,
+    accessToken,
+    chatAuth,
+    isDataUpToDate,
+    profile?.chat_user_id,
+  );
+
+  useEffect(() => {
+    if (!chatUserId || chatUserId === chatOwnerId) {
+      return;
+    }
+
+    if (chatOwnerId === undefined) {
+      // Data saved before ownership was tracked: almost certainly this user's, so adopt it rather than wipe
+      // their cached chats and queued messages.
+      dispatch(rocketchatMutation.setChatOwnerSuccess(chatUserId));
+    } else {
+      dispatch(rocketchatMutation.resetChatDataSuccess(chatUserId));
+    }
+  }, [chatOwnerId, chatUserId, dispatch]);
 
   const fetchLocalData = useCallback(async () => {
     const data = await getLocalData(STORAGE_KEY.AUTH_INFO, true);
@@ -157,42 +183,53 @@ const AppProvider = ({children}) => {
     }
   }, [dispatch, loading, language]);
 
+  const {
+    id: profileId,
+    identity: chatUsername,
+    chat_password: chatPassword,
+  } = profile || {};
+
+  // Keyed on the chat credentials, not the profile object: the re-login after an offline login (or a PIN login)
+  // replaces profile, which used to open a second socket (and a second chat login + room load) beside the first.
+  // The same user's live session is kept, so an accepted call is sent right away.
   useEffect(() => {
-    if (profile && profile.id && profile.identity && profile.chat_password) {
-      // Same user after PIN login, keep the logged in session so an accepted call is sent right away
-      if (isChatSessionActive(profile.identity, profile.chat_password)) {
-        return;
-      }
-
-      const subscribeIds = {
-        loginId: getUniqueId(profile.id),
-        roomMessageId: getUniqueId(profile.id),
-        notifyLoggedId: getUniqueId(profile.id),
-      };
-
-      // Set chat subscribe ids
-      dispatch(setChatSubscribeIds(subscribeIds));
-
-      // Initial chat socket
-      setTimeout(() => {
-        chatSocket = initialChatSocket(
-          dispatch,
-          subscribeIds,
-          profile.identity,
-          profile.chat_password,
-          (newSocket) => {
-            chatSocket = newSocket; // Update the reference
-            setSocket(newSocket);
-          },
-        );
-      }, 1000);
+    if (!profileId || !chatUsername || !chatPassword) {
+      return undefined;
     }
-  }, [dispatch, profile]);
 
-  useEffect(() => {
-    const hasUnreadMessage = chatRooms.some((room) => room.unreads);
-    dispatch(updateIndicatorList({hasUnreadMessage}));
-  }, [dispatch, chatRooms]);
+    const subscribeIds = {
+      loginId: getUniqueId(profileId),
+      roomMessageId: getUniqueId(profileId),
+      notifyLoggedId: getUniqueId(profileId),
+    };
+
+    // Set chat subscribe ids
+    dispatch(setChatSubscribeIds(subscribeIds));
+
+    // Initial chat socket
+    const timeout = setTimeout(() => {
+      chatSocket = initialChatSocket(
+        dispatch,
+        subscribeIds,
+        chatUsername,
+        chatPassword,
+        (newSocket) => {
+          chatSocket = newSocket; // Update the reference
+          setSocket(newSocket);
+        },
+      );
+    }, 1000);
+
+    // Account switch (new chat credentials) or unmount: shut this user's socket down before the next one starts.
+    // Left open it kept reconnecting as the previous user, and a credentials change within the 1s delay
+    // used to start two sockets.
+    return () => {
+      clearTimeout(timeout);
+      disconnectChatSocket({resumable: false});
+      chatSocket = null;
+      setSocket(null);
+    };
+  }, [dispatch, profileId, chatUsername, chatPassword]);
 
   useEffect(() => {
     const hasTransfer = transfers.some(
@@ -218,6 +255,8 @@ const AppProvider = ({children}) => {
         }
       });
     }
+
+    return undefined;
   }, [accessToken, dispatch, isOnline]);
 
   useEffect(() => {

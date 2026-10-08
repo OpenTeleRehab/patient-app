@@ -71,7 +71,7 @@ export const CallContextProvider = ({children}) => {
 
       if (
         CALL_STARTED_STATUSES.includes(videoCall.status) &&
-        videoCall.u._id !== chatAuth.userId &&
+        videoCall.u._id !== chatAuth?.userId &&
         videoCall._id !== callInfo._id &&
         !hasStartedCall &&
         !hasAcceptedCall &&
