@@ -85,7 +85,7 @@ const Home = ({navigation}) => {
   }, [dispatch, canFetch]);
 
   useEffect(() => {
-    if (!isLoading && !_.isEmpty(treatmentPlan)) {
+    if (!_.isEmpty(treatmentPlan)) {
       const activities = treatmentPlan.activities.filter(
         (a) =>
           moment(a.date).format(settings.format.date) ===
@@ -126,13 +126,7 @@ const Home = ({navigation}) => {
       setTodaySummary({all: 0, completed: 0});
       setCompletedPercentage(0);
     }
-  }, [
-    treatmentPlan,
-    offlineQuestionnaireAnswers,
-    offlineActivities,
-    offlineGoals,
-    isLoading,
-  ]);
+  }, [treatmentPlan, offlineQuestionnaireAnswers, offlineActivities, offlineGoals]);
 
   useEffect(() => {
     if (profile) {

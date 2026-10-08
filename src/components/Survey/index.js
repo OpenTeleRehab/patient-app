@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPublishSurvey} from '../../store/survey/actions';
-import {getTreatmentPlanRequest} from '../../store/activity/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import moment from 'moment';
 import SurveyModal from './SurveyModal';
@@ -32,12 +31,6 @@ const Survey = () => {
       setCurrentSurvey(null);
     }
   }, [surveys]);
-
-  useEffect(() => {
-    if (isOnline && accessToken && registerAs !== USER_ROLE.HEALTH_WORKER) {
-      dispatch(getTreatmentPlanRequest());
-    }
-  }, [dispatch, isOnline, accessToken, registerAs]);
 
   useEffect(() => {
     if (isOnline && accessToken) {
