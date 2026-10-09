@@ -74,7 +74,7 @@ const AppProvider = ({children}) => {
   const canSync = isOnline && accessToken && isDataUpToDate !== false;
 
   // Trigger appointment notifications
-  useAppointmentNotifications(dispatch, profile);
+  useAppointmentNotifications(dispatch, profile, canSync);
 
   // Get chat rooms
   useGetChatRooms(
