@@ -42,6 +42,7 @@ import {
 import {syncPatientOffline, syncOfflineRemovePendingSupplementary} from './src/store/patient/actions';
 import {acceptedRequest} from './src/store/call/actions';
 import {useAppointmentNotifications} from './src/hook/useAppointmentNotifications';
+import {useTreatmentPlanNotifications} from './src/hook/useTreatmentPlanNotifications';
 import {useGetChatRooms} from './src/hook/useGetChatRooms';
 import {mutation as rocketchatMutation} from './src/store/rocketchat/mutations';
 
@@ -75,6 +76,9 @@ const AppProvider = ({children}) => {
 
   // Trigger appointment notifications
   useAppointmentNotifications(dispatch, profile, canSync);
+
+  // Fetch the treatment plan the therapist created/updated
+  useTreatmentPlanNotifications(dispatch, profile, canSync);
 
   // Get chat rooms
   useGetChatRooms(

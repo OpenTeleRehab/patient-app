@@ -57,7 +57,7 @@ const GoalDetail = ({theme, route, navigation}) => {
     (satisfactionLevel * (screenWidth - (40 - painLevelValueWidth))) / 11;
 
   useEffect(() => {
-    if (activity_id && treatmentPlan.activities.length) {
+    if (activity_id && treatmentPlan.activities?.length) {
       const selectedGoal = _.find(treatmentPlan.activities, {
         activity_id,
         type,

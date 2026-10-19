@@ -17,6 +17,8 @@ export const getTreatmentPlanRequest = () => async (dispatch, getState) => {
   } else {
     dispatch(mutation.treatmentPlanFetchFailure());
   }
+
+  return !!data.success;
 };
 
 /**

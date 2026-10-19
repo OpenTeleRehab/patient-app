@@ -19,6 +19,11 @@ import notifee from '@notifee/react-native';
 import moment from 'moment';
 import settings from './config/settings';
 import store from './src/store';
+import {
+  TREATMENT_PLAN_EVENT,
+  displayTreatmentPlanNotification,
+  markTreatmentPlanOutdated,
+} from './src/utils/treatmentPlanNotification';
 
 ReactNativeText.defaultProps = {
   ...ReactNativeText.defaultProps,
@@ -44,6 +49,13 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         remoteMessage.data?.title,
         remoteMessage.data?.start_date,
         remoteMessage.data?.end_date,
+      );
+    } else if (remoteMessage.data.event_type === TREATMENT_PLAN_EVENT) {
+      // No session here (the access token isn't persisted), so the app fetches the plan once it's open and online
+      await markTreatmentPlanOutdated();
+      await displayTreatmentPlanNotification(
+        remoteMessage.data.title,
+        remoteMessage.data.body,
       );
     } else if (
       remoteMessage.data.body.endsWith('_missed') ||

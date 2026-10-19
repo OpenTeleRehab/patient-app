@@ -252,6 +252,9 @@ const Activity = ({theme, navigation}) => {
         }
       });
       setMarkDates(marks);
+    } else {
+      // No ongoing plan any more (ended or moved off today)
+      setMarkDates([]);
     }
   }, [treatmentPlan, theme]);
 
@@ -264,6 +267,8 @@ const Activity = ({theme, navigation}) => {
         );
       });
       setActivities(selectedActivities ? selectedActivities : []);
+    } else if (_.isEmpty(treatmentPlan)) {
+      setActivities([]);
     }
   }, [selectedDate, treatmentPlan, profile]);
 

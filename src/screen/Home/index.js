@@ -121,6 +121,10 @@ const Home = ({navigation}) => {
           countOfflineGoalsCompleted;
         setTodaySummary({all: countAll, completed: totalCompletedCount});
         setCompletedPercentage((totalCompletedCount * 100) / countAll);
+      } else {
+        // Today's activities were removed from the plan
+        setTodaySummary({all: 0, completed: 0});
+        setCompletedPercentage(0);
       }
     } else {
       setTodaySummary({all: 0, completed: 0});

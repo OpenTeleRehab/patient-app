@@ -20,7 +20,7 @@ const CompleteTask = ({route, navigation}) => {
   const [step, setStep] = useState(1);
 
   useEffect(() => {
-    if (id && treatmentPlan.activities.length) {
+    if (id && treatmentPlan.activities?.length) {
       const selectedActivity = _.find(treatmentPlan.activities, {id});
 
       if (selectedActivity) {

@@ -48,7 +48,7 @@ const MaterialDetail = ({theme, route, navigation}) => {
   const {adminApiBaseURL} = useSelector((state) => state.phone);
 
   useEffect(() => {
-    if (id && treatmentPlan.activities.length) {
+    if (id && treatmentPlan.activities?.length) {
       const selectedMaterial = _.find(treatmentPlan.activities, {
         id,
       });
