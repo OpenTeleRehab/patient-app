@@ -58,7 +58,7 @@ const QuestionnaireDetail = ({theme, route, navigation}) => {
   const isOnline = useNetInfo().isConnected;
 
   useEffect(() => {
-    if (id && treatmentPlan.activities.length) {
+    if (id && treatmentPlan.activities?.length) {
       const selectedQuestionnaire = _.find(treatmentPlan.activities, {
         id,
       });

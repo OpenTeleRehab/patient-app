@@ -53,6 +53,7 @@ export const STORAGE_KEY = {
   CALL_INFO: 'CallInfo',
   ACCEPTED_CALL: 'AcceptedCall',
   REJECTED_CALL: 'RejectedCall',
+  TREATMENT_PLAN_OUTDATED: 'TreatmentPlanOutdated',
 };
 
 export const ACTIVITY_TYPES = {
