@@ -381,15 +381,21 @@ const CreateOrEditPatient = ({theme, navigation, route}) => {
       selectedSupplementary.filter((item) => item !== therapistId),
     );
 
-    setValue('supplementary_phc_workers', supplementaryPhcWorkers.filter((item) => item !== therapistId));
+    // A patient created offline may have no supplementary list yet
+    const remainingSupplementary = (supplementaryPhcWorkers ?? []).filter(
+      (item) => item !== therapistId,
+    );
+    setValue('supplementary_phc_workers', remainingSupplementary);
 
-    // Update patient supplementary phc worker in patient list
-    const updatedPatients = patientsForPhcWorker.map((item) =>
-      item.id === patientDetail.id ? {...item, supplementary_phc_workers:supplementaryPhcWorkers.filter((supplementaryId) => supplementaryId !== therapistId)} : item,
-    );
-    dispatch(
-      mutation.patientsForPhcWorkerFetchSuccess(updatedPatients),
-    );
+    // Update patient supplementary phc worker in patient list; a patient being created is not in it yet
+    if (patientDetail) {
+      const updatedPatients = patientsForPhcWorker.map((item) =>
+        item.id === patientDetail.id
+          ? {...item, supplementary_phc_workers: remainingSupplementary}
+          : item,
+      );
+      dispatch(mutation.patientsForPhcWorkerFetchSuccess(updatedPatients));
+    }
 
     if (id) {
       if (netInfo.isConnected) {
@@ -1070,8 +1076,6 @@ const componentStyles = StyleSheet.create({
     fontWeight: '200',
   },
   buttonContainer: {
-    paddingHorizontal: 15,
-    marginTop: 25,
     marginBottom: 20,
   },
   errorTextStyle: {
