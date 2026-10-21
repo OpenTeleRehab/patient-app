@@ -1,8 +1,14 @@
 /*
  * Copyright (c) 2021 Web Essentials Co., Ltd
  */
-import React, {useState} from 'react';
-import {Dimensions, Image, Modal, SafeAreaView, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  Image,
+  Modal,
+  SafeAreaView,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import {Button, withTheme} from 'react-native-elements';
 import Orientation from 'react-native-orientation-locker';
 import {PORTRAIT, LANDSCAPE} from 'react-native-orientation-locker';
@@ -40,19 +46,23 @@ const stylePaginationDot = {
   borderColor: '#fff',
 };
 const musicUri = Image.resolveAssetSource(music).uri;
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 const styleMedia = {width: '100%', height: '100%'};
 
-const RenderMediaItem = ({item, index}, activeItem) => {
+const RenderMediaItem = ({item, index}, activeIndex, onZoomChange) => {
   const uri = store.getState().phone.adminApiBaseURL + '/file/' + item.id;
   const type = item.fileType;
-  const autoplay = index === activeItem;
+  const isActive = index === activeIndex;
+  const isPlayable = type === 'video/mp4' || type === 'audio/mpeg';
+
+  // Only mount players for the visible slide so media stops once swiped away
+  if (isPlayable && !isActive) {
+    return <View style={styleMedia} />;
+  }
 
   if (type === 'video/mp4') {
     return (
       <VideoPlayer
-        autoplay={autoplay}
+        autoplay
         source={{uri}}
         style={styleMedia}
         resizeMode="contain"
@@ -65,7 +75,7 @@ const RenderMediaItem = ({item, index}, activeItem) => {
   if (type === 'audio/mpeg') {
     return (
       <VideoPlayer
-        autoplay={autoplay}
+        autoplay
         source={{uri}}
         resizeMode="contain"
         style={styleMedia}
@@ -80,11 +90,13 @@ const RenderMediaItem = ({item, index}, activeItem) => {
       maxZoom={3}
       minZoom={1}
       zoomStep={0.5}
-      initialZoom={1}>
+      initialZoom={1}
+      disablePanOnInitialZoom
+      onShouldBlockNativeResponder={(e, g, {zoomLevel}) => zoomLevel > 1}
+      onPanResponderTerminationRequest={(e, g, {zoomLevel}) => zoomLevel <= 1}
+      onTransform={({zoomLevel}) => isActive && onZoomChange(zoomLevel > 1)}>
       <Image
-        source={{
-          uri: store.getState().phone.adminApiBaseURL + '/file/' + item.id,
-        }}
+        source={{uri}}
         style={styleMedia}
         resizeMode="contain"
       />
@@ -96,19 +108,24 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [screenOrientation, setScreenOrientation] = useState(PORTRAIT);
-  const [activePaginationIndex, setActivePaginationIndex] = useState(0);
-  const [sliderWidth, setSliderWidth] = useState(SCREEN_WIDTH);
+  const [activeIndex, setActiveIndex] = useState(showMedia);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const {width: sliderWidth} = useWindowDimensions();
+  const carouselRef = useRef(null);
 
   const toggleScreenOrientation = () => {
     if (screenOrientation === PORTRAIT) {
       setScreenOrientation(LANDSCAPE);
-      setSliderWidth(SCREEN_HEIGHT);
       Orientation.lockToLandscape();
     } else {
       setScreenOrientation(PORTRAIT);
-      setSliderWidth(SCREEN_WIDTH);
       Orientation.lockToPortrait();
     }
+  };
+
+  const handleSnapToItem = (index) => {
+    setActiveIndex(index);
+    setIsZoomed(false);
   };
 
   const handleClose = () => {
@@ -147,18 +164,32 @@ const MediaView = ({theme, activity, showMedia, onClose}) => {
           <View style={styleCarouselContainer}>
             <View>
               <Carousel
+                ref={carouselRef}
                 data={activity.files}
-                renderItem={(props) => RenderMediaItem(props, showMedia)}
+                extraData={activeIndex}
+                renderItem={(props) =>
+                  RenderMediaItem(props, activeIndex, setIsZoomed)
+                }
                 sliderWidth={sliderWidth}
                 itemWidth={sliderWidth}
                 inactiveSlideScale={1}
+                inactiveSlideOpacity={1}
                 firstItem={showMedia}
-                onSnapToItem={(index) => setActivePaginationIndex(index)}
+                initialScrollIndex={showMedia}
+                getItemLayout={(_, index) => ({
+                  length: sliderWidth,
+                  offset: sliderWidth * index,
+                  index,
+                })}
+                scrollEnabled={!isZoomed}
+                onSnapToItem={handleSnapToItem}
               />
               {screenOrientation === PORTRAIT && (
                 <Pagination
+                  carouselRef={carouselRef.current}
+                  tappableDots={!!carouselRef.current}
                   dotsLength={activity.files.length}
-                  activeDotIndex={activePaginationIndex}
+                  activeDotIndex={activeIndex}
                   dotStyle={stylePaginationDot}
                   dotColor={theme.colors.white}
                   inactiveDotColor="transparent"
