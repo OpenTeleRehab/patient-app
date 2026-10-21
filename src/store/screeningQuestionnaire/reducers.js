@@ -44,7 +44,7 @@ export const screeningQuestionnaire = (state = initialState, action) => {
         ...state,
         loading: true,
       };
-    case 'SUBMIT_SCREENING_QUESTIONNAIRE_SUCCEEDED':
+    case 'SUBMIT_SCREENING_QUESTIONNAIRE_SUCCEED':
     case 'SUBMIT_SCREENING_QUESTIONNAIRE_FAILED':
       return {
         ...state,

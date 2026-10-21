@@ -39,11 +39,18 @@ export const submitScreeningQuestionnaireAnswerRequest =
     formData.append('answers', JSON.stringify(answers));
     const {accessToken} = getState().user;
 
-    return ScreeningQuestionnaire.submitScreeningQuestionnaireAnswer(
+    const res = await ScreeningQuestionnaire.submitScreeningQuestionnaireAnswer(
       screeningQuestionnaireId,
       formData,
       accessToken,
     );
+    // Reset loading, otherwise screens relying on it (e.g. history list) stay empty
+    if (res?.success) {
+      dispatch(mutation.submitScreeningQuestionnaireSuccess());
+    } else {
+      dispatch(mutation.submitScreeningQuestionnaireFailure());
+    }
+    return res;
   };
 
 export const syncOfflineScreeningQuestionnaires =
@@ -68,6 +75,37 @@ export const syncOfflineScreeningQuestionnaires =
         }
       } catch (e) {
         console.log('Failed to sync offline interview', e);
+      }
+    }
+
+    // Reload the history of synced interviews before they leave the offline queue,
+    // without toggling loading, so the history list neither blinks nor loses them
+    const {accessToken} = getState().user;
+    const syncedHistories = new Map(
+      syncedItems.map((item) => [
+        `${item.userId}_${item.questionnaire_id}`,
+        item,
+      ]),
+    );
+    const histories = await Promise.all(
+      [...syncedHistories.values()].map(async ({userId, questionnaire_id}) => ({
+        userId,
+        questionnaire_id,
+        res: await ScreeningQuestionnaire.getScreeningQuestionnaireHistroyList(
+          accessToken,
+          {user_id: userId, questionnaire_id},
+        ),
+      })),
+    );
+    for (const {userId, questionnaire_id, res} of histories) {
+      if (res?.success) {
+        dispatch(
+          mutation.screeningQuestionnaireHistoryListFetchSuccess(
+            userId,
+            questionnaire_id,
+            res.data,
+          ),
+        );
       }
     }
 
