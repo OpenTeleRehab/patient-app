@@ -15,7 +15,7 @@ const InterviewHistoryList = ({navigation, route}) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const {screeningQuestionnaireHistoryByUser, offlineInterviews, loading} =
+  const {screeningQuestionnaireHistoryByUser, offlineInterviews} =
     useSelector((state) => state.screeningQuestionnaire);
   const {patientId, screeningQuestionnaire} = route.params;
   const key = `${patientId}_${screeningQuestionnaire.id}`;
@@ -67,41 +67,37 @@ const InterviewHistoryList = ({navigation, route}) => {
           ]}>
           {translate('phc.interview_history_list')}
         </Text>
-        {loading ? (
-          <></>
-        ) : (
-          <View style={styles.marginTopMd}>
-            {mergedScreeningQuestionnaireHistoryList?.map((item, index) => {
-              const totalScore = calculateScoreBySection(
-                screeningQuestionnaire.sections[0],
-                item?.isOffline ? item?.answers : JSON.parse(item.answers),
-              );
-              return (
-                <InterviewHistoryItemCard
-                  index={index}
-                  key={index}
-                  data={{
-                    ...item,
-                    title: screeningQuestionnaire?.title,
-                  }}
-                  actionStatus={mapingScore(
-                    totalScore,
-                    screeningQuestionnaire.sections[0].actions,
-                  )}
-                  OnViewDetail={() =>
-                    navigation.push(ROUTES.INTERVIEW_DETAIL, {
-                      questionnaire_id: screeningQuestionnaire.id,
-                      answers: item?.isOffline
-                        ? item?.answers
-                        : JSON.parse(item?.answers),
-                      from: 'history-list',
-                    })
-                  }
-                />
-              );
-            })}
-          </View>
-        )}
+        <View style={styles.marginTopMd}>
+          {mergedScreeningQuestionnaireHistoryList?.map((item, index) => {
+            const totalScore = calculateScoreBySection(
+              screeningQuestionnaire.sections[0],
+              item?.isOffline ? item?.answers : JSON.parse(item.answers),
+            );
+            return (
+              <InterviewHistoryItemCard
+                index={index}
+                key={index}
+                data={{
+                  ...item,
+                  title: screeningQuestionnaire?.title,
+                }}
+                actionStatus={mapingScore(
+                  totalScore,
+                  screeningQuestionnaire.sections[0].actions,
+                )}
+                OnViewDetail={() =>
+                  navigation.push(ROUTES.INTERVIEW_DETAIL, {
+                    questionnaire_id: screeningQuestionnaire.id,
+                    answers: item?.isOffline
+                      ? item?.answers
+                      : JSON.parse(item?.answers),
+                    from: 'history-list',
+                  })
+                }
+              />
+            );
+          })}
+        </View>
       </ScrollView>
     </>
   );
