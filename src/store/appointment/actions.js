@@ -5,14 +5,26 @@ import {Appointment} from '../../services/appointment';
 import {mutation} from './mutations';
 import moment from 'moment';
 
+// One size for every caller: pages are offset-based, so mixing sizes makes appended pages overlap
+const PAGE_SIZE = 10;
+let latestListRequestId = 0;
+
 export const getAppointmentsListRequest = (payload) => async (
   dispatch,
   getState,
 ) => {
+  const requestId = ++latestListRequestId;
   dispatch(mutation.appointmentFetchRequest());
   const now = moment.utc().locale('en').format('YYYY-MM-DD HH:mm:ss');
   const {accessToken} = getState().user;
-  const res = await Appointment.getAppointments({...payload, now}, accessToken);
+  const res = await Appointment.getAppointments(
+    {page_size: PAGE_SIZE, ...payload, now},
+    accessToken,
+  );
+  // A newer request (e.g. a reload of page 1) supersedes this one; it will set the list and loading
+  if (requestId !== latestListRequestId) {
+    return;
+  }
   if (res.success) {
     let data = res.data;
     if (payload.page > 1) {
@@ -44,7 +56,7 @@ export const updateStatus = (id, payload) => async (dispatch, getState) => {
   const data = await Appointment.updateStatus(id, payload, accessToken);
   if (data.success) {
     dispatch(mutation.updateStatusSuccess());
-    dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
+    dispatch(getAppointmentsListRequest({page: 1}));
     return true;
   } else {
     dispatch(mutation.updateStatusFailure());

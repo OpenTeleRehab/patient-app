@@ -1,13 +1,8 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import _ from 'lodash';
 import {getTranslate} from 'react-localize-redux';
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,6 +17,7 @@ import {getProfessionRequest} from '../../store/profession/actions';
 import {useNetInfo} from '@react-native-community/netinfo';
 import SubmitRequestOverlay from './_Partials/SubmitRequestOverlay';
 import colors from '../../assets/styles/variables/colors';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const Appointment = ({navigation}) => {
   const dispatch = useDispatch();
@@ -31,41 +27,38 @@ const Appointment = ({navigation}) => {
     (state) => state.appointment,
   );
 
-  const [appointmentObjs, setAppointmentObjs] = useState([]);
-  const [groupedAppointments, setGroupedAppointments] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [showRequestOverlay, setShowRequestOverlay] = useState(false);
-  const pageSize = 10;
   const netInfo = useNetInfo();
+  const isOnline = !!netInfo.isConnected;
+
+  const currentPage = listInfo.current_page || 1;
+  const hasMore = currentPage < listInfo.last_page;
+  const remainingCount = listInfo.total_count - appointments.length;
 
   useEffect(() => {
     dispatch(getProfessionRequest());
   }, [dispatch]);
 
-  useEffect(() => {
-    setAppointmentObjs(appointments);
-    setCurrentPage(listInfo.current_page);
-  }, [appointments, listInfo]);
+  const groupedAppointments = useMemo(
+    () =>
+      _.chain(appointments)
+        .groupBy((item) =>
+          moment.utc(item.start_date).local().format('MMMM YYYY'),
+        )
+        .map((value, key) => ({month: key, appointments: value}))
+        .value(),
+    [appointments],
+  );
 
-  useEffect(() => {
-    const groupedData = _.chain(appointmentObjs)
-      .groupBy((item) =>
-        moment.utc(item.start_date).local().format('MMMM YYYY'),
-      )
-      .map((value, key) => ({month: key, appointments: value}))
-      .value();
-    setGroupedAppointments(groupedData);
-  }, [appointmentObjs]);
-
-  const showMore = () => {
-    if (listInfo.last_page > currentPage) {
-      dispatch(
-        getAppointmentsListRequest({
-          page_size: pageSize,
-          page: currentPage + 1,
-        }),
-      );
+  const loadMoreAppointments = () => {
+    if (loading || !hasMore || !isOnline) {
+      return;
     }
+    dispatch(
+      getAppointmentsListRequest({
+        page: currentPage + 1,
+      }),
+    );
   };
 
   const handleRequestAppointment = () => {
@@ -86,7 +79,7 @@ const Appointment = ({navigation}) => {
 
       <Button
         title={translate('appointment.request_new_appointment')}
-        disabled={!netInfo.isConnected}
+        disabled={!isOnline}
         onPress={handleRequestAppointment}
         containerStyle={[styles.paddingX, styles.paddingY]}
       />
@@ -98,14 +91,16 @@ const Appointment = ({navigation}) => {
             ? [styles.flexColumn, styles.justifyContentCenter]
             : []
         }
-        style={[styles.paddingX, styles.paddingY]}>
+        style={[styles.paddingX, styles.paddingY]}
+      >
         {!groupedAppointments.length && !loading && (
           <Text
             style={[
               styles.alignSelfCenter,
               styles.textLightGrey,
               styles.headerLeftTitleDark,
-            ]}>
+            ]}
+          >
             {translate('appointment.no_appointment')}
           </Text>
         )}
@@ -122,7 +117,8 @@ const Appointment = ({navigation}) => {
                     navigation.navigate(ROUTES.APPOINTMENT_DETAIL, {
                       appointment,
                     })
-                  }>
+                  }
+                >
                   <AppointmentCard appointment={appointment} />
                 </TouchableOpacity>
               </View>
@@ -130,34 +126,37 @@ const Appointment = ({navigation}) => {
           </View>
         ))}
         <View style={styles.appointmentShowMoreButtonWrapper}>
-          {!loading &&
-            pageSize < listInfo.total_count &&
-            currentPage < listInfo.last_page && (
-              <TouchableOpacity
-                disabled={!netInfo.isConnected}
-                style={styles.appointmentShowMoreButton}
-                onPress={() => showMore()}>
-                <Text
-                  style={[
-                    netInfo.type !== 'unknown' && netInfo.isConnected === false
-                      ? styles.textLightGrey
-                      : styles.textBlack,
-                    styles.fontWeightBold,
-                  ]}>
-                  {translate('appointment.show_more', {
-                    number: listInfo.total_count - currentPage * pageSize,
-                  })}
-                </Text>
-                <Icon
-                  name="chevron-down"
-                  type="font-awesome"
-                  color={netInfo.isConnected ? colors.grey1 : colors.grey4}
-                />
-              </TouchableOpacity>
-            )}
-          {loading && <ActivityIndicator size={30} color="white" />}
+          {!loading && hasMore && (
+            <TouchableOpacity
+              disabled={!isOnline}
+              style={styles.appointmentShowMoreButton}
+              onPress={loadMoreAppointments}
+            >
+              <Text
+                style={[
+                  isOnline ? styles.textBlack : styles.textLightGrey,
+                  styles.fontWeightBold,
+                ]}
+              >
+                {translate('appointment.show_more', {
+                  number: remainingCount,
+                })}
+              </Text>
+              <Icon
+                name="chevron-down"
+                type="font-awesome"
+                color={isOnline ? colors.grey1 : colors.grey4}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
+
+      <Spinner
+        visible={loading}
+        overlayColor="rgba(0, 0, 0, 0.5)"
+        textStyle={styles.textLight}
+      />
     </>
   );
 };

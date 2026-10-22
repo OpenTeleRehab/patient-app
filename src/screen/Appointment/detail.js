@@ -44,7 +44,7 @@ const AppointmentDetail = ({route, navigation}) => {
             dispatch(deleteAppointment(appointment.id)).then((res) => {
               setIsLoading(false);
               if (res) {
-                dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
+                dispatch(getAppointmentsListRequest({page: 1}));
                 handleGoBack();
               }
             });

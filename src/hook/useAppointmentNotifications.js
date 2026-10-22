@@ -27,7 +27,7 @@ export const useAppointmentNotifications = (dispatch, profile, canFetch) => {
       dispatch(getAppointmentsWithPatientRequest({date: formattedDate, now: formattedNow}));
       dispatch(getAppointmentsRequest({date: formattedDate, now: formattedNow}));
     } else {
-      dispatch(getAppointmentsListRequest({page_size: 10}));
+      dispatch(getAppointmentsListRequest({}));
     }
   }, [dispatch, profile]);
 

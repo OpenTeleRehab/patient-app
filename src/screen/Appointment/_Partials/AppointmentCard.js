@@ -100,6 +100,12 @@ const AppointmentCard = ({appointment, style, theme}) => {
     });
   };
 
+  const careProviderLabel = phcWorkers.some(
+    (item) => item.id === parseInt(appointment.therapist_id, 10),
+  )
+    ? 'appointment.phc_worker'
+    : 'appointment.therapist';
+
   const acceptDisabled =
     !netInfo.isConnected ||
     appointment.patient_status === APPOINTMENT_STATUS.ACCEPTED;
@@ -133,11 +139,14 @@ const AppointmentCard = ({appointment, style, theme}) => {
           </Text>
           <Divider style={styles.marginY} />
           <Text style={additionTextStyle}>
-            {translate('appointment.appointment_with')}
+            {translate('appointment.appointment_with')}{' '}
+            <Text style={styles.fontWeightBold}>
+              {translate(careProviderLabel)}
+            </Text>
+            {!!appointment.type && ` (${translate(`appointment.type.${appointment.type}`)})`}
           </Text>
-          <Text style={[styles.fontWeightBold, additionTextStyle]}>
+          <Text style={[styles.fontWeightBold, styles.textPrimary, additionTextStyle]}>
             {getTherapistName(appointment.therapist_id, therapistData)}
-            {appointment.type && (` (${translate(`appointment.type.${appointment.type}`)})`)}
           </Text>
           {appointment.assistive_technology ? (
             <Text style={styles.marginTop} numberOfLines={1}>
@@ -167,12 +176,6 @@ const AppointmentCard = ({appointment, style, theme}) => {
             </Text>
           </View>
         </View>
-        {appointment.note && appointment.note.trim() !== '' && (
-          <View style={[styles.alignSelfEnd, styles.marginRight]}>
-            <Icon name="event-note" size={22} />
-          </View>
-        )}
-        <Divider style={styles.marginY} />
         {appointment.created_by_therapist && !rejectDisabled && (
           <View
             style={[styles.flexRow, styles.flexWrap, styles.alignSelfStart]}>
