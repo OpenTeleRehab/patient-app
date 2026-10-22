@@ -218,7 +218,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
                 ToastAndroid.SHORT,
               );
             }
-            dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
+            dispatch(getAppointmentsListRequest({page: 1}));
           } else {
             if (Platform.OS === 'ios') {
               Alert.alert(translate('appointment'), translate(result.message));
@@ -230,7 +230,7 @@ const SubmitRequestOverlay = ({visible, appointment, navigation}) => {
             }
             setErrorFromTime(true);
             setErrorToTime(true);
-            dispatch(getAppointmentsListRequest({page_size: 10, page: 1}));
+            dispatch(getAppointmentsListRequest({page: 1}));
           }
         });
       }

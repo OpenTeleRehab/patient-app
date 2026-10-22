@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Web Essentials Co., Ltd
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -27,7 +27,6 @@ import {
 import {getLanguageRequest} from '../../store/language/actions';
 import _ from 'lodash';
 import settings from '../../../config/settings';
-import {useNetInfo} from '@react-native-community/netinfo';
 import {APPOINTMENT_STATUS, ROUTES} from '../../variables/constants';
 import quackerWave from '../../assets/images/quacker-waving.gif';
 import {updateIndicatorList} from '../../store/indicator/actions';
@@ -35,6 +34,7 @@ import {getAssistiveTechnologiesRequest} from '../../store/assistiveTechnology/a
 import {getClinicRequest} from '../../store/clinic/actions';
 import {getPhcServiceRequest} from '../../store/phcService/actions';
 import useMomentLocale from '../../hook/useMomentLocale';
+import useCanFetch from '../../hook/useCanFetch';
 
 const kidThemeImageStyle = {
   width: 300,
@@ -43,9 +43,10 @@ const kidThemeImageStyle = {
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
+  const canFetch = useCanFetch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const {profile, accessToken, isDataUpToDate} = useSelector((state) => state.user);
+  const {profile} = useSelector((state) => state.user);
   const {languages} = useSelector((state) => state.language);
   const {appointments} = useSelector((state) => state.appointment);
   const {
@@ -56,29 +57,16 @@ const Home = ({navigation}) => {
     offlineGoals,
   } = useSelector((state) => state.activity);
   const [completedPercentage, setCompletedPercentage] = useState(0);
-  const [upcomingAppointment, setUpcomingAppointment] = useState(undefined);
   const [todaySummary, setTodaySummary] = useState({
     all: 0,
     completed: 0,
   });
-  const isOnline = useNetInfo().isConnected;
-  // After an offline login the token is a placeholder until AppProvider's re-login succeeds;
-  // fetching before that fails and then has to run again, so the spinner shows twice.
-  const canFetch = isOnline && !!accessToken && isDataUpToDate !== false;
-  const [kidTheme, setKidTheme] = useState(false);
-  const [todayAppointments, setTodayAppointments] = useState([]);
 
   useMomentLocale(languages, profile.language_id);
 
   useEffect(() => {
-    if (profile) {
-      setKidTheme(!!profile.kid_theme);
-    }
-  }, [profile]);
-
-  useEffect(() => {
     if (canFetch) {
-      dispatch(getAppointmentsListRequest({page_size: 10}));
+      dispatch(getAppointmentsListRequest({}));
       dispatch(getTreatmentPlanRequest());
       dispatch(getAssistiveTechnologiesRequest());
     }
@@ -150,44 +138,43 @@ const Home = ({navigation}) => {
     }
   }, [dispatch, profile]);
 
-  useEffect(() => {
-    // Filter upcoming appointments for offline data reason
+  // Derived from the stored list (it may be stale offline), so drop the ones already over or rejected
+  const {upcomingAppointment, hasAppointmentToday} = useMemo(() => {
+    const now = moment();
     const upcomingAppointments = appointments.filter(
       (a) =>
-        moment.utc(a.end_date) > moment.utc() &&
+        moment.utc(a.end_date).isAfter(now) &&
         ![a.therapist_status, a.patient_status].includes(
           APPOINTMENT_STATUS.REJECTED,
         ),
     );
 
-    if (upcomingAppointments.length) {
-      setUpcomingAppointment(upcomingAppointments[0]);
-      // Filter today appointment
-      const appointmentsForToday = upcomingAppointments.filter((a) =>
-        moment(a.end_date).isSame(moment(), 'day'),
-      );
-      setTodayAppointments(appointmentsForToday);
-    } else {
-      setUpcomingAppointment(undefined);
-      setTodayAppointments([]);
-    }
+    return {
+      // Don't rely on the list order: pages loaded from the Appointment screen are appended
+      upcomingAppointment: _.minBy(upcomingAppointments, (a) =>
+        moment.utc(a.start_date).valueOf(),
+      ),
+      // Dates are UTC, so compare against today in local time
+      hasAppointmentToday: upcomingAppointments.some((a) =>
+        moment.utc(a.end_date).local().isSame(now, 'day'),
+      ),
+    };
   }, [appointments]);
 
   useEffect(() => {
     dispatch(
       updateIndicatorList({
-        hasActivity:
-          todaySummary.all && todaySummary.completed !== todaySummary.all,
-        hasAppointment: todayAppointments.length > 0,
+        hasActivity: todaySummary.all && todaySummary.completed !== todaySummary.all,
+        hasAppointment: hasAppointmentToday,
       }),
     );
-  }, [dispatch, todayAppointments, todaySummary, upcomingAppointment]);
+  }, [dispatch, hasAppointmentToday, todaySummary]);
 
   return (
     <>
       <HeaderBar
         achievement={{
-          hasAchievement: kidTheme,
+          hasAchievement: profile.kid_theme,
           onGoAchievement: () => navigation.navigate(ROUTES.ACHIEVEMENT),
         }}
         setting={{
@@ -207,7 +194,7 @@ const Home = ({navigation}) => {
             styles.flexColumn,
             styles.justifyContentCenter,
           ]}>
-          {kidTheme ? (
+          {profile.kid_theme ? (
             <TouchableOpacity
               accessibilityLabel={translate('common.home.mascot')}
               onPress={() => navigation.navigate(ROUTES.ACTIVITY)}>
